@@ -6,18 +6,20 @@ import { COLORS, Fonts } from '../utils/colors';
 import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
 
 const ContentSection = ({ activeSection, setActiveSection, keyBenefits, serviceInclusions, termsConditions }) => {
+  
+  
   const renderContent = () => {
     if (activeSection === 'Key Benefits') {
       return (
         <View style={styles.detailCont}>
           {keyBenefits.map((item, index) => (
-            <View key={index} style={[styles.detailCont]}>
-                <View style={{flexDirection:'row', alignItems:"center"}}>
+            <View key={index} style={[styles.detailCont,{backgroundColor:COLORS.white,marginBottom:10, }]}>
+                <View style={{flexDirection:'row', alignItems:"center",}}>
               <FastImage source={images.pointDes} style={{ width: 20, height: 20 ,marginRight:widthPercentageToDP('4%')}} />
               <Text style={styles.texthead}>{item.title}</Text>
                 </View>
               <>
-              <Text style={styles.textdes}>{item.desc}</Text>
+              <Text style={[styles.textdes,{marginLeft:widthPercentageToDP('9%'),}]}>{item.desc}</Text>
               </>
             </View>
           ))}
@@ -25,20 +27,30 @@ const ContentSection = ({ activeSection, setActiveSection, keyBenefits, serviceI
       );
     } else if (activeSection === 'Description') {
       return (
-         <View style={styles.detailCont}>
-          {serviceInclusions.map((item, index) => (
-            <View key={index}>
-              {item.title && <Text>{item.title}</Text>}
-              <Text>{item.text}</Text>
-            </View>
+        <View  style={[styles.detailCont]}>
+      {serviceInclusions.map((section, index) => (
+        <View key={index}  style={[styles.detailCont,{backgroundColor:COLORS.white,marginBottom:10, }]}>
+          {/* Title */}
+          {section.title && (
+            <Text style={[styles.texthead,{marginVertical:widthPercentageToDP('1%')}]}>{section.title}</Text>
+          )}
+
+          {/* Items */}
+          {section.items.map((item, itemIndex) => (
+            <Text key={itemIndex} style={[styles.textdes]}>
+              • {item}
+            </Text>
           ))}
         </View>
+      ))}
+    </View>
       );
     } else if (activeSection === 'Terms & Conditions') {
       return (
-         <View style={styles.detailCont}>
+         <View  style={[styles.detailCont,{backgroundColor:COLORS.white,}]} >
+          <Text style={[styles.texthead,{marginVertical:widthPercentageToDP('1.5%')}]}>Terms & Conditions</Text>
           {termsConditions.map((item, index) => (
-            <Text key={index}>{item.text}</Text>
+            <Text key={index} style={[styles.textdes]}> • {item.text}</Text>
           ))}
         </View>
       );
@@ -78,24 +90,24 @@ const styles = StyleSheet.create({
     borderRadius:widthPercentageToDP('3%')
 },
 detailCont:{
-    marginBottom:10, 
-    backgroundColor:COLORS.white,
+    width:widthPercentageToDP('95%'),
     padding: heightPercentageToDP('1%'),
+    paddingHorizontal:heightPercentageToDP('2%'),
     borderRadius:widthPercentageToDP('3%'),
+    alignSelf:'center'
 },
 textdes:{
-    fontSize:heightPercentageToDP('1.3%'),
-    fontFamily:Fonts.medium,
+    fontSize:heightPercentageToDP('1.5%'),
+    fontFamily:Fonts.regular,
     textAlign:'left',
-    color:COLORS.textColor,
-    marginLeft:widthPercentageToDP('9%'),
-    marginBottom:heightPercentageToDP('2%')
+    color:COLORS.textHeading,
 },
 texthead:{
     fontSize:heightPercentageToDP('1.5%'),
     fontFamily:Fonts.semiBold,
     textAlign:'left',
-    color:COLORS.black
+    color:COLORS.black,
+    alignSelf:'flex-start'
 }
 });
 

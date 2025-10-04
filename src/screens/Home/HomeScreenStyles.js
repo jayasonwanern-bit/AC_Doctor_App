@@ -9,7 +9,7 @@ import images from '../../assets/images';
 
 export default StyleSheet.create({
   safeArea: { flex: 1 },
-  container: { flex: 1,},
+  container: { flex: 1 },
   content: {},
   header: {
     paddingBottom: hp('1%'),
@@ -424,10 +424,9 @@ export default StyleSheet.create({
     marginVertical: hp('2%'),
   },
 
-  
-sercard: {
+  sercard: {
     width: wp('90%'),
-   marginBottom: hp('5%'),
+    marginBottom: hp('5%'),
     alignSelf: 'center',
   },
   sertitle: {
@@ -462,7 +461,6 @@ sercard: {
     textAlign: 'center',
     marginBottom: hp('0.3%'),
   },
- 
 
   footer: {
     paddingVertical: hp('2%'),
@@ -471,7 +469,6 @@ sercard: {
     borderTopRightRadius: 15,
   },
   footerText: { fontSize: hp('1.5%'), color: COLORS.black },
-
 
   // sterilization styles
   workoption: {
@@ -492,91 +489,203 @@ sercard: {
     width: wp('18%'),
     height: wp('19%'),
     resizeMode: 'contain',
-     borderTopLeftRadius: wp('2%'),
-     borderTopRightRadius: wp('2%'),
+    borderTopLeftRadius: wp('2%'),
+    borderTopRightRadius: wp('2%'),
   },
-    workcontainer: { flex: 1 },
-    worksliderview: {
-      marginVertical: hp('1%'),
-      width: wp('100%'),
-      alignSelf: 'center',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    workimage: {
-      width: '94%',
-      height: hp('18%'),
-      resizeMode: 'contain',
-      borderRadius: 15,
-    },
-    workscrollstyle: { flex: 1, paddingHorizontal: wp('3%') },
-    workheadText: {
-      fontSize: wp('3.8%'),
-      fontFamily: Fonts.semiBold,
-      marginBottom: hp('1%'),
-    },
-    workitem: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: hp('1%'),
-      backgroundColor: '#fff',
-      marginBottom: hp('1.5%'),
-      borderRadius: 10,
-    },
-    workitem: {
-      flexWrap: 'wrap',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: hp('1%'),
-      backgroundColor: '#fff',
-      marginBottom: hp('1.5%'),
-      borderRadius: 10,
-    },
-    worktext: { fontSize: hp('1.6%'), color: COLORS.black, fontFamily: Fonts.medium },
-    workacIconstyle: {
-      width: wp('7%'),
-      height: hp('5%'),
-      marginRight: wp('3.5%'),
-      resizeMode: 'contain',
-    },
-    workbuttonContainer: { flexDirection: 'row', alignItems: 'center' },
-    workbutton: {
-      borderColor: '#ddd',
-      borderWidth: 1,
-      borderRadius: hp('5%'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginHorizontal: 5,
-      width: wp('6.3%'),
-      height: hp('3%'),
-    },
-    workbuttonText: {
-      fontSize: wp('4.5%'),
-      color: COLORS.black,
-      textAlign: 'center',
-      fontFamily: Fonts.medium,
-    },
-    workcount: {
-      fontSize: wp('3.5%'),
-      marginHorizontal: 10,
-      color: COLORS.red,
-      textAlign: 'center',
-    },
-    workaddButton: {
-      borderColor: COLORS.darkGray,
-      borderWidth: wp('0.3%'),
-      borderRadius: wp('7%'),
-      width: wp('18%'),
-      height: hp('3.5%'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-    },
-    workaddButtonText: {
-      fontSize: wp('3%'),
-      color: COLORS.black,
-      fontFamily: Fonts.medium,
-    },
+  workcontainer: { flex: 1 },
+  worksliderview: {
+    marginVertical: hp('0.5%'),
+    width: wp('100%'),
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  workimage: {
+    width: '94%',
+    height: hp('18%'),
+    resizeMode: 'contain',
+    borderRadius: 15,
+  },
+  workscrollstyle: { flex: 1, paddingHorizontal: wp('3%') },
+  workheadText: {
+    fontSize: wp('3.8%'),
+    fontFamily: Fonts.semiBold,
+    marginBottom: hp('1%'),
+  },
+  workitem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: hp('1%'),
+    backgroundColor: '#fff',
+    marginBottom: hp('1.5%'),
+    borderRadius: 10,
+  },
+  worktext: {
+    fontSize: hp('1.6%'),
+    color: COLORS.black,
+    fontFamily: Fonts.medium,
+  },
+  workacIconstyle: {
+    width: wp('7%'),
+    height: hp('5%'),
+    marginRight: wp('3.5%'),
+    resizeMode: 'contain',
+  },
+  workbuttonContainer: { flexDirection: 'row', alignItems: 'center' },
+  workbutton: {
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: hp('5%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
+    width: wp('7.3%'),
+    height: hp('3.5%'),
+    alignSelf:'center'
+  },
+  workbuttonText: {
+    fontSize: wp('5%'),
+    color: COLORS.black,
+    textAlign: 'center',
+    fontFamily: Fonts.medium,
+    marginBottom:hp('1%'),
+  },
+  workcount: {
+    fontSize: wp('3.5%'),
+    marginHorizontal: 4,
+    color: COLORS.themeColor,
+    textAlign: 'center',
+  },
+  workaddButton: {
+    borderColor: COLORS.darkGray,
+    borderWidth: wp('0.3%'),
+    borderRadius: wp('7%'),
+    width: wp('18%'),
+    height: hp('3.5%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  workaddButtonText: {
+    fontSize: wp('3%'),
+    color: COLORS.black,
+    fontFamily: Fonts.medium,
+  },
+
+  // FAQ STYLE
+  faqItem: {
+    marginTop: wp('1%'),
+    backgroundColor: COLORS.white,
+    borderRadius: wp('3%'),
+    marginBottom: hp('0.6%'),
+    overflow: 'hidden', // To clip content within border radius
+  },
+  faquestionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 12,
+  },
+  faquestionText: {
+    fontSize: wp('3.3%'),
+    color: COLORS.black,
+    fontFamily: Fonts.semiBold,
+    marginVertical: wp('2%'),
+  },
+  faqarrow: {
+    alignSelf: 'center',
+    fontSize: 16,
+    color: COLORS.darkText,
+  },
+  faqanswerText: {
+    fontSize: wp('3%'),
+    color: COLORS.textHeading,
+    fontFamily: Fonts.medium,
+    paddingHorizontal: wp('3%'),
+    paddingBottom: wp('3%'),
+    lineHeight: 20,
+  },
+  brandimage: {
+    width: wp('94%'),
+    height: hp('9%'),
+    resizeMode: 'contain',
+  },
+  smallimage: {
+    width: wp('10%'),
+    height: hp('6%'),
+    resizeMode: 'contain',
+  },
+  brandcont: {
+    backgroundColor: COLORS.white,
+    borderRadius: wp('3%'),
+    marginBottom: hp('15%'),
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: wp('3%'),
+    justifyContent: 'space-between',
+  },
+  needHelp:{
+    fontSize: wp('3.7%'),
+    color: COLORS.textHeading,
+    fontFamily: Fonts.semiBold,
+    marginLeft:wp('4%')
+  },
+  chaticon:{
+    width: wp('20%'),
+    height: hp('4.5%'),
+    resizeMode: 'contain',
+  },
+  servicesSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal:hp('2.5%'),
+    paddingVertical:hp('2%'),
+    backgroundColor: COLORS.white,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  servicesCount: {
+    fontSize: wp('3.5%'),
+    fontFamily: Fonts.semiBold,
+    color: COLORS.darkText,
+  },
+  selectedText: {
+    fontSize: wp('3%'),
+    fontFamily: Fonts.semiBold,
+    color: COLORS.darkText,
+    opacity: 0.7,
+  },
+  viewCartButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: wp('0%'),
+    paddingHorizontal: hp('1%'),
+    backgroundColor: COLORS.themeColor,
+    borderRadius: 20,
+  },
+  viewCartText: {
+    fontSize: wp('3%'),
+    fontFamily: Fonts.semiBold,
+    color: COLORS.white,
+    marginRight: 4,
+  },
+
+  carticon:{
+    width: wp('5%'),
+    height: hp('5%'),
+    resizeMode: 'contain',
+  },
 });
 
 export const productData = [
@@ -683,44 +792,95 @@ export const works = [
   },
   {
     id: '3',
-     text: 'Window AC',
+    text: 'Window AC',
     icon: images.demoImgthree,
   },
   {
     id: '4',
-     text: 'Ac repair',
+    text: 'Ac repair',
     icon: images.demoImg,
   },
   {
     id: '5',
-     text: 'Ducted AC',
+    text: 'Ducted AC',
     icon: images.demoImgOne,
   },
 ];
 
- // Data arrays passed as props
- export const keyBenefitsData = [
-    { title: 'Enhanced Cooling Efficiency', desc: 'Ensures optimal performance, reducing cooling time and electricity consumption.' },
-    { title: 'Extended AC Lifespan', desc: 'Regular maintenance prevents breakdowns and prolongs the life of your AC unit.' },
-    { title: 'Improved Air Quality', desc: 'Removes dirt, dust, and bacteria buildup, ensuring cleaner and healthier air circulation.' },
-    { title: 'Prevents Costly Repairs', desc: 'Early detection of issues helps avoid major repair costs in the future.' },
-    { title: 'Consistent Performance', desc: 'Keeps the AC running smoothly, avoiding sudden failures during peak summer months.' },
-  ];
+// Data arrays passed as props
+export const keyBenefitsData = [
+  {
+    title: 'Enhanced Cooling Efficiency',
+    desc: 'Ensures optimal performance, reducing cooling time and electricity consumption.',
+  },
+  {
+    title: 'Extended AC Lifespan',
+    desc: 'Regular maintenance prevents breakdowns and prolongs the life of your AC unit.',
+  },
+  {
+    title: 'Improved Air Quality',
+    desc: 'Removes dirt, dust, and bacteria buildup, ensuring cleaner and healthier air circulation.',
+  },
+  {
+    title: 'Prevents Costly Repairs',
+    desc: 'Early detection of issues helps avoid major repair costs in the future.',
+  },
+  {
+    title: 'Consistent Performance',
+    desc: 'Keeps the AC running smoothly, avoiding sudden failures during peak summer months.',
+  },
+];
 
- export const serviceInclusionsData = [
-    { text: '- Thorough inspection and diagnosis of the compressor.' },
-    { text: '- Cleaning of compressor components to remove dust and debris.' },
-    { text: '- Refrigerant level check and top-up (additional cost if required).' },
-    { text: '- Lubrication of moving parts for smooth operation.' },
-    { text: '- Testing for gas leaks and fixing minor leaks if found.' },
-    { title: 'Service Exclusions', text: '- Major repairs or part replacements are not included in basic service.' },
-    { text: '- Gas refilling is chargeable if needed.' },
-  ];
+export const serviceInclusionsData = [
+  {
+    title: 'Service Inclusions',
+    items: [
+      'Thorough inspection and diagnosis of the compressor.',
+      'Refrigerant level check and top-up (additional cost if required).',
+      'Lubrication of moving parts for smooth operation.',
+      'Testing for gas leaks and fixing minor leaks if found.',
+      'Cleaning of compressor components to remove dust and debris.',
+    ],
+  },
+  {
+    title: 'Service Exclusions',
+    items: [
+      'Major repairs or part replacements are not included in basic service.',
+      'Gas refilling is chargeable if needed.',
+    ],
+  },
+];
 
- export const termsConditionsData = [
-    { text: '- Service time may vary based on the AC\'s condition and number of units.' },
-    { text: '- If additional repairs are required, a separate quotation will be provided.' },
-    { text: '- Warranty on service is valid for 15 days post-servicing.' },
-    { text: '- Customers must ensure accessibility to the AC unit before service begins.' },
-    { text: '- Service is canceled after booking, a nominal cancellation charge may apply.' },
-  ];
+export const termsConditionsData = [
+  {
+    text: "Service time may vary based on the AC's condition and number of units.",
+  },
+  {
+    text: 'If additional repairs are required, a separate quotation will be provided.',
+  },
+  { text: 'Warranty on service is valid for 15 days post-servicing.' },
+  {
+    text: 'Customers must ensure accessibility to the AC unit before service begins.',
+  },
+  {
+    text: 'Service is canceled after booking, a nominal cancellation charge may apply.',
+  },
+];
+
+export const faqData = [
+  {
+    question: 'Why is my AC not cooling properly?',
+    answer:
+      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  },
+  {
+    question: 'How often should I service my AC?',
+    answer:
+      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  },
+  {
+    question: 'How often should I service my AC?',
+    answer:
+      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  },
+];

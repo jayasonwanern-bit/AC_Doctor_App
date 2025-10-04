@@ -33,6 +33,7 @@ export const COLORS = {
   maroon:'#800000',
   silver:'#c0c0c0',
   gold:'#ffd700',
+  peacock:'#114f71',
 };
 
 export const Fonts = {

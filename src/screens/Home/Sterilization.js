@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   ScrollView,
   TouchableOpacity,
   FlatList,
+  StyleSheet,
 } from 'react-native';
 import Header from '../../components/Header';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
+  heightPercentageToDP,
+  widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
@@ -21,17 +23,35 @@ import styles, {
   keyBenefitsData,
   serviceInclusionsData,
   termsConditionsData,
+  faqData,
 } from './HomeScreenStyles';
 import ContentSection from '../../customScreen/ContentSection';
 
 const Sterilization = ({ navigation }) => {
+  const [expandedIndex, setExpandedIndex] = useState(null);
   const [activeSection, setActiveSection] = useState('Key Benefits');
+
   const [acTypes, setAcTypes] = useState([
     { name: 'Split AC', count: 2, showButtons: false, acIcon: images.splitAC },
-    { name: 'Window AC', count: 0, showButtons: false, acIcon: images.windowAc },
-    { name: 'Cassette AC', count: 1, showButtons: false, acIcon: images.casseteAc },
+    {
+      name: 'Window AC',
+      count: 0,
+      showButtons: false,
+      acIcon: images.windowAc,
+    },
+    {
+      name: 'Cassette AC',
+      count: 1,
+      showButtons: false,
+      acIcon: images.casseteAc,
+    },
     { name: 'VRV/VRF AC', count: 0, showButtons: false, acIcon: images.VRVac },
-    { name: 'Ducted AC', count: 0, showButtons: false, acIcon: images.ductedAc },
+    {
+      name: 'Ducted AC',
+      count: 0,
+      showButtons: false,
+      acIcon: images.ductedAc,
+    },
     { name: 'Tower AC', count: 0, showButtons: false, acIcon: images.towerAc },
   ]);
 
@@ -39,11 +59,11 @@ const Sterilization = ({ navigation }) => {
     const updatedAcTypes = [...acTypes];
     updatedAcTypes[index].showButtons = true;
     setAcTypes(updatedAcTypes);
-    setTimeout(() => {
-      const updatedAcTypes = [...acTypes];
-      updatedAcTypes[index].showButtons = false;
-      setAcTypes(updatedAcTypes);
-    }, 6000);
+    // setTimeout(() => {
+    //   const updatedAcTypes = [...acTypes];
+    //   updatedAcTypes[index].showButtons = false;
+    //   setAcTypes(updatedAcTypes);
+    // }, 15000);
   };
 
   const handleIncrement = index => {
@@ -60,8 +80,10 @@ const Sterilization = ({ navigation }) => {
     setAcTypes(updatedAcTypes);
   };
 
-  console.log('ContentSection:', ContentSection); // Debug log
-  console.log('works:', works); // Debug log
+  // FAQ'S Toggle
+  const toggleExpand = index => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
     <View style={styles.workcontainer}>
@@ -71,12 +93,15 @@ const Sterilization = ({ navigation }) => {
         onHelp={() => alert('Help for Home')}
       />
 
-      <ScrollView style={styles.workscrollstyle}>
+      <ScrollView
+        style={styles.workscrollstyle}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.worksliderview}>
           <Image source={images.bannerOne} style={styles.workimage} />
         </View>
 
-        <Text style={styles.hworkheadText}>Select Type of AC</Text>
+        <Text style={styles.workheadText}>Select Type of AC</Text>
 
         {acTypes.map((ac, index) => (
           <View key={index} style={styles.workitem}>
@@ -147,8 +172,64 @@ const Sterilization = ({ navigation }) => {
           termsConditions={termsConditionsData}
         />
 
-        <View style={{ height: hp('3%') }} />
+        <View style={styles.worksliderview}>
+          <Image source={images.bannerTwo} style={styles.workimage} />
+        </View>
+
+        <Text
+          style={[
+            styles.workheadText,
+            { marginTop: heightPercentageToDP('1%') },
+          ]}
+        >
+          FAQs
+        </Text>
+
+        {/* FAQ Items */}
+        <>
+          {faqData.map((item, index) => (
+            <View key={index} style={styles.faqItem}>
+              <TouchableOpacity
+                onPress={() => toggleExpand(index)}
+                style={styles.faquestionContainer}
+              >
+                <Text style={styles.faquestionText}>{item.question}</Text>
+                <Text style={styles.faqarrow}>
+                  {expandedIndex === index ? '︿' : '﹀'}
+                </Text>
+              </TouchableOpacity>
+
+              {expandedIndex === index && (
+                <Text style={styles.faqanswerText}>{item.answer}</Text>
+              )}
+            </View>
+          ))}
+        </>
+
+        <TouchableOpacity style={styles.worksliderview} activeOpacity={6}>
+          <Image source={images.brands} style={styles.brandimage} />
+        </TouchableOpacity>
+
+        <View style={[styles.brandcont]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={images.helpdesk} style={styles.smallimage} />
+            <Text style={styles.needHelp}> Need Help?</Text>
+          </View>
+          <Image source={images.chatIcon} style={styles.chaticon} />
+        </View>
       </ScrollView>
+
+      {/* Services and View Cart Section */}
+      <View style={styles.servicesSection}>
+        <View>
+          <Text style={styles.servicesCount}>3 services</Text>
+          <Text style={styles.selectedText}>Selected</Text>
+        </View>
+        <TouchableOpacity style={styles.viewCartButton} onPress={()=>navigation.navigate('ViewCart')}>
+          <Text style={styles.viewCartText}>View Cart</Text>
+          <Image source={images.cart} style={styles.carticon} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

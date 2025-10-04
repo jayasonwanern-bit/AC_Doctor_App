@@ -10,6 +10,8 @@ import MapScreen from '../screens/authscreen/MapScreen';
 import ServiceScreen from '../screens/authscreen/ServiceScreen';
 import AddAdress from '../screens/LocationAddress/AddAdress';
 import Sterilization  from '../screens/Home/Sterilization';
+import ViewCartScreen from '../screens/Home/ViewCartScreen';
+
 import { COLORS } from '../utils/colors';
 import { StatusBar,useColorScheme,View } from 'react-native';
 
@@ -36,6 +38,7 @@ const AppNavigator = () => {
         <Stack.Screen name="AddAdress" component={AddAdress} options={{ headerShown: false }} />
         <Stack.Screen name="Tab" component={CustomBottomTab} options={{ headerShown: false }} />
         <Stack.Screen name="Sterilization" component={Sterilization} options={{ headerShown: false }} />
+        <Stack.Screen name="ViewCart" component={ViewCartScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
       </View>
     </NavigationContainer>

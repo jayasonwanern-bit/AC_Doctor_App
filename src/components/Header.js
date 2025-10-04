@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: wp('5%'),
-    paddingVertical: hp('2%'),
+    paddingHorizontal: wp('2.5%'),
+    paddingVertical: hp('1%'),
     borderBottomWidth: 1,
     borderBottomColor: '#ddd', // Default color, overridden by dynamicStyles
   },
@@ -91,13 +91,15 @@ const styles = StyleSheet.create({
   },
   backIcon: {
      width: wp('5%'),
-    height: wp('5%'),
+     height: wp('5%'),
+     resizeMode:'contain'
   },
   title: {
     fontSize: wp('4%'),
     fontFamily: Fonts.semiBold,
     flex: 1,
     textAlign: 'left',
+    marginLeft:wp('2')
   },
   helpButton: {
     paddingLeft: wp('3%'),
