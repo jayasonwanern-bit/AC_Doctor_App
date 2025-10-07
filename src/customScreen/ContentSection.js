@@ -15,7 +15,7 @@ const ContentSection = ({ activeSection, setActiveSection, keyBenefits, serviceI
           {keyBenefits.map((item, index) => (
             <View key={index} style={[styles.detailCont,{backgroundColor:COLORS.white,marginBottom:10, }]}>
                 <View style={{flexDirection:'row', alignItems:"center",}}>
-              <FastImage source={images.pointDes} style={{ width: 20, height: 20 ,marginRight:widthPercentageToDP('4%')}} />
+              <FastImage source={images.pointDes} style={{ width: 30, height: 30 ,marginRight:widthPercentageToDP('1.5%')}} />
               <Text style={styles.texthead}>{item.title}</Text>
                 </View>
               <>

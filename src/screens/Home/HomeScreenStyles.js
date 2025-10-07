@@ -471,6 +471,9 @@ export default StyleSheet.create({
   footerText: { fontSize: hp('1.5%'), color: COLORS.black },
 
   // sterilization styles
+  workContain:{
+  alignSelf:'flex-start',height: hp('14%'),
+  },
   workoption: {
     marginVertical: hp('1%'),
     paddingBottom: wp('1.5%'),
@@ -513,7 +516,6 @@ export default StyleSheet.create({
     marginBottom: hp('1%'),
   },
   workitem: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
     padding: hp('1%'),
     backgroundColor: '#fff',
@@ -884,3 +886,4 @@ export const faqData = [
       "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
   },
 ];
+

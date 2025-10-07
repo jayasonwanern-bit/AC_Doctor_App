@@ -80,9 +80,26 @@ const images = {
   demoImg: require('./icons/demoImg.png'),
   demoImgthree: require('./icons/demoImgthree.png'),
   demoImgTwo: require('./icons/demoImgTwo.png'),
-  //
+  onbutton: require('./icons/onbutton.png'),
+  offbutton: require('./icons/offbutton.png'),
+  uncheck: require('./icons/uncheck.png'),
+  check: require('./icons/check.png'),
+  Wallet: require('./icons/Wallet.png'),
+  Cash: require('./icons/Cash.png'),
+  Calendar: require('./icons/Calendar.png'),
+  Cards: require('./icons/Cards.png'),
+  Cardsnum: require('./icons/Cardsnum.png'),
+  NB: require('./icons/NB.png'),
+  punjabcart: require('./icons/punjabcart.png'),
+  UPI: require('./icons/UPI.png'),
+  UserFilled: require('./icons/UserFilled.png'),
+  vista: require('./icons/vista.png'),
+  rightArrow: require('./icons/rightArrow.png'),
+
 
   
+
+
 
   // Add more images as needed
 };

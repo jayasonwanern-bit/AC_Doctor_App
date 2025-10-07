@@ -31,7 +31,7 @@ const HomeScreen = ({ navigation }) => {
   const handleSterilization = () => navigation.navigate('Sterilization');
   const handleRepair = () => alert('Repair clicked!');
   const handleInstallation = () => alert('Installation clicked!');
-  const handleCommercialAC = () => alert('Commercial AC clicked!');
+  const handleCommercialAC = () => navigation.navigate('CommericalAc'); 
   const handleGasCharging = () => alert('Gas Charging clicked!');
   const handleOther = () => alert('Other clicked!');
 

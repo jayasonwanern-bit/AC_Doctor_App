@@ -27,7 +27,7 @@ import styles, {
 } from './HomeScreenStyles';
 import ContentSection from '../../customScreen/ContentSection';
 
-const Sterilization = ({ navigation }) => {
+const CommericalAc = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [activeSection, setActiveSection] = useState('Key Benefits');
 
@@ -88,7 +88,7 @@ const Sterilization = ({ navigation }) => {
   return (
     <View style={styles.workcontainer}>
       <Header
-        title="Sterilization"
+        title="Commerical Ac"
         onBack={() => navigation.goBack()}
         onHelp={() => alert('Help for Home')}
       />
@@ -235,4 +235,4 @@ const Sterilization = ({ navigation }) => {
   );
 };
 
-export default Sterilization;
+export default CommericalAc;

@@ -13,7 +13,7 @@ export const COLORS = {
   lightGray: '#D3D3D3',
   darkGray: '#A9A9A9',
   transparent: 'transparent',
-  red:'#e74c3c',
+  red:'#d8230fff',
   black:'#000000',
   lightBlack:'#1a1a1a',
   lightWhite:'#f5f5f5',
@@ -34,6 +34,7 @@ export const COLORS = {
   silver:'#c0c0c0',
   gold:'#ffd700',
   peacock:'#114f71',
+  lightSky:'#e0f7fa',
 };
 
 export const Fonts = {

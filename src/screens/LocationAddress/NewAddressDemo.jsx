@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import useLocation from '../../utils/useLocation'; 
 
-const AddAdress = () => {
+const NewAddressDemo = () => {
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [landmark, setLandmark] = useState('');
@@ -179,4 +179,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddAdress;
+export default NewAddressDemo;
