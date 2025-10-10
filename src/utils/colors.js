@@ -3,6 +3,7 @@ export const COLORS = {
   themeColor:'#207cccff',
   textColor:'#8f9097',
   textHeading:'#59595dff',
+  TextColor:'#666',
   primaryBlue: '#007BFF',
   disabledGrey: '#CCCCCC',
   errorRed: '#FF0000',
