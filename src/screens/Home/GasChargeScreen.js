@@ -27,7 +27,7 @@ import styles, {
 } from './HomeScreenStyles';
 import ContentSection from '../../customScreen/ContentSection';
 
-const Sterilization = ({ navigation }) => {
+const GasChargeScreen = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [activeSection, setActiveSection] = useState('Key Benefits');
 
@@ -59,11 +59,6 @@ const Sterilization = ({ navigation }) => {
     const updatedAcTypes = [...acTypes];
     updatedAcTypes[index].showButtons = true;
     setAcTypes(updatedAcTypes);
-    // setTimeout(() => {
-    //   const updatedAcTypes = [...acTypes];
-    //   updatedAcTypes[index].showButtons = false;
-    //   setAcTypes(updatedAcTypes);
-    // }, 15000);
   };
 
   const handleIncrement = index => {
@@ -88,9 +83,8 @@ const Sterilization = ({ navigation }) => {
   return (
     <View style={styles.workcontainer}>
       <Header
-        title="Sterilization"
+        title="GasCharge"
         onBack={() => navigation.goBack()}
-        onHelp={() => alert('Help for Home')}
       />
 
       <ScrollView
@@ -235,4 +229,4 @@ const Sterilization = ({ navigation }) => {
   );
 };
 
-export default Sterilization;
+export default GasChargeScreen;

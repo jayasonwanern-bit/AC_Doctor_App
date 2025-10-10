@@ -8,143 +8,147 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
-import Header from '../../components/Header';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-  heightPercentageToDP,
-  widthPercentageToDP,
-} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp, heightPercentageToDP } from 'react-native-responsive-screen';
 import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
 import FastImage from 'react-native-fast-image';
-import styles, {
+import Header from '../../components/Header';
+import ContentSection from '../../customScreen/ContentSection';
+import HomeScreenStyles, {
   works,
   keyBenefitsData,
   serviceInclusionsData,
   termsConditionsData,
   faqData,
 } from './HomeScreenStyles';
-import ContentSection from '../../customScreen/ContentSection';
+import CustomButton from '../../components/CustomButton';
 
 const CommericalAc = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [activeSection, setActiveSection] = useState('Key Benefits');
-
+  const [isExpanded, setIsExpanded] = useState({});
   const [acTypes, setAcTypes] = useState([
-    { name: 'Split AC', count: 2, showButtons: false, acIcon: images.splitAC },
-    {
-      name: 'Window AC',
-      count: 0,
-      showButtons: false,
-      acIcon: images.windowAc,
-    },
-    {
-      name: 'Cassette AC',
-      count: 1,
-      showButtons: false,
-      acIcon: images.casseteAc,
-    },
-    { name: 'VRV/VRF AC', count: 0, showButtons: false, acIcon: images.VRVac },
-    {
-      name: 'Ducted AC',
-      count: 0,
-      showButtons: false,
-      acIcon: images.ductedAc,
-    },
-    { name: 'Tower AC', count: 0, showButtons: false, acIcon: images.towerAc },
+    { name: 'Ducted AC', count: { repair: 0, installation: 0, service: 0 }, showButtons: false, acIcon: images.ducted },
+    { name: 'VRV/VRF AC', count: { repair: 0, installation: 0, service: 0 }, showButtons: false, acIcon: images.VRVac },
+    { name: 'Tower AC', count: { repair: 0, installation: 0, service: 0 }, showButtons: false, acIcon: images.towerAc },
   ]);
 
-  const handleAddClick = index => {
-    const updatedAcTypes = [...acTypes];
-    updatedAcTypes[index].showButtons = true;
-    setAcTypes(updatedAcTypes);
-    // setTimeout(() => {
-    //   const updatedAcTypes = [...acTypes];
-    //   updatedAcTypes[index].showButtons = false;
-    //   setAcTypes(updatedAcTypes);
-    // }, 15000);
+  const toggleExpandAC = (index) => {
+    setIsExpanded(prev => ({ ...prev, [index]: !prev[index] }));
   };
 
-  const handleIncrement = index => {
-    const updatedAcTypes = [...acTypes];
-    updatedAcTypes[index].count += 1;
-    setAcTypes(updatedAcTypes);
+  const handleIncrement = (index, type) => {
+    setAcTypes(prevAcTypes =>
+      prevAcTypes.map((ac, i) =>
+        i === index ? { ...ac, count: { ...ac.count, [type]: ac.count[type] + 1 }, showButtons: true } : ac
+      )
+    );
   };
 
-  const handleDecrement = index => {
-    const updatedAcTypes = [...acTypes];
-    if (updatedAcTypes[index].count > 0) {
-      updatedAcTypes[index].count -= 1;
-    }
-    setAcTypes(updatedAcTypes);
+  const handleDecrement = (index, type) => {
+    setAcTypes(prevAcTypes =>
+      prevAcTypes.map((ac, i) =>
+        i === index ? { ...ac, count: { ...ac.count, [type]: Math.max(0, ac.count[type] - 1) } } : ac
+      )
+    );
   };
-
-  // FAQ'S Toggle
-  const toggleExpand = index => {
+   // FAQ'S Toggle
+  const toggleExpandFaq = index => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
+
+  const renderCounter = (count, onIncrement, onDecrement) => {
+    return count > 0 ? (
+      <View style={styles.counter}>
+        <TouchableOpacity style={styles.counterButton} onPress={onDecrement}>
+          <Text style={styles.counterText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.counterValue}>{count}</Text>
+        <TouchableOpacity style={styles.counterButton} onPress={onIncrement}>
+          <Text style={styles.counterText}>+</Text>
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <TouchableOpacity onPress={onIncrement}>
+        <Text style={styles.addText}>+ Add</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <View style={styles.workcontainer}>
+    <View style={HomeScreenStyles.workcontainer}>
       <Header
         title="Commerical Ac"
         onBack={() => navigation.goBack()}
-        onHelp={() => alert('Help for Home')}
+        // onHelp={() => alert('Help for Home')}
       />
 
-      <ScrollView
-        style={styles.workscrollstyle}
+     <ScrollView
+        style={HomeScreenStyles.workscrollstyle}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.worksliderview}>
-          <Image source={images.bannerOne} style={styles.workimage} />
+        <View style={HomeScreenStyles.worksliderview}>
+          <Image source={images.bannerOne} style={HomeScreenStyles.workimage} />
         </View>
 
-        <Text style={styles.workheadText}>Select Type of AC</Text>
+        <Text style={HomeScreenStyles.workheadText}>Select Type of AC</Text>
 
         {acTypes.map((ac, index) => (
-          <View key={index} style={[styles.workitem,{flexDirection: 'row'}]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <FastImage
-                source={ac.acIcon}
-                style={styles.workacIconstyle}
-                resizeMode={FastImage.resizeMode.contain}
-              />
-              <Text style={styles.worktext}>{ac.name}</Text>
-            </View>
-
-            {ac.showButtons ? (
-              <View style={styles.workbuttonContainer}>
-                <TouchableOpacity
-                  style={styles.workbutton}
-                  onPress={() => handleDecrement(index)}
-                >
-                  <Text style={styles.workbuttonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.workcount}>{ac.count}</Text>
-                <TouchableOpacity
-                  style={styles.workbutton}
-                  onPress={() => handleIncrement(index)}
-                >
-                  <Text style={styles.workbuttonText}>+</Text>
-                </TouchableOpacity>
+          <View key={index} style={HomeScreenStyles.card}>
+            <TouchableOpacity style={styles.header} onPress={() => toggleExpandAC(index)}>
+             <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => toggleExpandAC(index)}> 
+              <View style={styles.icon}>
+                <FastImage
+                  source={ac.acIcon}
+                  style={styles.workacIconstyle}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
               </View>
-            ) : (
+              <Text style={styles.title}>{ac.name}</Text>
               <TouchableOpacity
-                style={styles.workaddButton}
-                onPress={() => handleAddClick(index)}
+                style={styles.addButton}
+                onPress={() => handleIncrement(index, 'repair')}
               >
-                <Text style={styles.workaddButtonText}>+ Add</Text>
+                <Text style={styles.addText}>+ Add</Text>
               </TouchableOpacity>
+             </TouchableOpacity>
+            {isExpanded[index] && (
+              <View style={styles.subOptions}>
+                <View style={styles.subOption}>
+                  <Text style={styles.subText}>Repair</Text>
+                  {renderCounter(
+                    ac.count.repair,
+                    () => handleIncrement(index, 'repair'),
+                    () => handleDecrement(index, 'repair')
+                  )}
+                </View>
+                <View style={styles.subOption}>
+                  <Text style={styles.subText}>Installation</Text>
+                  {renderCounter(
+                    ac.count.installation,
+                    () => handleIncrement(index, 'installation'),
+                    () => handleDecrement(index, 'installation')
+                  )}
+                </View>
+                <View style={styles.subOption}>
+                  <Text style={styles.subText}>Service</Text>
+                  {renderCounter(
+                    ac.count.service,
+                    () => handleIncrement(index, 'service'),
+                    () => handleDecrement(index, 'service')
+                  )}
+                </View>
+              </View>
             )}
+            </TouchableOpacity>
           </View>
         ))}
 
-{/* How it works? */}
-        <View style={styles.workitem}>
-          <Text style={styles.utititle}>How it works?</Text>
-          <View style={styles.workContain}>
+       {/* How it works? */}
+        <View style={HomeScreenStyles.workitem}>
+          <Text style={HomeScreenStyles.utititle}>How it works?</Text>
+          <View style={HomeScreenStyles.workContain}>
             <FlatList
               data={works}
               keyExtractor={(_, index) => `work-${index}`}
@@ -152,11 +156,11 @@ const CommericalAc = ({ navigation }) => {
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={styles.workoption}
+                  style={HomeScreenStyles.workoption}
                   onPress={item.action}
                 >
-                  <FastImage source={item.icon} style={styles.workicon} />
-                  <Text style={[styles.utilabel, { color: COLORS.white }]}>
+                  <FastImage source={item.icon} style={HomeScreenStyles.workicon} />
+                  <Text style={[HomeScreenStyles.utilabel, { color: COLORS.white }]}>
                     {item.text}
                   </Text>
                 </TouchableOpacity>
@@ -173,14 +177,14 @@ const CommericalAc = ({ navigation }) => {
           termsConditions={termsConditionsData}
         />
 
-        <View style={styles.worksliderview}>
-          <Image source={images.bannerTwo} style={styles.workimage} />
+        <View style={HomeScreenStyles.worksliderview}>
+          <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
         </View>
 
         <Text
           style={[
-            styles.workheadText,
-            { marginTop: heightPercentageToDP('1%') },
+            HomeScreenStyles.workheadText,
+            { marginTop: hp('1%') },
           ]}
         >
           FAQs
@@ -189,50 +193,68 @@ const CommericalAc = ({ navigation }) => {
         {/* FAQ Items */}
         <>
           {faqData.map((item, index) => (
-            <View key={index} style={styles.faqItem}>
+            <View key={index} style={HomeScreenStyles.faqItem}>
               <TouchableOpacity
-                onPress={() => toggleExpand(index)}
-                style={styles.faquestionContainer}
+                onPress={() => toggleExpandFaq(index)}
+                style={HomeScreenStyles.faquestionContainer}
               >
-                <Text style={styles.faquestionText}>{item.question}</Text>
-                <Text style={styles.faqarrow}>
+                <Text style={HomeScreenStyles.faquestionText}>{item.question}</Text>
+                <Text style={HomeScreenStyles.faqarrow}>
                   {expandedIndex === index ? '︿' : '﹀'}
                 </Text>
               </TouchableOpacity>
 
               {expandedIndex === index && (
-                <Text style={styles.faqanswerText}>{item.answer}</Text>
+                <Text style={HomeScreenStyles.faqanswerText}>{item.answer}</Text>
               )}
             </View>
           ))}
         </>
 
-        <TouchableOpacity style={styles.worksliderview} activeOpacity={6}>
-          <Image source={images.brands} style={styles.brandimage} />
+        <TouchableOpacity style={HomeScreenStyles.worksliderview} activeOpacity={6}>
+          <Image source={images.brands} style={HomeScreenStyles.brandimage} />
         </TouchableOpacity>
 
-        <View style={[styles.brandcont]}>
+        <View style={[HomeScreenStyles.brandcont]}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={images.helpdesk} style={styles.smallimage} />
-            <Text style={styles.needHelp}> Need Help?</Text>
+            <Image source={images.helpdesk} style={HomeScreenStyles.smallimage} />
+            <Text style={HomeScreenStyles.needHelp}> Need Help?</Text>
           </View>
-          <Image source={images.chatIcon} style={styles.chaticon} />
+          <Image source={images.chatIcon} style={HomeScreenStyles.chaticon} />
         </View>
       </ScrollView>
 
       {/* Services and View Cart Section */}
-      <View style={styles.servicesSection}>
-        <View>
-          <Text style={styles.servicesCount}>3 services</Text>
-          <Text style={styles.selectedText}>Selected</Text>
-        </View>
-        <TouchableOpacity style={styles.viewCartButton} onPress={()=>navigation.navigate('ViewCart')}>
-          <Text style={styles.viewCartText}>View Cart</Text>
-          <Image source={images.cart} style={styles.carticon} />
-        </TouchableOpacity>
+      <View style={HomeScreenStyles.servicesSection}>
+        <CustomButton
+          buttonName="View Cart"
+          margingTOP={hp('0%')}
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+         onPress={()=>navigation.navigate('ViewCart', { screenName: 'Commerical AC' })}
+        />
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  // workheadText: { fontSize: wp('4.5%'), fontWeight: 'bold', color: '#2C3E50', margin: wp('3%') },
+  card: { backgroundColor: '#751a1aff', borderRadius: 8, marginBottom: hp('1%'), elevation: 2 ,},
+  header: { paddingVertical: wp('2%'), paddingHorizontal:hp(1),backgroundColor:COLORS.white, borderRadius:hp(1),marginBottom:hp(1)},
+  icon: { width: wp('10%'), height: wp('10%'), marginRight: wp('3%'),  alignItems: 'center', resizeMode:'contain'},
+  workacIconstyle: { width: wp('10%'), height: wp('10%'), },
+  title: { flex: 1, fontSize: wp('3.5%'), color: COLORS.black, fontFamily:Fonts.semiBold },
+  addButton: { borderColor: '#bcc4c6ff',borderWidth: wp(0.3), padding: wp('2%'), paddingHorizontal: hp('2%'), borderRadius: hp(2) },
+  addText: { color: '#34495E', fontSize: wp('3%') },
+  subOptions: { padding: wp('1%')},
+  subOption: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: hp('1%'), borderTopWidth: 1, borderTopColor: '#ECF0F1' },
+  subText: { fontSize: wp('3%'), color: '#34495E' },
+  counter: { flexDirection: 'row', alignItems: 'center' },
+  counterButton: { width: wp('7%'), height: wp('7%'), backgroundColor: '#ECF0F1', justifyContent: 'center', alignItems: 'center', borderRadius: 5 },
+  counterText: { fontSize: wp('4%'), color: '#34495E' },
+  counterValue: { fontSize: wp('4%'), color: '#34495E', marginHorizontal: wp('2%') },
+  // Add other styles as needed from HomeScreenStyles.js
+});
 
 export default CommericalAc;

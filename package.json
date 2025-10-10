@@ -13,7 +13,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@react-native-community/geolocation": "^3.3.0",
     "@react-native-ohos/react-native-country-picker-modal": "^2.0.1-rc.1",
-    "@react-native-vector-icons/material-icons": "^12.2.0",
+    "@react-native-picker/picker": "^2.11.2",
     "@react-native/new-app-screen": "0.81.4",
     "@react-navigation/bottom-tabs": "^7.4.7",
     "@react-navigation/native": "^7.1.17",
@@ -31,15 +31,16 @@
     "react-native-geolocation-service": "^5.3.1",
     "react-native-gesture-handler": "^2.28.0",
     "react-native-google-places-autocomplete": "^2.5.7",
+    "react-native-image-crop-picker": "0.50.1",
     "react-native-linear-gradient": "^2.8.0",
     "react-native-maps": "^1.26.8",
     "react-native-mmkv-storage": "^0.11.2",
     "react-native-otp-textinput": "^1.1.6",
     "react-native-permissions": "^5.4.2",
+    "react-native-picker-select": "^9.3.1",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^5.5.2",
-    "react-native-screens": "^4.16.0",
-    "react-native-vector-icons": "^10.3.0"
+    "react-native-screens": "^4.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

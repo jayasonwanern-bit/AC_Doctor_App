@@ -14,6 +14,12 @@ import Sterilization  from '../screens/Home/Sterilization';
 import ViewCartScreen from '../screens/Home/ViewCartScreen';
 import PaymentScreen from '../screens/Profile/PaymentScreen';
 import CommericalAc from '../screens/Home/CommericalAc';
+import RepairScreen from '../screens/Home/RepairScreen';
+import InstallationScreen from '../screens/Home/InstallationScreen';
+import GasChargeScreen from '../screens/Home/GasChargeScreen';
+import FreeConsultant from '../screens/Home/FreeConsultant';
+import CopperPipeScreen from '../screens/Home/CopperPipeScreen';
+import RequestDetail from '../screens/Home/RequestDetail';
 
 import { COLORS } from '../utils/colors';
 import { StatusBar,useColorScheme,View } from 'react-native';
@@ -45,6 +51,12 @@ const AppNavigator = () => {
         <Stack.Screen name="ViewCart" component={ViewCartScreen} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CommericalAc" component={CommericalAc} options={{ headerShown: false }} />
+        <Stack.Screen name="RepairScreen" component={RepairScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="InstallationScreen" component={InstallationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="GasChargeScreen" component={GasChargeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="FreeConsultant" component={FreeConsultant} options={{ headerShown: false }} />
+        <Stack.Screen name="CopperPipeScreen" component={CopperPipeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="RequestDetail" component={RequestDetail} options={{ headerShown: false }} />
       </Stack.Navigator>
       </View>
     </NavigationContainer>

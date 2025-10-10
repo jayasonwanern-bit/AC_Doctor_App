@@ -5,7 +5,6 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { COLORS, Fonts } from '../../utils/colors';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import OTPTextInput from 'react-native-otp-textinput';
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';

@@ -1,0 +1,146 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import images from '../assets/images';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { COLORS, Fonts } from '../utils/colors';
+
+const OutdoorSelectionModal = ({ visible, onClose, onSelect }) => {
+  const [selectedType, setSelectedType] = useState(null);
+
+  const handleDone = () => {
+    if (selectedType) {
+      onSelect(selectedType);
+      onClose();
+    }
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity style={styles.modalContainer} onPress={onClose}> 
+        <View style={styles.modalContent}>
+          <Text style={styles.title}>Select Outdoor Condenser Location</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, selectedType === 'Wall mounted low' && styles.selectedButton]}
+              onPress={() => setSelectedType('Wall mounted low')}
+            >
+              <FastImage
+                style={styles.icon}
+                source={images.wallCenter}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+              <Text style={[styles.buttonText,{color:selectedType === 'Wall mounted low' && COLORS.themeColor}]}>Wall mounted low</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, selectedType === 'Wall mounted high' && styles.selectedButton]}
+              onPress={() => setSelectedType('Wall mounted high')}
+            >
+              <FastImage
+                style={styles.icon}
+               source={images.wallMid}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+              <Text style={[styles.buttonText,{color:selectedType === 'Wall mounted high' && COLORS.themeColor}]}>Wall mounted high</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, selectedType === 'Wall mounted Floor' && styles.selectedButton]}
+              onPress={() => setSelectedType('Wall mounted Floor')}
+            >
+              <FastImage
+                style={styles.icon}
+               source={images.wallDown}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+              <Text style={[styles.buttonText,{color:selectedType === 'Wall mounted Floor' && COLORS.themeColor}]}>Wall mounted Floor</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.doneButton}
+            onPress={handleDone}
+            disabled={!selectedType}
+          >
+            <Text style={styles.doneButtonText}>Done</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  modalContainer: {
+  flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+       padding: wp(5),
+       borderTopLeftRadius: wp(6),
+       borderTopRightRadius: wp(6),
+       minHeight: hp(30),
+  },
+  title: {
+    fontSize: hp(1.8),
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: hp(2),
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  button: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    paddingVertical: hp(2),
+    paddingHorizontal:hp(1),
+    margin: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#DDD',
+  },
+  selectedButton: {
+    borderColor: COLORS.themeColor,
+    borderWidth: 1,
+  },
+  icon: {
+    width: 40,
+    height: 40,
+    marginBottom: 10,
+  },
+  buttonText: {
+    fontSize: hp(1.4),
+    color: '#333',
+    fontFamily:Fonts.medium,
+    textAlign:"center"
+  },
+  doneButton: {
+    backgroundColor: COLORS.themeColor,
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    marginTop: 30,
+  },
+  doneButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign:'center'
+  },
+});
+
+export default OutdoorSelectionModal;

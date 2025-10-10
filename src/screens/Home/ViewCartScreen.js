@@ -21,14 +21,17 @@ import CustomModal from '../../components/CustomModal';
 import { useNavigation } from '@react-navigation/native';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
+import UserInfoModel from '../../customScreen/UserInfoModel';
 
-const ViewCartScreen = () => {
+const ViewCartScreen = ({route}) => {
+  const { screenName } = route.params || { screenName: 'Unknown' }
   const navigation = useNavigation();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalUserVisible, setModalUserVisible] = useState(false);
   const [acTypes, setAcTypes] = useState([
     { name: 'Split AC', count: 2, showButtons: false },
 
@@ -100,6 +103,35 @@ const ViewCartScreen = () => {
           <Text style={styles.viewCartText}>Saving ₹150 on this order</Text>
         </View>
 
+ {/* Actype */}
+        <Text style={styles.headText}>{screenName}</Text>
+        <View style={{ marginVertical: wp('2%') }}>
+          {acTypes.map((ac, index) => (
+            <View key={index} style={styles.workItem}>
+              <View>
+                <Text style={styles.workText}>{ac.name}</Text>
+              </View>
+
+              <View style={styles.workButtonContainer}>
+                <TouchableOpacity
+                  style={styles.workButton}
+                  onPress={() => handleDecrement(index)}
+                >
+                  <Text style={styles.workButtonText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.workCount}>{ac.count}</Text>
+                <TouchableOpacity
+                  style={styles.workButton}
+                  onPress={() => handleIncrement(index)}
+                >
+                  <Text style={styles.workButtonText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </View>
+
+{/* Repair ServiceS */}
         <Text style={styles.headText}>Repair Service</Text>
 
         <View style={{ marginVertical: wp('2%') }}>
@@ -128,8 +160,10 @@ const ViewCartScreen = () => {
           ))}
         </View>
 
+        
+
         {/* Installation */}
-        <Text style={styles.headText}>Installation</Text>
+        <Text style={styles.headText}>Installation Service</Text>
         <View style={{ marginVertical: wp('2%') }}>
           {acTypes.map((ac, index) => (
             <View key={index} style={styles.workItem}>
@@ -342,7 +376,7 @@ const ViewCartScreen = () => {
           margingTOP={hp('6%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
-          onPress={() => setModalVisible(true)}
+          onPress={() => setModalUserVisible(true)}
         />
       </View>
 
@@ -356,6 +390,18 @@ const ViewCartScreen = () => {
           }, 300);
         }}
         setSelectedAddress={setSelectedAddress}
+      />
+
+      <UserInfoModel
+        visible={modalUserVisible}
+        onClose={() => setModalUserVisible(false)}
+        onProceed={(userInfo) => {
+          console.log('user Dot',(userInfo));
+         setModalUserVisible(false);
+         setTimeout(() => {
+            setModalVisible(true);
+          }, 300);
+        }}
       />
 
       <BookingSlotModal

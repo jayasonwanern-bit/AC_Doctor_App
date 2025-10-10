@@ -59,7 +59,6 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
   const handleProceedPress = () => {
     if (selectedAddressIndex !== null && setSelectedAddress && typeof setSelectedAddress === 'function') {
       const selectedAddr = savedAddresses[selectedAddressIndex];
-      console.log('customModal--',selectedAddr)
       setSelectedAddress(selectedAddr); // Set selected address in parent
       onProceed(); // Proceed to next modal
     }
@@ -72,7 +71,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.modalContainer}>
+      <TouchableOpacity  onPress={()=> onClose()} style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View style={styles.inFlexrow}>
             <Text style={styles.headerText}>Saved Addresses</Text>
@@ -173,7 +172,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
             <Text style={styles.proceedButtonText}>Proceed</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 };
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: hp('1.7%'),
     fontFamily: Fonts.semiBold,
-    marginBottom: hp(1.5),
+    marginBottom: hp(0),
   },
   inFlexrow: {
     flexDirection: 'row',
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: hp(1.5),
+    padding: hp(1.2),
     marginVertical: hp('0.5%'),
     borderRadius: wp('3%'),
     backgroundColor: COLORS.white,
@@ -229,6 +228,7 @@ const styles = StyleSheet.create({
     fontSize: hp('1.6%'),
     fontFamily: Fonts.semiBold,
     color: COLORS.black,
+    marginTop:hp(-1)
   },
   addressDetails: {
     fontSize: hp('1.4%'),
@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(0.5),
     borderRadius: wp(0.5),
     fontSize: hp(1.5),
+    marginTop:hp(-2)
   },
   showiconStyle: {
     width: wp('5%'),

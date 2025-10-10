@@ -15,11 +15,11 @@ const ContentSection = ({ activeSection, setActiveSection, keyBenefits, serviceI
           {keyBenefits.map((item, index) => (
             <View key={index} style={[styles.detailCont,{backgroundColor:COLORS.white,marginBottom:10, }]}>
                 <View style={{flexDirection:'row', alignItems:"center",}}>
-              <FastImage source={images.pointDes} style={{ width: 30, height: 30 ,marginRight:widthPercentageToDP('1.5%')}} />
+              <FastImage source={images.pointDes} style={{ width: 30, height: 30 ,marginRight:heightPercentageToDP('1%'), alignSelf:'center'}} />
               <Text style={styles.texthead}>{item.title}</Text>
                 </View>
               <>
-              <Text style={[styles.textdes,{marginLeft:widthPercentageToDP('9%'),}]}>{item.desc}</Text>
+              <Text style={[styles.textdes,{marginLeft:widthPercentageToDP('10%'),}]}>{item.desc}</Text>
               </>
             </View>
           ))}
@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
 },
 detailCont:{
     width:widthPercentageToDP('95%'),
-    padding: heightPercentageToDP('1%'),
-    paddingHorizontal:heightPercentageToDP('2%'),
+    padding: heightPercentageToDP('1.5%'),
+    paddingHorizontal:heightPercentageToDP('1.5%'),
     borderRadius:widthPercentageToDP('3%'),
     alignSelf:'center'
 },

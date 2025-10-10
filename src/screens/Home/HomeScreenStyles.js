@@ -495,7 +495,7 @@ export default StyleSheet.create({
     borderTopLeftRadius: wp('2%'),
     borderTopRightRadius: wp('2%'),
   },
-  workcontainer: { flex: 1 },
+  workcontainer: { flex: 1,backgroundColor:'#fafafaff' },
   worksliderview: {
     marginVertical: hp('0.5%'),
     width: wp('100%'),
@@ -511,7 +511,7 @@ export default StyleSheet.create({
   },
   workscrollstyle: { flex: 1, paddingHorizontal: wp('3%') },
   workheadText: {
-    fontSize: wp('3.8%'),
+    fontSize: wp('3.5%'),
     fontFamily: Fonts.semiBold,
     marginBottom: hp('1%'),
   },

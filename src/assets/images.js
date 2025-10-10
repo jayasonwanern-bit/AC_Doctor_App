@@ -95,9 +95,25 @@ const images = {
   UserFilled: require('./icons/UserFilled.png'),
   vista: require('./icons/vista.png'),
   rightArrow: require('./icons/rightArrow.png'),
+  ducted: require('./icons/ducted.png'),
+  arrowdown: require('./icons/arrowdown.png'),
+  Call: require('./icons/Call.png'),
+  Camera: require('./icons/Camera.png'),
+  correctIcon: require('./icons/correctIcon.png'),
+  ShareImg1: require('./icons/ShareImg1.png'),
+  ShareImg: require('./icons/ShareImg.png'),
+  userphoto: require('./icons/userphoto.png'),
+  residentBuild: require('./icons/residentBuild.png'),
+  Play: require('./icons/Play.png'),
+  BannerFive: require('./icons/BannerFive.png'),
+  commerBuild: require('./icons/commerBuild.png'),
+  processDone: require('./icons/processDone.png'),
+  processReject: require('./icons/processReject.png'),
+  profile: require('./icons/profile.png'),
+  wallCenter: require('./icons/wallCenter.png'),
+  wallMid: require('./icons/wallMid.png'),
+  wallDown: require('./icons/wallDown.png'),
 
-
-  
 
 
 

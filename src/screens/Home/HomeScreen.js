@@ -19,8 +19,29 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles, { productData, testimonialData } from './HomeScreenStyles';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
 
+
+
 const HomeScreen = ({ navigation }) => {
   const scheme = useColorScheme();
+  const dynamicStyles = {
+    safeArea: {
+      // backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#ffffff',
+    },
+    backText: {
+      color: scheme === 'dark' ? COLORS.white : '#000000',
+    },
+    title: {
+      color: scheme === 'dark' ? COLORS.white : '#000000',
+    },
+    helpIcon: {
+      tintColor: scheme === 'dark' ? COLORS.white : '#000000',
+    },
+    extraIcon: {
+      tintColor: scheme === 'dark' ? COLORS.white : '#000000',
+    },
+  };
+
+
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   // option of navigation request quote
@@ -29,11 +50,17 @@ const HomeScreen = ({ navigation }) => {
   const handleCopperPipe = () => navigation.navigate('CopperPipeScreen');
   // BookingActions (replace alert with your action)
   const handleSterilization = () => navigation.navigate('Sterilization');
-  const handleRepair = () => alert('Repair clicked!');
-  const handleInstallation = () => alert('Installation clicked!');
+  const handleRepair = () => navigation.navigate('RepairScreen');
+  const handleInstallation = () => navigation.navigate('InstallationScreen');
   const handleCommercialAC = () => navigation.navigate('CommericalAc'); 
-  const handleGasCharging = () => alert('Gas Charging clicked!');
+  const handleGasCharging = () =>  navigation.navigate('GasChargeScreen');
   const handleOther = () => alert('Other clicked!');
+
+//Utitlity
+  const handleCalulator = () => alert('Other clicked!');
+  const handleErrorcode = () => alert('Other clicked!');
+  const handleFreeConsult = () =>navigation.navigate('FreeConsultant');
+  const handleProComparison = () => alert('Other clicked!');
 
   // Options for Request a Quote
   const requestQuote = [
@@ -71,22 +98,23 @@ const HomeScreen = ({ navigation }) => {
     {
       label: 'Tonage Calculator',
       icon: images.calculateIcon,
-      action: handleSellOldAC,
+      action: handleCalulator,
     },
-    { label: 'Error Codes', icon: images.errorCodeIcon, action: handleAMC },
+    { label: 'Error Codes', icon: images.errorCodeIcon, action: handleErrorcode },
     {
       label: 'Free Consultancy',
       icon: images.consultancyIcon,
-      action: handleCopperPipe,
+      action: handleFreeConsult,
     },
     {
       label: 'Product Comparison',
       icon: images.productIcon,
-      action: handleCopperPipe,
+      action: handleProComparison,
     },
   ];
 
   const bannerImages = [images.acPoster, images.acPoster, images.acPoster];
+  
   const Authpartner = [
     images.lgIcon,
     images.MITelectricIcon,
@@ -121,11 +149,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar
-        barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={scheme === 'dark' ? '#000000' : '#ffffff'}
-      />
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea,dynamicStyles.safeArea]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={styles.container}
