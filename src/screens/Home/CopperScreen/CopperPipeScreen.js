@@ -11,24 +11,24 @@ import {
   KeyboardAvoidingView,
   FlatList,
 } from 'react-native';
-import Header from '../../components/Header';
+import Header from '../../../components/Header';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS, Fonts } from '../../utils/colors';
-import images from '../../assets/images';
+import { COLORS, Fonts } from '../../../utils/colors';
+import images from '../../../assets/images';
 import FastImage from 'react-native-fast-image';
-import screenStyles, { faqData } from './HomeScreenStyles';
-import CustomButton from '../../components/CustomButton';
+import screenStyles, { faqData } from '../HomeScreenStyles';
+import CustomButton from '../../../components/CustomButton';
 import RNPickerSelect from 'react-native-picker-select';
-import BookingSlotModal from '../../customScreen/BookingSlotModal';
-import SuccessPopupModal from '../../customScreen/SuccessPopupModal';
-import ACTypeSelector from '../../customScreen/ACTypeSelector';
-import MultipleUploadPhotos from '../../components/MultipleUploadPhotos';
-import HomeScreenStyles, { works } from './HomeScreenStyles';
-import PropertySelectionModal from '../../customScreen/PropertySelectionModal';
-import OutdoorSelectionModal from '../../customScreen/OutdoorSelectionModal';
+import BookingSlotModal from '../../../customScreen/BookingSlotModal';
+import SuccessPopupModal from '../../../customScreen/SuccessPopupModal';
+import ACTypeSelector from '../../../customScreen/ACTypeSelector';
+import MultipleUploadPhotos from '../../../components/MultipleUploadPhotos';
+import HomeScreenStyles, { works } from '../HomeScreenStyles';
+import PropertySelectionModal from '../../../customScreen/PropertySelectionModal';
+import OutdoorSelectionModal from '../../../customScreen/OutdoorSelectionModal';
 
 const CopperPipeScreen = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -61,14 +61,16 @@ const CopperPipeScreen = ({ navigation }) => {
   };
 
   // Function to handle slot selection
-  const handleSlotSelection = slot => {
-    if (slot) {
-      const { date, day, year, time } = slot;
-      const formattedDate = `${date} ${day} ${year}, ${time}`;
-      setSelectDate(formattedDate);
-      handleInputChange('dateTime', formattedDate); // Update formData.dateTime
-    }
-  };
+ const handleSlotSelection = (slot) => {
+  if (slot) {
+    const { date,  monthNumber,year, time, Timeslot } = slot; 
+    const formattedDate = `${String( date).padStart(2, '0')}/${String( monthNumber).padStart(2, '0')}/${year}`; 
+    const formattedTime = time === 'morning' || time === 'firstHalf' ? 'First Half' : Timeslot; 
+    const formattedDateTime = `${formattedDate}, ${formattedTime}`; // e.g., "10/03/2025, First Half"
+    setSelectDate(formattedDateTime);
+    handleInputChange('dateTime', formattedDateTime); 
+  }
+};
 
   const handleSelectProperty = type => {
     setSelectedProperty(type);

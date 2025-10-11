@@ -17,6 +17,8 @@ const SuccessPopupModal = ({
   message1,
   HeadText,
   message2,
+  setIcon =images.correctIcon,
+  HeadTextColor,
   buttonCount = 1, // Default to 1 button
   firstButtonText='Done',
   secondButtonText = 'View Request', // Default text for second button
@@ -34,22 +36,22 @@ const SuccessPopupModal = ({
           {/* Checkmark Icon */}
           <View style={styles.iconContainer}>
             <Image
-              source={images.correctIcon}
+              source={setIcon}
               style={styles.checkmarkIcon}
               resizeMode="contain"
             />
           </View>
 
           {/* Success Message */}
-          <Text style={styles.title}>{HeadText}</Text>
+          <Text style={[styles.title,{color:HeadTextColor}]}>{HeadText}</Text>
           <Text style={styles.message}>{message1}</Text>
           <Text style={styles.message}>{message2}</Text>
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
             {buttonCount >= 1 && (
-              <TouchableOpacity style={styles.doneButton} onPress={onClose}>
-                <Text style={[styles.doneButtonText,{ color: '#676464ff',}]}>{firstButtonText}</Text>
+              <TouchableOpacity style={[styles.doneButton,{width:buttonCount >= 1 ? wp('70%'): wp('33%'), alignSelf:buttonCount >= 1 &&'center',backgroundColor:buttonCount >= 1 && COLORS.themeColor}]} onPress={onClose}>
+                <Text style={[styles.doneButtonText,{ color: buttonCount >= 1 ?COLORS.white:'#676464ff',}]}>{firstButtonText}</Text>
               </TouchableOpacity>
             )}
             {buttonCount >= 2 && (
@@ -90,8 +92,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   checkmarkIcon: {
-    width: wp('30%'),
-    height: hp(7),
+    width: wp('40%'),
+    height: hp(9),
   },
   title: {
     fontSize: hp(3),

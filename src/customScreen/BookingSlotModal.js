@@ -13,40 +13,31 @@ import {
 } from 'react-native-responsive-screen';
 import { COLORS } from '../utils/colors';
 
-const BookingSlotModal = ({ visible, onClose,onBookProcess ,setSelectedSlot }) => {
+const BookingSlotModal = ({ visible, onClose, onBookProcess, setSelectedSlot }) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // Default to current month
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
 
   const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
   ];
   const currentMonth = monthNames[new Date().getMonth()];
   const currentYear = new Date().getFullYear();
+  const currentDate = new Date().getDate(); // Today's date (e.g., 11 for 11th October 2025)
 
   // Generate days for the selected month and year
   const generateDays = (month, year) => {
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // Total days in month
-    const firstDay = new Date(year, month, 1).getDay(); // First day index (0 = Sun, 1 = Mon, etc.)
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
     const daysArray = [];
 
     for (let date = 1; date <= daysInMonth; date++) {
       const day = new Date(year, month, date).toLocaleDateString('en-US', {
         weekday: 'short',
       });
-      daysArray.push({ date, day: day.slice(0, 3) }); // Take first 3 letters (Mon, Tue, etc.)
+      daysArray.push({ date, day: day.slice(0, 3) });
     }
     return daysArray;
   };
@@ -55,27 +46,34 @@ const BookingSlotModal = ({ visible, onClose,onBookProcess ,setSelectedSlot }) =
 
   useEffect(() => {
     setDays(generateDays(selectedMonth, selectedYear));
-  }, [selectedMonth, selectedYear]);
+    // Set default selected day to today's date if within the month
+    const todayIndex = days.findIndex(day => day.date === currentDate);
+    if (todayIndex !== -1) {
+      setSelectedDay(todayIndex);
+    }
+  }, [selectedMonth, selectedYear, currentDate]);
 
   const timeSlots = [
     { label: 'First Half', time: '10:00 AM - 02:00 PM' },
     { label: 'Second Half', time: '02:00 PM - 08:00 PM' },
   ];
 
-
- const handleProceedPress = () => {
+  const handleProceedPress = () => {
     if (selectedDay !== null && selectedTime !== null && setSelectedSlot && typeof setSelectedSlot === 'function') {
+      const selectedDayObj = days[selectedDay];
       const slot = {
-        date: days[selectedDay].date,
-        day: days[selectedDay].day,
+        date: selectedDayObj.date,
+        day: selectedDayObj.day,
+        month: monthNames[selectedMonth], // Month name (e.g., 'October')
+        monthNumber: selectedMonth + 1, // Month number (1-12, e.g., 10 for October)
         year: selectedYear,
-        time: timeSlots[selectedTime].time,
+        time: timeSlots[selectedTime].time, // e.g., '02:00 PM - 08:00 PM'
+        Timeslot: timeSlots[selectedTime].label, // e.g., 'First Half'
       };
       setSelectedSlot(slot);
-      onBookProcess(); // Use onProceed instead of onBookProcess
+      onBookProcess();
     }
   };
-  
 
   return (
     <Modal
@@ -90,13 +88,12 @@ const BookingSlotModal = ({ visible, onClose,onBookProcess ,setSelectedSlot }) =
           <Text style={styles.sectionLabel}>Date</Text>
           <View style={styles.monthYearSelector}>
             <TouchableOpacity
-               style={styles.monthButton}
+              style={styles.monthButton}
               onPress={() => {
-                // Previous month
                 const newMonth = selectedMonth - 1;
                 if (newMonth < 0) {
-                  setSelectedMonth(11); // Go to December
-                  setSelectedYear(selectedYear - 1); // Decrease year
+                  setSelectedMonth(11);
+                  setSelectedYear(selectedYear - 1);
                 } else {
                   setSelectedMonth(newMonth);
                 }
@@ -110,41 +107,34 @@ const BookingSlotModal = ({ visible, onClose,onBookProcess ,setSelectedSlot }) =
               onPress={() => {
                 const newMonth = (selectedMonth + 1) % 12;
                 if (newMonth === 0) {
-                  setSelectedYear(selectedYear + 1); // Increase year
+                  setSelectedYear(selectedYear + 1);
                 }
                 setSelectedMonth(newMonth);
               }}
             >
-                 <Text style={styles.navText}>{'>>'}</Text>
+              <Text style={styles.navText}>{'>>'}</Text>
             </TouchableOpacity>
 
-
-          {/*  year btton */}
             <TouchableOpacity
-               style={[styles.yearButton,{marginLeft:wp(4)}]}
+              style={[styles.yearButton, { marginLeft: wp(4) }]}
               onPress={() => {
-                 if (selectedYear > 2025) {
-                  // Minimum year limit
+                if (selectedYear > 2025) {
                   setSelectedYear(selectedYear - 1);
                 }
               }}
             >
               <Text style={styles.navText}>{'<<'}</Text>
             </TouchableOpacity>
-
-            <Text style={styles.yearText}> {selectedYear} </Text>
-            
+            <Text style={styles.yearText}>{selectedYear}</Text>
             <TouchableOpacity
               style={styles.yearButton}
               onPress={() => {
-                // Next year
                 setSelectedYear(selectedYear + 1);
               }}
             >
               <Text style={styles.navText}>{'>>'}</Text>
             </TouchableOpacity>
           </View>
-
 
           <ScrollView
             horizontal={true}
@@ -218,7 +208,7 @@ const styles = StyleSheet.create({
   monthYearSelector: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems:"center"
+    alignItems: 'center',
   },
   monthButton: {
     padding: wp(2),
@@ -229,9 +219,6 @@ const styles = StyleSheet.create({
     color: '#656060ff',
   },
   yearButton: {
-    // borderWidth: 1,
-    // borderColor: '#ccc',
-    // borderRadius: wp(1),
     padding: wp(2),
   },
   yearText: {
@@ -309,7 +296,6 @@ const styles = StyleSheet.create({
     fontSize: hp(2),
     fontWeight: '500',
   },
-
 });
 
 export default BookingSlotModal;

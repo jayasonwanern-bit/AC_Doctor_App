@@ -18,8 +18,8 @@ import RepairScreen from '../screens/Home/RepairScreen';
 import InstallationScreen from '../screens/Home/InstallationScreen';
 import GasChargeScreen from '../screens/Home/GasChargeScreen';
 import FreeConsultant from '../screens/Home/FreeConsultant';
-import CopperPipeScreen from '../screens/Home/CopperPipeScreen';
-import RequestDetail from '../screens/Home/RequestDetail';
+import CopperPipeScreen from '../screens/Home/CopperScreen/CopperPipeScreen';
+import RequestDetail from '../screens/Home/CopperScreen/RequestDetail';
 
 import { COLORS } from '../utils/colors';
 import { StatusBar,useColorScheme,View } from 'react-native';
