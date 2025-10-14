@@ -24,13 +24,21 @@ const PropertySelectionModal = ({ visible, onClose, onSelect }) => {
       transparent={true}
       animationType="slide"
       onRequestClose={onClose}
+      statusBarTranslucent={true}
     >
-      <TouchableOpacity style={styles.modalContainer} onPress={onClose}> 
+      <TouchableOpacity
+        style={styles.modalContainer}
+        onPress={onClose}
+        accessibilityActions={0}
+      >
         <View style={styles.modalContent}>
           <Text style={styles.title}>Select Property type</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={[styles.button, selectedType === 'Residential' && styles.selectedButton]}
+              style={[
+                styles.button,
+                selectedType === 'Residential' && styles.selectedButton,
+              ]}
               onPress={() => setSelectedType('Residential')}
             >
               <FastImage
@@ -38,18 +46,37 @@ const PropertySelectionModal = ({ visible, onClose, onSelect }) => {
                 source={images.commerBuild}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={[styles.buttonText,{color:selectedType === 'Residential' && COLORS.themeColor}]}>Residential</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  {
+                    color: selectedType === 'Residential' && COLORS.themeColor,
+                  },
+                ]}
+              >
+                Residential
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, selectedType === 'Commercial' && styles.selectedButton]}
+              style={[
+                styles.button,
+                selectedType === 'Commercial' && styles.selectedButton,
+              ]}
               onPress={() => setSelectedType('Commercial')}
             >
               <FastImage
                 style={styles.icon}
-               source={images.residentBuild}
+                source={images.residentBuild}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={[styles.buttonText,{color:selectedType === 'Commercial' && COLORS.themeColor}]}>Commercial</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  { color: selectedType === 'Commercial' && COLORS.themeColor },
+                ]}
+              >
+                Commercial
+              </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -67,16 +94,23 @@ const PropertySelectionModal = ({ visible, onClose, onSelect }) => {
 
 const styles = StyleSheet.create({
   modalContainer: {
-  flex: 1,
+    flex: 1,
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: '#fff',
-       padding: wp(5),
-       borderTopLeftRadius: wp(6),
-       borderTopRightRadius: wp(6),
-       minHeight: hp(30),
+    padding: wp(5),
+    borderTopLeftRadius: wp(6),
+    borderTopRightRadius: wp(6),
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignSelf: 'center',
+    width: wp('100%'),
+    paddingBottom: hp(Platform.OS === 'android' ? 4 : 0),
   },
   title: {
     fontSize: hp(2),
@@ -94,7 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 10,
     paddingVertical: hp(2),
-    paddingHorizontal:hp(1),
+    paddingHorizontal: hp(1),
     margin: 8,
     alignItems: 'center',
     borderWidth: 1,
@@ -112,7 +146,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: hp(1.6),
     color: '#333',
-    fontFamily:Fonts.medium
+    fontFamily: Fonts.medium,
   },
   doneButton: {
     backgroundColor: COLORS.themeColor,
@@ -125,7 +159,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign:'center'
+    textAlign: 'center',
   },
 });
 

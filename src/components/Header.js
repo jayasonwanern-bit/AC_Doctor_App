@@ -1,10 +1,11 @@
 // src/components/Header.js
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, useColorScheme, StatusBar } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images'; // Adjust path if needed
 import COLORS, { Fonts } from '../utils/colors'; // Adjust path if needed
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Header = ({ 
   title = 'My App', 
@@ -12,6 +13,7 @@ const Header = ({
   onHelp, 
 //   extraIcons = [] 
 }) => {
+  const insets = useSafeAreaInsets(); 
   const scheme = useColorScheme();
 
   // Dynamic styles based on scheme
@@ -34,7 +36,13 @@ const Header = ({
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, dynamicStyles.safeArea]}>
+
+    <View style={[styles.safeArea, { paddingTop: Platform.OS === 'android' ? insets.top : insets.top,backgroundColor: dynamicStyles.safeArea.backgroundColor}]}>
+        <StatusBar
+         barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+          backgroundColor="transparent"
+          translucent={true} 
+        />
       <View style={styles.header}>
         {onBack && (
           <TouchableOpacity style={styles.backButton} onPress={onBack}>
@@ -70,7 +78,7 @@ const Header = ({
           </TouchableOpacity>
         ))} */}
       </View>
-    </SafeAreaView>
+     </View>
   );
 };
 
@@ -84,7 +92,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('2.5%'),
     paddingVertical: hp('1%'),
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd', // Default color, overridden by dynamicStyles
+    borderBottomColor: '#ddd', 
   },
   backButton: {
     paddingRight: wp('3%'),

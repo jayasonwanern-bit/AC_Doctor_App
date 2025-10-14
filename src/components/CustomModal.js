@@ -6,6 +6,7 @@ import {
   Modal,
   StyleSheet,
   Image,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -70,6 +71,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
+      statusBarTranslucent={true}
     >
       <TouchableOpacity  onPress={()=> onClose()} style={styles.modalContainer}>
         <View style={styles.modalContent}>
@@ -184,11 +186,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#f3f7f7ff',
-    padding: wp(5),
+    backgroundColor: '#939e9eff',
+   backgroundColor: '#ebf6f6ff',
+    paddingHorizontal: hp('2.5%'),
+    paddingVertical: hp('2%'),
     borderTopLeftRadius: wp('6.5%'),
     borderTopRightRadius: wp('6.5%'),
-    minHeight: hp(50),
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignSelf: 'center',
+    width: wp('100%'),
+    paddingBottom: hp(Platform.OS === 'android'? 4 :0),// add this line for android
+    marginBottom: hp(0), // add this line for android
   },
   headerText: {
     fontSize: hp('1.7%'),

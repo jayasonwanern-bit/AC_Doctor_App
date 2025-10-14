@@ -26,6 +26,7 @@ import styles, {
   faqData,
 } from './HomeScreenStyles';
 import ContentSection from '../../customScreen/ContentSection';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Sterilization = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -232,6 +233,7 @@ const Sterilization = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
+    
   );
 };
 

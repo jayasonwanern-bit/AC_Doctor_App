@@ -22,6 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
 import UserInfoModel from '../../customScreen/UserInfoModel';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ViewCartScreen = ({route}) => {
   const { screenName } = route.params || { screenName: 'Unknown' }
@@ -93,7 +94,6 @@ const ViewCartScreen = ({route}) => {
   return (
     <View style={styles.container}>
       <Header title="Your Cart" onBack={() => navigation.goBack()} />
-
       <ScrollView
         style={styles.scrollstyle}
         showsVerticalScrollIndicator={false}
@@ -355,7 +355,7 @@ const ViewCartScreen = ({route}) => {
           <Text style={styles.headText}>Cancellation policy</Text>
           <View style={{ flexDirection: 'row', marginVertical: hp('1%') }}>
             <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
-              🕰️ Orders cannot be cancelled within 2 hours of the scheduled
+             ◷ Orders cannot be cancelled within 2 hours of the scheduled
               service time.
             </Text>
           </View>
@@ -368,17 +368,19 @@ const ViewCartScreen = ({route}) => {
             </Text>
           </View>
         </View>
+
       </ScrollView>
 
       <View style={styles.servicesSection}>
         <CustomButton
           buttonName="Add Address & Slot"
-          margingTOP={hp('6%')}
+          margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
           onPress={() => setModalUserVisible(true)}
         />
       </View>
+
 
       <CustomModal
         visible={modalVisible}
@@ -391,6 +393,7 @@ const ViewCartScreen = ({route}) => {
         }}
         setSelectedAddress={setSelectedAddress}
       />
+
 
       <UserInfoModel
         visible={modalUserVisible}
@@ -556,15 +559,26 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: wp('3%'),
     backgroundColor: COLORS.lightSky,
   },
-  servicesSection: {
+   servicesSection: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: hp('2%'),
+    justifyContent: 'space-between',
+    paddingHorizontal:hp('2.5%'),
+    paddingVertical:hp('2%'),
+    backgroundColor: COLORS.white,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     zIndex: 1000,
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
+
 });
 
 export default ViewCartScreen;

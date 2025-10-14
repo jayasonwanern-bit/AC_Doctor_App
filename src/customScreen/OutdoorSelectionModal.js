@@ -24,13 +24,17 @@ const OutdoorSelectionModal = ({ visible, onClose, onSelect }) => {
       transparent={true}
       animationType="slide"
       onRequestClose={onClose}
+      statusBarTranslucent={true}
     >
-      <TouchableOpacity style={styles.modalContainer} onPress={onClose}> 
+      <TouchableOpacity style={styles.modalContainer} onPress={onClose}>
         <View style={styles.modalContent}>
           <Text style={styles.title}>Select Outdoor Condenser Location</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={[styles.button, selectedType === 'Wall mounted low' && styles.selectedButton]}
+              style={[
+                styles.button,
+                selectedType === 'Wall mounted low' && styles.selectedButton,
+              ]}
               onPress={() => setSelectedType('Wall mounted low')}
             >
               <FastImage
@@ -38,31 +42,68 @@ const OutdoorSelectionModal = ({ visible, onClose, onSelect }) => {
                 source={images.wallCenter}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={[styles.buttonText,{color:selectedType === 'Wall mounted low' && COLORS.themeColor}]}>Wall mounted low</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  {
+                    color:
+                      selectedType === 'Wall mounted low' && COLORS.themeColor,
+                  },
+                ]}
+              >
+                Wall mounted low
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, selectedType === 'Wall mounted high' && styles.selectedButton]}
+              style={[
+                styles.button,
+                selectedType === 'Wall mounted high' && styles.selectedButton,
+              ]}
               onPress={() => setSelectedType('Wall mounted high')}
             >
               <FastImage
                 style={styles.icon}
-               source={images.wallMid}
+                source={images.wallMid}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={[styles.buttonText,{color:selectedType === 'Wall mounted high' && COLORS.themeColor}]}>Wall mounted high</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  {
+                    color:
+                      selectedType === 'Wall mounted high' && COLORS.themeColor,
+                  },
+                ]}
+              >
+                Wall mounted high
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, selectedType === 'Wall mounted Floor' && styles.selectedButton]}
+              style={[
+                styles.button,
+                selectedType === 'Wall mounted Floor' && styles.selectedButton,
+              ]}
               onPress={() => setSelectedType('Wall mounted Floor')}
             >
               <FastImage
                 style={styles.icon}
-               source={images.wallDown}
+                source={images.wallDown}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={[styles.buttonText,{color:selectedType === 'Wall mounted Floor' && COLORS.themeColor}]}>Wall mounted Floor</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  {
+                    color:
+                      selectedType === 'Wall mounted Floor' &&
+                      COLORS.themeColor,
+                  },
+                ]}
+              >
+                Wall mounted Floor
+              </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -80,16 +121,23 @@ const OutdoorSelectionModal = ({ visible, onClose, onSelect }) => {
 
 const styles = StyleSheet.create({
   modalContainer: {
-  flex: 1,
+    flex: 1,
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: '#fff',
-       padding: wp(5),
-       borderTopLeftRadius: wp(6),
-       borderTopRightRadius: wp(6),
-       minHeight: hp(30),
+    padding: wp(5),
+    borderTopLeftRadius: wp(6),
+    borderTopRightRadius: wp(6),
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignSelf: 'center',
+    width: wp('100%'),
+    paddingBottom: hp(Platform.OS === 'android' ? 4 : 0),
   },
   title: {
     fontSize: hp(1.8),
@@ -107,7 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 10,
     paddingVertical: hp(2),
-    paddingHorizontal:hp(1),
+    paddingHorizontal: hp(1),
     margin: 8,
     alignItems: 'center',
     borderWidth: 1,
@@ -125,8 +173,8 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: hp(1.4),
     color: '#333',
-    fontFamily:Fonts.medium,
-    textAlign:"center"
+    fontFamily: Fonts.medium,
+    textAlign: 'center',
   },
   doneButton: {
     backgroundColor: COLORS.themeColor,
@@ -139,7 +187,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign:'center'
+    textAlign: 'center',
   },
 });
 

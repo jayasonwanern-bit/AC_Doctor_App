@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,12 @@ import {
 } from 'react-native';
 import images from '../assets/images';
 import { COLORS, Fonts } from '../utils/colors';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
-const SuccessPopupModal = ({
+const DeclineModal = ({
   visible,
   onClose,
   message1,
@@ -24,6 +27,8 @@ const SuccessPopupModal = ({
   secondButtonText = 'View Request', // Default text for second button
   onSecondButtonPress = onClose, // Default action for second button
 }) => {
+ const [select, setSelected]= useState('Expect')
+
   return (
     <Modal
       transparent={true}
@@ -43,9 +48,33 @@ const SuccessPopupModal = ({
           </View>
 
           {/* Success Message */}
-          <Text style={[styles.title, { color: HeadTextColor }]}>{HeadText}</Text>
+          <Text style={[styles.title, { color: HeadTextColor }]}>
+            {HeadText}
+          </Text>
           <Text style={styles.message}>{message1}</Text>
           <Text style={styles.message}>{message2}</Text>
+
+          <View style={styles.reasonDelineStyle}>
+            <Text style={styles.message}>
+              Lets us know the reason for Decline
+            </Text>
+            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('Expect')}>
+              <Image source={select === 'Expect' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
+              <Text style={styles.textreson}>Expected a higher offer</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('Change')}>
+              <Image source={select === 'Change' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
+              <Text style={styles.textreson}>Changed my mind</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('later')}>
+              <Image source={select === 'later' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
+              <Text style={styles.textreson}>Want to sell later</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('other')}>
+              <Image source={select === 'other' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
+              <Text style={styles.textreson}>Other</Text>
+            </TouchableOpacity>
+          </View>
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
@@ -56,7 +85,8 @@ const SuccessPopupModal = ({
                   {
                     width: buttonCount === 1 ? wp('70%') : wp('33%'), // Full width for 1 button, half for 2
                     alignSelf: buttonCount === 1 ? 'center' : 'flex-start',
-                    backgroundColor: buttonCount >= 1 ? COLORS.themeColor : '#ffffff',
+                    backgroundColor:
+                      buttonCount >= 1 ? COLORS.themeColor : '#ffffff',
                     marginRight: buttonCount === 2 ? 10 : 0, // Add spacing between buttons when 2 are present
                   },
                 ]}
@@ -79,12 +109,14 @@ const SuccessPopupModal = ({
                   styles.secondButton,
                   {
                     backgroundColor: '#ffffff',
-                    width: wp('40%'), 
+                    width: wp('40%'),
                   },
                 ]}
                 onPress={onSecondButtonPress}
               >
-                <Text style={[styles.doneButtonText, {color:'#676464ff' },]}>{secondButtonText}</Text>
+                <Text style={[styles.doneButtonText, { color: '#676464ff' }]}>
+                  {secondButtonText}
+                </Text>
               </TouchableOpacity>
             )}
           </View>
@@ -127,7 +159,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   message: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.5),
     fontFamily: Fonts.medium,
     color: COLORS.black,
     textAlign: 'center',
@@ -142,7 +174,7 @@ const styles = StyleSheet.create({
   doneButton: {
     paddingVertical: 8.5,
     alignItems: 'center',
-     borderRadius: hp(10),
+    borderRadius: hp(10),
   },
   secondButton: {
     backgroundColor: COLORS.themeColor,
@@ -153,9 +185,29 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: Fonts.medium,
     textAlign: 'center',
+  },
+  reasonDelineStyle: {
+    alignSelf: 'flex-start',
+    marginVertical: hp(2),
+  },
+  flexOne: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textreson: {
+    color: COLORS.black,
+    fontSize: 12,
+    fontFamily: Fonts.regular,
+    textAlign: 'center',
+  },
+  checkOutIcon: {
+    width: wp(5),
+    height: hp(3.5),
+    resizeMode: 'contain',
+    marginRight:wp(2)
   },
 });
 
-export default SuccessPopupModal;
+export default DeclineModal;

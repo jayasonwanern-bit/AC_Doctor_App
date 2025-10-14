@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   TextInput,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -208,7 +209,7 @@ const styles = StyleSheet.create({
     marginBottom: hp('2%'),
   },
   paymentOption: {
-    padding: wp('2%'),
+    padding: wp('2.8%'),
     borderWidth: 0.5,
     borderColor: COLORS.themeColor,
     borderRadius: wp('2.5%'),
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: wp('6%'),
     paddingHorizontal: wp('3%'),
-    paddingVertical: hp('1%'),
+    paddingVertical: hp(Platform.OS === 'ios' ?'1%':'0%'),
     marginBottom: hp('2%'),
   },
   inputText: {

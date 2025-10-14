@@ -35,9 +35,9 @@ const ConfirmationModal = ({ visible, onClose, selectedAddress, selectedSlot }) 
           {selectedSlot && (
             <View style={styles.slotBox}>
               <Text style={styles.slotText}>
-                Date: {selectedSlot.date} {selectedSlot.day}, {selectedSlot.year}
+                Date: {selectedSlot.date}{'/'}{selectedSlot.monthNumber}{'/'}{selectedSlot.year}
               </Text>
-              <Text style={styles.slotText}>Time: {selectedSlot.time}</Text>
+              <Text style={styles.slotText}>Time: {selectedSlot.Timeslot}</Text>
             </View>
           )}
           <TouchableOpacity style={styles.confirmButton} onPress={()=>{onClose(); 

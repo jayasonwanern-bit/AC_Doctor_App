@@ -76,7 +76,7 @@ const AddAddress = ({ navigation }) => {
         <View style={styles.searchInput}>
           <Image
             source={images.searchIcon}
-            style={[styles.checkBoxIcon, { height: hp(3) }]}
+            style={[styles.checkBoxIcon, { height: hp(3), marginLeft:wp(Platform.OS === 'ios' ? 0:3)}]}
           />
           <TextInput
             style={styles.searchInputText}
@@ -86,7 +86,7 @@ const AddAddress = ({ navigation }) => {
             onChangeText={setSearchBar}
           />
         </View>
-        <Text style={styles.orText}>────────── Or ───────────</Text>
+        <Text style={styles.orText}>{Platform.OS === 'ios' ?`────────────── Or ───────────`:`──────────────────  Or ─────────────────`}</Text>
         <Text style={styles.label}>Street Address</Text>
         <TextInput
           placeholder="Address"
@@ -238,8 +238,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: wp(10),
-    padding: wp(2),
+    padding: wp(Platform.OS === 'ios' ? 2:1),
     marginBottom: hp(0.5),
+    alignItems:'center'
   },
   searchInputText: {
     fontSize: hp(1.5),

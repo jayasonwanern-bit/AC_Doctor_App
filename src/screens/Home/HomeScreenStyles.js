@@ -1,5 +1,5 @@
 // src/screens/HomeScreenStyles.js
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -8,7 +8,7 @@ import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
 
 export default StyleSheet.create({
-  safeArea: { flex: 1 },
+  safeArea: { flex: 1},
   container: { flex: 1 },
   content: {},
   header: {
@@ -674,7 +674,7 @@ export default StyleSheet.create({
     paddingVertical: wp('0%'),
     paddingHorizontal: hp('1%'),
     backgroundColor: COLORS.themeColor,
-    borderRadius: 20,
+    borderRadius: wp(10),
   },
   viewCartText: {
     fontSize: wp('3%'),

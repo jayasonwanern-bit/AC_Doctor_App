@@ -20,15 +20,18 @@ import images from '../../../assets/images';
 import BookingSlotModal from '../../../customScreen/BookingSlotModal';
 import HomeScreenStyles from '../HomeScreenStyles';
 import SuccessPopupModal from '../../../customScreen/SuccessPopupModal';
+import DeclineModal from '../../../customScreen/DeclineModal';
 
 const RequestDetail = ({ navigation }) => {
   const [reqStatus, setReqStatus] = useState('Under Review');
-  const [detailStatus, setDetailStatus] = useState('Quote');
+  const [detailStatus, setDetailStatus] = useState('Payment');
+  const [PaymentStatus, setPaymentStatus] = useState('No');
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [selectDate, setSelectDate] = useState('10/03/2025');
   const [selectTime, setSelectTime] = useState('First Half');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); // Accept successPopup
   const [confirmPopupVisible, setConfirmPopupVisible] = useState(false); // Offer confirm successPopup
+  const [DeclineVisible, setDeclineVisible] = useState(false); // Offer confirm successPopup
 
   const handleSlotSelection = slot => {
     if (slot) {
@@ -52,11 +55,7 @@ const RequestDetail = ({ navigation }) => {
   });
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')}
-    >
+    <View style={styles.container}>
       <Header
         title="Request Details"
         onBack={() => navigation.goBack()}
@@ -85,7 +84,7 @@ const RequestDetail = ({ navigation }) => {
         </View>
 
         {/* Inspection Details Section */}
-            <Text style={styles.sectionTitle}>{detailStatus === 'Request' ? 'Inspection details' : detailStatus === 'Quote' && 'Request Id #12345'}</Text>
+            {detailStatus !== 'Payment' && <Text style={styles.sectionTitle}>{detailStatus === 'Request' ? 'Inspection details' : detailStatus === 'Quote' && 'Request Id #12345'}</Text>}
         {detailStatus === 'Request' && ( <>
           <View style={styles.section}>
             <View style={styles.statusBar}>
@@ -182,7 +181,7 @@ const RequestDetail = ({ navigation }) => {
              {/* btn. */}
              <View style={styles.copperRow}>
              <TouchableOpacity
-          style={[styles.doneButton, { backgroundColor: COLORS.white }]}
+          style={[styles.doneButton, { backgroundColor: COLORS.white }]} onPress={()=>setDeclineVisible(true)}
         >
           <Text style={[styles.doneButtonText, { color: COLORS.textHeading }]}>
             Decline
@@ -195,8 +194,39 @@ const RequestDetail = ({ navigation }) => {
           </View>
         )}
 
+        {detailStatus === 'Payment' && (
+            <View style={[styles.section]}>
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Status</Text>
+            {PaymentStatus === 'Confirm' &&<Text style={[styles.value,{color:COLORS.darkgreen,fontFamily:Fonts.semiBold,backgroundColor:COLORS.lightgreen}]}> ✅ Accepted</Text>}
+            {PaymentStatus === 'No' && <Text style={[styles.value,{color:COLORS.red,fontFamily:Fonts.semiBold,backgroundColor:COLORS.Lightred}]}> X Decline</Text>}
+          </View>
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Offer Amount</Text>
+            <Text style={[styles.value,{color:COLORS.themeColor,fontFamily:Fonts.semiBold}]}>₹ 25000/-</Text>
+          </View>
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Property Type</Text>
+            <Text style={styles.value}>Flat</Text>
+          </View>
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Type of AC</Text>
+            <Text style={styles.value}>Split AC-2{'\n'}Window AC-1</Text>
+          </View>
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Inspection Remarks</Text>
+            <Text style={styles.value}>LoremIpsum dolor sit amret</Text>
+          </View>    
+          <View style={[styles.copperRow,{justifyContent:'center'}]}>
+            <Text style={[styles.label,{textDecorationLine:'underline',color:COLORS.themeColor, textAlign:'center'}]}>View Copper Piping Details</Text>
+          </View> 
+
+          </View>
+        )}
+
         {/* Copper Piping Details Section */}
-        <Text style={styles.sectionTitle}>Copper Piping details</Text>
+        {detailStatus !== 'Payment'&& (
+          <><Text style={styles.sectionTitle}>Copper Piping details</Text>
         <View style={styles.section}>
           <View style={styles.copperRow}>
             <Text style={styles.label}>Property type</Text>
@@ -251,6 +281,7 @@ const RequestDetail = ({ navigation }) => {
             Lectus aliquet mattis condimentum eu tempus ac lorem.
           </Text>
        </View>
+        </>)}
 
         <View style={HomeScreenStyles.worksliderview}>
           <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
@@ -306,6 +337,20 @@ const RequestDetail = ({ navigation }) => {
           firstButtonText="Done"
         />
 
+        <DeclineModal
+          visible={DeclineVisible}
+          onClose={() => {setDeclineVisible(false),setDetailStatus('Payment'),setPaymentStatus('Confirm')}}
+          HeadTextColor={COLORS.red}
+          setIcon={images.processReject}
+          HeadText="Decline"
+          message1="Are you sure you want to decline the offer"
+          message2="for your AC?"
+          buttonCount={2}
+          firstButtonText="Confirm Decline"
+          secondButtonText='No'
+          secondButton={() => {setDeclineVisible(false),setDetailStatus('Payment'),setPaymentStatus('No')}}
+        />
+
       {/* Booking Slot Modal */}
       <BookingSlotModal
         visible={modalSlotVisible}
@@ -313,7 +358,7 @@ const RequestDetail = ({ navigation }) => {
         setSelectedSlot={handleSlotSelection}
         onBookProcess={() => setModalSlotVisible(false)}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -342,10 +387,10 @@ const styles = StyleSheet.create({
     fontSize: hp(1.8),
     fontWeight: Fonts.medium,
     color: '#333',
-    width: wp(5),
+    width: wp(5.3),
     textAlign: 'center',
     marginRight: wp(1),
-    borderRadius: hp(4),
+    borderRadius: hp(6),
   },
   tabText: {
     fontSize: hp(1.6),

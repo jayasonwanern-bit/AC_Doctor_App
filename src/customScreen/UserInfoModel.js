@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TextInput,
   KeyboardAvoidingView,
+  Platform,
+  Dimensions,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -45,97 +47,114 @@ const UserInfoModel = ({ visible, onClose, onProceed }) => {
     onProceed(userInfo);
   };
 
+  // Dynamic vertical offset based on platform and screen
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? hp('0%') : hp('0%'); // Adjusted for header + status bar
+
   return (
-   
     <Modal
       animationType="slide"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
+      statusBarTranslucent={true}
     >
-       <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.3%') : hp('1%')} // Adjust this based on your header height
-    >
-      <TouchableOpacity onPress={onClose} style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <View style={styles.inFlexrow}>
-            <Text style={styles.headerText}>Enter Your Details</Text>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={keyboardVerticalOffset}
+      >
+        <TouchableOpacity onPress={onClose} style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.inFlexrow}>
+              <Text style={styles.headerText}>Enter Your Details</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  onClose();
+                  navigation.navigate('AddAddress');
+                }}
+              >
+                <Text style={styles.addAddressText}>Add New Address</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Name Input */}
+            <Text style={styles.TitleheadText}>Name</Text>
+            <TextInput
+              placeholder="Enter your Name"
+              keyboardType="default"
+              style={styles.inputContainer}
+              value={userInfo.name}
+              onChangeText={(text) => handleInputChange('name', text)}
+            />
+
+            {/* Number Input */}
+            <Text style={styles.TitleheadText}>Number</Text>
+            <TextInput
+              placeholder="Enter your Number"
+              keyboardType="phone-pad"
+              style={styles.inputContainer}
+              value={userInfo.number}
+              maxLength={10}
+              onChangeText={(text) => handleInputChange('number', text)}
+            />
+
+            {/* Address Input */}
+            <Text style={styles.TitleheadText}>Address</Text>
+            <TextInput
+              placeholder="Enter your Address/state/pincode"
+              keyboardType="default"
+              style={[styles.inputContainer, { height: hp('10%') }]}
+              value={userInfo.address}
+              onChangeText={(text) => handleInputChange('address', text)}
+              multiline={true}
+              textAlignVertical="top"
+            />
+
+            {/* Proceed Button */}
             <TouchableOpacity
-              onPress={() => {
-                onClose();
-                navigation.navigate('AddAddress');
-              }}
+              style={styles.proceedButton}
+              onPress={handleProceedPress}
             >
-              <Text style={styles.addAddressText}>Add New Address</Text>
+              <Text style={styles.proceedButtonText}>Proceed</Text>
             </TouchableOpacity>
           </View>
-
-          {/* Name Input */}
-          <Text style={styles.TitleheadText}>Name</Text>
-          <TextInput
-            placeholder="Enter your Name"
-            keyboardType="default"
-            style={styles.inputContainer}
-            value={userInfo.name}
-            onChangeText={(text) => handleInputChange('name', text)}
-          />
-
-          {/* Number Input */}
-          <Text style={styles.TitleheadText}>Number</Text>
-          <TextInput
-            placeholder="Enter your Number"
-            keyboardType="phone-pad"
-            style={styles.inputContainer}
-            value={userInfo.number}
-            maxLength={10}
-            onChangeText={(text) => handleInputChange('number', text)}
-          />
-
-          {/* Address Input */}
-          <Text style={styles.TitleheadText}>Address</Text>
-          <TextInput
-            placeholder="Enter your Address/state/pincode"
-            keyboardType="default"
-            style={[styles.inputContainer, { height: hp('10%') }]}
-            value={userInfo.address}
-            onChangeText={(text) => handleInputChange('address', text)}
-            multiline
-          />
-
-          {/* Proceed Button */}
-          <TouchableOpacity
-            style={styles.proceedButton}
-            onPress={handleProceedPress}
-          >
-            <Text style={styles.proceedButtonText}>Proceed</Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+    justifyContent: 'flex-end'
+  },
   modalContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center', // Changed to center for stability
+    alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#f3f7f7ff',
-    padding: wp(5),
+    backgroundColor: '#f5fcfcff',
+    paddingHorizontal:hp('2.5%'),
+    paddingVertical:hp('2%'),
     borderTopLeftRadius: wp('6.5%'),
     borderTopRightRadius: wp('6.5%'),
-    minHeight: hp(40),
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignSelf:"center",
+    width: wp('100%'),
+    paddingBottom: 0, 
+    marginBottom: 0,
   },
   inFlexrow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // marginBottom: hp(2),
   },
   headerText: {
     fontSize: hp('1.7%'),
@@ -170,7 +189,7 @@ const styles = StyleSheet.create({
     padding: hp(1.5),
     borderRadius: wp(6),
     alignItems: 'center',
-    marginTop: hp(3),
+    marginVertical: hp(3),
     width: wp('90%'),
     alignSelf: 'center',
   },
