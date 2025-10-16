@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   Text,
@@ -27,7 +27,7 @@ import SuccessPopupModal from '../../../customScreen/SuccessPopupModal';
 import ACTypeSelector from '../../../customScreen/ACTypeSelector';
 import MultipleUploadPhotos from '../../../components/MultipleUploadPhotos';
 import HomeScreenStyles, { works } from '../HomeScreenStyles';
-import PropertySelectionModal from '../../../customScreen/PropertySelectionModal';
+import PropertySelectionModal from '../../../customScreen/PropertySelectionModal'
 import OutdoorSelectionModal from '../../../customScreen/OutdoorSelectionModal';
 
 const CopperPipeScreen = ({ navigation }) => {
@@ -37,11 +37,9 @@ const CopperPipeScreen = ({ navigation }) => {
   const [selectdate, setSelectDate] = useState('Select date');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); // successPopup
   const [propertyModalVisible, setPropertyModalVisible] = useState(false); // prpertyPopup
-  const [selectedProperty, setSelectedProperty] = useState(
-    'Select the property',
-  );
+  const [selectedProperty, setSelectedProperty] = useState('');
   const [outLocationModalVisible, setOutLocationModalVisible] = useState(false); // prpertyPopup
-  const [selectOutDoor, setSelectedOutDoor] = useState('Select the Outdoor');
+  const [selectOutDoor, setSelectedOutDoor] = useState('');
 
   const [formData, setFormData] = useState({
     propertyType: selectedProperty,
@@ -59,6 +57,18 @@ const CopperPipeScreen = ({ navigation }) => {
       [field]: value,
     }));
   };
+  // Sync states with formData
+  useEffect(() => {
+    handleInputChange('propertyType', selectedProperty);
+  }, [selectedProperty]);
+
+  useEffect(() => {
+    handleInputChange('orderLocation', selectOutDoor);
+  }, [selectOutDoor]);
+
+  useEffect(() => {
+    handleInputChange('dateTime', selectdate);
+  }, [selectdate]);
 
   // Function to handle slot selection
  const handleSlotSelection = (slot) => {
@@ -74,6 +84,8 @@ const CopperPipeScreen = ({ navigation }) => {
 
   const handleSelectProperty = type => {
     setSelectedProperty(type);
+  };
+  const handleSelectOutdoor = type => {
     setSelectedOutDoor(type);
   };
   // Handle form submission
@@ -118,7 +130,7 @@ const CopperPipeScreen = ({ navigation }) => {
                   style={styles.pickerWrapper}
                   onPress={() => setPropertyModalVisible(true)}
                 >
-                  <Text style={styles.labelInput}>{selectedProperty}</Text>
+                  <Text style={styles.labelInput}>{selectedProperty || 'Select Property'}</Text>
                   <FastImage
                     source={images.arrowdown}
                     style={styles.customIcon}
@@ -139,7 +151,7 @@ const CopperPipeScreen = ({ navigation }) => {
                   style={styles.pickerWrapper}
                   onPress={() => setOutLocationModalVisible(true)}
                 >
-                  <Text style={styles.labelInput}>{selectOutDoor}</Text>
+                  <Text style={styles.labelInput}>{selectOutDoor || 'Select the Outdoor'}</Text>
                   <FastImage
                     source={images.arrowdown}
                     style={styles.customIcon}
@@ -276,15 +288,15 @@ const CopperPipeScreen = ({ navigation }) => {
         />
 
         <PropertySelectionModal
-          visible={propertyModalVisible}
-          onClose={() => setPropertyModalVisible(false)}
-          onSelect={handleSelectProperty}
-        />
+        visible={propertyModalVisible}
+        onClose={() => setPropertyModalVisible(false)}
+        onSelect={handleSelectProperty}
+      />
 
         <OutdoorSelectionModal
           visible={outLocationModalVisible}
           onClose={() => setOutLocationModalVisible(false)}
-          onSelect={handleSelectProperty}
+          onSelect={handleSelectOutdoor}
         />
       </KeyboardAvoidingView>
     </View>

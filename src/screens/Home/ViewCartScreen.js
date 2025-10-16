@@ -22,7 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
 import UserInfoModel from '../../customScreen/UserInfoModel';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+
 
 const ViewCartScreen = ({route}) => {
   const { screenName } = route.params || { screenName: 'Unknown' }

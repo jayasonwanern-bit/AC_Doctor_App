@@ -113,7 +113,16 @@ const images = {
   wallCenter: require('./icons/wallCenter.png'),
   wallMid: require('./icons/wallMid.png'),
   wallDown: require('./icons/wallDown.png'),
-
+  bluestar: require('./icons/bluestar.png'),
+  Haier: require('./icons/Haier.png'),
+  lgLogo: require('./icons/lgLogo.png'),
+  samsungicon: require('./icons/samsungicon.png'),
+  windowG: require('./icons/windowG.png'),
+  VrvG: require('./icons/VrvG.png'),
+  towerG: require('./icons/windowG.png'),
+  splitG: require('./icons/splitG.png'),
+  ductedG: require('./icons/ductedG.png'),
+  cassetteG: require('./icons/cassetteG.png'),
 
 
 

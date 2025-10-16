@@ -41,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   // Navigation handlers (unchanged)
-  const handleSellOldAC = () => navigation.navigate('SellOldACScreen');
+  const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
   const handleAMC = () => navigation.navigate('AMCScreen');
   const handleCopperPipe = () => navigation.navigate('CopperPipeScreen');
   const handleSterilization = () => navigation.navigate('Sterilization');

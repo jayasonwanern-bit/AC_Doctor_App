@@ -111,7 +111,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
                 <View style={styles.inFlexrow}>
                   <Text style={styles.addressName}>
                     {address.name} {'   '}
-                    <Text style={[styles.defaultTag, { color: COLORS.black }]}>
+                    <Text style={[styles.defaultTag, { color: COLORS.black ,fontWeight:'400',fontSize:10,paddingHorizontal:10}]}>
                       Home
                     </Text>{' '}
                   </Text>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     alignSelf: 'center',
     width: wp('100%'),
-    paddingBottom: hp(Platform.OS === 'android'? 4 :0),// add this line for android
+    paddingBottom: hp(Platform.OS === 'android'? 4 :4),// add this line for android
     marginBottom: hp(0), // add this line for android
   },
   headerText: {

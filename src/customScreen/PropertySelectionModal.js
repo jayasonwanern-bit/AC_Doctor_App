@@ -29,10 +29,9 @@ const PropertySelectionModal = ({ visible, onClose, onSelect }) => {
       <TouchableOpacity
         style={styles.modalContainer}
         onPress={onClose}
-        accessibilityActions={0}
+        activeOpacity={1}
       >
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>Select Property type</Text>
+        <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[
@@ -45,6 +44,7 @@ const PropertySelectionModal = ({ visible, onClose, onSelect }) => {
                 style={styles.icon}
                 source={images.commerBuild}
                 resizeMode={FastImage.resizeMode.contain}
+                onError={() => console.log('CommerBuild image failed')}
               />
               <Text
                 style={[
@@ -68,6 +68,7 @@ const PropertySelectionModal = ({ visible, onClose, onSelect }) => {
                 style={styles.icon}
                 source={images.residentBuild}
                 resizeMode={FastImage.resizeMode.contain}
+                onError={() => console.log('ResidentBuild image failed')}
               />
               <Text
                 style={[
@@ -79,13 +80,14 @@ const PropertySelectionModal = ({ visible, onClose, onSelect }) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.doneButton}
-            onPress={handleDone}
-            disabled={!selectedType}
-          >
-            <Text style={styles.doneButtonText}>Done</Text>
-          </TouchableOpacity>
+
+           <TouchableOpacity
+                      style={styles.doneButton}
+                      onPress={handleDone}
+                      disabled={!selectedType}
+                    >
+                      <Text style={styles.doneButtonText}>Done</Text>
+                    </TouchableOpacity>
         </View>
       </TouchableOpacity>
     </Modal>
@@ -110,13 +112,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     alignSelf: 'center',
     width: wp('100%'),
-    paddingBottom: hp(Platform.OS === 'android' ? 4 : 0),
-  },
-  title: {
-    fontSize: hp(2),
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: hp(2),
+    paddingBottom: hp(Platform.OS === 'android' ? 4 : 5),
   },
   buttonContainer: {
     flexDirection: 'row',

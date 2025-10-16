@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ImageBackground,
+  TextInput,
 } from 'react-native';
 import Header from '../../../components/Header';
 import {
@@ -21,17 +22,21 @@ import BookingSlotModal from '../../../customScreen/BookingSlotModal';
 import HomeScreenStyles from '../HomeScreenStyles';
 import SuccessPopupModal from '../../../customScreen/SuccessPopupModal';
 import DeclineModal from '../../../customScreen/DeclineModal';
+import CustomButton from '../../../components/CustomButton';
 
 const RequestDetail = ({ navigation }) => {
   const [reqStatus, setReqStatus] = useState('Under Review');
-  const [detailStatus, setDetailStatus] = useState('Payment');
-  const [PaymentStatus, setPaymentStatus] = useState('No');
+  const [detailStatus, setDetailStatus] = useState('Request');
+  const [PaymentStatus, setPaymentStatus] = useState('paydetail');
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [selectDate, setSelectDate] = useState('10/03/2025');
   const [selectTime, setSelectTime] = useState('First Half');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); // Accept successPopup
   const [confirmPopupVisible, setConfirmPopupVisible] = useState(false); // Offer confirm successPopup
   const [DeclineVisible, setDeclineVisible] = useState(false); // Offer confirm successPopup
+  const [selectPay, setSelectedPay]= useState('bank')
+  const [upiId, setupiId]= useState('')
+ 
 
   const handleSlotSelection = slot => {
     if (slot) {
@@ -194,7 +199,7 @@ const RequestDetail = ({ navigation }) => {
           </View>
         )}
 
-        {detailStatus === 'Payment' && (
+        {detailStatus === 'Payment' || PaymentStatus !== 'paydetail' && (
             <View style={[styles.section]}>
           <View style={styles.copperRow}>
             <Text style={styles.label}>Status</Text>
@@ -222,6 +227,53 @@ const RequestDetail = ({ navigation }) => {
           </View> 
 
           </View>
+        )}
+
+        {PaymentStatus === 'paydetail' && (<>
+            <Text style={[styles.label,{color:COLORS.black}]}> Request ID #1234</Text>
+          <View style={[styles.section]}>
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Flat</Text>
+            <Text style={[styles.value,{fontFamily:Fonts.semiBold}]}>₹ 25000/-</Text>
+          </View>
+            <Text style={[styles.label,{paddingTop:hp(1)}]}>Split AC-2{'\n'}Window AC-1</Text>
+           
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Pipe Run Length 10m</Text>
+            <Text style={[styles.label,{textDecorationLine:'underline',color:COLORS.themeColor, textAlign:'center'}]}>Download Offer Agreement</Text>
+          </View>    
+          </View>
+        </>
+        )}
+
+        {PaymentStatus === 'paydetail' && (<>
+            <Text style={[styles.label,{color:COLORS.black}]}> Payment mode selection</Text>
+          <View style={[styles.section]}>
+          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('bank')} activeOpacity={0.5}>
+            <Image source={selectPay === 'bank' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
+            <Text style={styles.label}>{'  '}Bank Transfer</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('upi')} activeOpacity={0.5}>
+            <Image source={selectPay === 'upi' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
+            <Text style={styles.label}>{'  '}UPI</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('Pickup')} activeOpacity={0.5}>
+            <Image source={selectPay === 'Pickup' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
+            <Text style={styles.label}>{'  '}Cash on Pickup</Text>
+          </TouchableOpacity>
+      
+          <Text style={[styles.label,{marginVertical:wp(1.5), color:COLORS.black}]}>Enter your UPI ID</Text>
+         <View style={{borderRadius:hp(5), borderWidth:wp(0.3), borderColor:COLORS.lightGray, padding:hp(1.7),marginVertical:wp(1.5)}}>
+          <TextInput
+           placeholder='Type here...'
+           placeholderTextColor={COLORS.textColor}
+           keyboardType='default'
+           value={upiId}
+           onChange={(txt)=>setupiId(txt)}
+          />
+          </View>   
+          </View>
+        </>
         )}
 
         {/* Copper Piping Details Section */}
@@ -283,6 +335,7 @@ const RequestDetail = ({ navigation }) => {
        </View>
         </>)}
 
+  {/* banner image */}
         <View style={HomeScreenStyles.worksliderview}>
           <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
         </View>
@@ -290,7 +343,7 @@ const RequestDetail = ({ navigation }) => {
          <View style={[HomeScreenStyles.brandcont,{marginBottom:hp(10)}]}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Image source={images.helpdesk} style={HomeScreenStyles.smallimage} />
-            <Text style={HomeScreenStyles.needHelp}> Need Help?</Text>
+            <Text style={HomeScreenStyles.needHelp}>Need Help?</Text>
           </View>
           <Image source={images.chatIcon} style={HomeScreenStyles.chaticon} />
         </View>
@@ -310,6 +363,26 @@ const RequestDetail = ({ navigation }) => {
           <Text style={styles.doneButtonText}>Reschedule</Text>
         </TouchableOpacity>
       </View>)}
+
+    {PaymentStatus === 'Confirm' && <View style={HomeScreenStyles.servicesSection}>
+        <CustomButton
+          buttonName="Proceed To Payment Details"
+          margingTOP={hp('0%')}
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+          onPress={() => setPaymentStatus('paydetail')}
+        />
+      </View>}
+
+     {PaymentStatus === 'paydetail' && <View style={HomeScreenStyles.servicesSection}>
+        <CustomButton
+          buttonName="Submit"
+          margingTOP={hp('0%')}
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+          onPress={() => navigation.goBack()}
+        />
+      </View>}
 
        {/* Success Popup */}
 
@@ -596,6 +669,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: hp(1.6),
     fontWeight: '500',
+  },
+   IconImage: {
+    width: wp(4),
+    height: hp(1.5),
   },
 });
 

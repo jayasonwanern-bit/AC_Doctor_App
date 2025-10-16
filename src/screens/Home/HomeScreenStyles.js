@@ -609,7 +609,7 @@ export default StyleSheet.create({
   },
   brandimage: {
     width: wp('94%'),
-    height: hp('9%'),
+    height: hp('7%'),
     resizeMode: 'contain',
   },
   smallimage: {

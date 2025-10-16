@@ -5,7 +5,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { COLORS, Fonts } from '../utils/colors';
 import images from '../assets/images';
 
-const MultipleUploadPhotos = ({ onChange }) => {
+const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
 
   const [uploadedItems, setUploadedItems] = useState([]);
 
@@ -98,7 +98,7 @@ const MultipleUploadPhotos = ({ onChange }) => {
 
   return (
     <View style={styles.inputGroup}>
-      <Text style={styles.label}>Upload Photos/Drawings</Text>
+      <Text style={styles.label}>Upload Photos/Drawings <Text style={styles.labelInput}>{OptionalText}</Text></Text>
       <FlatList
         data={uploadedItems}
         renderItem={renderItem}
@@ -124,7 +124,7 @@ const MultipleUploadPhotos = ({ onChange }) => {
 
 const styles = StyleSheet.create({
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 4,
     marginHorizontal: 10,
   },
   label: {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.medium,
   },
   uploadContainer: {
-    height: 100,
+    height: 90,
     backgroundColor: '#eaf0f7ff',
     borderRadius: 10,
     borderWidth: 1,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 5,
     width: 100,
-    marginTop: 14,
+    marginTop: 12,
   },
   customIcon: {
     width: 30,
@@ -152,11 +152,18 @@ const styles = StyleSheet.create({
     tintColor: '#666',
   },
   uploadText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#666',
     marginTop: 5,
     textAlign:'center'
   },
+   labelInput: {
+      flex: 1,
+      fontSize: 12,
+      color: '#969494ff',
+      marginLeft: 1,     
+      fontFamily: Fonts.medium,
+    },
   uploadCard: {
     height: 100,
     backgroundColor: '#fff',

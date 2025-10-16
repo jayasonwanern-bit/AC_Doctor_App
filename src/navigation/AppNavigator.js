@@ -20,6 +20,10 @@ import GasChargeScreen from '../screens/Home/GasChargeScreen';
 import FreeConsultant from '../screens/Home/FreeConsultant';
 import CopperPipeScreen from '../screens/Home/CopperScreen/CopperPipeScreen';
 import RequestDetail from '../screens/Home/CopperScreen/RequestDetail';
+import SellOldAcScreen from '../screens/Home/OldAc/SellOldAcScreen';
+import BrandScreen from '../screens/Home/OldAc/BrandScreen';
+
+
 import { COLORS } from '../utils/colors';
 import {
   StatusBar,
@@ -94,6 +98,8 @@ const AppNavigator = () => {
           <Stack.Screen name="FreeConsultant" component={FreeConsultant} />
           <Stack.Screen name="CopperPipeScreen" component={CopperPipeScreen} />
           <Stack.Screen name="RequestDetail" component={RequestDetail} />
+          <Stack.Screen name="SellOldAcScreen" component={SellOldAcScreen} />
+          <Stack.Screen name="BrandScreen" component={BrandScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

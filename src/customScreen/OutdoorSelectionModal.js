@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     alignSelf: 'center',
     width: wp('100%'),
-    paddingBottom: hp(Platform.OS === 'android' ? 4 : 0),
+    paddingBottom: hp(Platform.OS === 'android' ? 4 : 4),
   },
   title: {
     fontSize: hp(1.8),
