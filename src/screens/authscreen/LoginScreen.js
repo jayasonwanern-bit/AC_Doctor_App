@@ -1,6 +1,6 @@
 // src/screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import CustomPhoneInput from '../../components/CustomInput';
@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation }) => {
   };
  
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <Text style={styles.title}>Welcome Back! </Text>
       <Text style={styles.titleHead}>Let's Keep Your AC Healthy</Text>
       <FastImage source={images.login} style={styles.image} resizeMode={FastImage.resizeMode.contain} />
@@ -59,7 +59,7 @@ const LoginScreen = ({ navigation }) => {
         disabled={!isValid}>
         <Text style={styles.buttonText}>Get Verification Code</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

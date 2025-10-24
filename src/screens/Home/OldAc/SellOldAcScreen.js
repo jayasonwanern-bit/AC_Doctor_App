@@ -55,6 +55,7 @@ const SellOldAcScreen = ({ navigation}) => {
    const storage = new MMKVLoader().initialize();
    const [modalVisible, setModalVisible] = useState(false);
    const [selectedAddress, setSelectedAddress] = useState(null);
+   const [addAcStatus, setAddAcStatus] = useState(false)
 
   const [formData, setFormData] = useState({
     brand:selectedBrand,
@@ -129,7 +130,7 @@ const SellOldAcScreen = ({ navigation}) => {
 
   // Handle form submission
   const handleRequestConsultation = () => {
-    setSuccessPopupVisible(true);
+     setModalVisible(true);
   };
 
   return (
@@ -193,23 +194,6 @@ const SellOldAcScreen = ({ navigation}) => {
                   />
                 </View>
 
-                {/* Sell Ac */}
-                 <View style={styles.inputGroup}>
-                 <Text style={styles.label}>
-                  Old ACs do you want to sell
-                </Text>
-                <View style={[styles.textInputWithIcon,{width:wp(87)}]}>
-                  <TextInput
-                    style={styles.textInputInner}
-                    value={formData.Numberofold}
-                    onChangeText={value =>
-                      handleInputChange('Numberofold', value)
-                    }
-                    keyboardType='number-pad'
-                    placeholder="8"
-                  />
-                </View>
-                 </View>
 
                 {/* Type of AC */}
                  <View style={styles.inputGroup}>
@@ -331,18 +315,36 @@ const SellOldAcScreen = ({ navigation}) => {
                 </View>
 
             <View style={{marginTop:hp(2)}}>
-                <View style={styles.RowView}>
+                <TouchableOpacity style={styles.RowView} onPress={()=>setAddAcStatus(true)}>
                   <Text style={[styles.labelInput,{marginLeft:wp(0)}]}>
                    Bulk Add ↑
                   </Text>
                    <Text style={[styles.labelInput,{color:COLORS.themeColor,marginLeft:wp(30),textDecorationLine:'underline'}]}>
                     Add Another AC +
                   </Text>   
-                </View>
+                </TouchableOpacity>
                  <Text style={[styles.labelInput,{fontSize:hp(1.3),marginVertical:wp(2)}]}>
                   Note: You can add up to 5 ACs manually. If you have more than 5 ACs, please use Bulk Add option for a faster process.
                   </Text>
             </View>
+
+            {/* Sell Ac */}
+                 {addAcStatus &&<View style={styles.inputGroup}>
+                 <Text style={styles.label}>
+                  Old ACs do you want to sell
+                </Text>
+                <View style={[styles.textInputWithIcon,{width:wp(87)}]}>
+                  <TextInput
+                    style={styles.textInputInner}
+                    value={formData.Numberofold}
+                    onChangeText={value =>
+                      handleInputChange('Numberofold', value)
+                    }
+                    keyboardType='number-pad'
+                    placeholder="8"
+                  />
+                </View>
+                 </View>}
 
               </View>
             </View>
@@ -432,7 +434,7 @@ const SellOldAcScreen = ({ navigation}) => {
         <SuccessPopupModal
           visible={successPopupVisible}
           onClose={() => {
-            setSuccessPopupVisible(false), navigation.navigate('RequestDetail');
+            setSuccessPopupVisible(false), navigation.navigate('OldACRequest');
           }}
           HeadText="Wooohoo!"
           message1="Your bulk AC request has been submitted successfully!"
@@ -467,6 +469,8 @@ const SellOldAcScreen = ({ navigation}) => {
           onSelect={handleCondition}
         />
 
+
+{/* add address */}
        <CustomModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}

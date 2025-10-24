@@ -123,6 +123,9 @@ const images = {
   splitG: require('./icons/splitG.png'),
   ductedG: require('./icons/ductedG.png'),
   cassetteG: require('./icons/cassetteG.png'),
+  cancelRed: require('./icons/cancelRed.png'),
+  questionMark: require('./icons/questionMark.png'),
+  
 
 
 

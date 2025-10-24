@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   Image,
   FlatList,
   Platform,
-  useColorScheme,
+  useColorScheme,Animated,
   StatusBar as RNStatusBar, // Import StatusBar
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -54,6 +54,7 @@ const HomeScreen = ({ navigation }) => {
   const handleErrorcode = () => alert('Other clicked!');
   const handleFreeConsult = () => navigation.navigate('FreeConsultant');
   const handleProComparison = () => alert('Other clicked!');
+  
 
   // Data arrays (unchanged)
   const requestQuote = [
@@ -90,6 +91,7 @@ const HomeScreen = ({ navigation }) => {
     images.MITelectricIcon,
     images.daikinIcon,
   ];
+
   const chunkArray = (array, size) => {
     return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
       array.slice(i * size, i * size + size),
@@ -107,6 +109,8 @@ const HomeScreen = ({ navigation }) => {
     loadAddress();
   }, []);
 
+
+  // button
   const handleAddressPress = () => {
     navigation.navigate('SelectLocation', { onUpdate: loadAddress });
   };
@@ -154,6 +158,7 @@ const HomeScreen = ({ navigation }) => {
             ))}
           </View>
         </View>
+
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Request a Quote</Text>
           <View style={styles.reqgrid}>
@@ -161,10 +166,12 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity key={index} style={styles.reqoption} onPress={item.action}>
                 <FastImage source={item.icon} style={styles.reqicon} />
                 <Text style={styles.reqlabel}>{item.label}</Text>
-              </TouchableOpacity>
+              </TouchableOpacity>        
             ))}
           </View>
         </View>
+
+
         <LinearGradient colors={['#ecd5d0ff', '#ede3dbff', '#b9d4e7ff']} style={styles.uticontainer}>
           <Text style={styles.utititle}>Utilities</Text>
           <View style={styles.utigrid}>

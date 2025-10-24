@@ -35,6 +35,7 @@ const CustomPhoneInput = ({ countryCode, setCountryCode,setCallingCode, callingC
         onChangeText={setPhoneNumber}
         keyboardType="phone-pad"
         maxLength={10}  
+        submitBehavior='submit'
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>

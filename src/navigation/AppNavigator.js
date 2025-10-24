@@ -22,6 +22,7 @@ import CopperPipeScreen from '../screens/Home/CopperScreen/CopperPipeScreen';
 import RequestDetail from '../screens/Home/CopperScreen/RequestDetail';
 import SellOldAcScreen from '../screens/Home/OldAc/SellOldAcScreen';
 import BrandScreen from '../screens/Home/OldAc/BrandScreen';
+import OldACRequest from '../screens/Home/OldAc/OldACRequest';
 
 
 import { COLORS } from '../utils/colors';
@@ -68,7 +69,7 @@ const AppNavigator = () => {
       />
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="ServiceScreen"
+          initialRouteName="Tab"
           screenOptions={{
             headerStyle: dynamicStyles.headerStyle,
             headerTitleStyle: dynamicStyles.headerTitleStyle,
@@ -100,6 +101,7 @@ const AppNavigator = () => {
           <Stack.Screen name="RequestDetail" component={RequestDetail} />
           <Stack.Screen name="SellOldAcScreen" component={SellOldAcScreen} />
           <Stack.Screen name="BrandScreen" component={BrandScreen} />
+          <Stack.Screen name="OldACRequest" component={OldACRequest} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

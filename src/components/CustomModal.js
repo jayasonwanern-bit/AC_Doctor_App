@@ -138,10 +138,6 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
                         ]}
                       >
                         <TouchableOpacity>
-                          <Image
-                            source={images.editIcon}
-                            style={styles.showiconStyle}
-                          />
                         </TouchableOpacity>
                       </Text>
                     </TouchableOpacity>
