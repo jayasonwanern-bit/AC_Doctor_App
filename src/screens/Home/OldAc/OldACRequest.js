@@ -25,14 +25,16 @@ import DeclineModal from '../../../customScreen/DeclineModal';
 import CustomButton from '../../../components/CustomButton';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Value } from 'react-native/types_generated/Libraries/Animated/AnimatedExports';
+import FastImage from 'react-native-fast-image';
 
 const OldACRequest = ({ navigation }) => {
-  const [reqStatus, setReqStatus] = useState('complete');
+  const [reqStatus, setReqStatus] = useState('Declined');
   const [detailStatus, setDetailStatus] = useState('Quote');
   const [PaymentStatus, setPaymentStatus] = useState('paydetail');
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [AcceptVisible, setAcceptVisible] = useState(false);
-  const [selectDate, setSelectDate] = useState('10/03/2025');
+  const [confirmAcceptVisible, setConfirmAcceptVisible] = useState(false);
+  const [selectdate, setSelectDate] = useState('Select date');
   const [selectTime, setSelectTime] = useState('First Half');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); 
   const [confirmPopupVisible, setConfirmPopupVisible] = useState(false); // Offer confirm successPopup
@@ -101,13 +103,19 @@ const OldACRequest = ({ navigation }) => {
     }
   };
 
-  const getTabStyle = status => ({
-    color: detailStatus === 'Request' || detailStatus === 'Quote' || detailStatus === 'Payment'? COLORS.white : COLORS.textHeading,
-    borderColor: detailStatus === 'Request' || detailStatus === 'Quote' || detailStatus === 'Payment' ? COLORS.red : COLORS.textHeading,
-    backgroundColor: detailStatus === 'Request' || detailStatus === 'Quote' || detailStatus === 'Payment' && COLORS.red,
-    borderWidth: detailStatus === 'Request' || detailStatus === 'Quote' || detailStatus === 'Payment' ? 0 : hp(0.1),
+ const getTabStyle = (status) => {
+  const isRequestActive = detailStatus === 'Request';
+  const isQuoteActive = detailStatus === 'Quote' || isRequestActive;
+  const isPaymentActive = detailStatus === 'Payment' || isQuoteActive;
+
+  return {
+    color: isRequestActive || isQuoteActive || isPaymentActive ? COLORS.white : COLORS.textHeading,
+    borderColor: isRequestActive || isQuoteActive || isPaymentActive ? COLORS.red : COLORS.textHeading,
+    backgroundColor: isRequestActive || isQuoteActive || isPaymentActive ? COLORS.red : 'transparent',
+    borderWidth: isRequestActive || isQuoteActive || isPaymentActive ? 0 : hp(0.1),
     borderRadius: hp(4),
-  });
+  };
+};
 
   return (
     <View style={styles.container}>
@@ -142,7 +150,7 @@ const OldACRequest = ({ navigation }) => {
            {detailStatus === 'Quote' &&<Text style={[styles.label]}>
                 Request ID <Text style={[styles.label, { color: COLORS.black }]}>#12334</Text>
               </Text>}
-         {detailStatus !== 'Quote' &&<>
+         {detailStatus !== 'Quote' || detailStatus !== 'Payment' &&<>
             <View style={styles.section}>
               <View style={styles.statusBar}>
                 <View style={styles.statusBarRow}>
@@ -235,10 +243,92 @@ const OldACRequest = ({ navigation }) => {
               </>}
             </View>
           </>}
+
+           {detailStatus === 'Payment' && (<>
+            <Text style={[styles.label,{color:COLORS.black}]}> Request ID #1234</Text>
+          <View style={[styles.section]}>
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Dakin</Text>
+            <Text style={[styles.value,{fontFamily:Fonts.semiBold}]}>₹ 25000/-</Text>
+          </View>
+            <Text style={[styles.label,{paddingTop:hp(1)}]}>Dakin 9Q12YTYG</Text>
+           
+          <View style={styles.copperRow}>
+            <Text style={styles.label}>Split 1.5Ton</Text>
+            <Text style={[styles.label,{textDecorationLine:'underline',color:COLORS.themeColor, textAlign:'center'}]}>Download Offer Agreement</Text>
+          </View>    
+          </View>
+        </>
+        )}
+
+        {detailStatus === 'Payment' && (<>
+            <Text style={[styles.label,{color:COLORS.black}]}> Payment mode selection</Text>
+          <View style={[styles.section]}>
+          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('bank')} activeOpacity={0.5}>
+            <Image source={selectPay === 'bank' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
+            <Text style={styles.label}>{'  '}Bank Transfer</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('upi')} activeOpacity={0.5}>
+            <Image source={selectPay === 'upi' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
+            <Text style={styles.label}>{'  '}UPI</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('Pickup')} activeOpacity={0.5}>
+            <Image source={selectPay === 'Pickup' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
+            <Text style={styles.label}>{'  '}Cash on Pickup</Text>
+          </TouchableOpacity>
+      
+          <Text style={[styles.label,{marginVertical:wp(1.5), color:COLORS.black}]}>Enter your UPI ID</Text>
+         <View style={{borderRadius:hp(5), borderWidth:wp(0.3), borderColor:COLORS.lightGray, padding:hp(1.7),marginVertical:wp(1.5)}}>
+          <TextInput
+           placeholder='Type here...'
+           placeholderTextColor={COLORS.textColor}
+           keyboardType='default'
+           value={upiId}
+           onChange={(txt)=>setupiId(txt)}
+          />
+          </View>   
+          </View>
+        </>
+        )}
         
 
-        {detailStatus === 'Quote' && (
-          <View style={[styles.section]}>
+        {(detailStatus !== 'Payment' || detailStatus === 'Quote' || reqStatus === 'Accepted' || reqStatus === 'Decline') && (
+        <View style={[styles.section]}>
+          {/* Status Section */}
+          {(reqStatus === 'Accepted' || reqStatus === 'Decline') && (
+             <View style={styles.copperRow}>
+                <Text style={styles.label}>Status</Text>
+                {reqStatus === 'Accepted' && (
+                  <Text
+                    style={[
+                      styles.value,
+                      {
+                        color: COLORS.darkgreen,
+                        fontFamily: Fonts.semiBold,
+                        backgroundColor: COLORS.lightgreen,
+                      },
+                    ]}
+                  >
+                    {' '}
+                    ✅ Accepted
+                  </Text>
+                )}
+                {reqStatus === 'Decline' && (
+                  <Text
+                    style={[
+                      styles.value,
+                      {
+                        color: COLORS.red,
+                        fontFamily: Fonts.semiBold,
+                        backgroundColor: COLORS.Lightred,
+                      },
+                    ]}
+                  >
+                    {' '}
+                   ❌ Declined
+                  </Text>
+                )}
+              </View>)}
             <View style={styles.copperRow}>
               <Text style={styles.label}>Offer Amount</Text>
               <Text
@@ -303,84 +393,8 @@ const OldACRequest = ({ navigation }) => {
           </View>
         )}
 
-        {detailStatus === 'Payment' ||
-          (PaymentStatus !== 'paydetail' && (
-            <View style={[styles.section]}>
-              <View style={styles.copperRow}>
-                <Text style={styles.label}>Status</Text>
-                {PaymentStatus === 'Confirm' && (
-                  <Text
-                    style={[
-                      styles.value,
-                      {
-                        color: COLORS.darkgreen,
-                        fontFamily: Fonts.semiBold,
-                        backgroundColor: COLORS.lightgreen,
-                      },
-                    ]}
-                  >
-                    {' '}
-                    ✅ Accepted
-                  </Text>
-                )}
-                {PaymentStatus === 'No' && (
-                  <Text
-                    style={[
-                      styles.value,
-                      {
-                        color: COLORS.red,
-                        fontFamily: Fonts.semiBold,
-                        backgroundColor: COLORS.Lightred,
-                      },
-                    ]}
-                  >
-                    {' '}
-                    X Decline
-                  </Text>
-                )}
-              </View>
-              <View style={styles.copperRow}>
-                <Text style={styles.label}>Offer Amount</Text>
-                <Text
-                  style={[
-                    styles.value,
-                    { color: COLORS.themeColor, fontFamily: Fonts.semiBold },
-                  ]}
-                >
-                  ₹ 25000/-
-                </Text>
-              </View>
-              <View style={styles.copperRow}>
-                <Text style={styles.label}>Property Type</Text>
-                <Text style={styles.value}>Flat</Text>
-              </View>
-              <View style={styles.copperRow}>
-                <Text style={styles.label}>Type of AC</Text>
-                <Text style={styles.value}>Split AC-2{'\n'}Window AC-1</Text>
-              </View>
-              <View style={styles.copperRow}>
-                <Text style={styles.label}>Inspection Remarks</Text>
-                <Text style={styles.value}>LoremIpsum dolor sit amret</Text>
-              </View>
-              <View style={[styles.copperRow, { justifyContent: 'center' }]}>
-                <Text
-                  style={[
-                    styles.label,
-                    {
-                      textDecorationLine: 'underline',
-                      color: COLORS.themeColor,
-                      textAlign: 'center',
-                    },
-                  ]}
-                >
-                  View Copper Piping Details
-                </Text>
-              </View>
-            </View>
-          ))}
-
-        
-          <View style={{marginBottom:wp(15)}}>
+         
+         {detailStatus !== 'Payment' &&<View style={{marginBottom:wp(15)}}>
             {detailStatus !== 'Quote' && (<TouchableOpacity
               style={[
                 styles.copperRow,
@@ -476,25 +490,77 @@ const OldACRequest = ({ navigation }) => {
             
               </>
             ))}
-          </View>
+          </View>}
+
+           {/* Select Date & Time */}
+                 {detailStatus === 'Payment' &&
+                 <>
+                 <Text style={[styles.label,{color:COLORS.black}]}>Schedule Pickup</Text>
+                 <View style={styles.inputGroup}>
+                  <Text style={styles.label}>
+                    Preferred Inspection Date & Time
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.pickerWrapper}
+                    onPress={() => setModalSlotVisible(true)}
+                  >
+                    <Text
+                      style={[
+                        { flex: 1, marginLeft: wp(4) },
+                        styles.uploadText,
+                      ]}
+                    >
+                      {selectdate}
+                    </Text>
+                    <FastImage
+                      source={images.Calendar}
+                      style={styles.customIcon}
+                      resizeMode={FastImage.resizeMode.contain}
+                    />
+                  </TouchableOpacity>
+                </View>
+                 </>
+                }
        
+      {detailStatus === 'Payment' && 
+      <View style={[styles.section,{marginBottom:hp(15)}]}>
+        <View style={styles.copperRow}>
+              <Text style={styles.label}>Pickup Date</Text>
+              <Text style={styles.value}>20/03/2025</Text>
+            </View>
+        <View style={styles.copperRow}>
+              <Text style={styles.label}>Pickup Time</Text>
+              <Text style={styles.value}>First Half</Text>
+            </View>
+      </View>
+            }
+
+            
 
         {/* banner image */}
-        {detailStatus === 'Quote' &&
-          <>
-          <View style={[HomeScreenStyles.worksliderview,{marginTop:detailStatus === 'Quote' && (-50)}]}>
-          <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
-        </View>
+        {detailStatus === 'Quote' && (
+        <>
+          {detailStatus !== 'Payment' && (
+            <View
+              style={[
+                HomeScreenStyles.worksliderview,
+                { marginTop: detailStatus === 'Quote' ? -50 : 0 }, // Dynamic marginTop
+              ]}
+            >
+              <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
+            </View>
+          )}
 
-         <View style={[HomeScreenStyles.brandcont,{marginBottom:hp(10)}]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={images.helpdesk} style={HomeScreenStyles.smallimage} />
-            <Text style={HomeScreenStyles.needHelp}>Need Help?</Text>
+          <View style={[HomeScreenStyles.brandcont, { marginBottom: hp(10) }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image source={images.helpdesk} style={HomeScreenStyles.smallimage} />
+              <Text style={HomeScreenStyles.needHelp}>Need Help?</Text>
+            </View>
+            <Image source={images.chatIcon} style={HomeScreenStyles.chaticon} />
           </View>
-          <Image source={images.chatIcon} style={HomeScreenStyles.chaticon} />
-        </View>
-          </>
-        }
+        </>
+      )}
+        
       </ScrollView>
 
       {/* Cancel and Reschedule Buttons */}
@@ -516,15 +582,6 @@ const OldACRequest = ({ navigation }) => {
         </View>
       )}
 
-      {/* {PaymentStatus === 'Confirm' && <View style={HomeScreenStyles.servicesSection}>
-        <CustomButton
-          buttonName="Proceed To Payment Details"
-          margingTOP={hp('0%')}
-          btnTextColor={COLORS.white}
-          btnColor={COLORS.themeColor}
-          onPress={() => setPaymentStatus('paydetail')}
-        />
-      </View>} */}
 
       {reqStatus === 'complete' || detailStatus !== 'Quote' && <View style={HomeScreenStyles.servicesSection}>
         <CustomButton
@@ -533,6 +590,25 @@ const OldACRequest = ({ navigation }) => {
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
           onPress={() => setDetailStatus('Quote')}
+        />
+      </View>}
+
+      {detailStatus === 'Payment' && <View style={HomeScreenStyles.servicesSection}>
+        <CustomButton
+          buttonName="Submit"
+          margingTOP={hp('0%')}
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+          onPress={() => setDetailStatus('Quote')}
+        />
+      </View>}
+      {reqStatus === 'Accepted' && <View style={HomeScreenStyles.servicesSection}>
+        <CustomButton
+          buttonName="Proceed to payment Details "
+          margingTOP={hp('0%')}
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+          onPress={() => setDetailStatus('Payment')}
         />
       </View>}
 
@@ -589,28 +665,29 @@ const OldACRequest = ({ navigation }) => {
         secondButtonText="confirm"
         firstButtonText="No"
         onSecondButtonPress={() => {
-          setAcceptVisible(false), setReqStatus('Schedule');
+          setAcceptVisible(false),setConfirmAcceptVisible(true), setReqStatus('Schedule');
         }}
       />
 
-      {/* <SuccessPopupModal
-        visible={confirmPopupVisible}
+{/* offer Accepted */}
+      <SuccessPopupModal
+        visible={confirmAcceptVisible}
         onClose={() => {
-          setConfirmPopupVisible(false);
+          setConfirmAcceptVisible(false);
+          setReqStatus('Accepted')
         }}
         HeadText="Offer Accepted!"
         message1="Your request has been submitted."
         message2="Our team will connect with for further process."
         buttonCount={1}
         firstButtonText="Done"
-      /> */}
+      />
 
       <DeclineModal
         visible={DeclineVisible}
         onClose={() => {
           setDeclineVisible(false),
-            setDetailStatus('Payment'),
-            setPaymentStatus('Confirm');
+            setReqStatus('Decline')
         }}
         HeadTextColor={COLORS.red}
         setIcon={images.processReject}
@@ -900,6 +977,47 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     padding: wp(3),
     marginTop: wp(2),
+  },
+    inputGroup: {
+    marginTop: hp('1%'),
+    marginHorizontal: wp('2%'),
+    backgroundColor:COLORS.white
+  },
+  label: {
+    fontSize: hp('1.5%'),
+    color: COLORS.black,
+    marginBottom: hp('1.5%'),
+    fontFamily: Fonts.medium,
+  },
+  labelInput: {
+    flex: 1,
+    fontSize: hp('1.5%'),
+    color: '#585656ff',
+    marginLeft: hp('1%'),
+    fontFamily: Fonts.medium,
+  },
+  pickerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffffff',
+    borderRadius: wp('9%'),
+    borderWidth: hp(0.1),
+    borderColor: '#ddd',
+    overflow: 'hidden',
+    height: hp('5%'),
+    width:wp(88),
+    alignSelf:'center'
+  },
+   pickerTech: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffffff',
+    borderRadius: wp('9%'),
+    borderWidth: hp(0.1),
+    borderColor: '#ddd',
+    overflow: 'hidden',
+    height: hp('5%'),
+    alignSelf:'center'
   },
 });
 
