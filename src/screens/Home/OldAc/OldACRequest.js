@@ -28,15 +28,16 @@ import { Value } from 'react-native/types_generated/Libraries/Animated/AnimatedE
 import FastImage from 'react-native-fast-image';
 
 const OldACRequest = ({ navigation }) => {
-  const [reqStatus, setReqStatus] = useState('Declined');
-  const [detailStatus, setDetailStatus] = useState('Quote');
+  const [reqStatus, setReqStatus] = useState(''); //Schedule, ReScheduled, complete, Accepted, Decline
+  const [detailStatus, setDetailStatus] = useState('Request'); // 'Request', 'Quote', 'Payment'
   const [PaymentStatus, setPaymentStatus] = useState('paydetail');
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [AcceptVisible, setAcceptVisible] = useState(false);
   const [confirmAcceptVisible, setConfirmAcceptVisible] = useState(false);
   const [selectdate, setSelectDate] = useState('Select date');
   const [selectTime, setSelectTime] = useState('First Half');
-  const [successPopupVisible, setSuccessPopupVisible] = useState(false); 
+  const [selectReason, setSelectReason] = useState('');
+  const [successPopupVisible, setSuccessPopupVisible] = useState(false);
   const [confirmPopupVisible, setConfirmPopupVisible] = useState(false); // Offer confirm successPopup
   const [DeclineVisible, setDeclineVisible] = useState(false); // Offer confirm successPopup
   const [selectPay, setSelectedPay] = useState('bank');
@@ -92,7 +93,7 @@ const OldACRequest = ({ navigation }) => {
 
   const handleSlotSelection = slot => {
     if (slot) {
-      const { date, monthNumber, year, time, Timeslot } = slot;
+      const { date, monthNumber, year, time, Timeslot, reason } = slot;
       const formattedDate = `${String(date).padStart(2, '0')}/${String(
         monthNumber,
       ).padStart(2, '0')}/${year}`;
@@ -100,22 +101,32 @@ const OldACRequest = ({ navigation }) => {
         time === 'morning' || time === 'firstHalf' ? 'First Half' : Timeslot;
       setSelectDate(formattedDate);
       setSelectTime(formattedTime);
+      setReqStatus('ReScheduled');
     }
   };
 
- const getTabStyle = (status) => {
-  const isRequestActive = detailStatus === 'Request';
-  const isQuoteActive = detailStatus === 'Quote' || isRequestActive;
-  const isPaymentActive = detailStatus === 'Payment' || isQuoteActive;
+  const getTabStyle = status => {
+    // Step 1: Check current status
+    const isRequest = detailStatus === 'Request';
+    const isQuote = detailStatus === 'Quote';
+    const isPayment = detailStatus === 'Payment';
 
-  return {
-    color: isRequestActive || isQuoteActive || isPaymentActive ? COLORS.white : COLORS.textHeading,
-    borderColor: isRequestActive || isQuoteActive || isPaymentActive ? COLORS.red : COLORS.textHeading,
-    backgroundColor: isRequestActive || isQuoteActive || isPaymentActive ? COLORS.red : 'transparent',
-    borderWidth: isRequestActive || isQuoteActive || isPaymentActive ? 0 : hp(0.1),
-    borderRadius: hp(4),
+    // Step 2: Decide kaun-kaun tab active hoga (red background + white text)
+    const isTabActive =
+      (status === 'Request' && (isRequest || isQuote || isPayment)) || // Request tab active in all 3 states
+      (status === 'Quote' && (isQuote || isPayment)) || // Quote tab active in Quote & Payment
+      (status === 'Payment' && isPayment); // Payment tab active only in Payment
+
+    // Step 3: Return style based on active or not
+    return {
+      color: isTabActive ? COLORS.white : COLORS.textHeading,
+      backgroundColor: isTabActive ? COLORS.red : 'transparent',
+      borderColor: isTabActive ? COLORS.red : COLORS.textHeading,
+      borderWidth: isTabActive ? 0 : hp(0.1),
+      borderRadius: hp(4),
+      marginHorizontal: wp(1),
+    };
   };
-};
 
   return (
     <View style={styles.container}>
@@ -146,11 +157,22 @@ const OldACRequest = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Inspection Details Section */}
-           {detailStatus === 'Quote' &&<Text style={[styles.label]}>
-                Request ID <Text style={[styles.label, { color: COLORS.black }]}>#12334</Text>
-              </Text>}
-         {detailStatus !== 'Quote' || detailStatus !== 'Payment' &&<>
+        {/* Inspection Details  Schedule Section */}
+        {detailStatus === 'Quote' && (
+          <Text style={[styles.label]}>
+            Request ID{' '}
+            <Text style={[styles.label, { color: COLORS.black }]}>#12334</Text>
+          </Text>
+        )}
+        {detailStatus === 'Request' && (
+          <TouchableOpacity onPress={() => setReqStatus('Schedule')}>
+            <Text style={[styles.label, { color: COLORS.black }]}>
+              Inspection Details
+            </Text>
+          </TouchableOpacity>
+        )}
+        {detailStatus === 'Request' && (
+          <>
             <View style={styles.section}>
               <View style={styles.statusBar}>
                 <View style={styles.statusBarRow}>
@@ -158,15 +180,43 @@ const OldACRequest = ({ navigation }) => {
                     <Image source={images.copperIcon} style={styles.icon} />
                     <Text style={styles.statusText}>Old AC</Text>
                   </View>
-                  <View style={[styles.statusBadge,{backgroundColor:reqStatus === 'Schedule' ? '#FFE7CF'
-                    :reqStatus === 'ReScheduled'? COLORS.lightSky:reqStatus === 'complete' ? '#ECFFE9':'#fff4c5ff'
-                  }]}>
-                    <Text style={[styles.statusBadgeText,{color:reqStatus === 'Schedule'? '#D26900' :reqStatus === 'ReScheduled' ? COLORS.themeColor:reqStatus === 'complete' ?'#128807':'#ee9937ff'}]}>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      {
+                        backgroundColor:
+                          reqStatus === 'Schedule'
+                            ? '#FFE7CF'
+                            : reqStatus === 'ReScheduled'
+                            ? COLORS.lightSky
+                            : reqStatus === 'complete'
+                            ? '#ECFFE9'
+                            : '#fff4c5ff',
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.statusBadgeText,
+                        {
+                          color:
+                            reqStatus === 'Schedule'
+                              ? '#D26900'
+                              : reqStatus === 'ReScheduled'
+                              ? COLORS.themeColor
+                              : reqStatus === 'complete'
+                              ? '#128807'
+                              : '#ee9937ff',
+                        },
+                      ]}
+                    >
                       {reqStatus === 'Schedule'
                         ? 'Scheduled'
                         : reqStatus === 'ReScheduled'
                         ? 'Re Scheduled'
-                        :reqStatus === 'complete'? 'Completed': 'Under Review'}
+                        : reqStatus === 'complete'
+                        ? 'Completed'
+                        : 'Under Review'}
                     </Text>
                   </View>
                 </View>
@@ -180,123 +230,225 @@ const OldACRequest = ({ navigation }) => {
 
               <View style={styles.copperRow}>
                 <View style={styles.detailRow}>
-                  <Text style={styles.label}>{reqStatus === 'Schedule' ? 'Inspection Date & Time':'Submitted On' }</Text>
-                  <Text style={styles.value}>{reqStatus === 'Schedule' ? '5/03/2025-First half':"5/03/2025"}</Text>
+                  <Text style={styles.label}>
+                    {reqStatus === 'Schedule'
+                      ? 'Inspection Date & Time'
+                      : 'Submitted On'}
+                  </Text>
+                  <Text style={styles.value}>
+                    {reqStatus === 'Schedule'
+                      ? '5/03/2025-First half'
+                      : '5/03/2025'}
+                  </Text>
                 </View>
                 <View style={[styles.detailRow, { paddingRight: hp(0) }]}>
                   <Text style={styles.label}>Requested Service Details</Text>
                   <Text style={styles.value}>LG, Dakin</Text>
                 </View>
               </View>
-              {reqStatus !== 'Schedule' && (<View style={styles.copperRow}>
-                <View style={styles.detailRow}>
-                  <Text style={styles.label}>Number of AC</Text>
-                  <Text style={styles.value}>2</Text>
+              {reqStatus !== 'Schedule' && (
+                <View style={styles.copperRow}>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.label}>Number of AC</Text>
+                    <Text style={styles.value}>2</Text>
+                  </View>
+                  <View style={[styles.detailRow, { paddingRight: hp(7.5) }]}>
+                    <Text style={styles.label}>Agent Assigned</Text>
+                    <Text style={styles.value}>
+                      {reqStatus === 'complete' ? 'Mohan Verma' : '-'}
+                    </Text>
+                  </View>
                 </View>
-                <View style={[styles.detailRow, { paddingRight: hp(7.5) }]}>
-                  <Text style={styles.label}>Agent Assigned</Text>
-                  <Text style={styles.value}>{reqStatus === 'complete'?"Mohan Verma": "-"}</Text>
+              )}
+              {reqStatus === 'complete' && (
+                <View style={styles.copperRow}>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.label}>Final Offer</Text>
+                    <Text style={styles.value}>₹ 650000/-</Text>
+                  </View>
+                  <View style={[styles.detailRow, { paddingRight: hp(1) }]}>
+                    <Text style={styles.label}>Status</Text>
+                    <Text style={styles.value}>Pending</Text>
+                  </View>
                 </View>
-              </View>)}
-              {reqStatus === 'complete' && (<View style={styles.copperRow}>
-                <View style={styles.detailRow}>
-                  <Text style={styles.label}>Final Offer</Text>
-                  <Text style={styles.value}>₹ 650000/-</Text>
-                </View>
-                <View style={[styles.detailRow, { paddingRight: hp(1) }]}>
-                  <Text style={styles.label}>Status</Text>
-                  <Text style={styles.value}>Pending</Text>
-                </View>
-              </View>)}
-              {/* Additional Note */} 
-                {reqStatus === 'complete' &&<>
-              <Text style={styles.noteText}>
-                Note : Lorem ipsum dolor sit amet consectetur. Neque orci lorem sed in.
-                Lectus aliquet mattis condimentum eu tempus ac lorem.
-              </Text>
-                </>}
-              
+              )}
+              {/* Additional Note */}
+              {reqStatus === 'complete' && (
+                <>
+                  <Text style={styles.noteText}>
+                    Note : Lorem ipsum dolor sit amet consectetur. Neque orci
+                    lorem sed in. Lectus aliquet mattis condimentum eu tempus ac
+                    lorem.
+                  </Text>
+                </>
+              )}
 
               {/* Assigned Agent */}
-             {reqStatus === 'Schedule' &&<>
-              <Text style={styles.sectionTitle}>Assigned Agent</Text>
-            <View style={styles.agentContainer}>
-              <View style={styles.agentInfo}>
-                <Image source={images.userphoto} style={styles.agentImage} />
-                <View style={styles.agentText}>
-                  <View style={[styles.agentHeader,{marginLeft:wp(-1),marginBottom:hp(1)}]}>
-                    <Image source={images.profile} style={[styles.icon,{ resizeMode: 'contain',}]} />
-                    <Text style={styles.agentName}>Mohan Verma</Text>
+              {reqStatus === 'Schedule' && (
+                <>
+                  <Text style={styles.sectionTitle}>Assigned Agent</Text>
+                  <View style={styles.agentContainer}>
+                    <View style={styles.agentInfo}>
+                      <Image
+                        source={images.userphoto}
+                        style={styles.agentImage}
+                      />
+                      <View style={styles.agentText}>
+                        <View
+                          style={[
+                            styles.agentHeader,
+                            { marginLeft: wp(-1), marginBottom: hp(1) },
+                          ]}
+                        >
+                          <Image
+                            source={images.profile}
+                            style={[styles.icon, { resizeMode: 'contain' }]}
+                          />
+                          <Text style={styles.agentName}>Mohan Verma</Text>
+                        </View>
+                        <Text style={styles.agentTitle}>AC Doctor agent</Text>
+                      </View>
+                    </View>
+                    <View style={styles.actionButtons}>
+                      <TouchableOpacity style={styles.viewProfileButton}>
+                        <Text style={styles.viewProfileText}>View Profile</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.chatButton}>
+                        <Image
+                          source={images.chatIcon}
+                          style={styles.chatIcon}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                  <Text style={styles.agentTitle}>AC Doctor agent</Text>
-                </View>
-              </View>
-              <View style={styles.actionButtons}>
-                <TouchableOpacity style={styles.viewProfileButton}>
-                  <Text style={styles.viewProfileText}>View Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.chatButton}>
-                  <Image source={images.chatIcon} style={styles.chatIcon} />
-                </TouchableOpacity>
-              </View>
+                </>
+              )}
             </View>
-              </>}
-            </View>
-          </>}
-
-           {detailStatus === 'Payment' && (<>
-            <Text style={[styles.label,{color:COLORS.black}]}> Request ID #1234</Text>
-          <View style={[styles.section]}>
-          <View style={styles.copperRow}>
-            <Text style={styles.label}>Dakin</Text>
-            <Text style={[styles.value,{fontFamily:Fonts.semiBold}]}>₹ 25000/-</Text>
-          </View>
-            <Text style={[styles.label,{paddingTop:hp(1)}]}>Dakin 9Q12YTYG</Text>
-           
-          <View style={styles.copperRow}>
-            <Text style={styles.label}>Split 1.5Ton</Text>
-            <Text style={[styles.label,{textDecorationLine:'underline',color:COLORS.themeColor, textAlign:'center'}]}>Download Offer Agreement</Text>
-          </View>    
-          </View>
-        </>
+          </>
         )}
 
-        {detailStatus === 'Payment' && (<>
-            <Text style={[styles.label,{color:COLORS.black}]}> Payment mode selection</Text>
-          <View style={[styles.section]}>
-          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('bank')} activeOpacity={0.5}>
-            <Image source={selectPay === 'bank' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
-            <Text style={styles.label}>{'  '}Bank Transfer</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('upi')} activeOpacity={0.5}>
-            <Image source={selectPay === 'upi' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
-            <Text style={styles.label}>{'  '}UPI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.statusInfo} onPress={()=>setSelectedPay('Pickup')} activeOpacity={0.5}>
-            <Image source={selectPay === 'Pickup' ?images.onbutton :images.offbutton} style={styles.IconImage}/>
-            <Text style={styles.label}>{'  '}Cash on Pickup</Text>
-          </TouchableOpacity>
-      
-          <Text style={[styles.label,{marginVertical:wp(1.5), color:COLORS.black}]}>Enter your UPI ID</Text>
-         <View style={{borderRadius:hp(5), borderWidth:wp(0.3), borderColor:COLORS.lightGray, padding:hp(1.7),marginVertical:wp(1.5)}}>
-          <TextInput
-           placeholder='Type here...'
-           placeholderTextColor={COLORS.textColor}
-           keyboardType='default'
-           value={upiId}
-           onChange={(txt)=>setupiId(txt)}
-          />
-          </View>   
-          </View>
-        </>
-        )}
-        
+        {detailStatus === 'Payment' && (
+          <>
+            <Text style={[styles.label, { color: COLORS.black }]}>
+              {' '}
+              Request ID #1234
+            </Text>
+            <View style={[styles.section]}>
+              <View style={styles.copperRow}>
+                <Text style={styles.label}>Dakin</Text>
+                <Text style={[styles.value, { fontFamily: Fonts.semiBold }]}>
+                  ₹ 25000/-
+                </Text>
+              </View>
+              <Text style={[styles.label, { paddingTop: hp(1) }]}>
+                Dakin 9Q12YTYG
+              </Text>
 
-        {(detailStatus !== 'Payment' || detailStatus === 'Quote' || reqStatus === 'Accepted' || reqStatus === 'Decline') && (
-        <View style={[styles.section]}>
-          {/* Status Section */}
-          {(reqStatus === 'Accepted' || reqStatus === 'Decline') && (
-             <View style={styles.copperRow}>
+              <View style={styles.copperRow}>
+                <Text style={styles.label}>Split 1.5Ton</Text>
+                <Text
+                  style={[
+                    styles.label,
+                    {
+                      textDecorationLine: 'underline',
+                      color: COLORS.themeColor,
+                      textAlign: 'center',
+                    },
+                  ]}
+                >
+                  Download Offer Agreement
+                </Text>
+              </View>
+            </View>
+          </>
+        )}
+
+        {/*  Payment mode selection */}
+        {detailStatus === 'Payment' && (
+          <>
+            <Text style={[styles.label, { color: COLORS.black }]}>
+              {' '}
+              Payment mode selection
+            </Text>
+            <View style={[styles.section]}>
+              <TouchableOpacity
+                style={styles.statusInfo}
+                onPress={() => setSelectedPay('bank')}
+                activeOpacity={0.5}
+              >
+                <Image
+                  source={
+                    selectPay === 'bank' ? images.onbutton : images.offbutton
+                  }
+                  style={styles.IconImage}
+                />
+                <Text style={styles.label}>{'  '}Bank Transfer</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.statusInfo}
+                onPress={() => setSelectedPay('upi')}
+                activeOpacity={0.5}
+              >
+                <Image
+                  source={
+                    selectPay === 'upi' ? images.onbutton : images.offbutton
+                  }
+                  style={styles.IconImage}
+                />
+                <Text style={styles.label}>{'  '}UPI</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.statusInfo}
+                onPress={() => setSelectedPay('Pickup')}
+                activeOpacity={0.5}
+              >
+                <Image
+                  source={
+                    selectPay === 'Pickup' ? images.onbutton : images.offbutton
+                  }
+                  style={styles.IconImage}
+                />
+                <Text style={styles.label}>{'  '}Cash on Pickup</Text>
+              </TouchableOpacity>
+
+              <Text
+                style={[
+                  styles.label,
+                  { marginVertical: wp(1.5), color: COLORS.black },
+                ]}
+              >
+                Enter your UPI ID
+              </Text>
+              <View
+                style={{
+                  borderRadius: hp(5),
+                  borderWidth: wp(0.3),
+                  borderColor: COLORS.lightGray,
+                  padding: hp(1.7),
+                  marginVertical: wp(1.5),
+                }}
+              >
+                <TextInput
+                  placeholder="Type here..."
+                  placeholderTextColor={COLORS.textColor}
+                  keyboardType="default"
+                  value={upiId}
+                  onChange={txt => setupiId(txt)}
+                />
+              </View>
+            </View>
+          </>
+        )}
+
+        {/* Status Section */}
+        {(detailStatus === 'Quote' ||
+          (detailStatus !== 'Payment' &&
+            ['Accepted', 'Decline'].includes(reqStatus))) && (
+          <View style={[styles.section]}>
+            {(reqStatus === 'Accepted' ||
+              detailStatus !== 'Payment' ||
+              reqStatus === 'Decline') && (
+              <View style={styles.copperRow}>
                 <Text style={styles.label}>Status</Text>
                 {reqStatus === 'Accepted' && (
                   <Text
@@ -325,10 +477,12 @@ const OldACRequest = ({ navigation }) => {
                     ]}
                   >
                     {' '}
-                   ❌ Declined
+                    ❌ Declined
                   </Text>
                 )}
-              </View>)}
+              </View>
+            )}
+
             <View style={styles.copperRow}>
               <Text style={styles.label}>Offer Amount</Text>
               <Text
@@ -356,6 +510,14 @@ const OldACRequest = ({ navigation }) => {
               <Text style={styles.label}>Inspection Remarks</Text>
               <Text style={styles.value}>Minor scratches, function</Text>
             </View>
+            {reqStatus === 'Decline' && (
+              <View style={styles.copperRow}>
+                <Text style={styles.label}>Reason for Decline</Text>
+                <Text style={[styles.value, { color: COLORS.red }]}>
+                  Expected a higher offer
+                </Text>
+              </View>
+            )}
             <View style={[styles.copperRow, { justifyContent: 'center' }]}>
               <Text
                 style={[
@@ -367,50 +529,66 @@ const OldACRequest = ({ navigation }) => {
                   },
                 ]}
               >
-               View AC Details
+                View AC Details
               </Text>
             </View>
 
             {/* btn. */}
-            <View style={styles.copperRow}>
-              <TouchableOpacity
-                style={[styles.doneButton, { backgroundColor: COLORS.white }]}
-                onPress={() => setDeclineVisible(true)}
-              >
-                <Text
-                  style={[styles.doneButtonText, { color: COLORS.textHeading }]}
-                >
-                  Decline
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.doneButton, styles.secondButton]}
-                onPress={() => setAcceptVisible(true)}
-              >
-                <Text style={styles.doneButtonText}>Accept</Text>
-              </TouchableOpacity>
-            </View>
+            {reqStatus !== 'Decline' ||
+              (reqStatus === 'Accepted' && (
+                <View style={styles.copperRow}>
+                  <TouchableOpacity
+                    style={[
+                      styles.doneButton,
+                      { backgroundColor: COLORS.white },
+                    ]}
+                    onPress={() => setDeclineVisible(true)}
+                  >
+                    <Text
+                      style={[
+                        styles.doneButtonText,
+                        { color: COLORS.textHeading },
+                      ]}
+                    >
+                      Decline
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.doneButton, styles.secondButton]}
+                    onPress={() => setAcceptVisible(true)}
+                  >
+                    <Text style={styles.doneButtonText}>Accept</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
           </View>
         )}
 
-         
-         {detailStatus !== 'Payment' &&<View style={{marginBottom:wp(15)}}>
-            {detailStatus !== 'Quote' && (<TouchableOpacity
-              style={[
-                styles.copperRow,
-                { width: wp('90'), alignSelf: 'center' },
-              ]}
-            >
-              <Text style={[styles.label, { color: COLORS.black }]}>
-                Your AC details
-              </Text>
-              {detailStatus === 'Request' &&<TouchableOpacity style={[styles.copperRow]}>
-                <Image source={images.editIcon} style={styles.showiconStyle} />
-                <Text style={[styles.label, { color: COLORS.themeColor }]}>
-                  Edit
+        {detailStatus !== 'Payment' && (
+          <View style={{ marginBottom: wp(15) }}>
+            {detailStatus !== 'Quote' && (
+              <TouchableOpacity
+                style={[
+                  styles.copperRow,
+                  { width: wp('90'), alignSelf: 'center' },
+                ]}
+              >
+                <Text style={[styles.label, { color: COLORS.black }]}>
+                  Your AC details
                 </Text>
-              </TouchableOpacity>}
-            </TouchableOpacity>)}
+                {detailStatus === 'Request' && (
+                  <TouchableOpacity style={[styles.copperRow]}>
+                    <Image
+                      source={images.editIcon}
+                      style={styles.showiconStyle}
+                    />
+                    <Text style={[styles.label, { color: COLORS.themeColor }]}>
+                      Edit
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </TouchableOpacity>
+            )}
 
             {/* AC Names List */}
             {Object.keys(acData).map(acName => (
@@ -426,7 +604,7 @@ const OldACRequest = ({ navigation }) => {
                     {expandedAC === acName ? '▲' : '▼'}
                   </Text>
                 </TouchableOpacity>
-     
+
                 {expandedAC === acName ? (
                   <View key={acName} style={styles.acItem}>
                     {Object.entries(acData[acName]).map(([key, detail]) => (
@@ -441,7 +619,7 @@ const OldACRequest = ({ navigation }) => {
                           <Text
                             style={[
                               styles.value,
-                              { fontFamily: 'Fonts.semiBold' },
+                              { fontFamily: Fonts.semiBold },
                             ]}
                           >
                             {detail.value}
@@ -486,85 +664,92 @@ const OldACRequest = ({ navigation }) => {
                       </>
                     ))}
                   </View>
-                ) :(<View></View>)}
-            
+                ) : (
+                  <View></View>
+                )}
               </>
             ))}
-          </View>}
+          </View>
+        )}
 
-           {/* Select Date & Time */}
-                 {detailStatus === 'Payment' &&
-                 <>
-                 <Text style={[styles.label,{color:COLORS.black}]}>Schedule Pickup</Text>
-                 <View style={styles.inputGroup}>
-                  <Text style={styles.label}>
-                    Preferred Inspection Date & Time
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.pickerWrapper}
-                    onPress={() => setModalSlotVisible(true)}
-                  >
-                    <Text
-                      style={[
-                        { flex: 1, marginLeft: wp(4) },
-                        styles.uploadText,
-                      ]}
-                    >
-                      {selectdate}
-                    </Text>
-                    <FastImage
-                      source={images.Calendar}
-                      style={styles.customIcon}
-                      resizeMode={FastImage.resizeMode.contain}
-                    />
-                  </TouchableOpacity>
-                </View>
-                 </>
-                }
-       
-      {detailStatus === 'Payment' && 
-      <View style={[styles.section,{marginBottom:hp(15)}]}>
-        <View style={styles.copperRow}>
+        {/* Select Date & Time */}
+        {detailStatus === 'Payment' && (
+          <>
+            <Text style={[styles.label, { color: COLORS.black }]}>
+              Schedule Pickup
+            </Text>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Preferred Inspection Date & Time</Text>
+              <TouchableOpacity
+                style={styles.pickerWrapper}
+                onPress={() => setModalSlotVisible(true)}
+              >
+                <Text
+                  style={[{ flex: 1, marginLeft: wp(4) }, styles.uploadText]}
+                >
+                  {selectdate}
+                </Text>
+                <FastImage
+                  source={images.Calendar}
+                  style={styles.customIcon}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+
+        {detailStatus === 'Payment' && (
+          <View style={[styles.section, { marginBottom: hp(3) }]}>
+            <View style={styles.copperRow}>
               <Text style={styles.label}>Pickup Date</Text>
               <Text style={styles.value}>20/03/2025</Text>
             </View>
-        <View style={styles.copperRow}>
+            <View style={styles.copperRow}>
               <Text style={styles.label}>Pickup Time</Text>
               <Text style={styles.value}>First Half</Text>
             </View>
-      </View>
-            }
-
-            
+          </View>
+        )}
 
         {/* banner image */}
-        {detailStatus === 'Quote' && (
-        <>
-          {detailStatus !== 'Payment' && (
-            <View
-              style={[
-                HomeScreenStyles.worksliderview,
-                { marginTop: detailStatus === 'Quote' ? -50 : 0 }, // Dynamic marginTop
-              ]}
-            >
-              <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
-            </View>
-          )}
+        {detailStatus !== 'Request' && (
+          <>
+            {detailStatus === 'Quote' && (
+              <View
+                style={[
+                  HomeScreenStyles.worksliderview,
+                  { marginTop: detailStatus === 'Quote' ? -50 : 0 },
+                ]}
+              >
+                <Image
+                  source={images.bannerTwo}
+                  style={HomeScreenStyles.workimage}
+                />
+              </View>
+            )}
 
-          <View style={[HomeScreenStyles.brandcont, { marginBottom: hp(10) }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Image source={images.helpdesk} style={HomeScreenStyles.smallimage} />
-              <Text style={HomeScreenStyles.needHelp}>Need Help?</Text>
+            <View
+              style={[HomeScreenStyles.brandcont, { marginBottom: hp(10) }]}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image
+                  source={images.helpdesk}
+                  style={HomeScreenStyles.smallimage}
+                />
+                <Text style={HomeScreenStyles.needHelp}>Need Help?</Text>
+              </View>
+              <Image
+                source={images.chatIcon}
+                style={HomeScreenStyles.chaticon}
+              />
             </View>
-            <Image source={images.chatIcon} style={HomeScreenStyles.chaticon} />
-          </View>
-        </>
-      )}
-        
+          </>
+        )}
       </ScrollView>
 
       {/* Cancel and Reschedule Buttons */}
-      {detailStatus === 'Request' && (
+      {detailStatus === 'Request' && reqStatus !== 'complete' && (
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.doneButton, { backgroundColor: COLORS.white }]}
@@ -576,41 +761,62 @@ const OldACRequest = ({ navigation }) => {
               Cancel Request
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.doneButton, styles.secondButton]}>
+          <TouchableOpacity
+            style={[styles.doneButton, styles.secondButton]}
+            onPress={() => setModalSlotVisible(true)}
+          >
             <Text style={styles.doneButtonText}>Reschedule</Text>
           </TouchableOpacity>
         </View>
       )}
 
+      {detailStatus === 'Payment' && (
+        <View style={[HomeScreenStyles.servicesSection, { minHeight: hp(8) }]}>
+          <CustomButton
+            buttonName="Submit"
+            margingTOP={hp('0%')}
+            btnTextColor={COLORS.white}
+            btnColor={COLORS.themeColor}
+            onPress={() => navigation.navigate('PaymentScreen')}
+          />
+        </View>
+      )}
+      {reqStatus === 'Accepted' &&
+        (detailStatus === 'Quote' || detailStatus === 'Payment') && (
+          <View style={HomeScreenStyles.servicesSection}>
+            <CustomButton
+              buttonName="Proceed to payment Details"
+              margingTOP={hp('0%')}
+              btnTextColor={COLORS.white}
+              btnColor={COLORS.themeColor}
+              onPress={() => setDetailStatus('Payment')}
+            />
+          </View>
+        )}
 
-      {reqStatus === 'complete' || detailStatus !== 'Quote' && <View style={HomeScreenStyles.servicesSection}>
-        <CustomButton
-          buttonName="Next"
-          margingTOP={hp('0%')}
-          btnTextColor={COLORS.white}
-          btnColor={COLORS.themeColor}
-          onPress={() => setDetailStatus('Quote')}
-        />
-      </View>}
+      {reqStatus === 'ReScheduled' && (
+        <View style={HomeScreenStyles.servicesSection}>
+          <CustomButton
+            buttonName="Next"
+            margingTOP={hp('0%')}
+            btnTextColor={COLORS.white}
+            btnColor={COLORS.themeColor}
+            onPress={() => setReqStatus('complete')}
+          />
+        </View>
+      )}
 
-      {detailStatus === 'Payment' && <View style={HomeScreenStyles.servicesSection}>
-        <CustomButton
-          buttonName="Submit"
-          margingTOP={hp('0%')}
-          btnTextColor={COLORS.white}
-          btnColor={COLORS.themeColor}
-          onPress={() => setDetailStatus('Quote')}
-        />
-      </View>}
-      {reqStatus === 'Accepted' && <View style={HomeScreenStyles.servicesSection}>
-        <CustomButton
-          buttonName="Proceed to payment Details "
-          margingTOP={hp('0%')}
-          btnTextColor={COLORS.white}
-          btnColor={COLORS.themeColor}
-          onPress={() => setDetailStatus('Payment')}
-        />
-      </View>}
+      {reqStatus === 'complete' && detailStatus === 'Request' && (
+        <View style={HomeScreenStyles.servicesSection}>
+          <CustomButton
+            buttonName="Next"
+            margingTOP={hp('0%')}
+            btnTextColor={COLORS.white}
+            btnColor={COLORS.themeColor}
+            onPress={() => setDetailStatus('Quote')}
+          />
+        </View>
+      )}
 
       {/* cancel request Popup */}
       <SuccessPopupModal
@@ -631,11 +837,11 @@ const OldACRequest = ({ navigation }) => {
         }}
       />
       {/* confirm cancel request Popup */}
-
       <SuccessPopupModal
         visible={confirmPopupVisible}
         onClose={() => {
           setConfirmPopupVisible(false);
+          setReqStatus('Schedule');
         }}
         setIcon={images.cancelRed}
         HeadTextColor="black"
@@ -646,7 +852,7 @@ const OldACRequest = ({ navigation }) => {
         secondButtonText="Done"
         firstButtonText="View Request"
         onSecondButtonPress={() => {
-          setConfirmPopupVisible(false), setReqStatus('Schedule');
+          setConfirmPopupVisible(false), navigation.goBack();
         }}
       />
 
@@ -665,16 +871,18 @@ const OldACRequest = ({ navigation }) => {
         secondButtonText="confirm"
         firstButtonText="No"
         onSecondButtonPress={() => {
-          setAcceptVisible(false),setConfirmAcceptVisible(true), setReqStatus('Schedule');
+          setAcceptVisible(false),
+            setConfirmAcceptVisible(true),
+            setReqStatus('Schedule');
         }}
       />
 
-{/* offer Accepted */}
+      {/* offer Accepted */}
       <SuccessPopupModal
         visible={confirmAcceptVisible}
         onClose={() => {
           setConfirmAcceptVisible(false);
-          setReqStatus('Accepted')
+          setReqStatus('Accepted');
         }}
         HeadText="Offer Accepted!"
         message1="Your request has been submitted."
@@ -683,12 +891,10 @@ const OldACRequest = ({ navigation }) => {
         firstButtonText="Done"
       />
 
+      {/* 'Decline popup*/}
       <DeclineModal
         visible={DeclineVisible}
-        onClose={() => {
-          setDeclineVisible(false),
-            setReqStatus('Decline')
-        }}
+        onClose={() => setDeclineVisible(false)}
         HeadTextColor={COLORS.red}
         setIcon={images.processReject}
         HeadText="Decline"
@@ -696,11 +902,18 @@ const OldACRequest = ({ navigation }) => {
         message2="for your AC?"
         buttonCount={2}
         firstButtonText="Confirm Decline"
+        onFirstButtonPress={reason => {
+          setDeclineVisible(false);
+          setReqStatus('Decline');
+        }}
         secondButtonText="No"
-        secondButton={() => {
-          setDeclineVisible(false),
-            setDetailStatus('Payment'),
-            setPaymentStatus('No');
+        onSecondButtonPress={() => {
+          setDeclineVisible(false);
+          setDetailStatus('Payment');
+          setPaymentStatus('No');
+        }}
+        onReasonSelect={reason => {
+          setSelectReason(reason);
         }}
       />
 
@@ -710,6 +923,7 @@ const OldACRequest = ({ navigation }) => {
         onClose={() => setModalSlotVisible(false)}
         setSelectedSlot={handleSlotSelection}
         onBookProcess={() => setModalSlotVisible(false)}
+        isReschedule={true}
       />
     </View>
   );
@@ -978,16 +1192,10 @@ const styles = StyleSheet.create({
     padding: wp(3),
     marginTop: wp(2),
   },
-    inputGroup: {
+  inputGroup: {
     marginTop: hp('1%'),
     marginHorizontal: wp('2%'),
-    backgroundColor:COLORS.white
-  },
-  label: {
-    fontSize: hp('1.5%'),
-    color: COLORS.black,
-    marginBottom: hp('1.5%'),
-    fontFamily: Fonts.medium,
+    backgroundColor: COLORS.white,
   },
   labelInput: {
     flex: 1,
@@ -1005,10 +1213,10 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     overflow: 'hidden',
     height: hp('5%'),
-    width:wp(88),
-    alignSelf:'center'
+    width: wp(88),
+    alignSelf: 'center',
   },
-   pickerTech: {
+  pickerTech: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#ffffffff',
@@ -1017,7 +1225,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     overflow: 'hidden',
     height: hp('5%'),
-    alignSelf:'center'
+    alignSelf: 'center',
   },
 });
 

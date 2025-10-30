@@ -125,8 +125,13 @@ const images = {
   cassetteG: require('./icons/cassetteG.png'),
   cancelRed: require('./icons/cancelRed.png'),
   questionMark: require('./icons/questionMark.png'),
-  
+  timeLight: require('./icons/timeLight.png'),
+  timeRed: require('./icons/timeRed.png'),
+  locationRed: require('./icons/locationRed.png'),
+  editLight: require('./icons/editLight.png'),
+  callRed: require('./icons/callRed.png'),
 
+  
 
 
   // Add more images as needed

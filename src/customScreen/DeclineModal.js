@@ -17,102 +17,88 @@ import {
 const DeclineModal = ({
   visible,
   onClose,
+  onReasonSelect,
   message1,
   HeadText,
   message2,
   setIcon = images.correctIcon,
   HeadTextColor,
-  buttonCount = 1, // Default to 1 button
+  buttonCount = 1,
   firstButtonText = 'Done',
-  secondButtonText = 'View Request', // Default text for second button
-  onSecondButtonPress = onClose, // Default action for second button
+  onFirstButtonPress = onClose, // ← Sahi naam
+  secondButtonText = 'View Request',
+  onSecondButtonPress = onClose, // ← Sahi naam
+  selectedReason: propReason,
 }) => {
- const [select, setSelected]= useState('Expect')
+  const [select, setSelect] = useState('Expected a higher offer');
+  const finalReason = propReason || select;
+
+  const handleReasonSelect = (reason) => {
+    setSelect(reason);
+    onReasonSelect?.(reason);
+  };
 
   return (
-    <Modal
-      transparent={true}
-      animationType="fade"
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          {/* Checkmark Icon */}
+          {/* Icon */}
           <View style={styles.iconContainer}>
-            <Image
-              source={setIcon}
-              style={styles.checkmarkIcon}
-              resizeMode="contain"
-            />
+            <Image source={setIcon} style={styles.checkmarkIcon} resizeMode="contain" />
           </View>
 
-          {/* Success Message */}
-          <Text style={[styles.title, { color: HeadTextColor }]}>
-            {HeadText}
-          </Text>
+          {/* Messages */}
+          <Text style={[styles.title, { color: HeadTextColor }]}>{HeadText}</Text>
           <Text style={styles.message}>{message1}</Text>
           <Text style={styles.message}>{message2}</Text>
 
+          {/* Reason Selection */}
           <View style={styles.reasonDelineStyle}>
-            <Text style={styles.message}>
-              Lets us know the reason for Decline
-            </Text>
-            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('Expect')}>
-              <Image source={select === 'Expect' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
-              <Text style={styles.textreson}>Expected a higher offer</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('Change')}>
-              <Image source={select === 'Change' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
-              <Text style={styles.textreson}>Changed my mind</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('later')}>
-              <Image source={select === 'later' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
-              <Text style={styles.textreson}>Want to sell later</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.flexOne} onPress={()=>setSelected('other')}>
-              <Image source={select === 'other' ? images.onbutton :images.offbutton} style={styles.checkOutIcon} />
-              <Text style={styles.textreson}>Other</Text>
-            </TouchableOpacity>
+            <Text style={styles.message}>Let us know the reason for Decline</Text>
+
+            {['Expected a higher offer', 'Changed my mind', 'Want to sell later', 'Other'].map((reason) => (
+              <TouchableOpacity
+                key={reason}
+                style={styles.flexOne}
+                onPress={() => handleReasonSelect(reason)}
+              >
+                <Image
+                  source={finalReason === reason ? images.onbutton : images.offbutton}
+                  style={styles.checkOutIcon}
+                />
+                <Text style={styles.textreson}>{reason}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
+            {/* Confirm Decline Button */}
             {buttonCount >= 1 && (
               <TouchableOpacity
                 style={[
                   styles.doneButton,
                   {
-                    width: buttonCount === 1 ? wp('70%') : wp('33%'), // Full width for 1 button, half for 2
-                    alignSelf: buttonCount === 1 ? 'center' : 'flex-start',
-                    backgroundColor:
-                      buttonCount >= 1 ? COLORS.themeColor : '#ffffff',
-                    marginRight: buttonCount === 2 ? 10 : 0, // Add spacing between buttons when 2 are present
+                    width: buttonCount === 1 ? wp('70%') : wp('33%'),
+                    backgroundColor: COLORS.themeColor,
+                    marginRight: buttonCount === 2 ? 10 : 0,
                   },
                 ]}
-                onPress={onClose}
+                onPress={() => {
+                  onFirstButtonPress(finalReason); // ← Sirf ek call
+                }}
               >
-                <Text
-                  style={[
-                    styles.doneButtonText,
-                    { color: buttonCount >= 1 ? COLORS.white : '#676464ff' },
-                  ]}
-                >
+                <Text style={[styles.doneButtonText, { color: COLORS.white }]}>
                   {firstButtonText}
                 </Text>
               </TouchableOpacity>
             )}
+
+            {/* No Button */}
             {buttonCount >= 2 && (
               <TouchableOpacity
-                style={[
-                  styles.doneButton,
-                  styles.secondButton,
-                  {
-                    backgroundColor: '#ffffff',
-                    width: wp('40%'),
-                  },
-                ]}
-                onPress={onSecondButtonPress}
+                style={[styles.doneButton, styles.secondButton, { backgroundColor: '#ffffff', width: wp('40%') }]}
+                onPress={() => onSecondButtonPress(finalReason)}
               >
                 <Text style={[styles.doneButtonText, { color: '#676464ff' }]}>
                   {secondButtonText}
@@ -206,7 +192,7 @@ const styles = StyleSheet.create({
     width: wp(5),
     height: hp(3.5),
     resizeMode: 'contain',
-    marginRight:wp(2)
+    marginRight: wp(2),
   },
 });
 

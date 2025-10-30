@@ -21,7 +21,7 @@ import CustomButton from '../../components/CustomButton';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
 
-const AddAddress = ({ navigation }) => {
+const AddAddress = ({ navigation,route }) => {
   const [searchBar, setSearchBar] = useState('');
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
@@ -61,8 +61,17 @@ const AddAddress = ({ navigation }) => {
     setSelectedAddress(newAddress);
 
     console.log('Submitted Address:', newAddress);
-    // Alert.alert('Success', 'Address added successfully!');
+    const cameFrom = route?.params?.from; 
+
+  if (cameFrom === 'ServiceScreen') {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Tab', params: { screen: 'Home' } }],
+    }); 
+  } 
+  else if (cameFrom === 'CustomModal') {
     setModalSlotVisible(true);
+  }
   };
 
   return (
@@ -86,7 +95,7 @@ const AddAddress = ({ navigation }) => {
             onChangeText={setSearchBar}
           />
         </View>
-        <Text style={styles.orText}>{Platform.OS === 'ios' ?`────────────── Or ───────────`:`──────────────────  Or ─────────────────`}</Text>
+        <Text style={styles.orText}>{Platform.OS === 'ios' ?`──────────── Or ───────────`:`───────────────  Or ──────────────`}</Text>
         <Text style={styles.label}>Street Address</Text>
         <TextInput
           placeholder="Address"

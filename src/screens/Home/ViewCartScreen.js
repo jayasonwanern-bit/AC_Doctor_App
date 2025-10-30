@@ -23,9 +23,8 @@ import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
 import UserInfoModel from '../../customScreen/UserInfoModel';
 
-
-const ViewCartScreen = ({route}) => {
-  const { screenName } = route.params || { screenName: 'Unknown' }
+const ViewCartScreen = ({ route }) => {
+  const { screenName } = route.params || { screenName: 'Unknown' };
   const navigation = useNavigation();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -33,6 +32,7 @@ const ViewCartScreen = ({route}) => {
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalUserVisible, setModalUserVisible] = useState(false);
+ const [proceed, setProceed] = useState(false);
   const [acTypes, setAcTypes] = useState([
     { name: 'Split AC', count: 2, showButtons: false },
 
@@ -90,6 +90,7 @@ const ViewCartScreen = ({route}) => {
     }
     setAcTypes(updatedAcTypes);
   };
+    console.log('setSetProceed----->', setProceed);
 
   return (
     <View style={styles.container}>
@@ -103,7 +104,7 @@ const ViewCartScreen = ({route}) => {
           <Text style={styles.viewCartText}>Saving ₹150 on this order</Text>
         </View>
 
- {/* Actype */}
+        {/* Actype */}
         <Text style={styles.headText}>{screenName}</Text>
         <View style={{ marginVertical: wp('2%') }}>
           {acTypes.map((ac, index) => (
@@ -131,7 +132,7 @@ const ViewCartScreen = ({route}) => {
           ))}
         </View>
 
-{/* Repair ServiceS */}
+        {/* Repair ServiceS */}
         <Text style={styles.headText}>Repair Service</Text>
 
         <View style={{ marginVertical: wp('2%') }}>
@@ -159,8 +160,6 @@ const ViewCartScreen = ({route}) => {
             </View>
           ))}
         </View>
-
-        
 
         {/* Installation */}
         <Text style={styles.headText}>Installation Service</Text>
@@ -348,39 +347,90 @@ const ViewCartScreen = ({route}) => {
               width: wp('93%'),
               alignItems: 'flex-start',
               padding: wp('3%'),
-              marginBottom: hp('15%'),
+              marginBottom: hp('35%'),
             },
           ]}
         >
           <Text style={styles.headText}>Cancellation policy</Text>
           <View style={{ flexDirection: 'row', marginVertical: hp('1%') }}>
+            <FastImage source={images.timeLight} style={styles.smallImag} />
             <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
-             ◷ Orders cannot be cancelled within 2 hours of the scheduled
-              service time.
+              Orders cannot be cancelled within 2 hours of the scheduled service
+              time.
             </Text>
           </View>
 
           <View style={{ flexDirection: 'row' }}>
-            {/* <Image source={images.tag} style={styles.carticon} /> */}
+            {/* <FastImage source={images.timeLight} style={styles.smallImag} /> */}
             <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
-              ₹ Orders cannot be cancelled within 2 hours of the scheduled
-              service time.
+              ₹ {'   '} In case of unexpected delays or issues, a refund will be
+              provided.
             </Text>
           </View>
         </View>
-
       </ScrollView>
 
-      <View style={styles.servicesSection}>
+      <View
+        style={[
+          styles.servicesSection,
+          { height: proceed ? hp('25%') : hp('10%') },
+        ]}
+      >
+        {proceed && (
+          <>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginVertical: hp('0.5%'),
+                alignItems: 'center',
+              }}
+            >
+              <FastImage
+                source={images.locationRed}
+                style={styles.normalImag}
+              />
+              <Text style={styles.textBottom}>
+                Sachin Gupta,149, Scheme, Vijay Nagar, Indore, Madhya Paresh
+                452010
+              </Text>
+              <FastImage source={images.editLight} style={styles.normalImag} />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginVertical: hp('1.5%'),
+                alignItems: 'center',
+              }}
+            >
+              <FastImage source={images.callRed} style={styles.normalImag} />
+              <Text style={styles.textBottom}>+91-9876543210</Text>
+              <FastImage source={images.editLight} style={styles.normalImag} />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginBottom: hp('2%'),
+                alignItems: 'center',
+              }}
+            >
+              <FastImage source={images.timeRed} style={styles.normalImag} />
+              <Text style={styles.textBottom}>
+                Sat, 15 June 2024 | 10:00 AM - 12:00 PM
+              </Text>
+              <FastImage source={images.editLight} style={styles.normalImag} />
+            </View>
+          </>
+        )}
         <CustomButton
-          buttonName="Add Address & Slot"
+         buttonName={proceed ? 'Proceed to pay' : 'Add Address & Slot'}
           margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
-          onPress={() => setModalUserVisible(true)}
+         onPress={() => {
+      proceed ? navigation.navigate('PaymentScreen') : setModalUserVisible(true);
+    }}
         />
       </View>
-
 
       <CustomModal
         visible={modalVisible}
@@ -394,14 +444,13 @@ const ViewCartScreen = ({route}) => {
         setSelectedAddress={setSelectedAddress}
       />
 
-
       <UserInfoModel
         visible={modalUserVisible}
         onClose={() => setModalUserVisible(false)}
-        onProceed={(userInfo) => {
-          console.log('user Dot',(userInfo));
-         setModalUserVisible(false);
-         setTimeout(() => {
+        onProceed={userInfo => {
+          console.log('user Dot', userInfo);
+          setModalUserVisible(false);
+          setTimeout(() => {
             setModalVisible(true);
           }, 300);
         }}
@@ -421,7 +470,11 @@ const ViewCartScreen = ({route}) => {
 
       <ConfirmationModal
         visible={confirmModalVisible}
-        onClose={() => setConfirmModalVisible(false)}
+        onClose={() => {
+    setConfirmModalVisible(false);
+    setProceed(true); // Ab sahi state update hoga
+    console.log('Proceed set to true'); // Log ke liye
+  }}
         selectedAddress={selectedAddress}
         selectedSlot={selectedSlot}
       />
@@ -559,12 +612,10 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: wp('3%'),
     backgroundColor: COLORS.lightSky,
   },
-   servicesSection: {
-    flexDirection: 'row',
+  servicesSection: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal:hp('2.5%'),
-    paddingVertical:hp('2%'),
+    paddingHorizontal: hp('2.5%'),
+    paddingVertical: hp('2%'),
     backgroundColor: COLORS.white,
     position: 'absolute',
     bottom: 0,
@@ -577,8 +628,27 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+    borderTopRightRadius: wp('5%'),
+    borderTopLeftRadius: wp('5%'),
   },
-
+  smallImag: {
+    width: wp('3%'),
+    height: hp('1.5%'),
+    resizeMode: 'contain',
+    marginRight: hp('1%'),
+  },
+  normalImag: {
+    width: wp('4%'),
+    height: hp('2%'),
+    resizeMode: 'contain',
+  },
+  textBottom: {
+    fontSize: hp('1.5%'),
+    fontFamily: Fonts.medium,
+    color: COLORS.textHeading,
+    width: wp('70%'),
+    marginHorizontal: hp('2%'),
+  },
 });
 
 export default ViewCartScreen;

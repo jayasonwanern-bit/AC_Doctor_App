@@ -25,7 +25,11 @@ const ServiceScreen = () => {
     navigation.reset({
       index: 0,
       routes: [{ name: 'Tab', params: { screen: 'Home' } }],
-    });
+    }); 
+  };
+
+  const handleManuallyLocation = () => {
+     navigation.navigate('AddAddress', { from: 'ServiceScreen' });
   };
 
 
@@ -101,6 +105,12 @@ const ServiceScreen = () => {
         />
         <Text style={styles.locationText}>Use Current Location</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.locationManualButton}
+        onPress={() => handleManuallyLocation()}
+      >
+        <Text style={[styles.locationText,{color:COLORS.black}]}>Enter Location Manually</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
     width: wp('5%'),
     height: hp('5%'),
     resizeMode: 'contain',
-    marginVertical: hp('3%'),
+    marginHorizontal: hp('1%'),
   },
   title: {
     fontSize: hp('2.5%'),
@@ -140,6 +150,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: COLORS.black,
   },
+  locationManualButton: {
+    height: hp('5.4%'),
+    borderColor: COLORS.black,
+    borderWidth:hp('0.1%'),
+    borderRadius: 25,
+    width: wp('90%'),
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent:'center',
+    marginTop: hp('3%'),
+  },
   locationButton: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -155,7 +176,8 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: hp('1.8%'),
     fontFamily: Fonts.medium,
-    marginLeft: wp('2%'),
+    // marginLeft: wp('2%'),
+    textAlign:'center'
   },
   errorText: {
     color: COLORS.errorRed,

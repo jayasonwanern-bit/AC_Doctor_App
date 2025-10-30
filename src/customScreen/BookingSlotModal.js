@@ -6,6 +6,7 @@ import {
   Modal,
   ScrollView,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -13,15 +14,32 @@ import {
 } from 'react-native-responsive-screen';
 import { COLORS } from '../utils/colors';
 
-const BookingSlotModal = ({ visible, onClose, onBookProcess, setSelectedSlot }) => {
+const BookingSlotModal = ({
+  visible,
+  onClose,
+  onBookProcess,
+  setSelectedSlot,
+  isReschedule = false,
+}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [rescheduleReason, setRescheduleReason] = useState('');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // Default to current month
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
 
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
   const currentMonth = monthNames[new Date().getMonth()];
   const currentYear = new Date().getFullYear();
@@ -59,7 +77,12 @@ const BookingSlotModal = ({ visible, onClose, onBookProcess, setSelectedSlot }) 
   ];
 
   const handleProceedPress = () => {
-    if (selectedDay !== null && selectedTime !== null && setSelectedSlot && typeof setSelectedSlot === 'function') {
+    if (
+      selectedDay !== null &&
+      selectedTime !== null &&
+      setSelectedSlot &&
+      typeof setSelectedSlot === 'function'
+    ) {
       const selectedDayObj = days[selectedDay];
       const slot = {
         date: selectedDayObj.date,
@@ -69,6 +92,7 @@ const BookingSlotModal = ({ visible, onClose, onBookProcess, setSelectedSlot }) 
         year: selectedYear,
         time: timeSlots[selectedTime].time, // e.g., '02:00 PM - 08:00 PM'
         Timeslot: timeSlots[selectedTime].label, // e.g., 'First Half'
+        reason: isReschedule ? (rescheduleReason || null) : undefined,
       };
       setSelectedSlot(slot);
       onBookProcess();
@@ -171,7 +195,26 @@ const BookingSlotModal = ({ visible, onClose, onBookProcess, setSelectedSlot }) 
               </TouchableOpacity>
             ))}
           </View>
-          <TouchableOpacity style={styles.proceedButton} onPress={handleProceedPress}>
+
+          {isReschedule && (
+            <>
+              <Text style={styles.sectionLabel}>Reason of Rescheduling</Text>
+              <TextInput
+                style={styles.reasonInput}
+                placeholder="Type here..."
+                placeholderTextColor="#aaa"
+                multiline
+                numberOfLines={3}
+                value={rescheduleReason}
+                onChangeText={setRescheduleReason}
+                textAlignVertical="top"
+              />
+            </>
+          )}
+          <TouchableOpacity
+            style={styles.proceedButton}
+            onPress={handleProceedPress}
+          >
             <Text style={styles.proceedText}>Proceed</Text>
           </TouchableOpacity>
         </View>
@@ -249,6 +292,18 @@ const styles = StyleSheet.create({
   dayName: {
     fontSize: hp(1.5),
     color: '#151414ff',
+  },
+  reasonInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 8,
+    marginBottom: 16,
+    backgroundColor: '#f9f9f9',
+    fontSize: 14,
+    color: '#333',
+    height: hp(10),
   },
   timeContainer: {
     flexDirection: 'row',

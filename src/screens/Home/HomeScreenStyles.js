@@ -809,7 +809,7 @@ export const works = [
   },
   {
     id: '2',
-    text: 'SplSplit AC',
+    text: 'Split AC',
     icon: images.demoImgTwo,
   },
   {

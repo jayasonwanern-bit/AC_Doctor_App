@@ -40,8 +40,7 @@ const ConfirmationModal = ({ visible, onClose, selectedAddress, selectedSlot }) 
               <Text style={styles.slotText}>Time: {selectedSlot.Timeslot}</Text>
             </View>
           )}
-          <TouchableOpacity style={styles.confirmButton} onPress={()=>{onClose(); 
-            navigation.navigate('PaymentScreen')}}>
+          <TouchableOpacity style={styles.confirmButton} onPress={()=>onClose()}>
             <Text style={styles.confirmButtonText}>Process to pay</Text>
           </TouchableOpacity>
 

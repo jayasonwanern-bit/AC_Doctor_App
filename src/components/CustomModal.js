@@ -80,7 +80,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
             <TouchableOpacity
               onPress={() => {
                 onClose();
-                navigation.navigate('AddAddress');
+                navigation.navigate('AddAddress', { from: 'CustomModal' });
               }}
             >
               <Text style={styles.addButtonText}>+ Add new</Text>
