@@ -64,3 +64,12 @@ export const Fonts = {
   extraLightItalic: 'Plus Jakarta Sans ExtraLight Italic',
 };
 
+// manage status colors globally
+export const STATUS_CONFIG = {
+  'Under Review': { bg: '#FFE7CF', text: '#D26900' },
+  'Scheduled': { bg: '#FFF8E1', text: '#FF8C00' },
+  'Re-scheduled': { bg: '#E3F2FD', text: '#1976D2' },
+  'Completed': { bg: '#ECFFE9', text: '#128807' },
+  'Cancelled': { bg: '#FFE5E5', text: '#D32F2F' },
+};
+

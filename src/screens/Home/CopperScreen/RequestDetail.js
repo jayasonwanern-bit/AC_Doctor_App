@@ -311,7 +311,9 @@ const RequestDetail = ({ navigation }) => {
             </View>
 
             {/* Buttons */}
-            {detailStatus === 'Quote' && (
+            {detailStatus === 'Quote' &&
+              reqStatus !== 'Accepted' &&
+              reqStatus !== 'Decline' && (
               <View style={styles.copperRow}>
                 <TouchableOpacity
                   style={[styles.doneButton, { backgroundColor: COLORS.white }]}
@@ -704,7 +706,6 @@ const RequestDetail = ({ navigation }) => {
         visible={confirmPopupVisible}
         onClose={() => {
           setReqStatus('Accepted');
-          Alert.alert('hello', reqStatus);
           setConfirmPopupVisible(false);
         }}
         HeadText="Offer Accepted!"
@@ -721,7 +722,6 @@ const RequestDetail = ({ navigation }) => {
         }}
         onFirstButtonPress={() => {
           setDeclineVisible(false), setReqStatus('Decline');
-          setDetailStatus('Payment'), setPaymentStatus('Confirm');
         }}
         HeadTextColor={COLORS.red}
         setIcon={images.processReject}

@@ -130,7 +130,19 @@ const images = {
   locationRed: require('./icons/locationRed.png'),
   editLight: require('./icons/editLight.png'),
   callRed: require('./icons/callRed.png'),
-
+  bookingIcon: require('./icons/bookingIcon.png'),
+  contractIcon: require('./icons/contractIcon.png'),
+  helpIcon: require('./icons/helpIcon.png'),
+  addressIcon: require('./icons/addressIcon.png'),
+  logoutIcon: require('./icons/logoutIcon.png'),
+  notificationRed: require('./icons/notificationRed.png'),
+  payIcon: require('./icons/payIcon.png'),
+  profileCamera: require('./icons/profileCamera.png'),
+  rateUSIcon: require('./icons/rateUSIcon.png'),
+  userProfile: require('./icons/userProfile.png'),
+  wheatherIcon: require('./icons/wheatherIcon.png'),
+  Plusicon: require('./icons/Plusicon.png'),
+  Whitedelete: require('./icons/Whitedelete.png'),
   
 
 

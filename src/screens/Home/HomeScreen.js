@@ -136,7 +136,7 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.wheatherContainer}>
               <FastImage
-                source={images.homeLocation}
+                source={images.wheatherIcon}
                 style={styles.locationIcon}
                 resizeMode={FastImage.resizeMode.contain}
               />

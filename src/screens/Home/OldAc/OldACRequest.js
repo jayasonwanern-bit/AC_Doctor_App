@@ -534,8 +534,9 @@ const OldACRequest = ({ navigation }) => {
             </View>
 
             {/* btn. */}
-            {reqStatus !== 'Decline' ||
-              (reqStatus === 'Accepted' && (
+            {detailStatus === 'Quote' &&
+              reqStatus !== 'Accepted' &&
+              reqStatus !== 'Decline' && (
                 <View style={styles.copperRow}>
                   <TouchableOpacity
                     style={[
@@ -560,7 +561,7 @@ const OldACRequest = ({ navigation }) => {
                     <Text style={styles.doneButtonText}>Accept</Text>
                   </TouchableOpacity>
                 </View>
-              ))}
+              )}
           </View>
         )}
 
@@ -789,7 +790,11 @@ const OldACRequest = ({ navigation }) => {
               margingTOP={hp('0%')}
               btnTextColor={COLORS.white}
               btnColor={COLORS.themeColor}
-              onPress={() => setDetailStatus('Payment')}
+              onPress={() => {
+                setDetailStatus('Payment'),
+                  detailStatus === 'Payment' &&
+                    navigation.navigate('PaymentScreen');
+              }}
             />
           </View>
         )}

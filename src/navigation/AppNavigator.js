@@ -12,7 +12,7 @@ import NewAddressDemo from '../screens/LocationAddress/NewAddressDemo';
 import AddAddress from '../screens/Home/AddAddress';
 import Sterilization from '../screens/Home/Sterilization';
 import ViewCartScreen from '../screens/Home/ViewCartScreen';
-import PaymentScreen from '../screens/Profile/PaymentScreen';
+import PaymentScreen from '../screens/Account/PaymentScreen';
 import CommericalAc from '../screens/Home/CommericalAc';
 import RepairScreen from '../screens/Home/RepairScreen';
 import InstallationScreen from '../screens/Home/InstallationScreen';
@@ -23,6 +23,11 @@ import RequestDetail from '../screens/Home/CopperScreen/RequestDetail';
 import SellOldAcScreen from '../screens/Home/OldAc/SellOldAcScreen';
 import BrandScreen from '../screens/Home/OldAc/BrandScreen';
 import OldACRequest from '../screens/Home/OldAc/OldACRequest';
+import ProfileDetail from '../screens/Account/ProfileDetail'; 
+import ManageAddressScreen from '../screens/Account/ManageAddressScreen';
+import NotificationScreeen from '../screens/Account/NotificationScreeen';
+import MyRequestsScreen from '../screens/Account/MyRequestsScreen';
+import MyBookingScreen from '../screens/Account/MyBookingScreen';
 
 
 import { COLORS } from '../utils/colors';
@@ -102,6 +107,11 @@ const AppNavigator = () => {
           <Stack.Screen name="SellOldAcScreen" component={SellOldAcScreen} />
           <Stack.Screen name="BrandScreen" component={BrandScreen} />
           <Stack.Screen name="OldACRequest" component={OldACRequest} />
+          <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
+          <Stack.Screen name="ManageAddressScreen" component={ManageAddressScreen} />
+          <Stack.Screen name="NotificationScreeen" component={NotificationScreeen} />
+          <Stack.Screen name="MyRequestsScreen" component={MyRequestsScreen} />
+          <Stack.Screen name="MyBookingScreen" component={MyBookingScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
