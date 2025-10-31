@@ -7,7 +7,7 @@ import {
   Image,
   FlatList,
   StatusBar as RNStatusBar,
-  StyleSheet, // Import StatusBar
+  StyleSheet, Alert
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -61,7 +61,7 @@ const AccountScreenComponent = ({ navigation }) => {
       // Handle logout logic
       Alert.alert('Logout', 'Are you sure?', [
         { text: 'Cancel' },
-        { text: 'Yes', onPress: () => navigation.replace('Login') },
+        { text: 'Yes', onPress: () => navigation.replace('LoginScreen') },
       ]);
     } else {
       navigation.navigate(screen);
