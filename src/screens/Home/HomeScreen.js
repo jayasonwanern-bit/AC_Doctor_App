@@ -49,9 +49,9 @@ const HomeScreen = ({ navigation }) => {
   const handleInstallation = () => navigation.navigate('InstallationScreen');
   const handleCommercialAC = () => navigation.navigate('CommericalAc');
   const handleGasCharging = () => navigation.navigate('GasChargeScreen');
-  const handleOther = () => alert('Other clicked!');
-  const handleCalulator = () => alert('Other clicked!');
-  const handleErrorcode = () => alert('Other clicked!');
+  const handleOther = () => navigation.navigate('OtherScreen');
+  const handleCalulator = () => navigation.navigate('TonnageCalculatorScreen');
+  const handleErrorcode = () => navigation.navigate('ErrorCodeScreen');
   const handleFreeConsult = () => navigation.navigate('FreeConsultant');
   const handleProComparison = () => alert('Other clicked!');
   

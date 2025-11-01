@@ -143,7 +143,10 @@ const images = {
   wheatherIcon: require('./icons/wheatherIcon.png'),
   Plusicon: require('./icons/Plusicon.png'),
   Whitedelete: require('./icons/Whitedelete.png'),
-  
+  roundRightarrow: require('./icons/roundRightarrow.png'),
+  ErrorImg: require('./icons/ErrorImg.png'),
+  calculatorImg: require('./icons/calculatorImg.png'),
+  CheckCircle: require('./icons/CheckCircle.png'),
 
 
   // Add more images as needed

@@ -28,7 +28,10 @@ import ManageAddressScreen from '../screens/Account/ManageAddressScreen';
 import NotificationScreeen from '../screens/Account/NotificationScreeen';
 import MyRequestsScreen from '../screens/Account/MyRequestsScreen';
 import MyBookingScreen from '../screens/Account/MyBookingScreen';
-
+import OtherScreen from '../screens/Home/Other/OtherScreen';
+import OtherCartView from '../screens/Home/Other/OtherCartView';
+import TonnageCalculatorScreen from '../screens/Home/Utilities/TonnageCalculatorScreen';
+import ErrorCodeScreen from '../screens/Home/Utilities/ErrorCodeScreen';
 
 import { COLORS } from '../utils/colors';
 import {
@@ -112,6 +115,10 @@ const AppNavigator = () => {
           <Stack.Screen name="NotificationScreeen" component={NotificationScreeen} />
           <Stack.Screen name="MyRequestsScreen" component={MyRequestsScreen} />
           <Stack.Screen name="MyBookingScreen" component={MyBookingScreen} />
+          <Stack.Screen name="OtherScreen" component={OtherScreen} />
+          <Stack.Screen name="OtherCartView" component={OtherCartView} />
+          <Stack.Screen name="TonnageCalculatorScreen" component={TonnageCalculatorScreen} />
+          <Stack.Screen name="ErrorCodeScreen" component={ErrorCodeScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

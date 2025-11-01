@@ -130,7 +130,7 @@ const ProfileDetail = ({ navigation }) => {
           margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
-          onPress={() => navigation.navigate('PaymentScreen')}
+          onPress={() => navigation.goBack()}
         />
       </View>
     </View>

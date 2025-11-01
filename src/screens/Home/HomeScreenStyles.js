@@ -925,7 +925,7 @@ export const works = [
   },
   {
     id: '4',
-    text: 'Ac repair',
+    text: 'Tower AC',
     icon: images.demoImg,
   },
   {
