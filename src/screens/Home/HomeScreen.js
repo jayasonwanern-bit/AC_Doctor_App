@@ -299,6 +299,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
         <FastImage source={images.homebanner} style={styles.bannerStyle} />
+        
         <View style={styles.sercard}>
           <Text style={styles.utititle}>Service Guarantee</Text>
           <View style={[styles.sergrid, { marginBottom: hp(Platform.OS === 'android' ? '7%' : '2%') }]}>

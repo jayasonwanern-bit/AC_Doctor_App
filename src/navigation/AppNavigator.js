@@ -32,6 +32,7 @@ import OtherScreen from '../screens/Home/Other/OtherScreen';
 import OtherCartView from '../screens/Home/Other/OtherCartView';
 import TonnageCalculatorScreen from '../screens/Home/Utilities/TonnageCalculatorScreen';
 import ErrorCodeScreen from '../screens/Home/Utilities/ErrorCodeScreen';
+import ProductListScreen from '../screens/Shop/ProductListScreen'
 
 import { COLORS } from '../utils/colors';
 import {
@@ -83,7 +84,7 @@ const AppNavigator = () => {
             headerTitleStyle: dynamicStyles.headerTitleStyle,
             headerBackTitleStyle: dynamicStyles.headerBackTitleStyle,
             headerTintColor: dynamicStyles.headerTintColor.tintColor,
-            headerShown: false, // Default header hide, individual screens can override
+            headerShown: false, 
           }}
         >
           <Stack.Screen name="Splash" component={SplashScreen} />
@@ -119,6 +120,7 @@ const AppNavigator = () => {
           <Stack.Screen name="OtherCartView" component={OtherCartView} />
           <Stack.Screen name="TonnageCalculatorScreen" component={TonnageCalculatorScreen} />
           <Stack.Screen name="ErrorCodeScreen" component={ErrorCodeScreen} />
+          <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

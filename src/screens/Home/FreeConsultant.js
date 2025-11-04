@@ -9,6 +9,7 @@ import {
   TextInput,
   Platform,
   KeyboardAvoidingView,
+  Pressable,
 } from 'react-native';
 import Header from '../../components/Header';
 import {
@@ -23,6 +24,7 @@ import CustomButton from '../../components/CustomButton';
 import RNPickerSelect from 'react-native-picker-select';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import SuccessPopupModal from '../../customScreen/SuccessPopupModal';
+import ImagePickerModal from '../../components/ImagePickerModal';
 
 const FreeConsultant = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -30,6 +32,8 @@ const FreeConsultant = ({ navigation }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectdate, setSelectDate] = useState('Select date');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState(null);
 
   const [formData, setFormData] = useState({
     propertyType: '',
@@ -201,13 +205,24 @@ const FreeConsultant = ({ navigation }) => {
             {/* Upload Photos */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Upload Photos</Text>
-              <TouchableOpacity style={styles.uploadContainer}>
-                <FastImage
+              <TouchableOpacity
+                onPress={() => setShowModal(true)}
+                style={styles.uploadContainer}
+              >
+                {selectedImageUri ?<FastImage
+                  source={selectedImageUri ? { uri: selectedImageUri } : null}
+                  style={styles.imagePreview}
+                  resizeMode={FastImage.resizeMode.cover}
+                />
+
+               : <>
+                 <FastImage
                   source={images.Camera}
                   style={styles.customIcon}
                   resizeMode={FastImage.resizeMode.contain}
                 />
-                <Text style={styles.uploadText}>Add Photo/Video</Text>
+                <Text style={styles.uploadText}>Add Photos/Video</Text>
+                </>}
               </TouchableOpacity>
             </View>
 
@@ -297,11 +312,19 @@ const FreeConsultant = ({ navigation }) => {
           visible={successPopupVisible}
           onClose={() => setSuccessPopupVisible(false)}
           HeadText={'Successful...!'}
-          firstButtonText='Done'
+          firstButtonText="Done"
           message1={'Your Query has been successfully submitted.'}
           message2={'Our team will respond shortly.'}
         />
       </View>
+      <ImagePickerModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        onImageSelect={uri => {
+          console.log('Image Path:', uri);
+          setSelectedImageUri('file://' + uri);
+        }}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -358,14 +381,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('4%'),
   },
   uploadContainer: {
-    height: hp('10%'),
+    height: hp('15%'),
     backgroundColor: '#eaf0f7ff',
     borderRadius: wp('3%'),
     borderWidth: hp(0.2),
     borderColor: '#ddd',
-    borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1,
+  },
+  imagePreview: {
+    height: hp('15%'),
+    width: wp('90%'),
+    resizeMode: 'cover',
+    borderRadius: wp('3%'),
+    zIndex: 9999,
   },
   uploadText: {
     fontSize: hp('1.5%'),
