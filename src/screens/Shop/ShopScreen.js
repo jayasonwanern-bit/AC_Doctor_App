@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Text, ScrollView,TouchableOpacity, FlatList, Image, Alert } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, ScrollView,TouchableOpacity, FlatList, Image, Alert, StatusBar, useColorScheme } from 'react-native'
 import Commonstyles, { productData, testimonialData } from '../Home/HomeScreenStyles';
 import FastImage from 'react-native-fast-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +10,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLORS } from '../../utils/colors';
 
 const ShopScreen = ({navigation}) => {
+      const scheme = useColorScheme();
+      
   const handleAddressPress = () => {
     navigation.navigate('SelectLocation', { onUpdate: loadAddress });
   };  
@@ -63,6 +65,11 @@ const ShopScreen = ({navigation}) => {
 // render
     return (
        <SafeAreaView style={Commonstyles.safeArea}>
+        <StatusBar
+                 barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+                  backgroundColor="transparent"
+                  translucent={true} 
+                />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={Commonstyles.container}
@@ -99,7 +106,6 @@ const ShopScreen = ({navigation}) => {
             </View>
           </View>
         </View>
-
         {/* header end */}
 
  {/* Rest of the content (unchanged) */}

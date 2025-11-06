@@ -61,29 +61,30 @@ const PaymentScreen = ({ navigation, route }) => {
   };
 
   const handleSubmit = () => {
-    if (selectedPaymentMethod === 'card') {
-      if (
-        cardNumber.length === 16 &&
-        cardholderName &&
-        expiryDate.length === 5 &&
-        cvv.length === 3
-      ) {
-        alert(
-          `Payment of ₹${amount} with card ending ${cardNumber.slice(-4)} confirmed!`,
-        );
-        navigation.navigate('BookingSuccess', {
-          selectedAddress,
-          selectedSlot,
-        });
-      } else {
-        alert('Please enter valid card details');
-      }
-    } else if (selectedPaymentMethod) {
-      alert(`Payment of ₹${amount} via ${selectedPaymentMethod} confirmed!`);
-      navigation.navigate('BookingSuccess', { selectedAddress, selectedSlot });
-    } else {
-      alert('Please select a payment method');
-    }
+    navigation.navigate('BookingSuccessScreen')
+    // if (selectedPaymentMethod === 'card') {
+    //   if (
+    //     cardNumber.length === 16 &&
+    //     cardholderName &&
+    //     expiryDate.length === 5 &&
+    //     cvv.length === 3
+    //   ) {
+    //     alert(
+    //       `Payment of ₹${amount} with card ending ${cardNumber.slice(-4)} confirmed!`,
+    //     );
+    //     navigation.navigate('BookingSuccess', {
+    //       selectedAddress,
+    //       selectedSlot,
+    //     });
+    //   } else {
+    //     alert('Please enter valid card details');
+    //   }
+    // } else if (selectedPaymentMethod) {
+    //   alert(`Payment of ₹${amount} via ${selectedPaymentMethod} confirmed!`);
+    //   navigation.navigate('BookingSuccess', { selectedAddress, selectedSlot });
+    // } else {
+    //   alert('Please select a payment method');
+    // }
   };
 
   return (

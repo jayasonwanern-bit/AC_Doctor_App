@@ -118,14 +118,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   sliderview: {
-    width: wp('100%'),
+    width: wp('98%'),
     height: hp('35%'),
     alignSelf: 'center',
+    justifyContent:'center',
     alignItems: 'center',
     justifyContent: 'center',
   },
   image: {
-    width: '94%', height: hp('15%'), borderRadius: 15 
+    width: '93%', height: hp('15%'), borderRadius: 15 
   },
   dots: {
     flexDirection: 'row',

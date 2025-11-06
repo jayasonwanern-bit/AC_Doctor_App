@@ -32,7 +32,7 @@ const ViewCartScreen = ({ route }) => {
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalUserVisible, setModalUserVisible] = useState(false);
- const [proceed, setProceed] = useState(false);
+  const [proceed, setProceed] = useState(false);
   const [acTypes, setAcTypes] = useState([
     { name: 'Split AC', count: 2, showButtons: false },
 
@@ -90,7 +90,7 @@ const ViewCartScreen = ({ route }) => {
     }
     setAcTypes(updatedAcTypes);
   };
-    console.log('setSetProceed----->', setProceed);
+  console.log('setSetProceed----->', setProceed);
 
   return (
     <View style={styles.container}>
@@ -422,13 +422,15 @@ const ViewCartScreen = ({ route }) => {
           </>
         )}
         <CustomButton
-         buttonName={proceed ? 'Proceed to pay' : 'Add Address & Slot'}
+          buttonName={proceed ? 'Proceed to pay' : 'Add Address & Slot'}
           margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
-         onPress={() => {
-      proceed ? navigation.navigate('PaymentScreen') : setModalUserVisible(true);
-    }}
+          onPress={() => {
+            proceed
+              ? navigation.navigate('PaymentScreen')
+              : setModalUserVisible(true);
+          }}
         />
       </View>
 
@@ -471,10 +473,10 @@ const ViewCartScreen = ({ route }) => {
       <ConfirmationModal
         visible={confirmModalVisible}
         onClose={() => {
-    setConfirmModalVisible(false);
-    setProceed(true); // Ab sahi state update hoga
-    console.log('Proceed set to true'); // Log ke liye
-  }}
+          setConfirmModalVisible(false);
+          setProceed(true); // Ab sahi state update hoga
+          console.log('Proceed set to true'); // Log ke liye
+        }}
         selectedAddress={selectedAddress}
         selectedSlot={selectedSlot}
       />

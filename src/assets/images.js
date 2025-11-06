@@ -160,13 +160,21 @@ const images = {
   demoAc:require('./icons/demoAc.png'),
   filterImg:require('./icons/filterImg.png'),
   heart:require('./icons/heart.png'),
+  redHeart:require('./icons/redHeart.png'),
   remote:require('./icons/remote.png'),
   replacement:require('./icons/replacement.png'),
   Shop_Bottom:require('./icons/Shop_Bottom.png'),
   shopFrame:require('./icons/shopFrame.png'),
   shopIcon:require('./icons/shopIcon.png'),
   waranty:require('./icons/waranty.png'),
-
+  delivery_truck:require('./icons/delivery_truck.png'),
+  acFrame:require('./icons/acFrame.png'),
+  ACimage:require('./icons/ACimage.png'),
+  couponIcon:require('./icons/couponIcon.png'),
+  swipRight:require('./icons/swipRight.png'),
+  edit:require('./icons/edit.png'),
+  SuccessIcon:require('./icons/SuccessIcon.png'),
+ 
 
   // Add more images as needed
 };

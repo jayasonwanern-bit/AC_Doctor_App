@@ -32,7 +32,11 @@ import OtherScreen from '../screens/Home/Other/OtherScreen';
 import OtherCartView from '../screens/Home/Other/OtherCartView';
 import TonnageCalculatorScreen from '../screens/Home/Utilities/TonnageCalculatorScreen';
 import ErrorCodeScreen from '../screens/Home/Utilities/ErrorCodeScreen';
-import ProductListScreen from '../screens/Shop/ProductListScreen'
+import ProductListScreen from '../screens/Shop/ProductListScreen';
+import ProductDetailScreen from '../screens/Shop/ProductDetailScreen';
+import OrderSummaryScreen from '../screens/Shop/OrderSummaryScreen';
+import CompareACScreen from '../screens/Shop/CompareACScreen';
+import BookingSuccessScreen from '../customScreen/BookingSuccessScreen'
 
 import { COLORS } from '../utils/colors';
 import {
@@ -121,6 +125,10 @@ const AppNavigator = () => {
           <Stack.Screen name="TonnageCalculatorScreen" component={TonnageCalculatorScreen} />
           <Stack.Screen name="ErrorCodeScreen" component={ErrorCodeScreen} />
           <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
+          <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
+          <Stack.Screen name="OrderSummaryScreen" component={OrderSummaryScreen} />
+          <Stack.Screen name="CompareACScreen" component={CompareACScreen} />
+         <Stack.Screen name="BookingSuccessScreen" component={BookingSuccessScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

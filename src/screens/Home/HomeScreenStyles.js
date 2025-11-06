@@ -17,7 +17,7 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 2,
     borderBottomRightRadius: 2,
     paddingVertical: hp('1%'),
-    paddingHorizontal: wp('1%'),
+    paddingHorizontal: wp('2.5%'),
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -32,6 +32,12 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  oneWidthRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: hp (2),
   },
   locationtitle: {
     fontSize: hp('1.5%'),
@@ -49,6 +55,21 @@ export default StyleSheet.create({
     fontSize: hp('1.5%'),
     color: COLORS.black,
     fontFamily: Fonts.medium,
+  },
+  mediumText: {
+    fontSize: hp('1.7%'),
+    color: COLORS.black,
+    fontFamily: Fonts.semiBold,
+  },
+  headText: {
+    fontSize: hp('2%'),
+    color: COLORS.black,
+    fontFamily: Fonts.medium,
+  },
+  bigMediumText: {
+    fontSize: hp('2.5%'),
+    color: COLORS.black,
+    fontFamily: Fonts.bold,
   },
   wheatherContainer: {
     flexDirection: 'row',
@@ -179,7 +200,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginVertical: hp('1%'),
   },
-
+ bottomLine:{
+  borderBottomWidth: hp('0.1%'),
+  borderBottomColor:COLORS.borderColor,
+  marginVertical:hp(1)
+ },
   productCard: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
@@ -443,7 +468,7 @@ export default StyleSheet.create({
   },
   serstatCard: {
     alignSelf: 'center',
-    width: wp('20%'),
+    width: wp('22%'),
     alignItems: 'center',
     marginBottom: hp('1%'),
     padding: wp('1%'),
@@ -572,6 +597,26 @@ export default StyleSheet.create({
     fontSize: wp('3%'),
     color: COLORS.black,
     fontFamily: Fonts.medium,
+  },
+  serviceCartButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'center',
+    paddingVertical: wp('0%'),
+    paddingHorizontal: hp('1%'),
+    backgroundColor: COLORS.themeColor,
+    borderRadius: wp(2),
+    width:wp(43)
+  },
+  boderwhiteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'center',
+    paddingVertical: wp('0%'),
+    paddingHorizontal: hp('1%'),
+    backgroundColor: COLORS.themeColor,
+    borderRadius: wp(2),
+    backgroundColor:COLORS.white, borderWidth:1,borderColor:COLORS.TextColor
   },
 
   // FAQ STYLE
@@ -814,6 +859,21 @@ profileDetailName: {
   fontFamily: Fonts.medium,
   marginTop: hp('1%'),
 },
+allSideRadiusStyle:{ 
+    width:wp('95%'),
+    alignSelf:'center',
+    marginTop: hp('1%'), 
+    paddingBottom: hp('1%'),
+    backgroundColor: COLORS.white,
+    borderRadius:wp(3),
+    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('2.5%'),
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+},
 });
 
 export const productData = [
@@ -1011,5 +1071,16 @@ export const faqData = [
     answer:
       "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
   },
+];
+
+export const WindoData = [
+  {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
+              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},
+ {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
+              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},
+  {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
+              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},
+  {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
+              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},           
 ];
 
