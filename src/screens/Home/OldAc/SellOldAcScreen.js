@@ -166,7 +166,7 @@ const SellOldAcScreen = ({ navigation}) => {
               {/* Brand */}
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Brand</Text>
-                <TouchableOpacity style={[styles.pickerWrapper,{justifyContent:'space-between'}]} onPress={()=>navigation.navigate('BrandScreen')}>
+                <TouchableOpacity style={[styles.pickerWrapper,{justifyContent:'space-between'}]} onPress={()=>navigation.navigate('BrandScreen',{from :'SellOldAcScreen'})}>
                    <Text style={[styles.buttonText,{marginLeft:wp(3)}]}>{selectedBrand || 'Select Brand'}</Text>
                       <FastImage
                         source={images.arrowdown}

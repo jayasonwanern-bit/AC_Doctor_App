@@ -114,7 +114,7 @@ const images = {
   wallMid: require('./icons/wallMid.png'),
   wallDown: require('./icons/wallDown.png'),
   bluestar: require('./icons/bluestar.png'),
-  Haier: require('./icons/Haier.png'),
+  Haier: require('./icons/haier.png'),
   lgLogo: require('./icons/lgLogo.png'),
   samsungicon: require('./icons/samsungicon.png'),
   windowG: require('./icons/windowG.png'),
@@ -174,6 +174,16 @@ const images = {
   swipRight:require('./icons/swipRight.png'),
   edit:require('./icons/edit.png'),
   SuccessIcon:require('./icons/SuccessIcon.png'),
+  hitachi:require('./icons/hitachi.png'),
+  GE:require('./icons/GE.png'),
+  carrier:require('./icons/carrier.png'),
+  goorej:require('./icons/goorej.png'),
+  whirlpool:require('./icons/whirlpool.png'),
+  mitsubishi:require('./icons/mitsubishi.png'),
+  vsBtn:require('./icons/vsBtn.png'),
+
+
+
  
 
   // Add more images as needed

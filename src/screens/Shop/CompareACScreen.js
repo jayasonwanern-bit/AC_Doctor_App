@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -18,10 +18,10 @@ import images from '../../assets/images';
 import { COLORS, Fonts } from '../../utils/colors';
 import FastImage from 'react-native-fast-image';
 
-const CompareACScreen = ({navigation}) => {
-  const [selectCompare, setSelectCompare] = useState({});
+import { useCompare } from '../../hook/CompareContext';
 
-  // list like or dislike
+const CompareACScreen = ({ navigation, route }) => {
+  const [selectCompare, setSelectCompare] = useState({});
   const toggleLike = itemId => {
     setSelectCompare(prev => ({
       ...prev,
@@ -52,6 +52,30 @@ const CompareACScreen = ({navigation}) => {
     },
   ];
 
+//   logic and data store from compareContext screen
+  const { selectedACs, addAC, removeAC, allACsForCompare, defaultAC } =useCompare();
+
+  useEffect(() => {
+    const newAC = route.params?.selectedAC;
+
+    if (newAC) {
+      addAC(newAC);
+      navigation.setParams({ selectedAC: undefined });
+    }
+  }, [route.params?.selectedAC, navigation, addAC]);
+
+  // removeAC aur goToSelect functions same rahenge
+  const goToSelect = () => {
+    navigation.navigate('BrandScreen', { from: 'CompareACScreen' });
+  };
+
+  const goToCompareResult = () => {
+    navigation.navigate('CompareResultScreen', {
+      acs: allACsForCompare,
+    });
+  };
+
+  //   flatlist Similar AC render
   const ProductCard = ({ item }) => {
     return (
       <View style={styles.card}>
@@ -68,14 +92,9 @@ const CompareACScreen = ({navigation}) => {
           {item.ton}
         </Text>
 
-
-        <View style={styles.mrpRow}>     
-        <Text style={styles.price}>
-          ₹43437.00
-        </Text>
-          <Text style={styles.mrpPrice}>
-           {' '} ₹{item.mrp}
-          </Text>
+        <View style={styles.mrpRow}>
+          <Text style={styles.price}>₹43437.00</Text>
+          <Text style={styles.mrpPrice}> ₹{item.mrp}</Text>
         </View>
 
         <View style={styles.discountRow}>
@@ -88,41 +107,46 @@ const CompareACScreen = ({navigation}) => {
               style={[Commonstyles.locationIcon]}
               resizeMode={FastImage.resizeMode.contain}
             />
-             <Text style={styles.mrp}>Compare</Text>
+            <Text style={styles.mrp}>Compare</Text>
           </TouchableOpacity>
           <View style={styles.ratingRow}>
-                        <View style={styles.stars}>
-                          {[...Array(5)].map((_, i) => (
-                            <Text
-                              key={i}
-                              style={
-                                i < (item.rating || 0)
-                                  ? styles.starFilled
-                                  : styles.starEmpty
-                              }
-                            >
-                             ★
-                            </Text>
-                          ))}
-                        </View>
-                      </View>
+            <View style={styles.stars}>
+              {[...Array(5)].map((_, i) => (
+                <Text
+                  key={i}
+                  style={
+                    i < (item.rating || 0)
+                      ? styles.starFilled
+                      : styles.starEmpty
+                  }
+                >
+                  ★
+                </Text>
+              ))}
+            </View>
+          </View>
         </View>
       </View>
     );
   };
+
   return (
-    <View style={Commonstyles.container}>
+    <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
       <Header title={'Compare AC'} onBack={() => navigation.goBack()} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={Commonstyles.container}
         contentContainerStyle={{ paddingHorizontal: wp('2.5%') }}
       >
-        <View style={[Commonstyles.allSideRadiusStyle]}>
+        {/* DEFAULT AC */}
+        <View style={[Commonstyles.allSideRadiusStyle, { marginTop: hp(2) }]}>
+          {selectedACs.length > 0 && (
+            <TouchableOpacity style={styles.removeBtn}>
+              <Text style={styles.removeText}>x</Text>
+            </TouchableOpacity>
+          )}
           <View style={Commonstyles.faquestionContainer}>
-            <View>
-              <Image source={images.acFrame} style={styles.cardimage} />
-            </View>
+            <Image source={{uri:'https://picsum.photos/200/300'}} style={styles.cardimage} />
             <View style={{ width: wp(55) }}>
               <Text
                 style={[
@@ -130,31 +154,115 @@ const CompareACScreen = ({navigation}) => {
                   { color: COLORS.black, lineHeight: 23 },
                 ]}
               >
-                WindFree Inverter Split AC AR18CY5APWK, 5.00kw (1.5T) 5 Star
+                {defaultAC.title} {/* Context se title */}
               </Text>
-
               <Text style={Commonstyles.mediumText}>
-                ₹32,290.00{'  '}
+                ₹32,920.00
+                {'  '}
                 <Text
                   style={[
                     Commonstyles.locationText,
                     { textDecorationLine: 'line-through', color: '#666' },
                   ]}
                 >
-                  ₹63,900.00
+                  ₹ 67,546.00
                 </Text>
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.addButton} onPress={()=>navigation.navigate('BrandScreen')}>
-            <Text style={styles.addText}> + Add AC</Text>
-          </TouchableOpacity>
+          {selectedACs.length === 0 && (
+            <TouchableOpacity
+              style={[styles.addButton, { width: wp(90) }]}
+              onPress={goToSelect}
+            >
+              <Text style={styles.addBtnText}> + Add AC</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
+        {/* SELECTED ACs (Context se aayi hui list) */}
+        <FlatList
+          data={selectedACs}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <View>
+              <View style={styles.vsContainer}>
+                <Text style={styles.vsText}>VS</Text>
+              </View>
+
+              <View
+                style={[
+                  Commonstyles.allSideRadiusStyle,
+                  { marginHorizontal: 16, marginTop: hp(0) },
+                ]}
+              >
+                <TouchableOpacity style={styles.removeBtn} onPress={()=>removeAC(item.id)}>
+                  <Text style={styles.removeText}>x</Text>
+                </TouchableOpacity>
+                <View style={Commonstyles.faquestionContainer}>
+                  <View>
+                    <Image source={{uri:'https://picsum.photos/200/300'}} style={styles.cardimage} />
+                  </View>
+                  <View style={{ width: wp(55) }}>
+                    <Text
+                      style={[
+                        Commonstyles.locationtitle,
+                        { color: COLORS.black, lineHeight: 23 },
+                      ]}
+                    >
+                      {item.title}
+                    </Text>
+
+                    <Text style={Commonstyles.mediumText}>
+                      ₹{item.price.toLocaleString()}
+                      {'  '}
+                      <Text
+                        style={[
+                          Commonstyles.locationText,
+                          { textDecorationLine: 'line-through', color: '#666' },
+                        ]}
+                      >
+                        ₹{item.originalPrice.toLocaleString()}
+                      </Text>
+                    </Text>
+                  </View>
+                </View>
+                {/* BOTTOM BUTTONS */}
+                <View style={styles.bottomBar}>
+                  {/* Max 2 check Context state se */}
+                  {selectedACs.length < 2 && (
+                    <TouchableOpacity
+                      style={[
+                        styles.addButton,
+                        { width: selectedACs.length === 0 ? wp(80) : wp(40) },
+                      ]}
+                      onPress={goToSelect}
+                    >
+                      <Text style={styles.addBtnText}>Add AC</Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {selectedACs.length >= 1 &&  (
+                    <TouchableOpacity 
+                      style={[styles.compareBtn,{width: selectedACs.length === 2 ? wp(85) : wp(40),
+                        marginLeft:selectedACs.length === 2?  wp(0): wp(4)}]}
+                      disabled={selectedACs.length === 0}
+                      onPress={goToCompareResult}
+                    >
+                      <Text style={styles.compareBtnText}>Compare</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            </View>
+          )}
+        />
+
+        {/*  Selected Similar ACs */}
         <Text style={[Commonstyles.mediumText, { marginVertical: hp(1.5) }]}>
           Selected Similar ACs
         </Text>
-        <View >
+        <View>
           <FlatList
             data={products}
             horizontal
@@ -178,7 +286,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     resizeMode: 'contain',
   },
- 
+
   listContent: {
     // marginBottom: hp(15),
   },
@@ -209,7 +317,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     lineHeight: 18,
   },
- 
+
   price: {
     fontSize: 14,
     fontWeight: 'bold',
@@ -243,6 +351,81 @@ const styles = StyleSheet.create({
   heart: {
     fontSize: 20,
   },
+
+  addText: {
+    color: COLORS.themeColor,
+    fontFamily: Fonts.medium,
+    fontSize: 14,
+  },
+  ratingRow: {
+    alignItems: 'flex-start',
+  },
+  stars: {
+    flexDirection: 'row',
+  },
+  starFilled: {
+    color: COLORS.yellow,
+    fontSize: hp(1.3),
+  },
+  starEmpty: {
+    color: '#ddd',
+    fontSize: hp(1.3),
+  },
+  removeBtn: {
+    position: 'absolute',
+    right: 3,
+    top: 0,
+    backgroundColor: '#fff',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 6,
+    zIndex: 10,
+  },
+  removeText: { fontSize: 22, color: COLORS.textHeading },
+  striked: { textDecorationLine: 'line-through', color: '#999', fontSize: 14 },
+  vsContainer: { alignItems: 'center', },
+  vsText: {
+    backgroundColor: COLORS.themeColor,
+    color: COLORS.white,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderRadius: 25,
+    fontWeight: 'bold',
+  },
+  bottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: COLORS.white,
+    borderTopWidth: 1,
+    borderColor: '#eee',
+  },
+  outlineBtn: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: COLORS.themeColor,
+    padding: 14,
+    borderRadius: 12,
+    marginRight: 8,
+  },
+  outlineBtnText: {
+    color: COLORS.themeColor,
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  compareBtn: {
+    backgroundColor: COLORS.themeColor,
+    padding: 14,
+    borderRadius: 8,
+  },
+  compareBtnText: {
+    color: COLORS.white,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
   addButton: {
     backgroundColor: COLORS.white,
     borderWidth: 1,
@@ -250,24 +433,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 10,
     alignItems: 'center',
+    height: hp(5),
   },
-  addText: {
+  addBtnText: {
+    fontSize: hp(1.5),
+    fontFamily: Fonts.bold,
     color: COLORS.themeColor,
-    fontFamily: Fonts.medium,
-    fontSize: 14,
-  },
-   ratingRow: {
-    alignItems: 'flex-start',
-  },
-  stars: {
-    flexDirection: 'row',
-  },
-  starFilled: {
-    color: '#FFD700',
-    fontSize: hp(1.3),
-  },
-  starEmpty: {
-    color: '#ddd',
-    fontSize: hp(1.3),
+    textAlign: 'center',
   },
 });

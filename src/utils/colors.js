@@ -38,7 +38,7 @@ export const COLORS = {
   silver:'#c0c0c0',
   gold:'#ffd700',
   peacock:'#114f71',
-  lightSky:'#b9dcf0',
+  lightSky:'#e3f2fd',
 };
 
 export const Fonts = {

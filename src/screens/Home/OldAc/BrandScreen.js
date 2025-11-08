@@ -21,18 +21,25 @@ import { COLORS } from '../../../utils/colors';
 
 
 
-const BrandScreen = () => {
+const BrandScreen = ({route}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
  const storage = new MMKVLoader().initialize();
+const cameFrom = route?.params?.from; 
 
   const Brands = [
-    { id: '1', name: 'Blue Star', logo: images.hitachiIcon },
+    { id: '1', name: 'Hitachi', logo: images.hitachiIcon },
     { id: '2', name: 'Haier', logo: images.daikinIcon },
     { id: '3', name: 'Blue Star', logo: images.bluestar },
     { id: '4', name: 'LG', logo: images.lgLogo },
     { id: '5', name: 'Samsung', logo: images.samsungicon },
     { id: '6', name: 'Daikin', logo: images.daikinIcon },
+    { id: '7', name: 'hitachi', logo: images.hitachi },
+    { id: '8', name: 'GE', logo: images.GE },
+    { id: '9', name: 'carrier', logo: images.carrier },
+    { id: '10', name: 'Goorej', logo: images.goorej },   
+    { id: '11', name: 'Whirlpool', logo: images.whirlpool },   
+    { id: '12', name: 'Mitsubishi', logo: images.mitsubishi },   
   ];
 
   const filteredBrands = Brands.filter(brand =>
@@ -41,9 +48,13 @@ const BrandScreen = () => {
 
   const handleSelectBrand = async selectedBrand => {
     try {
-      console.error('selectedBrand brand:', selectedBrand);
       await storage.setItem('selectedBrand', selectedBrand);
+      if (cameFrom === 'SellOldAcScreen') {
       navigation.navigate('SellOldAcScreen', { selectedBrand });
+      }
+      else  if (cameFrom === 'CompareACScreen') {
+          navigation.navigate('SelectACmodel', { fromCompare: true ,Sname :selectedBrand});
+      }
     } catch (error) {
       console.error('Error saving brand:', error);
     }
@@ -52,7 +63,7 @@ const BrandScreen = () => {
   const BrandItem = ({ name, logo, onSelect }) => (
     <TouchableOpacity style={styles.brandItem} onPress={() => onSelect(name)}>
       <Image source={logo} style={styles.logo} />
-      <Text style={styles.brandName}>{name}</Text>
+      {/* <Text style={styles.brandName}>{name}</Text> */}
     </TouchableOpacity>
   );
 
@@ -77,7 +88,7 @@ return (
         />
       </View>
         <View style={styles.borderContainer}> 
-          <Text style={styles.headerText}>Select Brand</Text>
+          <Text style={styles.headerText}>Which is your favorite BRAND ?</Text>
       <FlatList
         data={filteredBrands}
         keyExtractor={(item) => item.id}
@@ -108,9 +119,9 @@ const styles = StyleSheet.create({
     resizeMode:'contain'
   },
   borderContainer:{
-    margin:hp(1.5),
-    backgroundColor: '#fefcfcff',
-    borderRadius:hp(2),
+    // margin:hp(1.5),
+    // backgroundColor: '#fefcfcff',
+    // borderRadius:hp(2),
     padding:hp(2),
   },
   headerText: {
@@ -133,13 +144,14 @@ const styles = StyleSheet.create({
     padding: 6,
     borderWidth: 1,
     borderColor: '#e2e8f0',
+    backgroundColor: '#fff',
     marginRight: hp(0.8),
     marginBottom: hp(1),
     alignSelf:'center',
   },
   logo: {
-    width: wp(23),
-    height: hp(5),
+    width: wp(25.5),
+    height: hp(9),
     resizeMode:'contain',
     marginBottom: hp(0.8),
   },

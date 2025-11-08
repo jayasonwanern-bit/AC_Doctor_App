@@ -241,7 +241,7 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
               </Text>
               <View style={styles.ratingRow}>
                 <StarRating rating={item.rating} />
-                <Text style={styles.reviewCount}>({item.reviews})</Text>
+                <Text style={[styles.reviewCount, { marginTop:-5 }]}>({item.reviews})</Text>
               </View>
               <View style={styles.ratingRow}>
                 <Text style={styles.price}>₹{item.price.toLocaleString()}</Text>

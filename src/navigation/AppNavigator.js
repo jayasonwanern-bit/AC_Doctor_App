@@ -36,7 +36,10 @@ import ProductListScreen from '../screens/Shop/ProductListScreen';
 import ProductDetailScreen from '../screens/Shop/ProductDetailScreen';
 import OrderSummaryScreen from '../screens/Shop/OrderSummaryScreen';
 import CompareACScreen from '../screens/Shop/CompareACScreen';
-import BookingSuccessScreen from '../customScreen/BookingSuccessScreen'
+import BookingSuccessScreen from '../customScreen/BookingSuccessScreen';
+import SelectACmodel from '../screens/Shop/SelectACmodel';
+import CompareResultScreen from '../screens/Shop/CompareResultScreen';
+
 
 import { COLORS } from '../utils/colors';
 import {
@@ -46,6 +49,7 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
+import { CompareProvider } from '../hook/CompareContext';
 
 const Stack = createStackNavigator();
 
@@ -75,6 +79,7 @@ const AppNavigator = () => {
 
   return (
     <SafeAreaProvider style={dynamicStyles.safeArea}>
+      <CompareProvider>
       <StatusBar
         barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
         backgroundColor={scheme === 'dark' ? '#000000' : '#ffffff'}
@@ -128,9 +133,12 @@ const AppNavigator = () => {
           <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
           <Stack.Screen name="OrderSummaryScreen" component={OrderSummaryScreen} />
           <Stack.Screen name="CompareACScreen" component={CompareACScreen} />
+          <Stack.Screen name="SelectACmodel" component={SelectACmodel} />
+          <Stack.Screen name="CompareResultScreen" component={CompareResultScreen} />
          <Stack.Screen name="BookingSuccessScreen" component={BookingSuccessScreen} />
         </Stack.Navigator>
       </NavigationContainer>
+      </CompareProvider>
     </SafeAreaProvider>
   );
 };

@@ -11,7 +11,9 @@ const Header = ({
   title = 'My App', 
   onBack, 
   onHelp, 
-//   extraIcons = [] 
+  onAddImage,
+ AddIcon,
+ onImgclick
 }) => {
   const insets = useSafeAreaInsets(); 
   const scheme = useColorScheme();
@@ -63,20 +65,16 @@ const Header = ({
             />
           </TouchableOpacity>
         )}
-        {/* Extra Icons */}
-        {/* {extraIcons.map((iconObj, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.extraIconButton}
-            onPress={iconObj.onPress}
-          >
+        {onAddImage && (
+          <TouchableOpacity style={styles.helpButton} onPress={onImgclick}>
             <FastImage
-              source={images[iconObj.icon]}
-              style={[styles.extraIcon, dynamicStyles.extraIcon]}
+              source={AddIcon}
+              style={[styles.helpIcon, dynamicStyles.helpIcon]}
               resizeMode={FastImage.resizeMode.contain}
             />
           </TouchableOpacity>
-        ))} */}
+        )}
+        
       </View>
      </View>
   );
