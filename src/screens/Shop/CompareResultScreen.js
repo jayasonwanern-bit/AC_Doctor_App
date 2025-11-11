@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -15,16 +15,46 @@ import {
 } from 'react-native-responsive-screen';
 import Header from '../../components/Header';
 import { COLORS, Fonts } from '../../utils/colors';
-import Commonstyles from '../Home/HomeScreenStyles';
+import Commonstyles, { CompareData, WindoData } from '../Home/HomeScreenStyles';
 import images from '../../assets/images';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const CompareResultScreen = ({ route, navigation }) => {
+  const [expandedIndex, setExpandedIndex] = useState(null);
   const { acs = [] } = route.params || {};
   const totalACs = acs.length; // 2 ya 3
 
-  console.log('totalACs--', acs);
+  // manufacture Toggle
+  const toggleExpand = index => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
   // Dynamic column width
   const columnWidth = totalACs === 2 ? wp(48) : wp(32);
+
+  //   downloadBrochure
+  const downloadBrochure = (pdfUrl, fileName = 'AC_Brochure.pdf') => {
+    // Android Download Folder
+    const { dirs } = RNFetchBlob.fs;
+    const dirToSave = dirs.DownloadDir; // Ya dirs.DocumentDir bhi use kar sakta hai
+    const configfb = {
+      useDownloadManager: true,
+      notification: true,
+      mediaScannable: true,
+      title: fileName,
+      path: `${dirToSave}/${fileName}`,
+    };
+
+    RNFetchBlob.config(configfb)
+      .fetch('GET', pdfUrl, {})
+      .then(res => {
+        console.log('PDF Downloaded Successfully:', res.path());
+        alert('Brochure Downloaded Successfully! Check your Downloads folder');
+      })
+      .catch(error => {
+        console.log('Download Error:', error);
+        alert('Download failed. Please try again.');
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -34,22 +64,24 @@ const CompareResultScreen = ({ route, navigation }) => {
         style={Commonstyles.container}
         contentContainerStyle={{ paddingHorizontal: wp('2.5%') }}
       >
-
         {/* TITLE & PRICE */}
         <View style={styles.row}>
-          {acs.map((ac,index) => (
+          {acs.map((ac, index) => (
             <View key={ac.id} style={[styles.column, { width: columnWidth }]}>
-                 <FastImage
+              <FastImage
                 source={{ uri: ac.image || ac.image }}
                 style={styles.acImage}
               />
-               {index < acs.length - 1 && (
-                  <FastImage
-                    source={images.vsBtn}
-                    style={styles.VsStyle}
-                  />
-                )}
-              <Text style={styles.title} numberOfLines={3}>
+              {index < acs.length - 1 && (
+                <FastImage source={images.vsBtn} style={styles.VsStyle} />
+              )}
+              <Text
+                style={[
+                  styles.title,
+                  { width: acs.length === 2 ? wp(38) : wp(30) },
+                ]}
+                numberOfLines={3}
+              >
                 {ac.title}
               </Text>
               <Text style={styles.price}>
@@ -65,20 +97,40 @@ const CompareResultScreen = ({ route, navigation }) => {
 
         {/* ADD AC BUTTON - Sirf jab 2 AC ho */}
         {totalACs === 2 && (
-          <TouchableOpacity style={styles.addAcBtn}>
+          <TouchableOpacity style={styles.addAcBtn} onPress={()=> navigation.navigate('BrandScreen', { from: 'CompareACScreen' })}>
             <Text style={styles.addAcText}>Add AC</Text>
           </TouchableOpacity>
         )}
 
         {/* COMPARISON TABLE */}
-        <View style={styles.table}>
-            <View style={styles.conditionView}>
-          <Text style={styles.categoryTitle}>Air Conditioner Category</Text>
-            </View>
+        <View style={styles.table}>  
+          <View style={styles.conditionView}>
+            <Text style={styles.categoryTitle}>Air Conditioner Category</Text>
+          </View>
+
+           <View style={styles.tableRow}>
+            <Text style={[styles.label, { color: COLORS.darkgreen }]}>
+              Window Name
+            </Text>
+            {acs.map((ac, index) => (
+              <View style={{ width: wp('20%') }}>
+                <Text
+                  key={ac.id}
+                  style={[
+                    styles.value,
+                    { fontFamily: Fonts.semiBold},
+                  ]}
+                  numberOfLines={3}
+                >
+                  {ac.title}
+                </Text>
+              </View>
+            ))}
+          </View>
 
           {/* Row 1 */}
           <View style={styles.tableRow}>
-            <Text style={styles.label}>Air Conditioner Type</Text>
+            <Text style={styles.label}>Air- Conditioner Type</Text>
             {acs.map(ac => (
               <Text key={ac.id} style={styles.value}>
                 Split
@@ -128,11 +180,87 @@ const CompareResultScreen = ({ route, navigation }) => {
           <View style={styles.tableRow}>
             <Text style={styles.label}>Brochure</Text>
             {acs.map(() => (
-              <TouchableOpacity style={styles.downloadBtn}>
+              <TouchableOpacity
+                style={styles.downloadBtn}
+                onPress={() =>
+                  downloadBrochure(
+                    'https://www.samsung.com/in/pdf/air-conditioners/WindFree_AC_Brochure.pdf',
+                    'Samsung_WindFree_AC.pdf',
+                  )
+                }
+              >
                 <Text style={styles.downloadText}>Download</Text>
               </TouchableOpacity>
             ))}
           </View>
+        </View>
+
+        {/* Manufactor Items */}
+        <View style={{ marginBottom: hp(15) }}>
+          {CompareData.map((item, index) => (
+            <View key={index} style={[Commonstyles.faqItem]}>
+              <TouchableOpacity
+                onPress={() => toggleExpand(index)}
+                style={Commonstyles.faquestionContainer}
+              >
+                <Text style={Commonstyles.faquestionText}>{item.question}</Text>
+                <Text style={Commonstyles.faqarrow}>
+                  {expandedIndex === index ? '﹀' : '>'}
+                </Text>
+              </TouchableOpacity>
+
+              {expandedIndex === index && (
+                <View style={{ paddingHorizontal: hp(1.5) }}>
+                  <View style={styles.tableRow}>
+                    <Text style={[styles.label, { color: COLORS.darkgreen }]}>
+                      Window Name
+                    </Text>
+                    {acs.map((ac, index) => (
+                      <View style={{ width: wp('20%') }}>
+                        <Text
+                          key={ac.id}
+                          style={[
+                            styles.value,
+                            {
+                              fontFamily: Fonts.semiBold,
+                              color: COLORS.themeColor,
+                            },
+                          ]}
+                          numberOfLines={3}
+                        >
+                          {ac.title}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                  <View style={styles.tableRow}>
+                    <Text style={styles.label}>{item.secondTitle}</Text>
+                    {acs.map((ac, i) => (
+                      <Text key={ac.id} style={styles.value}>
+                        {i === 0 ? 'Voltas' : 'Daikin'}
+                      </Text>
+                    ))}
+                  </View>
+                  <View style={styles.tableRow}>
+                    <Text style={styles.label}>{item.title}</Text>
+                    {acs.map((ac, i) => (
+                      <Text key={ac.id} style={styles.value}>
+                        {i === 0 ? 'Vector' : 'Vector'}
+                      </Text>
+                    ))}
+                  </View>
+                  <View style={styles.tableRow}>
+                    <Text style={styles.label}>{item.Thirdtitle}</Text>
+                    {acs.map((ac, i) => (
+                      <Text key={ac.id} style={styles.value}>
+                        {i === 0 ? '165v Vector Pearl' : '165v Vector Pearl'}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
+              )}
+            </View>
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -153,7 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
   },
   VsStyle: {
-     width: wp(10),
+    width: wp(10),
     height: hp(5),
     resizeMode: 'contain',
     position: 'absolute',
@@ -162,7 +290,7 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -wp(6) }],
     borderRadius: wp(10),
   },
- 
+
   // TITLE & PRICE ROW
   row: {
     width: wp(50),
@@ -182,10 +310,9 @@ const styles = StyleSheet.create({
     color: '#333',
     marginVertical: hp(1),
     lineHeight: hp(2.2),
-    width: wp(38),
   },
   price: {
-    fontSize: hp(2.1),
+    fontSize: hp(1.7),
     fontFamily: Fonts.bold,
     color: COLORS.black,
   },
@@ -206,7 +333,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.themeColor,
     borderRadius: wp(2),
     alignItems: 'center',
-    alignSelf:'center'
+    alignSelf: 'center',
   },
   addAcText: {
     color: COLORS.themeColor,
@@ -216,16 +343,21 @@ const styles = StyleSheet.create({
 
   // TABLE CONTAINER
   table: {
-    margin: wp(4),
+    marginTop: wp(8),
+    margin: wp(2),
     borderRadius: wp(3),
-    padding: wp(4),
+    alignItems: 'center',
+    borderColor: '#bbdefb',
+    borderWidth: 2,
   },
-  conditionView:{ 
-    backgroundColor: COLORS.lightSky,width:wp(90), 
-    alignSelf:'center',justifyContent: 'center',
-    paddingVertical:wp(5),
-    borderTopLeftRadius:wp(5),
-    borderTopRightRadius:wp(5),
+  conditionView: {
+    backgroundColor: COLORS.lightSky,
+    width: wp(90),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    paddingVertical: wp(4),
+    borderTopLeftRadius: wp(3),
+    borderTopRightRadius: wp(3),
   },
   categoryTitle: {
     fontSize: hp(2),
@@ -243,33 +375,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    width: wp(38),
-    fontSize: hp(1.8),
-    fontFamily: Fonts.medium || Fonts.bold,
-    color: '#555',
+    width: wp(26),
+    fontSize: hp(1.7),
+    fontFamily: Fonts.semiBold,
+    color: COLORS.black,
+    paddingLeft: wp(2),
   },
   value: {
     flex: 1,
     textAlign: 'center',
-    fontSize: hp(1.75),
-    fontFamily: Fonts.regular,
-    color: '#333',
+    fontSize: hp(1.6),
+    fontFamily: Fonts.medium,
+    color: COLORS.textHeading,
     paddingHorizontal: wp(2),
   },
 
   // DOWNLOAD BUTTON
   downloadBtn: {
     flex: 1,
-    backgroundColor: COLORS.themeColor,
     marginHorizontal: wp(2),
     paddingVertical: hp(1),
-    borderRadius: wp(8),
     alignItems: 'center',
     justifyContent: 'center',
   },
   downloadText: {
-    color: '#fff',
+    color: COLORS.black,
     fontFamily: Fonts.bold,
-    fontSize: hp(1.6),
+    fontSize: hp(1.5),
+    textDecorationLine: 'underline',
+    textDecorationColor: COLORS.themeColor,
   },
 });

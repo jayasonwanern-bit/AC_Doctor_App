@@ -731,11 +731,7 @@ const RequestDetail = ({ navigation }) => {
         buttonCount={2}
         firstButtonText="Confirm Decline"
         secondButtonText="No"
-        secondButton={() => {
-          setDeclineVisible(false),
-            setDetailStatus('Payment'),
-            setPaymentStatus('No');
-        }}
+        secondButton={() => setDeclineVisible(false)}   
       />
 
       {/* Booking Slot Modal */}

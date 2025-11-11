@@ -10,6 +10,10 @@ import {
   Alert,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
 
 const { width } = Dimensions.get('window');
 
@@ -24,7 +28,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
     try {
       const image = await ImagePicker.openCamera({
         mediaType: 'photo',
-        cropping: true, // Enable cropping for photos
+        cropping: false, // Enable cropping for photos
         compressImageQuality: 0.8, // Compress quality
         maxFiles: 1, // Single selection (change to higher for multiple)
         includeBase64: false,
@@ -52,9 +56,9 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
     try {
       const image = await ImagePicker.openPicker({
         mediaType: 'photo',
-        cropping: true, 
-        compressImageQuality: 0.8, 
-        maxFiles: 1, 
+        cropping: true,
+        compressImageQuality: 0.8,
+        maxFiles: 1,
         includeBase64: false,
         width: 500,
         height: 500,
@@ -129,6 +133,15 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 40,
     width,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignSelf: 'center',
+    width: widthPercentageToDP('100%'),
+    paddingBottom: heightPercentageToDP(Platform.OS === 'android' ? 4 : 4), // add this line for android
+    // marginTop: heightPercentageToDP(100),
   },
   title: {
     fontSize: 18,
@@ -146,10 +159,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 12,
   },
-  btnText: { fontSize: 17, fontWeight: '500', color: '#000' },
+  btnText: {
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#000',
+    textAlign: 'center',
+  },
   disabled: { opacity: 0.6 },
-  cancel: { marginTop: 12, alignItems: 'center', paddingVertical: 16 },
-  cancelText: { fontSize: 17, color: '#FF3B30', fontWeight: '600' },
+  cancel: {
+    marginTop: 12,
+    alignItems: 'center',
+    paddingVertical: 16,
+    backgroundColor: '#207cccff',
+    borderRadius: 12,
+  },
+  cancelText: { fontSize: 17, color: '#f8f3f3ff', fontWeight: '600' },
 });
 
 export default ImagePickerModal;

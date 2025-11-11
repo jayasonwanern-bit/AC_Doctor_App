@@ -914,8 +914,6 @@ const OldACRequest = ({ navigation }) => {
         secondButtonText="No"
         onSecondButtonPress={() => {
           setDeclineVisible(false);
-          setDetailStatus('Payment');
-          setPaymentStatus('No');
         }}
         onReasonSelect={reason => {
           setSelectReason(reason);

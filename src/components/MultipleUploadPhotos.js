@@ -4,6 +4,7 @@ import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
 import { COLORS, Fonts } from '../utils/colors';
 import images from '../assets/images';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
 
@@ -13,7 +14,7 @@ const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
   const handlePickImageOrVideo = () => {
     const options = {
       mediaType: 'any', // 'photo' or 'video' or 'any'
-      cropping: true, // Enable cropping for photos
+      cropping: false, // Enable cropping for photos
       compressImageQuality: 0.8, // Compress quality
       maxFiles: 1, // Single selection (change to higher for multiple)
       includeBase64: false,
@@ -97,6 +98,7 @@ const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
   );
 
   return (
+    <SafeAreaProvider>
     <View style={styles.inputGroup}>
       <Text style={styles.label}>Upload Photos/Drawings <Text style={styles.labelInput}>{OptionalText}</Text></Text>
       <FlatList
@@ -119,6 +121,7 @@ const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
         }
       />
     </View>
+    </SafeAreaProvider>
   );
 };
 

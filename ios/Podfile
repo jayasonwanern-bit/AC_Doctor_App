@@ -45,7 +45,9 @@ end
 
 target 'ACDoctor' do
   config = use_native_modules!
-  pod 'GoogleMaps'
+  pod 'GoogleMaps' # dependencies
+  pod 'rn-fetch-blob',
+    :path => '../node_modules/rn-fetch-blob'
 
   use_react_native!(
     :path => config[:reactNativePath],

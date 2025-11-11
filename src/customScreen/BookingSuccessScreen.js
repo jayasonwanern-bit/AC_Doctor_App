@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,6 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images'; // Your check icon
-import Header from '../components/Header';
 import { COLORS, Fonts } from '../utils/colors';
 
 const BookingSuccessScreen = ({ navigation }) => {
@@ -18,7 +17,7 @@ const BookingSuccessScreen = ({ navigation }) => {
     setTimeout(() => {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Tab', params: { screen: 'Shop' } }],
+        routes: [{ name: 'Tab', params: { screen: 'Home' } }],
       });
     }, 2000);
   }, []);

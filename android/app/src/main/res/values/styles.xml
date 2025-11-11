@@ -6,4 +6,13 @@
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
     </style>
 
+    <!--New theme for image cropper -->
+   <style name="CropPickerTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimaryDark">@android:color/black</item>
+    <item name="colorPrimary">@android:color/white</item>
+    <item name="windowNoTitle">true</item>
+    <item name="windowActionBar">false</item>
+ </style>
+
+
 </resources>

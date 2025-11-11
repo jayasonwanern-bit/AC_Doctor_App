@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Modal,
   FlatList,
+  Platform,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { COLORS, Fonts } from '../utils/colors';
@@ -107,6 +108,7 @@ const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [] }) => {
   }
 
   return (
+    <>
     <View style={styles.inputGroup}>
       <Text style={styles.label}>Type of AC</Text>
       <TouchableOpacity
@@ -127,6 +129,8 @@ const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [] }) => {
         <View style={{ marginTop: -25 }} />
       )}
 
+    
+    </View>
       <Modal
         transparent={true}
         animationType="slide"
@@ -196,7 +200,8 @@ const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [] }) => {
           </View>
         </TouchableOpacity>
       </Modal>
-    </View>
+    </>
+    
   );
 };
 
@@ -241,16 +246,21 @@ const styles = StyleSheet.create({
     // tintColor: '#c37e7eff',
   },
   modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+  flex:1,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  zIndex: 999,
   },
   modalContainer: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    maxHeight: '70%',
+   backgroundColor: '#fff',
+  borderTopLeftRadius: 20,
+  borderTopRightRadius: 20,
+  padding: 20,
+  width: '100%',
+  maxHeight: '70%',
+  alignSelf: 'center',
+  paddingBottom: hp(Platform.OS === 'android' ? 3 : 4),
   },
   item: {
     flexDirection: 'row',
@@ -313,11 +323,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   addButton: {
-    padding: 6,
+    paddingVertical: 6,
+    paddingHorizontal:12,
     borderWidth: 1,
     borderColor: COLORS.textHeading,
     borderRadius: 15,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
   addButtonText: {
     fontSize: 13,
@@ -328,7 +339,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.textHeading,
     borderRadius: 15,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12.5,
   },
   minusButtonText: {
     fontSize: 13,

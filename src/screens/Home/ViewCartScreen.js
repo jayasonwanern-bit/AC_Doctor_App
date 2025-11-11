@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
+  Platform,Alert
 } from 'react-native';
 import Header from '../../components/Header';
 import images from '../../assets/images';
@@ -23,7 +24,7 @@ import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
 import UserInfoModel from '../../customScreen/UserInfoModel';
 
-const ViewCartScreen = ({ route }) => {
+const ViewCartScreen = ({route }) => {
   const { screenName } = route.params || { screenName: 'Unknown' };
   const navigation = useNavigation();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
@@ -43,38 +44,25 @@ const ViewCartScreen = ({ route }) => {
     },
   ]);
 
-  const bookServices = [
-    {
-      label: 'Sterilization',
-      icon: images.strerilization,
-      action: handleSterilization,
-    },
-    { label: 'Repair', icon: images.repairIcon, action: handleRepair },
-    {
-      label: 'Installation',
-      icon: images.installationIcon,
-      action: handleInstallation,
-    },
-    {
-      label: 'Commercial AC',
-      icon: images.commercialIcon,
-      action: handleCommercialAC,
-    },
-    {
-      label: 'Gas Charging',
-      icon: images.gaschargeIcon,
-      action: handleGasCharging,
-    },
-    { label: 'Other', icon: images.otherIcon, action: handleOther },
-  ];
-  // BookingActions (replace alert with your action)
-  const handleSterilization = () => navigation.navigate('Sterilization');
-  const handleRepair = () => alert('Repair clicked!');
-  const handleInstallation = () => alert('Installation clicked!');
-  const handleCommercialAC = () => alert('Commercial AC clicked!');
-  const handleGasCharging = () => alert('Gas Charging clicked!');
-  const handleOther = () => alert('Other clicked!');
+ // BookingActions (replace alert with your action)
+ const handleSterilization = () => navigation.navigate('Sterilization');
+  const handleRepair = () => navigation.navigate('RepairScreen');
+  const handleInstallation = () => navigation.navigate('InstallationScreen');
+  const handleCommercialAC = () => navigation.navigate('CommericalAc');
+  const handleGasCharging = () => navigation.navigate('GasChargeScreen');
+  const handleOther = () => navigation.navigate('OtherScreen');
 
+// 2️⃣ Then define the array
+const bookServices = [
+  { label: 'Sterilization', icon: images.strerilization, action: handleSterilization },
+  { label: 'Repair', icon: images.repairIcon, action: handleRepair },
+  { label: 'Installation', icon: images.installationIcon, action: handleInstallation },
+  { label: 'Commercial AC', icon: images.commercialIcon, action: handleCommercialAC },
+  { label: 'Gas Charging', icon: images.gaschargeIcon, action: handleGasCharging },
+  { label: 'Other', icon: images.otherIcon, action: handleOther },
+];
+
+ 
   // Handle Increment
   const handleIncrement = index => {
     const updatedAcTypes = [...acTypes];
@@ -90,7 +78,7 @@ const ViewCartScreen = ({ route }) => {
     }
     setAcTypes(updatedAcTypes);
   };
-  console.log('setSetProceed----->', setProceed);
+
 
   return (
     <View style={styles.container}>
@@ -199,13 +187,14 @@ const ViewCartScreen = ({ route }) => {
           keyExtractor={(_, index) => `work-${index}`}
           horizontal
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
+          renderItem={({ item,index }) => (
             <TouchableOpacity
-              style={[styles.utioption, { width: wp('23%') }]}
+             key={index} activeOpacity={0.7}
+              style={[styles.utioption, { width: wp('23%'), zIndex: 9999 }]}
               onPress={item.action}
             >
               <FastImage source={item.icon} style={styles.utiicon} />
-              <Text style={styles.headText}>{item.label}</Text>
+              <Text style={[styles.headText,{ width: wp('20%'),textAlign:'center' }]}>{item.label}</Text>
               <View style={styles.addBtn}>
                 <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
                   Add
@@ -361,7 +350,6 @@ const ViewCartScreen = ({ route }) => {
           </View>
 
           <View style={{ flexDirection: 'row' }}>
-            {/* <FastImage source={images.timeLight} style={styles.smallImag} /> */}
             <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
               ₹ {'   '} In case of unexpected delays or issues, a refund will be
               provided.
@@ -434,6 +422,7 @@ const ViewCartScreen = ({ route }) => {
         />
       </View>
 
+{/* Present address */}
       <CustomModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -474,8 +463,7 @@ const ViewCartScreen = ({ route }) => {
         visible={confirmModalVisible}
         onClose={() => {
           setConfirmModalVisible(false);
-          setProceed(true); // Ab sahi state update hoga
-          console.log('Proceed set to true'); // Log ke liye
+          setProceed(true); 
         }}
         selectedAddress={selectedAddress}
         selectedSlot={selectedSlot}
@@ -492,7 +480,7 @@ const styles = StyleSheet.create({
   ordercontainer: {
     flexDirection: 'row',
     width: wp('95%'),
-    borderColor: COLORS.red,
+    borderColor: COLORS.themeColor,
     borderRadius: wp('2%'),
     borderWidth: wp('0.2%'),
     backgroundColor: COLORS.white,
@@ -528,9 +516,9 @@ const styles = StyleSheet.create({
     borderRadius: wp('1%'),
   },
   workText: {
-    fontSize: hp('1.5%'),
+    fontSize: hp('1.6%'),
     color: COLORS.textHeading,
-    fontFamily: Fonts.medium, // Use your defined medium font
+    fontFamily: Fonts.medium, 
   },
   workButtonContainer: {
     flexDirection: 'row',
@@ -544,17 +532,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
-    width: wp('7.3%'),
+    width: wp('7.5%'),
     height: hp('3.5%'),
     alignSelf: 'center',
     borderColor: '#ddd',
+    alignItems:"center",
+    justifyContent:'center'
   },
   workButtonText: {
     fontSize: wp('5%'),
     color: COLORS.black,
-    textAlign: 'center',
+    textAlignVertical: 'top',
     fontFamily: Fonts.medium,
-    marginBottom: hp('0.5%'), // Use your defined medium font
+    marginBottom: Platform.OS === 'ios' ?hp('0.5%'):wp('2%'), 
+    position:'absolute'
   },
   workCount: {
     fontSize: hp('1.6%'),

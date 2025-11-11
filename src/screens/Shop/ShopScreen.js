@@ -28,10 +28,10 @@ const ShopScreen = ({navigation}) => {
 
 
   const accessoriesItem = [
-    { label: 'AC Stabilizer', icon: images.ac_stablizier, action: () =>navigation.navigate('TonnageCalculatorScreen') },
-    { label: 'Outdoor Stand', icon: images.ac_outdoor, action: () =>navigation.navigate('ErrorCodeScreen') },
-    { label: 'Indoor Unit', icon: images.AC_indoor, action: () =>navigation.navigate('FreeConsultant') },
-    { label: 'New Remote', icon: images.remote, action: () =>navigation.navigate('FreeConsultant')},
+    { label: 'AC Stabilizer', icon: images.ac_stablizier, action: () =>navigation.navigate('ProductListScreen',{screenName:'AC Stabilizer'})},
+    { label: 'Outdoor Stand', icon: images.ac_outdoor, action: () =>navigation.navigate('ProductListScreen',{screenName:'Outdoor Stand'})},
+    { label: 'Indoor Unit', icon: images.AC_indoor, action: () =>navigation.navigate('ProductListScreen',{screenName:'Indoor Unit'})},
+    { label: 'New Remote', icon: images.remote, action: () =>navigation.navigate('ProductListScreen',{screenName:'New Remote'})},
   ];
   
   const utilities = [

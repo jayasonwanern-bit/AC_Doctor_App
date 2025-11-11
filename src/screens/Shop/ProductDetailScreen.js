@@ -23,94 +23,129 @@ import {
 } from 'react-native-responsive-screen';
 import CustomSlider from '../../components/CustomSlider';
 import { COLORS, Fonts } from '../../utils/colors';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const ProductDetailScreen = ({ navigation, route }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
-   const [likeStatus, setLikeStatus] = useState(false);
- const [compareStatus, setCompareStatus] = useState(false)
- const [listLike, setListLike]=useState({})
+  const [likeStatus, setLikeStatus] = useState(false);
+  const [compareStatus, setCompareStatus] = useState(false);
+  const [listLike, setListLike] = useState({});
   const { productId, product, productScreenName } = route.params;
   const bannerImages = [images.shopFrame, images.acPoster, images.shopFrame];
-  
+
   const products = [
-  {
-    id: '1',
-    title: 'Godrej 1.5 Ton 3 Star Inverter Split AC (Copper, 5-in-1 Convertible, 2023 Model)',
-    price: 41990,
-    mrp: 65900,
-    discount: '36% off',
-    image: images.demoAc,
-    limitedDeal: true,
-  },
-  {
-    id: '2',
-    title: 'Godrej 1.5 Ton 3 Star Inverter Split AC (Copper, 5-in-1 Convertible, 2023 Model)',
-    price: 41990,
-    mrp: 65900,
-    discount: '36% off',
-    image: images.demoAc,
-    limitedDeal: true,
-  },
-]
+    {
+      id: '1',
+      title:
+        'Godrej 1.5 Ton 3 Star Inverter Split AC (Copper, 5-in-1 Convertible, 2023 Model)',
+      price: 41990,
+      mrp: 65900,
+      discount: '36% off',
+      image: images.demoAc,
+      limitedDeal: true,
+    },
+    {
+      id: '2',
+      title:
+        'Godrej 1.5 Ton 3 Star Inverter Split AC (Copper, 5-in-1 Convertible, 2023 Model)',
+      price: 41990,
+      mrp: 65900,
+      discount: '36% off',
+      image: images.demoAc,
+      limitedDeal: true,
+    },
+  ];
 
   // FAQ'S Toggle
   const toggleExpand = index => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
-// list like or dislike
-  const toggleLike = (itemId) => {
+  // list like or dislike
+  const toggleLike = itemId => {
     setListLike(prev => ({
       ...prev,
       [itemId]: !prev[itemId], // Toggle
     }));
   };
 
-  const isLiked = (itemId) => !!listLike[itemId];
+  const isLiked = itemId => !!listLike[itemId];
 
-const ProductCard = ({ item }) => {
-  return (
-    <View style={styles.card}>
-      <FastImage
-        source={item.image }
-        style={styles.image}
-        resizeMode={FastImage.resizeMode.contain}
-      />
+  const ProductCard = ({ item }) => {
+    return (
+      <View style={styles.card}>
+        <FastImage
+          source={item.image}
+          style={styles.image}
+          resizeMode={FastImage.resizeMode.contain}
+        />
 
-      <Text style={styles.title} numberOfLines={1}>
-        {item.title}
-      </Text>
+        <Text style={styles.title} numberOfLines={1}>
+          {item.title}
+        </Text>
 
-      {item.limitedDeal && (
-        <View style={styles.dealBadge}>
-          <Text style={styles.dealText}>Limited time deal</Text>
+        {item.limitedDeal && (
+          <View style={styles.dealBadge}>
+            <Text style={styles.dealText}>Limited time deal</Text>
+          </View>
+        )}
+
+        <Text style={styles.price}>
+          ₹{item.price.toLocaleString('en-IN')}.00
+        </Text>
+
+        <View style={styles.mrpRow}>
+          <Text style={styles.mrp}>M.R.P </Text>
+          <Text style={styles.mrpPrice}>
+            ₹{item.mrp.toLocaleString('en-IN')}
+          </Text>
         </View>
-      )}
 
-      <Text style={styles.price}>₹{item.price.toLocaleString('en-IN')}.00</Text>
+        <View style={styles.discountRow}>
+          <Text style={styles.discount}>{item.discount}</Text>
+          <TouchableOpacity
+            style={styles.heartButton}
+            onPress={() => toggleLike(item.id)}
+          >
+            <FastImage
+              source={isLiked(item.id) ? images.redHeart : images.heart}
+              style={[Commonstyles.locationIcon]}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.mrpRow}>
-        <Text style={styles.mrp}>M.R.P </Text>
-        <Text style={styles.mrpPrice}>₹{item.mrp.toLocaleString('en-IN')}</Text>
-      </View>
-
-      <View style={styles.discountRow}>
-        <Text style={styles.discount}>{item.discount}</Text>
-        <TouchableOpacity style={styles.heartButton} onPress={() => toggleLike(item.id)}>
-
-          <FastImage
-                source={isLiked(item.id) ?images.redHeart:images.heart}
-                style={[Commonstyles.locationIcon]}
-                resizeMode={FastImage.resizeMode.contain}
-              />
+        <TouchableOpacity style={styles.addButton}>
+          <Text style={styles.addText}>Add to cart</Text>
         </TouchableOpacity>
       </View>
+    );
+  };
 
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addText}>Add to cart</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+  const downloadBrochure = (pdfUrl, fileName = 'AC_Brochure.pdf') => {
+    // Android Download Folder
+    const { dirs } = RNFetchBlob.fs;
+    const dirToSave = dirs.DownloadDir; // Ya dirs.DocumentDir bhi use kar sakta hai
+    const configfb = {
+      useDownloadManager: true,
+      notification: true,
+      mediaScannable: true,
+      title: fileName,
+      path: `${dirToSave}/${fileName}`,
+    };
+
+    RNFetchBlob.config(configfb)
+      .fetch('GET', pdfUrl, {})
+      .then(res => {
+        console.log('PDF Downloaded Successfully:', res.path());
+        Alert.alert(
+          'Brochure Downloaded Successfully! Check your Downloads folder',
+        );
+      })
+      .catch(error => {
+        console.log('Download Error:', error);
+        Alert.alert('Download failed. Please try again.');
+      });
+  };
 
   return (
     <SafeAreaView style={Commonstyles.safeArea}>
@@ -168,9 +203,9 @@ const ProductCard = ({ item }) => {
           <Text style={Commonstyles.mediumText}>
             WindFree Inverter Split AC AR18CY5APWK, 5.00kw (1.5T) 5 Star
           </Text>
-          <TouchableOpacity onPress={()=>setLikeStatus(!likeStatus)}>
+          <TouchableOpacity onPress={() => setLikeStatus(!likeStatus)}>
             <FastImage
-              source={likeStatus ?images.redHeart:images.heart}
+              source={likeStatus ? images.redHeart : images.heart}
               style={[Commonstyles.locationIcon, { marginHorizontal: wp(2) }]}
               resizeMode={FastImage.resizeMode.contain}
             />
@@ -194,9 +229,15 @@ const ProductCard = ({ item }) => {
           <Text style={[Commonstyles.mediumText, { color: COLORS.yellow }]}>
             ★★★★ <Text style={[Commonstyles.accountNumber]}>(4.00)</Text>
           </Text>
-          <TouchableOpacity style={Commonstyles.locationContainer} onPress={()=>{setCompareStatus(!compareStatus), navigation.navigate('CompareACScreen')}}>
+          <TouchableOpacity
+            style={Commonstyles.locationContainer}
+            onPress={() => {
+              setCompareStatus(!compareStatus),
+                navigation.navigate('CompareACScreen');
+            }}
+          >
             <FastImage
-              source={compareStatus ?images.check:images.uncheck}
+              source={compareStatus ? images.check : images.uncheck}
               style={[Commonstyles.locationIcon, { marginHorizontal: wp(2) }]}
               resizeMode={FastImage.resizeMode.contain}
             />
@@ -206,7 +247,7 @@ const ProductCard = ({ item }) => {
 
         {/* Description */}
         <View style={{ marginTop: wp(3) }}>
-          <Text style={[Commonstyles.locationText, { color: COLORS.red }]}>
+          <Text style={[Commonstyles.locationText, { color: COLORS.black }]}>
             Description
           </Text>
           <Text style={[Commonstyles.accountNumber, { marginVertical: wp(3) }]}>
@@ -327,6 +368,12 @@ const ProductCard = ({ item }) => {
               borderColor: COLORS.themeColor,
             },
           ]}
+          onPress={() =>
+            downloadBrochure(
+              'https://www.samsung.com/in/pdf/air-conditioners/WindFree_AC_Brochure.pdf',
+              'Samsung_WindFree_AC.pdf',
+            )
+          }
         >
           <Text
             style={[Commonstyles.accountBlueText, { fontSize: hp('1.7%') }]}
@@ -432,7 +479,7 @@ const ProductCard = ({ item }) => {
               </TouchableOpacity>
 
               {expandedIndex === index && (
-                <View style={{paddingHorizontal:hp(1.5)}}>
+                <View style={{ paddingHorizontal: hp(1.5) }}>
                   <View style={[Commonstyles.sergrid]}>
                     <Text
                       style={[
@@ -440,7 +487,7 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                     {item.title}
+                      {item.title}
                     </Text>
                     <Text style={Commonstyles.locationText}>{item.text}</Text>
                   </View>
@@ -452,9 +499,11 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                     Capacity
+                      Capacity
                     </Text>
-                    <Text style={Commonstyles.locationText}>{item.capacity}</Text>
+                    <Text style={Commonstyles.locationText}>
+                      {item.capacity}
+                    </Text>
                   </View>
                   <View style={Commonstyles.bottomLine} />
                   <View style={[Commonstyles.sergrid]}>
@@ -464,9 +513,11 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                    Cooling Power
+                      Cooling Power
                     </Text>
-                    <Text style={Commonstyles.locationText}>{item.cooling}</Text>
+                    <Text style={Commonstyles.locationText}>
+                      {item.cooling}
+                    </Text>
                   </View>
                   <View style={Commonstyles.bottomLine} />
                   <View style={[Commonstyles.sergrid]}>
@@ -476,9 +527,11 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                   Special Feature
+                      Special Feature
                     </Text>
-                    <Text style={Commonstyles.locationText}>{item.feature}</Text>
+                    <Text style={Commonstyles.locationText}>
+                      {item.feature}
+                    </Text>
                   </View>
                   <View style={Commonstyles.bottomLine} />
                   <View style={[Commonstyles.sergrid]}>
@@ -488,7 +541,7 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                   Colour
+                      Colour
                     </Text>
                     <Text style={Commonstyles.locationText}>{item.colour}</Text>
                   </View>
@@ -500,9 +553,11 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                    Voltage
+                      Voltage
                     </Text>
-                    <Text style={Commonstyles.locationText}>{item.voltage}</Text>
+                    <Text style={Commonstyles.locationText}>
+                      {item.voltage}
+                    </Text>
                   </View>
                   <View style={Commonstyles.bottomLine} />
                   <View style={[Commonstyles.sergrid]}>
@@ -512,9 +567,11 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                    Product Dimensions
+                      Product Dimensions
                     </Text>
-                    <Text style={Commonstyles.locationText}>{item.product}</Text>
+                    <Text style={Commonstyles.locationText}>
+                      {item.product}
+                    </Text>
                   </View>
                   <View style={Commonstyles.bottomLine} />
                   <View style={[Commonstyles.sergrid]}>
@@ -524,7 +581,7 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                    Noise Level
+                      Noise Level
                     </Text>
                     <Text style={Commonstyles.locationText}>{item.noise}</Text>
                   </View>
@@ -536,19 +593,21 @@ const ProductCard = ({ item }) => {
                         { color: COLORS.textHeading },
                       ]}
                     >
-                   Floor Area
+                      Floor Area
                     </Text>
                     <Text style={Commonstyles.locationText}>{item.floor}</Text>
                   </View>
                   <View style={Commonstyles.bottomLine} />
-                  <View style={[Commonstyles.sergrid,{paddingBottom:hp(2)}]}>
+                  <View
+                    style={[Commonstyles.sergrid, { paddingBottom: hp(2) }]}
+                  >
                     <Text
                       style={[
                         Commonstyles.locationText,
                         { color: COLORS.textHeading },
                       ]}
                     >
-                   Power Source
+                      Power Source
                     </Text>
                     <Text style={Commonstyles.locationText}>{item.power}</Text>
                   </View>
@@ -558,19 +617,20 @@ const ProductCard = ({ item }) => {
           ))}
         </>
 
-{/* you Might Also Like*/}
-<Text style={[Commonstyles.mediumText,{marginVertical:hp(1.5)}]}>You Might Also Like</Text>
-<View style={styles.container}>
-      <FlatList
-        data={products}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ProductCard item={item} />}
-        contentContainerStyle={styles.listContent}
-      />
-    </View>
-
+        {/* you Might Also Like*/}
+        <Text style={[Commonstyles.mediumText, { marginVertical: hp(1.5) }]}>
+          You Might Also Like
+        </Text>
+        <View style={styles.container}>
+          <FlatList
+            data={products}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => <ProductCard item={item} />}
+            contentContainerStyle={styles.listContent}
+          />
+        </View>
       </ScrollView>
 
       <View style={Commonstyles.servicesSection}>
@@ -583,7 +643,10 @@ const ProductCard = ({ item }) => {
           />
           <Text style={Commonstyles.locationText}>WishList</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={Commonstyles.serviceCartButton} onPress={()=>navigation.navigate('OrderSummaryScreen')}>
+        <TouchableOpacity
+          style={Commonstyles.serviceCartButton}
+          onPress={() => navigation.navigate('OrderSummaryScreen')}
+        >
           <Image
             source={images.cart}
             style={[Commonstyles.carticon, { marginHorizontal: wp(2) }]}
@@ -674,7 +737,7 @@ const styles = StyleSheet.create({
   },
   discount: {
     fontSize: 14,
-    color:COLORS.green,
+    color: COLORS.green,
     fontFamily: Fonts.semiBold,
   },
   heartButton: {
@@ -686,13 +749,13 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor:COLORS.themeColor,
+    borderColor: COLORS.themeColor,
     borderRadius: 8,
     paddingVertical: 10,
     alignItems: 'center',
   },
   addText: {
-    color:COLORS.themeColor,
+    color: COLORS.themeColor,
     fontFamily: Fonts.medium,
     fontSize: 14,
   },

@@ -9,6 +9,10 @@ import { useNavigation } from '@react-navigation/native';
 
 const ConfirmationModal = ({ visible, onClose, selectedAddress, selectedSlot }) => {
     const navigation = useNavigation()
+    const handleProceed = () => {
+    onClose(); 
+    navigation.navigate('PaymentScreen'); 
+  };
   return (
     <Modal
       animationType="slide"
@@ -40,7 +44,7 @@ const ConfirmationModal = ({ visible, onClose, selectedAddress, selectedSlot }) 
               <Text style={styles.slotText}>Time: {selectedSlot.Timeslot}</Text>
             </View>
           )}
-          <TouchableOpacity style={styles.confirmButton} onPress={()=>onClose()}>
+          <TouchableOpacity style={styles.confirmButton} onPress={handleProceed}>
             <Text style={styles.confirmButtonText}>Process to pay</Text>
           </TouchableOpacity>
 

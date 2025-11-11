@@ -182,6 +182,24 @@ const OrderSummaryScreen = ({ navigation }) => {
           />
         </View>
 
+ <View style={[Commonstyles.addressRow, { marginVertical: wp(3),backgroundColor:COLORS.white, padding:wp(1.5) }]}>
+  <View style={[Commonstyles.addressRow,]}>
+     <FastImage
+            source={images.couponIcon}
+            style={[Commonstyles.locationIcon]}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          <Text style={[Commonstyles.mediumText]}>Apply Coupon</Text>
+  </View>
+          <TouchableOpacity onPress={()=>navigation.navigate('ProfileDetail')}>
+          <FastImage
+            source={images.rightArrow}
+            style={[Commonstyles.locationIcon]}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          </TouchableOpacity>
+        </View>
+
         {/* Payment Summary */}
         <View style={[Commonstyles.allSideRadiusStyle, { borderRadius: 0 }]}>
           <Text style={Commonstyles.mediumText}>Payment Summary</Text>
@@ -215,11 +233,13 @@ const OrderSummaryScreen = ({ navigation }) => {
         {/* contact detail */}
         <View style={[Commonstyles.addressRow, { marginTop: wp(3) }]}>
           <Text style={[Commonstyles.mediumText]}>Contact Details</Text>
+          <TouchableOpacity onPress={()=>navigation.navigate('ProfileDetail')}>
           <FastImage
             source={images.edit}
             style={[Commonstyles.locationIcon]}
             resizeMode={FastImage.resizeMode.contain}
           />
+          </TouchableOpacity>
         </View>
 
         <View style={[Commonstyles.allSideRadiusStyle, { borderRadius: 0 }]}>

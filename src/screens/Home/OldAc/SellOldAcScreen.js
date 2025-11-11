@@ -319,7 +319,7 @@ const SellOldAcScreen = ({ navigation}) => {
                   <Text style={[styles.labelInput,{marginLeft:wp(0)}]}>
                    Bulk Add ↑
                   </Text>
-                   <Text style={[styles.labelInput,{color:COLORS.themeColor,marginLeft:wp(30),textDecorationLine:'underline'}]}>
+                   <Text style={[styles.labelInput,{color:COLORS.themeColor,marginLeft:wp(27),textDecorationLine:'underline'}]}>
                     Add Another AC +
                   </Text>   
                 </TouchableOpacity>
@@ -583,22 +583,23 @@ const styles = StyleSheet.create({
   },
   BtnView: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: hp('2.5%'),
     paddingVertical: hp('2%'),
     backgroundColor: COLORS.white,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-    alignItems: 'center',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+    position: 'absolute',
+    bottom: hp(Platform.OS === 'android'? 0:0),
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignSelf: 'center',
+    width: wp('100%'),
+    paddingBottom: hp(Platform.OS === 'android'? 4:4),// add this line for android
+    marginBottom: hp(0),
   },
   RowView: {
     flexDirection: 'row',

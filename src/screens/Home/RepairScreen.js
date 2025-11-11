@@ -225,7 +225,7 @@ const RepairScreen = ({ navigation }) => {
           <Text style={styles.servicesCount}>3 services</Text>
           <Text style={styles.selectedText}>Selected</Text>
         </View>
-        <TouchableOpacity style={styles.viewCartButton} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
+        <TouchableOpacity style={styles.viewCartButton} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Repair AC' })}>
           <Text style={styles.viewCartText}>View Cart</Text>
           <Image source={images.cart} style={styles.carticon} />
         </TouchableOpacity>

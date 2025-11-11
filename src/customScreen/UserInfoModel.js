@@ -70,7 +70,7 @@ const UserInfoModel = ({ visible, onClose, onProceed }) => {
               <TouchableOpacity
                 onPress={() => {
                   onClose();
-                  navigation.navigate('AddAddress');
+                  navigation.navigate('AddAddress',{from:'UserInfoModel'});
                 }}
               >
                 <Text style={styles.addAddressText}>Add New Address</Text>

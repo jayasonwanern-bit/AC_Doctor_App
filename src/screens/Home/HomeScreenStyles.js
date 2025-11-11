@@ -573,9 +573,10 @@ export default StyleSheet.create({
   workbuttonText: {
     fontSize: wp('5%'),
     color: COLORS.black,
-    textAlign: 'center',
+    textAlignVertical: 'top',
     fontFamily: Fonts.medium,
-    marginBottom:hp('1%'),
+    marginBottom: Platform.OS === 'ios' ?hp('0.5%'):wp('2%'), 
+    position:'absolute'
   },
   workcount: {
     fontSize: wp('3.5%'),
@@ -634,7 +635,7 @@ export default StyleSheet.create({
     padding: 12,
   },
   faquestionText: {
-    fontSize: wp('3.3%'),
+    fontSize: wp('3.8%'),
     color: COLORS.black,
     fontFamily: Fonts.semiBold,
     marginVertical: wp('2%'),
@@ -1082,5 +1083,17 @@ export const WindoData = [
               Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},
   {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
               Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},           
+];
+
+export const CompareData = [
+  {question: 'Manufacture Details', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},
+ {question: 'Product Dimensions(Open)', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},
+  {question: 'Air Conditioner Features', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},
+  {question: 'Air Conditioner Functions', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
+  {question: 'Air Conditioner Physical Attributes', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
+  {question: 'Air Conditioner Screen Specification', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
+  {question: 'Remote Control Details', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
+  {question: 'Air Conditioner PIUG Details', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
+  {question: 'Air Conditioner Functions', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
 ];
 

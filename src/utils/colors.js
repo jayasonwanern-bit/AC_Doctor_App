@@ -13,7 +13,7 @@ export const COLORS = {
   gray: '#808080',
   lightGray: '#D3D3D3',
   darkGray: '#A9A9A9',
-  transparent: 'transparent',
+  transparent: 'rgba(0, 0, 0, 0.5)',
   Lightred:'#f6d4d1ff',
   red:'#c52210ff',
   black:'#000000',
@@ -42,28 +42,27 @@ export const COLORS = {
 };
 
 export const Fonts = {
-  regular: 'Plus Jakarta Sans',
-  italic: 'Plus Jakarta Sans Italic',
+  regular: 'PlusJakartaSans-Regular',
+  italic: 'PlusJakartaSans-Italic',
 
-  light: 'Plus Jakarta Sans Light',
-  lightItalic: 'Plus Jakarta Sans Light Italic',
+  light: 'PlusJakartaSans-Light',
+  lightItalic: 'PlusJakartaSans-LightItalic',
 
-  medium: 'Plus Jakarta Sans Medium',
-  mediumItalic: 'Plus Jakarta Sans Medium Italic',
+  medium: 'PlusJakartaSans-Medium',
+  mediumItalic: 'PlusJakartaSans-MediumItalic',
 
-  semiBold: 'Plus Jakarta Sans SemiBold',
-  semiBoldItalic: 'Plus Jakarta Sans SemiBold Italic',
+  semiBold: 'PlusJakartaSans-SemiBold',
+  semiBoldItalic: 'PlusJakartaSans-SemiBoldItalic',
 
-  bold: 'Plus Jakarta Sans Bold',
-  boldItalic: 'Plus Jakarta Sans Bold Italic',
+  bold: 'PlusJakartaSans-Bold',
+  boldItalic: 'PlusJakartaSans-BoldItalic',
 
-  extraBold: 'Plus Jakarta Sans ExtraBold',
-  extraBoldItalic: 'Plus Jakarta Sans ExtraBold Italic',
+  extraBold: 'PlusJakartaSans-ExtraBold',
+  extraBoldItalic: 'PlusJakartaSans-ExtraBoldItalic',
 
-  extraLight: 'Plus Jakarta Sans ExtraLight',
-  extraLightItalic: 'Plus Jakarta Sans ExtraLight Italic',
+  extraLight: 'PlusJakartaSans-ExtraLight',
+  extraLightItalic: 'PlusJakartaSans-ExtraLightItalic',
 };
-
 // manage status colors globally
 export const STATUS_CONFIG = {
   'Under Review': { bg: '#FFE7CF', text: '#D26900' },

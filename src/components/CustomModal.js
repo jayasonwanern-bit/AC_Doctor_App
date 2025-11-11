@@ -182,8 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#939e9eff',
-   backgroundColor: '#ebf6f6ff',
+    backgroundColor: '#ebf6f6ff',
     paddingHorizontal: hp('2.5%'),
     paddingVertical: hp('2%'),
     borderTopLeftRadius: wp('6.5%'),

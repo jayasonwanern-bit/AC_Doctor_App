@@ -72,6 +72,13 @@ const AddAddress = ({ navigation,route }) => {
   else if (cameFrom === 'CustomModal') {
     setModalSlotVisible(true);
   }
+  else if(cameFrom === 'UserInfoModel')
+  {
+    setModalSlotVisible(true);
+  }
+  else {
+    navigation.goBack()
+  }
   };
 
   return (
