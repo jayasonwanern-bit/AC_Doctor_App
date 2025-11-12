@@ -424,7 +424,8 @@ const OldACRequest = ({ navigation }) => {
                   borderRadius: hp(5),
                   borderWidth: wp(0.3),
                   borderColor: COLORS.lightGray,
-                  padding: hp(1.7),
+                  padding:Platform.OS === 'ios'? hp(1.7): hp(0.5),
+                  paddingHorizontal:Platform.OS === 'ios'? hp(1.7): hp(2.5),
                   marginVertical: wp(1.5),
                 }}
               >
@@ -434,6 +435,7 @@ const OldACRequest = ({ navigation }) => {
                   keyboardType="default"
                   value={upiId}
                   onChange={txt => setupiId(txt)}
+                  style={styles.label}
                 />
               </View>
             </View>

@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 20,
     paddingHorizontal: wp('3%'),
+    paddingVertical: wp('3%'),
   },
   errorText: {
     color: COLORS.errorRed,

@@ -118,13 +118,13 @@ const Sterilization = ({ navigation }) => {
             {ac.showButtons ? (
               <View style={styles.workbuttonContainer}>
                 <TouchableOpacity
-                  style={styles.workbutton}
+                  style={styles.workbutton} activeOpacity={2}
                   onPress={() => handleDecrement(index)}
                 >
                   <Text style={styles.workbuttonText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.workcount}>{ac.count}</Text>
-                <TouchableOpacity
+                <TouchableOpacity activeOpacity={2}
                   style={styles.workbutton}
                   onPress={() => handleIncrement(index)}
                 >
@@ -132,8 +132,8 @@ const Sterilization = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <TouchableOpacity
-                style={styles.workaddButton}
+              <TouchableOpacity 
+                style={styles.workaddButton} activeOpacity={2}
                 onPress={() => handleAddClick(index)}
               >
                 <Text style={styles.workaddButtonText}>+ Add</Text>
@@ -193,7 +193,7 @@ const Sterilization = ({ navigation }) => {
             <View key={index} style={styles.faqItem}>
               <TouchableOpacity
                 onPress={() => toggleExpand(index)}
-                style={styles.faquestionContainer}
+                style={styles.faquestionContainer} activeOpacity={2}
               >
                 <Text style={styles.faquestionText}>{item.question}</Text>
                 <Text style={styles.faqarrow}>
@@ -227,7 +227,7 @@ const Sterilization = ({ navigation }) => {
           <Text style={styles.servicesCount}>3 services</Text>
           <Text style={styles.selectedText}>Selected</Text>
         </View>
-        <TouchableOpacity style={styles.viewCartButton} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
+        <TouchableOpacity style={styles.viewCartButton} activeOpacity={2} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
           <Text style={styles.viewCartText}>View Cart</Text>
           <Image source={images.cart} style={styles.carticon} />
         </TouchableOpacity>

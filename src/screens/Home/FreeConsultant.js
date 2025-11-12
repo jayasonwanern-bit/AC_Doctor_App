@@ -157,6 +157,7 @@ const FreeConsultant = ({ navigation }) => {
                 onChangeText={value => handleInputChange('numberOfAC', value)}
                 keyboardType="numeric"
                 placeholder="Enter number"
+                placeholderTextColor={COLORS.textColor}
               />
             </View>
 
@@ -172,6 +173,7 @@ const FreeConsultant = ({ navigation }) => {
                   }
                   keyboardType="phone-pad"
                   placeholder="Enter number"
+                  placeholderTextColor={COLORS.textColor}
                 />
               </View>
             </View>
@@ -422,9 +424,9 @@ const pickerSelectStyles = StyleSheet.create({
   inputAndroid: {
     width: wp('90%'),
     height: hp('4.5%'),
-    fontSize: hp('1.8%'),
+    fontSize: hp('1.6%'),
     color: '#333',
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.medium,
     paddingHorizontal: wp('4%'),
   },
   iconContainer: {

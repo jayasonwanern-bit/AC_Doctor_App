@@ -11,6 +11,24 @@ import { COLORS } from '../../utils/colors';
 
 const ShopScreen = ({navigation}) => {
       const scheme = useColorScheme();
+        // Dynamic styles based on scheme
+        const dynamicStyles = {
+          safeArea: {
+            backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#ffffff',
+          },
+          backText: {
+            color: scheme === 'dark' ? '#ffffff' : '#000000',
+          },
+          title: {
+            color: scheme === 'dark' ? '#ffffff' : '#000000',
+          },
+          helpIcon: {
+            tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
+          },
+          extraIcon: {
+            tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
+          },
+        };
       
   const handleAddressPress = () => {
     navigation.navigate('SelectLocation', { onUpdate: loadAddress });
@@ -54,22 +72,27 @@ const ShopScreen = ({navigation}) => {
     images.MITelectricIcon,
     images.daikinIcon,
   ];
-   const chunkArray = (array, size) => {
-    return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
-      array.slice(i * size, i * size + size),
-    );
+  const chunkArray = (array, size) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
   };
   const pages = chunkArray(Authpartner, 6);
   
 
 // render
     return (
-       <SafeAreaView style={Commonstyles.safeArea}>
-        <StatusBar
-                 barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-                  backgroundColor="transparent"
-                  translucent={true} 
-                />
+       <SafeAreaView style={[Commonstyles.safeArea ,{ backgroundColor: dynamicStyles.safeArea.backgroundColor },
+             ]}
+           >
+             <StatusBar
+               barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+               backgroundColor="transparent"
+               translucent={true}
+             />
+    
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={Commonstyles.container}
@@ -151,11 +174,24 @@ const ShopScreen = ({navigation}) => {
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             keyExtractor={(_, index) => `page-${index}`}
-            renderItem={({ item }) => (
+            renderItem={({ item: page }) => (
               <View style={Commonstyles.authgrid}>
-                {item.map((icon, idx) => (
-                  <View key={idx} style={Commonstyles.authoption}>
-                    <FastImage source={icon} style={Commonstyles.authicon} />
+                {[0, 1,2].map(row => (
+                  <View
+                    key={row}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      marginVertical: 3,
+                    }} >
+                    {page.slice(row * 3, row * 3 + 3).map((icon, idx) => (
+                      <View
+                        key={idx}
+                        style={Commonstyles.authoption}
+                      >
+                        <FastImage source={icon} style={Commonstyles.authicon} resizeMode={FastImage.resizeMode.contain} />
+                      </View>
+                    ))}
                   </View>
                 ))}
               </View>
@@ -178,7 +214,7 @@ const ShopScreen = ({navigation}) => {
 
 {/* Who Trust On Us */}
  <View style={Commonstyles.uticontainer}>
-          <Text style={Commonstyles.utititle}>Who Trust On Us</Text>
+          <Text style={[Commonstyles.utititle,dynamicStyles.title]}>Who Trust On Us</Text>
           <FlatList
             data={testimonialData}
             keyExtractor={item => item.id}
@@ -204,7 +240,7 @@ const ShopScreen = ({navigation}) => {
 {/* Service Guarantee */}
             <View style={[Commonstyles.sercard,{backgroundColor:COLORS.white, paddingTop:hp(1.5), borderRadius:hp(1), marginBottom:hp(15)}]}>
           <Text style={Commonstyles.utititle}>Service Guarantee</Text>
-          <View style={[Commonstyles.sergrid, { marginBottom: hp(Platform.OS === 'android' ? '7%' : '2%') }]}>
+          <View style={[Commonstyles.sergrid, { marginBottom: hp(Platform.OS === 'android' ? '2%' : '2%') }]}>
             <TouchableOpacity style={Commonstyles.serstatCard} activeOpacity={0.8}>
               <Image source={images.remoteIcon} style={Commonstyles.sericon} />
               <View>

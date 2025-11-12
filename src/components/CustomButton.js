@@ -7,7 +7,7 @@ const CustomButton = ({ buttonName,margingTOP,btnTextColor, btnColor = COLORS.th
   return (
     <TouchableOpacity
       style={[styles.button, { backgroundColor: btnColor, opacity: disabled ? 0.6 : 1 ,marginTop:margingTOP, borderColor: btnColor === COLORS.white ? COLORS.black : 'transparent', borderWidth: btnColor === COLORS.white ? 1 : 0}]}
-      onPress={onPress}
+      onPress={onPress} activeOpacity={2}
       disabled={disabled}
     >
       <Text style={[styles.buttonText,{color:btnTextColor}]}>{buttonName}</Text>

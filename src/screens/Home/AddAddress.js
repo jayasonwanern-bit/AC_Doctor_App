@@ -99,15 +99,17 @@ const AddAddress = ({ navigation,route }) => {
             placeholder="Enter your city, area, or landmark"
             value={searchBar}
             keyboardType="default"
+            placeholderTextColor={COLORS.textColor}
             onChangeText={setSearchBar}
           />
         </View>
-        <Text style={styles.orText}>{Platform.OS === 'ios' ?`──────────── Or ───────────`:`───────────────  Or ──────────────`}</Text>
+        <Text style={styles.orText}>{Platform.OS === 'ios' ?`──────────── Or ───────────`:`───────────  Or ───────────`}</Text>
         <Text style={styles.label}>Street Address</Text>
         <TextInput
           placeholder="Address"
           value={address}
           keyboardType="email-address"
+           placeholderTextColor={COLORS.textColor}
           onChangeText={setAddress}
           style={styles.input}
         />
@@ -116,6 +118,7 @@ const AddAddress = ({ navigation,route }) => {
             <Text style={styles.label}>City</Text>
             <TextInput
               placeholder="City"
+              placeholderTextColor={COLORS.textColor}
               value={city}
               keyboardType="default"
               onChangeText={setCity}
@@ -126,6 +129,7 @@ const AddAddress = ({ navigation,route }) => {
             <Text style={styles.label}>State</Text>
             <TextInput
               placeholder="State"
+               placeholderTextColor={COLORS.textColor}
               value={stateName}
               keyboardType="default"
               onChangeText={setStateName}
@@ -136,6 +140,7 @@ const AddAddress = ({ navigation,route }) => {
         <Text style={styles.label}>Pincode</Text>
         <TextInput
           placeholder="Pincode"
+           placeholderTextColor={COLORS.textColor}
           value={pincode}
           onChangeText={setPincode}
           keyboardType="number-pad"
@@ -145,10 +150,10 @@ const AddAddress = ({ navigation,route }) => {
         <View style={styles.buttonGroup}>
           <TouchableOpacity
             style={[
-              styles.typeButton,
+              styles.typeButton, 
               addressType === 'Home' && styles.selectedTypeButton,
             ]}
-            onPress={() => setAddressType('Home')}
+            onPress={() => setAddressType('Home')} activeOpacity={1}
           >
             <Text
               style={[
@@ -175,7 +180,7 @@ const AddAddress = ({ navigation,route }) => {
               Office
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          <TouchableOpacity activeOpacity={1}
             style={[
               styles.typeButton,
               addressType === 'Other' && styles.selectedTypeButton,
@@ -194,7 +199,7 @@ const AddAddress = ({ navigation,route }) => {
         </View>
         <TouchableOpacity
           style={styles.checkboxContainer}
-          onPress={() => setIsDefault(!isDefault)}
+          onPress={() => setIsDefault(!isDefault)} activeOpacity={1}
         >
           <Image
             source={isDefault ? images.check : images.uncheck}
@@ -247,8 +252,10 @@ const styles = StyleSheet.create({
     fontSize: hp(1.7),
     textAlign: 'center',
     marginBottom: hp(2),
-    color: '#666',
+    color: COLORS.black,
+     fontFamily:Fonts.semiBold,
   },
+
   searchInput: {
     flexDirection: 'row',
     borderWidth: 1,
@@ -266,14 +273,17 @@ const styles = StyleSheet.create({
   },
   orText: {
     textAlign: 'center',
-    marginVertical: hp(2),
+    marginVertical: hp(1),
     color: '#666',
+    fontFamily:Fonts.medium,
+    fontSize: hp(1.5),
   },
   label: {
     fontSize: hp(1.5),
     marginBottom: hp(1),
     marginTop: hp(1.3),
     color: '#000',
+     fontFamily:Fonts.semiBold,
   },
   input: {
     borderWidth: 1,

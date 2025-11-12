@@ -39,6 +39,8 @@ const ErrorCodeScreen = ({ navigation }) => {
     if (isPlace === null || isPlace === undefined) {
       Alert.alert('Missing Selection', 'Please select a place.');
       return;
+    }else{
+      navigation.goBack()
     }
   };
 
@@ -115,7 +117,7 @@ const ErrorCodeScreen = ({ navigation }) => {
           </View>
 
           <CustomButton
-            buttonName="View Error Codes"
+            buttonName="Submit Error Codes"
             margingTOP={hp('1%')}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}

@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Image,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import Header from '../../components/Header';
 import Homestyles from '../Home/HomeScreenStyles';
@@ -20,6 +21,7 @@ import CustomPhoneInput from '../../components/CustomInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import RNPickerSelect from 'react-native-picker-select';
+import ImagePickerModal from '../../components/ImagePickerModal';
 
 const ProfileDetail = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState('IN'); // Default India
@@ -27,6 +29,8 @@ const ProfileDetail = ({ navigation }) => {
   const [userName, setuserName] = useState('Rahul Kumar');
   const [email, setEmail] = useState('rahulkumar@gmail.com');
   const [gender, setGender] = useState('Male');
+  const [showModal, setShowModal] = useState(false);
+    const [selectedImageUri, setSelectedImageUri] = useState(null);
 
   const phoneSchema = yup.object().shape({
     phoneNumber: yup
@@ -60,15 +64,17 @@ const ProfileDetail = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         {' '}
-        <ImageBackground
-          source={images.userphoto}
-          style={Homestyles.profileDetailBg}
-        >
+         <TouchableOpacity activeOpacity={6} onPress={() => setShowModal(true)}>
+       <ImageBackground
+          source={selectedImageUri ? { uri: selectedImageUri }:images.userphoto}
+          style={Homestyles.profileDetailBg} 
+        >    
           <FastImage
             source={images.profileCamera}
             style={Homestyles.cameraStyle}
           />
         </ImageBackground>
+          </TouchableOpacity>
         <View style={Homestyles.profileDetailInfoContainer}>
           <Text style={Homestyles.profileDetailName}>Name</Text>
           <TextInput
@@ -76,6 +82,7 @@ const ProfileDetail = ({ navigation }) => {
             placeholder="Rahul Kumar"
             value={userName}
             onChangeText={txt => setuserName(txt)}
+            placeholderTextColor={COLORS.textColor}
           />
         </View>
         <View style={Homestyles.profileDetailInfoContainer}>
@@ -103,6 +110,7 @@ const ProfileDetail = ({ navigation }) => {
             placeholder="RahulKumar@gmail.com"
             value={email}
             onChangeText={txt => setEmail(txt)}
+            placeholderTextColor={COLORS.textColor}
           />
         </View>
         <View style={Homestyles.profileDetailInfoContainer}>
@@ -116,7 +124,7 @@ const ProfileDetail = ({ navigation }) => {
             useNativeAndroidPickerStyle={false}
             Icon={() => (
               <Image
-                source={images.arrowdown} // ya icon
+                source={images.arrowdown} 
                 style={styles.dropdownIcon}
               />
             )}
@@ -133,6 +141,14 @@ const ProfileDetail = ({ navigation }) => {
           onPress={() => navigation.goBack()}
         />
       </View>
+      <ImagePickerModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        onImageSelect={uri => {
+          console.log('Image Path:', uri);
+          setSelectedImageUri('file://' + uri);
+        }}
+      />
     </View>
   );
 };

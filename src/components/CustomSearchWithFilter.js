@@ -13,6 +13,7 @@ import {
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { COLORS } from '../utils/colors';
 
 const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
   const [searchText, setSearchText] = useState('');
@@ -108,6 +109,7 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
           placeholder="Search products..."
           value={searchText}
           onChangeText={setSearchText}
+          placeholderTextColor={COLORS.textColor}
         />
         <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
           <FastImage source={images.filterImg} style={styles.filterIcon} />

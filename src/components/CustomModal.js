@@ -73,11 +73,11 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
       onRequestClose={onClose}
       statusBarTranslucent={true}
     >
-      <TouchableOpacity  onPress={()=> onClose()} style={styles.modalContainer}>
+      <TouchableOpacity  onPress={()=> onClose()} style={styles.modalContainer} activeOpacity={2}>
         <View style={styles.modalContent}>
           <View style={styles.inFlexrow}>
             <Text style={styles.headerText}>Saved Addresses</Text>
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={2}
               onPress={() => {
                 onClose();
                 navigation.navigate('AddAddress', { from: 'CustomModal' });
@@ -90,6 +90,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
           {savedAddresses.map((address, index) => (
             <TouchableOpacity
               key={index}
+              activeOpacity={2}
               style={[
                 styles.addressContainer,
                 selectedAddressIndex === index && styles.selectedAddress,
@@ -128,7 +129,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
                 <View style={styles.phoneIcons}>
                   <Text style={styles.addressPhone}>{address.phone}</Text>
                   <View style={styles.icons}>
-                    <TouchableOpacity>
+                    <TouchableOpacity activeOpacity={2}>
                       <Text
                         style={[
                           styles.icon,
@@ -141,7 +142,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
                         </TouchableOpacity>
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={onClose}>
+                    <TouchableOpacity onPress={onClose} activeOpacity={2}>
                       <Text
                         style={[
                           styles.icon,
@@ -150,7 +151,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
                             : styles.lightIcon,
                         ]}
                       >
-                        <TouchableOpacity>
+                        <TouchableOpacity activeOpacity={2}>
                           <Image
                             source={images.delete}
                             style={styles.showiconStyle}
@@ -164,7 +165,7 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
             </TouchableOpacity>
           ))}
           <TouchableOpacity
-            style={styles.proceedButton}
+            style={styles.proceedButton} activeOpacity={2}
             onPress={handleProceedPress} // Use separate function
           >
             <Text style={styles.proceedButtonText}>Proceed</Text>

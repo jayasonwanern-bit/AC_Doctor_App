@@ -145,6 +145,7 @@ const OtherCartView = ({ navigation, route }) => {
                 onPress={() => {
                   handleScreenNavigation(item.name);
                 }}
+                activeOpacity={2}
               >
                 <Image source={item.image} style={styles.Iconservices} />
                 <Text style={styles.titleService}>{item.name}</Text>

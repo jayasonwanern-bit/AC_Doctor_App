@@ -135,11 +135,7 @@ const SellOldAcScreen = ({ navigation}) => {
 
   return (
     <View style={screenStyles.workcontainer}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
-      >
+     
         <Header
           title="Old AC"
           onBack={() => navigation.goBack()}
@@ -150,6 +146,11 @@ const SellOldAcScreen = ({ navigation}) => {
           style={screenStyles.workscrollstyle}
           showsVerticalScrollIndicator={false}
         >
+           <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
+      >
           <View style={{ marginBottom: hp('10%') }}>
             <View style={screenStyles.worksliderview}>
               <Image
@@ -191,6 +192,7 @@ const SellOldAcScreen = ({ navigation}) => {
                     }
                     keyboardType="default"
                     placeholder="LGUS-Q19YNZE"
+                    placeholderTextColor={COLORS.textColor}
                   />
                 </View>
 
@@ -279,6 +281,7 @@ const SellOldAcScreen = ({ navigation}) => {
                       }
                       keyboardType="default"
                       placeholder="Invertor"
+                      placeholderTextColor={COLORS.textColor}
                     />
                   </View>
                 </View>
@@ -405,13 +408,14 @@ const SellOldAcScreen = ({ navigation}) => {
               />
             </TouchableOpacity>
           </View>
+              </KeyboardAvoidingView>
         </ScrollView>
-
+ 
         {/* Confirm Button */}
         <View style={styles.BtnView}>
           <CustomButton
             buttonName="Confirm your Address"
-            margingTOP={hp('0%')}
+            margingTOP={hp('-3%')}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
             onPress={handleRequestConsultation}
@@ -483,7 +487,7 @@ const SellOldAcScreen = ({ navigation}) => {
         setSelectedAddress={setSelectedAddress}
       />
       
-      </KeyboardAvoidingView>
+ 
     </View>
   );
 };
@@ -497,7 +501,7 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     color: COLORS.black,
     marginBottom: hp('1.5%'),
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
   },
   labelInput: {
     flex: 1,
@@ -581,26 +585,25 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     color: '#666',
   },
-  BtnView: {
-    flexDirection: 'row',
+BtnView:{
+ flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: hp('2.5%'),
-    paddingVertical: hp('2%'),
+    paddingVertical:Platform.OS === 'ios'? hp(4): hp(4),
     backgroundColor: COLORS.white,
+    position: 'absolute',
+    bottom:Platform.OS === 'ios'? hp(0): hp(0),
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    alignItems: 'center',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    position: 'absolute',
-    bottom: hp(Platform.OS === 'android'? 0:0),
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-    alignSelf: 'center',
-    width: wp('100%'),
-    paddingBottom: hp(Platform.OS === 'android'? 4:4),// add this line for android
-    marginBottom: hp(0),
-  },
+},
   RowView: {
     flexDirection: 'row',
     // alignItems: 'center',

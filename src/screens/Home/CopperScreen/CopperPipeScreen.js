@@ -95,11 +95,11 @@ const CopperPipeScreen = ({ navigation }) => {
 
   return (
     <View style={screenStyles.workcontainer}>
-      <KeyboardAvoidingView
+      {/* <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
-      >
+      > */}
         <Header
           title="Copper Piping"
           onBack={() => navigation.goBack()}
@@ -175,6 +175,7 @@ const CopperPipeScreen = ({ navigation }) => {
                     }
                     keyboardType="name-phone-pad"
                     placeholder="Enter number of length"
+                    placeholderTextColor={COLORS.textColor}
                   />
                 </View>
               </View>
@@ -298,7 +299,7 @@ const CopperPipeScreen = ({ navigation }) => {
           onClose={() => setOutLocationModalVisible(false)}
           onSelect={handleSelectOutdoor}
         />
-      </KeyboardAvoidingView>
+      {/* </KeyboardAvoidingView> */}
     </View>
   );
 };
@@ -394,10 +395,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: hp('2.5%'),
-    paddingVertical: hp('2%'),
+    paddingVertical:Platform.OS === 'ios'? hp(4): hp(4),
     backgroundColor: COLORS.white,
     position: 'absolute',
-    bottom: 0,
+    bottom:Platform.OS === 'ios'? hp(0): hp(0),
     left: 0,
     right: 0,
     zIndex: 1000,

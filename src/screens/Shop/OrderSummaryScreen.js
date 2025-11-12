@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.6),
     fontFamily: Fonts.medium,
     color: '#333',
     marginBottom: 6,

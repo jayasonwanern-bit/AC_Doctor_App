@@ -28,7 +28,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
     try {
       const image = await ImagePicker.openCamera({
         mediaType: 'photo',
-        cropping: false, // Enable cropping for photos
+        cropping: true, // Enable cropping for photos
         compressImageQuality: 0.8, // Compress quality
         maxFiles: 1, // Single selection (change to higher for multiple)
         includeBase64: false,

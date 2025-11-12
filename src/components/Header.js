@@ -1,6 +1,6 @@
 // src/components/Header.js
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, useColorScheme, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, useColorScheme, StatusBar, Image } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images'; // Adjust path if needed
@@ -24,16 +24,16 @@ const Header = ({
       backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#ffffff',
     },
     backText: {
-      color: scheme === 'dark' ? COLORS.white : '#000000',
+      color: scheme === 'dark' ? '#ffffff' : '#000000',
     },
     title: {
-      color: scheme === 'dark' ? COLORS.white : '#000000',
+      color: scheme === 'dark' ? '#ffffff' : '#000000',
     },
     helpIcon: {
-      tintColor: scheme === 'dark' ? COLORS.white : '#000000',
+      tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
     },
     extraIcon: {
-      tintColor: scheme === 'dark' ? COLORS.white : '#000000',
+      tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
     },
   };
 
@@ -48,29 +48,28 @@ const Header = ({
       <View style={styles.header}>
         {onBack && (
           <TouchableOpacity style={styles.backButton} onPress={onBack}>
-             <FastImage
+             <Image
               source={images.backArrow}
               style={[styles.backIcon, dynamicStyles.extraIcon]}
-              resizeMode={FastImage.resizeMode.contain}
+              resizeMode='contain'
             />
           </TouchableOpacity>
         )}
         <Text style={[styles.title, dynamicStyles.title]}>{title}</Text>
         {onHelp && (
           <TouchableOpacity style={styles.helpButton} onPress={onHelp}>
-            <FastImage
+            <Image
               source={images.questionIcon}
               style={[styles.helpIcon, dynamicStyles.helpIcon]}
-              resizeMode={FastImage.resizeMode.contain}
+              resizeMode='contain'
             />
           </TouchableOpacity>
         )}
         {onAddImage && (
           <TouchableOpacity style={styles.helpButton} onPress={onImgclick}>
-            <FastImage
+            <Image
               source={AddIcon}
-              style={[styles.helpIcon, dynamicStyles.helpIcon]}
-              resizeMode={FastImage.resizeMode.contain}
+              style={[styles.extraIcon, dynamicStyles.extraIcon]} resizeMode='contain'
             />
           </TouchableOpacity>
         )}
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp('2.5%'),
-    paddingVertical: hp('1%'),
+    paddingVertical: hp('2.5%'),
     borderBottomWidth: 1,
     borderBottomColor: '#ddd', 
   },

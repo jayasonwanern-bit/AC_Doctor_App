@@ -43,7 +43,6 @@ const OtherScreen = ({ navigation }) => {
       return;
     }
   else {    
-    alert('Problem submitted successfully!');
     navigation.navigate('OtherCartView',{problem: isProblem, reason: ProblemReason});
   }
     // Reset form

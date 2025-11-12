@@ -111,14 +111,14 @@ const InstallationScreen = ({ navigation }) => {
             {ac.showButtons ? (
               <View style={styles.workbuttonContainer}>
                 <TouchableOpacity
-                  style={styles.workbutton}
+                  style={styles.workbutton} activeOpacity={2}
                   onPress={() => handleDecrement(index)}
                 >
                   <Text style={styles.workbuttonText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.workcount}>{ac.count}</Text>
                 <TouchableOpacity
-                  style={styles.workbutton}
+                  style={styles.workbutton} activeOpacity={2}
                   onPress={() => handleIncrement(index)}
                 >
                   <Text style={styles.workbuttonText}>+</Text>
@@ -126,7 +126,7 @@ const InstallationScreen = ({ navigation }) => {
               </View>
             ) : (
               <TouchableOpacity
-                style={styles.workaddButton}
+                style={styles.workaddButton} activeOpacity={2}
                 onPress={() => handleAddClick(index)}
               >
                 <Text style={styles.workaddButtonText}>+ Add</Text>
@@ -147,7 +147,7 @@ const InstallationScreen = ({ navigation }) => {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.workoption}
-                  onPress={item.action}
+                  onPress={item.action} activeOpacity={2}
                 >
                   <FastImage source={item.icon} style={styles.workicon} />
                   <Text style={[styles.utilabel, { color: COLORS.white }]}>
@@ -186,7 +186,7 @@ const InstallationScreen = ({ navigation }) => {
             <View key={index} style={styles.faqItem}>
               <TouchableOpacity
                 onPress={() => toggleExpand(index)}
-                style={styles.faquestionContainer}
+                style={styles.faquestionContainer} activeOpacity={2}
               >
                 <Text style={styles.faquestionText}>{item.question}</Text>
                 <Text style={styles.faqarrow}>
@@ -220,7 +220,7 @@ const InstallationScreen = ({ navigation }) => {
           <Text style={styles.servicesCount}>3 services</Text>
           <Text style={styles.selectedText}>Selected</Text>
         </View>
-        <TouchableOpacity style={styles.viewCartButton} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
+        <TouchableOpacity style={styles.viewCartButton}  activeOpacity={2} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
           <Text style={styles.viewCartText}>View Cart</Text>
           <Image source={images.cart} style={styles.carticon} />
         </TouchableOpacity>

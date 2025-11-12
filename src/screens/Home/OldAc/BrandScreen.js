@@ -81,8 +81,8 @@ return (
          <View style={[styles.header,styles.searchInput]}>
         <Image source={images.searchIcon} style={styles.serachStyle} />
         <TextInput
-          // style={styles.searchInput}
           placeholder="Search..."
+          placeholderTextColor={COLORS.textColor}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
@@ -135,8 +135,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e2e8f0',
     borderRadius: hp(7),
-    padding: 8,
-    fontSize: 16,
+    padding:wp(1),
   },
   brandItem: {
     borderRadius: hp(1),

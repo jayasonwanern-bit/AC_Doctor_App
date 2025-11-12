@@ -14,7 +14,7 @@ const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
   const handlePickImageOrVideo = () => {
     const options = {
       mediaType: 'any', // 'photo' or 'video' or 'any'
-      cropping: false, // Enable cropping for photos
+      cropping: true, // Enable cropping for photos
       compressImageQuality: 0.8, // Compress quality
       maxFiles: 1, // Single selection (change to higher for multiple)
       includeBase64: false,
@@ -108,7 +108,7 @@ const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
         numColumns={3}
         columnWrapperStyle={styles.row}
         ListFooterComponent={
-          uploadedItems.length < 6 ? (
+         uploadedItems.length < 3 ? (
             <TouchableOpacity style={styles.uploadContainer} onPress={handlePickImageOrVideo}>
               <FastImage
                 source={images.Camera}
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
   },
 });
 

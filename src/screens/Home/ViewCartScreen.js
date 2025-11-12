@@ -190,11 +190,11 @@ const bookServices = [
           renderItem={({ item,index }) => (
             <TouchableOpacity
              key={index} activeOpacity={0.7}
-              style={[styles.utioption, { width: wp('23%'), zIndex: 9999 }]}
+              style={[styles.utioption, { width: wp('27%'), zIndex: 9999 }]}
               onPress={item.action}
             >
               <FastImage source={item.icon} style={styles.utiicon} />
-              <Text style={[styles.headText,{ width: wp('20%'),textAlign:'center' }]}>{item.label}</Text>
+              <Text style={[styles.headText,{ width: wp('20%'),textAlign:'center' , height: hp('4.5%'),}]}>{item.label}</Text>
               <View style={styles.addBtn}>
                 <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
                   Add
@@ -246,39 +246,39 @@ const bookServices = [
           <Text style={styles.headText}>Payment Summary</Text>
 
           <View style={styles.flewView}>
-            <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
+            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
               Item Total
             </Text>
             <Text
               style={[
                 styles.workText,
-                { fontSize: hp('1.2%'), color: COLORS.black },
+                { fontSize: hp('1.5%'), color: COLORS.black },
               ]}
             >
               ₹ 3680
             </Text>
           </View>
           <View style={styles.flewView}>
-            <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
+            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
               Item Discount
             </Text>
             <Text
               style={[
                 styles.workText,
-                { fontSize: hp('1.2%'), color: COLORS.black },
+                { fontSize: hp('1.5%'), color: COLORS.black },
               ]}
             >
               -₹ 150
             </Text>
           </View>
           <View style={styles.flewView}>
-            <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
+            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
               Taxes and Fee
             </Text>
             <Text
               style={[
                 styles.workText,
-                { fontSize: hp('1.2%'), color: COLORS.black },
+                { fontSize: hp('1.5%'), color: COLORS.black },
               ]}
             >
               ₹ 69
@@ -300,7 +300,7 @@ const bookServices = [
             <Text
               style={[
                 styles.workText,
-                { fontSize: hp('1.2%'), color: COLORS.black },
+                { fontSize: hp('1.5%'), color: COLORS.black },
               ]}
             >
               Total
@@ -308,7 +308,7 @@ const bookServices = [
             <Text
               style={[
                 styles.workText,
-                { fontSize: hp('1.2%'), color: COLORS.black },
+                { fontSize: hp('1.5%'), color: COLORS.black },
               ]}
             >
               ₹ 3540
@@ -341,16 +341,16 @@ const bookServices = [
           ]}
         >
           <Text style={styles.headText}>Cancellation policy</Text>
-          <View style={{ flexDirection: 'row', marginVertical: hp('1%') }}>
+          <View style={{ flexDirection: 'row', marginVertical: hp('1%'), alignItems:'center' }}>
             <FastImage source={images.timeLight} style={styles.smallImag} />
-            <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
+            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
               Orders cannot be cancelled within 2 hours of the scheduled service
               time.
             </Text>
           </View>
 
           <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
+            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
               ₹ {'   '} In case of unexpected delays or issues, a refund will be
               provided.
             </Text>
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     marginHorizontal: hp('1%'),
   },
   headText: {
-    fontSize: wp('3%'),
+    fontSize: hp('1.5%'),
     fontFamily: Fonts.semiBold,
     color: COLORS.black,
   },
@@ -575,13 +575,13 @@ const styles = StyleSheet.create({
     marginRight: hp('1%'),
   },
   utiicon: {
-    width: wp('10%'),
-    height: wp('10%'),
+    width: wp('14%'),
+    height: wp('14%'),
     resizeMode: 'contain',
     marginVertical: wp('2%'),
   },
   addBtn: {
-    width: wp('18%'),
+    width: wp('23%'),
     alignItems: 'center',
     padding: hp('0.7%'),
     borderWidth: wp('0.4%'),
@@ -625,8 +625,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: wp('5%'),
   },
   smallImag: {
-    width: wp('3%'),
-    height: hp('1.5%'),
+    width: wp('4%'),
+    height: hp('1.9%'),
     resizeMode: 'contain',
     marginRight: hp('1%'),
   },
