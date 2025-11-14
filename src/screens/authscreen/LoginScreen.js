@@ -96,9 +96,10 @@ const styles = StyleSheet.create({
     marginVertical: hp('4%'),
   },
   secureText: {
-    fontSize: hp('1.3%'),
+    fontSize: hp('1.5%'),
     color: Fonts.regular,
     fontFamily: '300',
+    marginVertical: hp('2%'),
   },
   button: {
     paddingVertical: hp('1.6%'),

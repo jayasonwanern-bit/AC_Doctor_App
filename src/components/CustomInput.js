@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   input: {
    flex: 1,
-    height: hp('4.5%'), 
+    height: hp('4.8%'), 
     marginLeft: wp('2.5%'),
     marginVertical: hp('2%'),
     borderWidth: 1,
@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 20,
     paddingHorizontal: wp('3%'),
-    paddingVertical: wp('3%'),
+    // paddingVertical: wp('3%'),
   },
   errorText: {
     color: COLORS.errorRed,
     fontSize: hp('1.5%'),
     textAlign:'center',
     position: 'absolute',
-    bottom: -hp('5%'),
+    bottom: -hp('0.5%'),
   },
 });
 

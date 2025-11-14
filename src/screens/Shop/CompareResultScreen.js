@@ -113,7 +113,7 @@ const CompareResultScreen = ({ route, navigation }) => {
               Window Name
             </Text>
             {acs.map((ac, index) => (
-              <View style={{ width: wp('20%') }}>
+              // <View style={{ width: wp('20%') }}>
                 <Text
                   key={ac.id}
                   style={[
@@ -124,7 +124,7 @@ const CompareResultScreen = ({ route, navigation }) => {
                 >
                   {ac.title}
                 </Text>
-              </View>
+              // </View>
             ))}
           </View>
 

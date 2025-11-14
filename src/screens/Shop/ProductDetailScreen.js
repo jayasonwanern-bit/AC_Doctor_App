@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-  Alert,
-  StyleSheet,
+  StyleSheet,Alert, PermissionsAndroid, Platform 
 } from 'react-native';
 import Commonstyles, {
   productData,
@@ -121,31 +120,61 @@ const ProductDetailScreen = ({ navigation, route }) => {
     );
   };
 
-  const downloadBrochure = (pdfUrl, fileName = 'AC_Brochure.pdf') => {
-    // Android Download Folder
-    const { dirs } = RNFetchBlob.fs;
-    const dirToSave = dirs.DownloadDir; // Ya dirs.DocumentDir bhi use kar sakta hai
-    const configfb = {
+// 1️⃣ Permission request function
+async function requestStoragePermission() {
+  if (Platform.OS === 'android') {
+    if (Platform.Version >= 33) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } else {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+         {
+          title: 'Storage Permission Required',
+          message: 'App needs access to your storage to download the brochure.',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+  }
+  return true;
+}
+
+ const downloadBrochure = async (pdfUrl, fileName = 'AC_Brochure.pdf') => {
+  const hasPermission = await requestStoragePermission();
+  if (!hasPermission) {
+    Alert.alert('Permission Denied', 'Cannot download without storage access.');
+    return;
+  }
+
+  const { fs } = RNFetchBlob;
+  const dirToSave = Platform.OS === 'android' ? fs.dirs.DownloadDir : fs.dirs.DocumentDir;
+  const path = `${dirToSave}/${fileName}`;
+
+  RNFetchBlob.config({
+    fileCache: true,
+    addAndroidDownloads: {
       useDownloadManager: true,
       notification: true,
-      mediaScannable: true,
+      path,
+      description: 'Downloading brochure...',
       title: fileName,
-      path: `${dirToSave}/${fileName}`,
-    };
-
-    RNFetchBlob.config(configfb)
-      .fetch('GET', pdfUrl, {})
-      .then(res => {
-        console.log('PDF Downloaded Successfully:', res.path());
-        Alert.alert(
-          'Brochure Downloaded Successfully! Check your Downloads folder',
-        );
-      })
-      .catch(error => {
-        console.log('Download Error:', error);
-        Alert.alert('Download failed. Please try again.');
-      });
-  };
+      mime: 'application/pdf',
+      mediaScannable: true,
+    },
+  })
+    .fetch('GET', pdfUrl)
+    .then(res => {
+      console.log('File downloaded to:', res.path());
+      Alert.alert('Download Complete', 'File saved in your Downloads folder.');
+    })
+    .catch(error => {
+      console.log('Download error:', error);
+      Alert.alert('Error', 'Download failed. Please try again.');
+    });
+};
 
   return (
     <SafeAreaView style={Commonstyles.safeArea}>
@@ -381,16 +410,12 @@ const ProductDetailScreen = ({ navigation, route }) => {
             Download Brochure
           </Text>
         </TouchableOpacity>
+
+
         {/* freeDelivery */}
-        <View
-          style={[Commonstyles.allSideRadiusStyle, { marginBottom: hp(2) }]}
-        >
+        <View style={[Commonstyles.allSideRadiusStyle, { marginBottom: hp(2) }]}>
           <View
-            style={[
-              Commonstyles.sergrid,
-              { marginBottom: hp(Platform.OS === 'android' ? '7%' : '2%') },
-            ]}
-          >
+            style={Commonstyles.sergrid}>
             <TouchableOpacity
               style={Commonstyles.serstatCard}
               activeOpacity={0.8}

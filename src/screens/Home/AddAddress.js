@@ -209,7 +209,7 @@ const AddAddress = ({ navigation,route }) => {
         </TouchableOpacity>
 
         <CustomButton
-          buttonName="Contine"
+          buttonName="Continue"
           margingTOP={hp('6%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}

@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: hp('2.5%'),
-    paddingVertical:Platform.OS === 'ios'? hp(4): hp(4),
+    paddingVertical:Platform.OS === 'ios'? hp(4): hp(0),
     backgroundColor: COLORS.white,
     position: 'absolute',
     bottom:Platform.OS === 'ios'? hp(0): hp(0),

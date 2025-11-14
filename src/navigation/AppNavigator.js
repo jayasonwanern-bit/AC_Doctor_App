@@ -87,7 +87,7 @@ const AppNavigator = () => {
       />
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Tab"
+          initialRouteName="Splash"
           screenOptions={{
             headerStyle: dynamicStyles.headerStyle,
             headerTitleStyle: dynamicStyles.headerTitleStyle,

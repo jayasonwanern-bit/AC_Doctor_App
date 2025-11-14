@@ -193,7 +193,7 @@ const CompareACScreen = ({ navigation, route }) => {
               <View
                 style={[
                   Commonstyles.allSideRadiusStyle,
-                  { marginHorizontal: 16, marginTop: hp(0) },
+                  { marginHorizontal: 16, marginTop: hp(0)},
                 ]}
               >
                 <TouchableOpacity style={styles.removeBtn} onPress={()=>removeAC(item.id)}>
@@ -373,18 +373,18 @@ const styles = StyleSheet.create({
   },
   removeBtn: {
     position: 'absolute',
-    right: 3,
-    top: 0,
-    backgroundColor: '#fff',
-    width: 32,
-    height: 32,
+    right: 0,
+    top: -2,
+    // backgroundColor: '#a56c6cff',
+    width: 30,
+    height: 30,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 6,
     zIndex: 10,
   },
-  removeText: { fontSize: 22, color: COLORS.textHeading },
+  removeText: { fontSize: 22, color: COLORS.textHeading ,textAlign:"center"},
   striked: { textDecorationLine: 'line-through', color: '#999', fontSize: 14 },
   vsContainer: { alignItems: 'center', },
   vsText: {
