@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -9,7 +9,7 @@ import OTPTextInput from 'react-native-otp-textinput';
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
 import CustomButton from '../../components/CustomButton';
-// import { verifyOTP } from '../utils/api';
+import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 
 const VerificationScreen = ({ navigation, route }) => {
   const { phoneNumber } = route.params;
@@ -85,10 +85,14 @@ const VerificationScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
+       {/* <KeyboardAwareScrollView
+        enableOnAndroid
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 }}
+        extraScrollHeight={100}> */}
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
+        onPress={() => navigation.goBack()}>
         <FastImage
           source={images.backArrow}
           style={styles.backImg}
@@ -136,6 +140,7 @@ const VerificationScreen = ({ navigation, route }) => {
          Resend OTP
         </Text>
       </TouchableOpacity>
+      {/* </KeyboardAwareScrollView> */}
     </View>
   );
 };
@@ -166,7 +171,6 @@ const styles = StyleSheet.create({
     width: wp('5%'),
     height: hp('5%'),
     resizeMode: 'contain',
-    marginVertical: hp('3%'),
   },
   subtitle: {
     fontSize: hp('1.5%'),
@@ -201,8 +205,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderColor,
     borderRadius: 20,
-    width: wp('14%'),
-    height: hp('5%'),
+    width: wp('13%'),
+    height: Platform.OS === 'android'? hp('6%') :hp('5%'),
     fontSize: hp('2.5%'),
     textAlign: 'center',
   },

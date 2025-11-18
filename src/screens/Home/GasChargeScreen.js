@@ -215,7 +215,7 @@ const GasChargeScreen = ({ navigation }) => {
       </ScrollView>
 
       {/* Services and View Cart Section */}
-      <View style={styles.servicesSection}>
+      {acTypes.map((ac, index) => (ac.showButtons &&<View style={styles.servicesSection}>
         <View>
           <Text style={styles.servicesCount}>3 services</Text>
           <Text style={styles.selectedText}>Selected</Text>
@@ -224,7 +224,7 @@ const GasChargeScreen = ({ navigation }) => {
           <Text style={styles.viewCartText}>View Cart</Text>
           <Image source={images.cart} style={styles.carticon} />
         </TouchableOpacity>
-      </View>
+      </View>))}
     </View>
   );
 };

@@ -35,6 +35,7 @@ const RequestDetail = ({ navigation }) => {
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); // Accept successPopup
   const [confirmPopupVisible, setConfirmPopupVisible] = useState(false); // Offer confirm successPopup
   const [DeclineVisible, setDeclineVisible] = useState(false); // Offer confirm successPopup
+  const [rescheduleReqVisible, setRescheduleReqVisible] = useState(false);
   const [cancelReqVisible, setCancelReqVisible] = useState(false);
   const [cancelConfirmVisible, setCancelConfirmVisible] = useState(false);
   const [selectPay, setSelectedPay] = useState('bank');
@@ -554,18 +555,18 @@ const RequestDetail = ({ navigation }) => {
       {detailStatus === 'Request' && (
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            onPress={() => setCancelReqVisible(true)}
+            onPress={() => setReqStatus(prev => prev === 'Scheduled' ? 'complete' : 'Scheduled')}
             style={[styles.doneButton, { backgroundColor: COLORS.white }]}
           >
             <Text
               style={[styles.doneButtonText, { color: COLORS.textHeading }]}
             >
-              Cancel Request
+              Next
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.doneButton, styles.secondButton]}
-            onPress={() => setModalSlotVisible(true)}
+            onPress={() => setRescheduleReqVisible(true)}
           >
             <Text style={styles.doneButtonText}>Reschedule</Text>
           </TouchableOpacity>
@@ -645,6 +646,26 @@ const RequestDetail = ({ navigation }) => {
         </View>
       )}
 
+
+ {/* Reschedulerequest Popup */}
+      <SuccessPopupModal
+        visible={rescheduleReqVisible}
+        onClose={() => {
+          setRescheduleReqVisible(false),
+           setCancelReqVisible(true);
+        }}
+        setIcon={images.questionMark}
+        HeadTextColor="black"
+        HeadText="Are you sure?"
+        message1=""
+        message2="Do you really want to cancel this request?"
+        buttonCount={2}
+        firstButtonText="Cancel Reschedule"
+        secondButtonText="Reschedule"
+        onSecondButtonPress={() => {
+          setRescheduleReqVisible(false), setModalSlotVisible(true);
+        }}
+      />
       {/* cancel request Popup */}
       <SuccessPopupModal
         visible={cancelReqVisible}

@@ -222,7 +222,7 @@ const Sterilization = ({ navigation }) => {
       </ScrollView>
 
       {/* Services and View Cart Section */}
-      <View style={styles.servicesSection}>
+     {acTypes.map((ac) => (ac.showButtons && (<View style={styles.servicesSection} key="view-cart-section">
         <View>
           <Text style={styles.servicesCount}>3 services</Text>
           <Text style={styles.selectedText}>Selected</Text>
@@ -231,7 +231,8 @@ const Sterilization = ({ navigation }) => {
           <Text style={styles.viewCartText}>View Cart</Text>
           <Image source={images.cart} style={styles.carticon} />
         </TouchableOpacity>
-      </View>
+      </View>)
+      ))}
     </View>
     
   );

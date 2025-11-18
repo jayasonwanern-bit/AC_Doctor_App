@@ -1,6 +1,6 @@
 // src/screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, TouchableWithoutFeedback, StatusBar, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import CustomPhoneInput from '../../components/CustomInput';
@@ -9,6 +9,8 @@ import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import images from '../../assets/images';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const phoneSchema = yup.object().shape({
@@ -32,44 +34,83 @@ const LoginScreen = ({ navigation }) => {
   };
  
   return (
-    <KeyboardAvoidingView style={styles.container}>
-      <Text style={styles.title}>Welcome Back! </Text>
-      <Text style={styles.titleHead}>Let's Keep Your AC Healthy</Text>
-      <FastImage source={images.login} style={styles.image} resizeMode={FastImage.resizeMode.contain} />
-      <Text style={styles.textNumber}>Enter your mobile number to continue</Text>
-      <Controller
-        control={control}
-        name="phoneNumber"
-        render={({ field: { onChange, value } }) => (
-          <CustomPhoneInput
-            countryCode={countryCode}
-            callingCode={callingCode}
-            setCountryCode={setCountryCode}
-            setCallingCode={setCallingCode}
-            phoneNumber={value}
-            setPhoneNumber={onChange}
-            error={errors.phoneNumber?.message}
-          />
-        )}
-      />
-      <Text style={styles.secureText}>Securing your personal information is our priority.</Text>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: isValid ? COLORS.themeColor : COLORS.disabledGrey }]}
-        onPress={handleSubmit(onSubmit)}
-        disabled={!isValid}>
-        <Text style={styles.buttonText}>Get Verification Code</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+ <SafeAreaView style={styles.container}>
+  <StatusBar
+    barStyle="dark-content"
+    backgroundColor={COLORS.white}
+    translucent={false}
+  />
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={styles.mainView}>
+
+    {/* <KeyboardAwareScrollView
+        // enableOnAndroid
+        keyboardShouldPersistTaps="handled"
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.contentContainer}
+        // extraScrollHeight={100}
+      >  */}
+        <Text style={styles.title}>Welcome Back!</Text>
+        <Text style={styles.titleHead}>Let's Keep Your AC Healthy</Text>
+
+        <Image
+          source={images.login}
+          style={styles.image}
+          resizeMode={'contain'}
+        />
+
+        <Text style={styles.textNumber}>Enter your mobile number to continue</Text>
+
+        <Controller
+          control={control}
+          name="phoneNumber"
+          render={({ field: { onChange, value } }) => (
+            <CustomPhoneInput
+              countryCode={countryCode}
+              callingCode={callingCode}
+              setCountryCode={setCountryCode}
+              setCallingCode={setCallingCode}
+              phoneNumber={value}
+              setPhoneNumber={onChange}
+              error={errors.phoneNumber?.message}
+            />
+          )}
+        />
+
+        <Text style={styles.secureText}>
+          Securing your personal information is our priority.
+        </Text>
+
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: isValid ? COLORS.themeColor : COLORS.disabledGrey }
+          ]}
+          onPress={handleSubmit(onSubmit)}
+          disabled={!isValid}
+        >
+          <Text style={styles.buttonText}>Get Verification Code</Text>
+        </TouchableOpacity>
+
+      {/* </KeyboardAwareScrollView> */}
+    </View>
+  </TouchableWithoutFeedback>
+</SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: wp('5%'),
     backgroundColor: COLORS.white,  
   },
+  mainView:{ flex: 1,marginTop:hp(10)},
   title: {
     fontSize: hp('3.6%'),
     fontFamily: Fonts.semiBold,
@@ -114,6 +155,60 @@ const styles = StyleSheet.create({
     fontSize: hp('1.6%'),
     fontFamily: Fonts.semiBold,
   },
+  contentContainer:{
+    flexGrow: 1,
+  }
 });
 
 export default LoginScreen;
+
+// import React from 'react';
+// import { View, TextInput, StyleSheet, Keyboard, StatusBar } from 'react-native';
+// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+
+// const LoginScreen = () => {
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+//       <StatusBar barStyle="dark-content" />
+      
+//       <KeyboardAwareScrollView
+//         ref='scroll'
+//       >
+//         <View style={styles.inner}>
+//           <TextInput 
+//             placeholder="Enter text 1" 
+//             style={styles.input} 
+//           />
+//           <TextInput 
+//             placeholder="Enter text 2" 
+//             style={styles.input} 
+//           />
+//           {/* Baaki 10 input fields bhi daal sakte ho */}
+//         </View>
+//       </KeyboardAwareScrollView>
+//     </SafeAreaView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flexGrow: 1,
+//   },
+//   inner: {
+//     padding: 20,
+//     justifyContent: 'center',
+//     flex: 1,
+//   },
+//   input: {
+//     borderWidth: 1,
+//     borderColor: '#ccc',
+//     padding: 15,
+//     marginBottom: 15,
+//     borderRadius: 10,
+//     backgroundColor: '#f9f9f9',
+//   },
+// });
+
+// export default LoginScreen;
+

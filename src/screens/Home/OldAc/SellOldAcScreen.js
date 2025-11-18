@@ -132,6 +132,10 @@ const SellOldAcScreen = ({ navigation}) => {
   const handleRequestConsultation = () => {
      setModalVisible(true);
   };
+   // FAQ'S Toggle
+  const toggleExpandFaq = index => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
     <View style={screenStyles.workcontainer}>
@@ -145,12 +149,13 @@ const SellOldAcScreen = ({ navigation}) => {
         <ScrollView
           style={screenStyles.workscrollstyle}
           showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}
         >
-           <KeyboardAvoidingView
+           {/* <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
-      >
+      > */}
           <View style={{ marginBottom: hp('10%') }}>
             <View style={screenStyles.worksliderview}>
               <Image
@@ -408,7 +413,7 @@ const SellOldAcScreen = ({ navigation}) => {
               />
             </TouchableOpacity>
           </View>
-              </KeyboardAvoidingView>
+              {/* </KeyboardAvoidingView> */}
         </ScrollView>
  
         {/* Confirm Button */}

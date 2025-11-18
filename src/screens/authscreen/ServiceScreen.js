@@ -32,7 +32,6 @@ const ServiceScreen = () => {
      navigation.navigate('AddAddress', { from: 'ServiceScreen' });
   };
 
-
   //use for get current location logic
   // const { location, retry, isLoading } = useLocation();
   // console.log('location', location);
@@ -73,7 +72,7 @@ const ServiceScreen = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.backButton}
+        style={[styles.backButton]}
         onPress={() => navigation.goBack()}
       >
         <FastImage

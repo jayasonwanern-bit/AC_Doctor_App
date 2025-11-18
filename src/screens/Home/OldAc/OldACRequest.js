@@ -38,6 +38,7 @@ const OldACRequest = ({ navigation }) => {
   const [selectTime, setSelectTime] = useState('First Half');
   const [selectReason, setSelectReason] = useState('');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false);
+  const [successResheduleVisible, setSResheduleVisible] = useState(false);
   const [confirmPopupVisible, setConfirmPopupVisible] = useState(false); // Offer confirm successPopup
   const [DeclineVisible, setDeclineVisible] = useState(false); // Offer confirm successPopup
   const [selectPay, setSelectedPay] = useState('bank');
@@ -596,7 +597,7 @@ const OldACRequest = ({ navigation }) => {
             {/* AC Names List */}
             {Object.keys(acData).map(acName => (
               <>
-                <TouchableOpacity
+                <TouchableOpacity key={'AC Names list'}
                   onPress={() => toggleExpand(acName)}
                   style={styles.acHeader}
                 >
@@ -756,17 +757,17 @@ const OldACRequest = ({ navigation }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.doneButton, { backgroundColor: COLORS.white }]}
-            onPress={() => setSuccessPopupVisible(true)}
+            onPress={() => setReqStatus(prev => prev === 'Schedule' ? 'complete' : 'Schedule')}
           >
             <Text
               style={[styles.doneButtonText, { color: COLORS.textHeading }]}
             >
-              Cancel Request
+             Next
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.doneButton, styles.secondButton]}
-            onPress={() => setModalSlotVisible(true)}
+            onPress={() => setSResheduleVisible(true)}
           >
             <Text style={styles.doneButtonText}>Reschedule</Text>
           </TouchableOpacity>
@@ -825,6 +826,25 @@ const OldACRequest = ({ navigation }) => {
         </View>
       )}
 
+{/* are oyu reschedule */}
+  <SuccessPopupModal
+        visible={successResheduleVisible}
+        onClose={() => {
+          setSResheduleVisible(false),
+          setModalSlotVisible(true);
+        }}
+        setIcon={images.questionMark}
+        HeadTextColor="black"
+        HeadText="Are you sure?"
+        message1=""
+        message2="Do you really want to cancel this request?"
+        buttonCount={2}
+        firstButtonText="Reschedule"
+        secondButtonText="Cancel Reschedule"
+        onSecondButtonPress={() => {
+          setSResheduleVisible(false),setSuccessPopupVisible(true);
+        }}
+      />
       {/* cancel request Popup */}
       <SuccessPopupModal
         visible={successPopupVisible}
