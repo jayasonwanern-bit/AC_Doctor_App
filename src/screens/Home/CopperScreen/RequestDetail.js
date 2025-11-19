@@ -666,7 +666,8 @@ const RequestDetail = ({ navigation }) => {
           setRescheduleReqVisible(false), setModalSlotVisible(true);
         }}
       />
-      {/* cancel request Popup */}
+
+  {/* cancel request Popup */}
       <SuccessPopupModal
         visible={cancelReqVisible}
         onClose={() => {
@@ -700,7 +701,7 @@ const RequestDetail = ({ navigation }) => {
         secondButtonText="Done"
         firstButtonText="View Request"
         onSecondButtonPress={() => {
-          setCancelConfirmVisible(false), navigation.goBack();
+          setCancelConfirmVisible(false)
         }}
       />
 

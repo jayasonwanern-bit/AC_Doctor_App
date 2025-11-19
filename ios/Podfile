@@ -12,6 +12,7 @@ node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
 
 platform :ios, min_ios_version_supported
+use_frameworks! :linkage => :static
 prepare_react_native_project!
 
 setup_permissions([
@@ -51,6 +52,8 @@ target 'ACDoctor' do
 
   use_react_native!(
     :path => config[:reactNativePath],
+    :hermes_enabled => true, #you can remove this
+    :fabric_enabled => true,  #its also fabric remove
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )

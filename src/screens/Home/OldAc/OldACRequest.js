@@ -879,7 +879,7 @@ const OldACRequest = ({ navigation }) => {
         secondButtonText="Done"
         firstButtonText="View Request"
         onSecondButtonPress={() => {
-          setConfirmPopupVisible(false), navigation.goBack();
+          setConfirmPopupVisible(false)
         }}
       />
 
