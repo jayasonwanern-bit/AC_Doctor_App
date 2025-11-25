@@ -181,6 +181,7 @@ const images = {
   whirlpool:require('./icons/whirlpool.png'),
   mitsubishi:require('./icons/mitsubishi.png'),
   vsBtn:require('./icons/vsBtn.png'),
+  bannerAmc:require('./icons/bannerAmc.png'),
 
 
 

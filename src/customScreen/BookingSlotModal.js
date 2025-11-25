@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
+  Pressable,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -100,141 +101,161 @@ const BookingSlotModal = ({
   };
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <TouchableOpacity style={styles.modalContainer} onPress={onClose}>
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>Book a slot</Text>
-          <Text style={styles.sectionLabel}>Date</Text>
-          <View style={styles.monthYearSelector}>
-            <TouchableOpacity
-              style={styles.monthButton}
-              onPress={() => {
-                const newMonth = selectedMonth - 1;
-                if (newMonth < 0) {
-                  setSelectedMonth(11);
-                  setSelectedYear(selectedYear - 1);
-                } else {
-                  setSelectedMonth(newMonth);
-                }
-              }}
-            >
-              <Text style={styles.navText}>{'<<'}</Text>
-            </TouchableOpacity>
-            <Text style={styles.monthText}>{monthNames[selectedMonth]}</Text>
-            <TouchableOpacity
-              style={styles.monthButton}
-              onPress={() => {
-                const newMonth = (selectedMonth + 1) % 12;
-                if (newMonth === 0) {
-                  setSelectedYear(selectedYear + 1);
-                }
-                setSelectedMonth(newMonth);
-              }}
-            >
-              <Text style={styles.navText}>{'>>'}</Text>
-            </TouchableOpacity>
+  <Modal
+    animationType="slide"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}
+  >
+    {/* BACKDROP */}
+    <View style={styles.overlay}>
+      
+      {/* TAP OUTSIDE TO CLOSE */}
+      <Pressable style={styles.backdrop} onPress={onClose} />
 
-            <TouchableOpacity
-              style={[styles.yearButton, { marginLeft: wp(4) }]}
-              onPress={() => {
-                if (selectedYear > 2025) {
-                  setSelectedYear(selectedYear - 1);
-                }
-              }}
-            >
-              <Text style={styles.navText}>{'<<'}</Text>
-            </TouchableOpacity>
-            <Text style={styles.yearText}>{selectedYear}</Text>
-            <TouchableOpacity
-              style={styles.yearButton}
-              onPress={() => {
-                setSelectedYear(selectedYear + 1);
-              }}
-            >
-              <Text style={styles.navText}>{'>>'}</Text>
-            </TouchableOpacity>
-          </View>
+      {/* BOTTOM SHEET */}
+      <View style={styles.modalContent}>
+        <Text style={styles.title}>Book a slot</Text>
 
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={styles.daysContainer}
-          >
-            {days.map((day, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.dayButton,
-                  selectedDay === index && styles.selectedDay,
-                ]}
-                onPress={() => setSelectedDay(index)}
-              >
-                <Text style={styles.dateNumber}>{day.date}</Text>
-                <Text style={styles.dayName}>{day.day}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          <Text style={styles.sectionLabel}>Time</Text>
-          <View style={styles.timeContainer}>
-            {timeSlots.map((slot, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.timeButton,
-                  selectedTime === index && styles.selectedTime,
-                ]}
-                onPress={() => setSelectedTime(index)}
-              >
-                <Text style={styles.timeLabel}>{slot.label}</Text>
-                <Text style={styles.timeText}>{slot.time}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+        {/* DATE SECTION */}
+        <Text style={styles.sectionLabel}>Date</Text>
 
-          {isReschedule && (
-            <>
-              <Text style={styles.sectionLabel}>Reason of Rescheduling</Text>
-              <TextInput
-                style={styles.reasonInput}
-                placeholder="Type here..."
-                placeholderTextColor="#aaa"
-                multiline
-                numberOfLines={3}
-                value={rescheduleReason}
-                onChangeText={setRescheduleReason}
-                textAlignVertical="top"
-              />
-            </>
-          )}
+        <View style={styles.monthYearSelector}>
           <TouchableOpacity
-            style={styles.proceedButton}
-            onPress={handleProceedPress}
+            style={styles.monthButton}
+            onPress={() => {
+              const newMonth = selectedMonth - 1;
+              if (newMonth < 0) {
+                setSelectedMonth(11);
+                setSelectedYear(selectedYear - 1);
+              } else {
+                setSelectedMonth(newMonth);
+              }
+            }}
           >
-            <Text style={styles.proceedText}>Proceed</Text>
+            <Text style={styles.navText}>{'<<'}</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.monthText}>{monthNames[selectedMonth]}</Text>
+
+          <TouchableOpacity
+            style={styles.monthButton}
+            onPress={() => {
+              const newMonth = (selectedMonth + 1) % 12;
+              if (newMonth === 0) {
+                setSelectedYear(selectedYear + 1);
+              }
+              setSelectedMonth(newMonth);
+            }}
+          >
+            <Text style={styles.navText}>{'>>'}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.yearButton, { marginLeft: wp(4) }]}
+            onPress={() => {
+              if (selectedYear > 2025) {
+                setSelectedYear(selectedYear - 1);
+              }
+            }}
+          >
+            <Text style={styles.navText}>{'<<'}</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.yearText}>{selectedYear}</Text>
+
+          <TouchableOpacity
+            style={styles.yearButton}
+            onPress={() => setSelectedYear(selectedYear + 1)}
+          >
+            <Text style={styles.navText}>{'>>'}</Text>
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-    </Modal>
-  );
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.daysContainer}
+        >
+          {days.map((day, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.dayButton,
+                selectedDay === index && styles.selectedDay,
+              ]}
+              onPress={() => setSelectedDay(index)}
+            >
+              <Text style={styles.dateNumber}>{day.date}</Text>
+              <Text style={styles.dayName}>{day.day}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <Text style={styles.sectionLabel}>Time</Text>
+
+        <View style={styles.timeContainer}>
+          {timeSlots.map((slot, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.timeButton,
+                selectedTime === index && styles.selectedTime,
+              ]}
+              onPress={() => setSelectedTime(index)}
+            >
+              <Text style={styles.timeLabel}>{slot.label}</Text>
+              <Text style={styles.timeText}>{slot.time}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {isReschedule && (
+          <>
+            <Text style={styles.sectionLabel}>Reason of Rescheduling</Text>
+            <TextInput
+              style={styles.reasonInput}
+              placeholder="Type here..."
+              placeholderTextColor={COLORS.inputColour}
+              multiline
+              numberOfLines={3}
+              value={rescheduleReason}
+              onChangeText={setRescheduleReason}
+              textAlignVertical="top"
+            />
+          </>
+        )}
+
+        <TouchableOpacity
+          style={styles.proceedButton}
+          onPress={handleProceedPress}
+        >
+          <Text style={styles.proceedText}>Proceed</Text>
+        </TouchableOpacity>
+
+      </View>
+    </View>
+  </Modal>
+);
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  overlay: {
+  flex: 1,
+  backgroundColor: COLORS.transparent,
+  justifyContent: 'flex-end',
+},
+  backdrop: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#fff',
-    padding: wp(5),
-    borderTopLeftRadius: wp(6),
-    borderTopRightRadius: wp(6),
-    minHeight: hp(43),
+  width: '100%',
+  paddingHorizontal: wp(5),
+  paddingVertical: hp(2),
+  backgroundColor: COLORS.white,
+  borderTopLeftRadius: wp(6),
+  borderTopRightRadius: wp(6),
+  paddingBottom: Platform.OS === 'ios' ? hp(3) : hp(3),
   },
   title: {
     fontSize: hp(2),

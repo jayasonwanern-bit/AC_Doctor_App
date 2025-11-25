@@ -19,12 +19,6 @@ import { COLORS, Fonts } from '../utils/colors';
 const TonnageModal = ({ visible, onClose, onSelect }) => {
   const [selectedType, setSelectedType] = useState(null);
 
-  //    const defaultAcTypes = [
-  //     { name: '0-1 year' },
-  //     { name: '1-3 year'},
-  //     { name: '3-5 year'},
-  //     { name: '5+ year'},
-  //   ];
   const defaultAcTypes = [
     { name: '1 Ton' },
     { name: '1.5 Ton' },

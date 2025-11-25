@@ -336,7 +336,6 @@ const CommericalAc = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  // workheadText: { fontSize: wp('4.5%'), fontWeight: 'bold', color: '#2C3E50', margin: wp('3%') },
   card: {
     backgroundColor: '#751a1aff',
     borderRadius: 8,

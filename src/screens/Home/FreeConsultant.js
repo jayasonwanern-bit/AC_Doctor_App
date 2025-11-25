@@ -21,10 +21,10 @@ import images from '../../assets/images';
 import FastImage from 'react-native-fast-image';
 import screenStyles, { faqData } from './HomeScreenStyles';
 import CustomButton from '../../components/CustomButton';
-import RNPickerSelect from 'react-native-picker-select';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import SuccessPopupModal from '../../customScreen/SuccessPopupModal';
 import ImagePickerModal from '../../components/ImagePickerModal';
+import CustomPicker from '../../components/CustomPicker'
 
 const FreeConsultant = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -72,19 +72,19 @@ const FreeConsultant = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
-    >
-      <View style={screenStyles.workcontainer}>
-        <Header title="Free Consultation" onBack={() => navigation.goBack()} />
-
+    <View style={screenStyles.workcontainer}>
+      <Header title="Free Consultation" onBack={() => navigation.goBack()} />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('6%') : 0}
+      >
         <ScrollView
-          style={screenStyles.workscrollstyle}
+          contentContainerStyle={{ paddingBottom: hp(8) }}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <View style={{ marginBottom: hp('10%') }}>
+          <View style={{ marginBottom: hp('10%'), paddingHorizontal: hp(1) }}>
             <View style={screenStyles.worksliderview}>
               <Image source={images.bannerOne} style={screenStyles.workimage} />
             </View>
@@ -94,59 +94,37 @@ const FreeConsultant = ({ navigation }) => {
             </Text>
 
             {/* Property Type */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Property Type</Text>
-              <View style={styles.pickerWrapper}>
-                <RNPickerSelect
-                  onValueChange={value =>
-                    handleInputChange('propertyType', value)
-                  }
-                  items={[
-                    { label: 'Select Property Type', value: '' },
-                    { label: 'Residential', value: 'Residential' },
-                    { label: 'Commercial', value: 'Commercial' },
-                    { label: 'Industrial', value: 'Industrial' },
-                  ]}
-                  value={formData.propertyType}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                  Icon={() => (
-                    <FastImage
-                      source={images.arrowdown}
-                      style={styles.customIcon}
-                      resizeMode={FastImage.resizeMode.contain}
-                    />
-                  )}
-                />
-              </View>
-            </View>
+              <CustomPicker
+                label="Property Type"
+                value={formData.propertyType}
+                onChange={value => handleInputChange('propertyType', value)}
+                items={[
+                  { label: 'Residential', value: 'Residential' },
+                  { label: 'Commercial', value: 'Commercial' },
+                  { label: 'Industrial', value: 'Industrial' },
+                ]}
+                width={wp('90%')} // any width
+                height={hp('5%')} // any height
+                borderRadius={hp('4%')} // custom radius
+              />
+         
 
             {/* Brand */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Brand</Text>
-              <View style={styles.pickerWrapper}>
-                <RNPickerSelect
-                  onValueChange={value => handleInputChange('brand', value)}
-                  items={[
-                    { label: 'Select Brand', value: '' },
+             <CustomPicker
+                label="Brand"
+                value={formData.brand}
+                onChange={value => handleInputChange('brand', value)}
+                items={[
                     { label: 'Blue Star', value: 'Blue Star' },
                     { label: 'LG', value: 'LG' },
                     { label: 'Samsung', value: 'Samsung' },
                     { label: 'Daikin', value: 'Daikin' },
                   ]}
-                  value={formData.brand}
-                  style={pickerSelectStyles}
-                  Icon={() => (
-                    <FastImage
-                      source={images.arrowdown}
-                      style={styles.customIcon}
-                      resizeMode={FastImage.resizeMode.contain}
-                    />
-                  )}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-            </View>
+                width={wp('90%')} // any width
+                height={hp('5%')} // any height
+                borderRadius={hp('4%')} // custom radius
+              />
+    
 
             {/* Number of AC */}
             <View style={styles.inputGroup}>
@@ -179,30 +157,21 @@ const FreeConsultant = ({ navigation }) => {
             </View>
 
             {/* Select Service */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Select Service</Text>
-              <View style={styles.pickerWrapper}>
-                <RNPickerSelect
-                  onValueChange={value => handleInputChange('service', value)}
-                  items={[
-                    { label: 'Select Service', value: 'Select' },
+             <CustomPicker
+                label="Select Service"
+                value={formData.service}
+                onChange={value => handleInputChange('service', value)}
+                items={[
                     { label: 'Installation', value: 'Installation' },
                     { label: 'Repair', value: 'Repair' },
                     { label: 'Maintenance', value: 'Maintenance' },
                   ]}
-                  value={formData.service}
-                  style={pickerSelectStyles}
-                  Icon={() => (
-                    <FastImage
-                      source={images.arrowdown}
-                      style={styles.customIcon}
-                      resizeMode={FastImage.resizeMode.contain}
-                    />
-                  )}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-            </View>
+                width={wp('90%')} // any width
+                height={hp('5%')} // any height
+                borderRadius={hp('4%')} // custom radius
+              />
+
+
 
             {/* Upload Photos */}
             <View style={styles.inputGroup}>
@@ -211,20 +180,22 @@ const FreeConsultant = ({ navigation }) => {
                 onPress={() => setShowModal(true)}
                 style={styles.uploadContainer}
               >
-                {selectedImageUri ?<FastImage
-                  source={selectedImageUri ? { uri: selectedImageUri } : null}
-                  style={styles.imagePreview}
-                  resizeMode={FastImage.resizeMode.cover}
-                />
-
-               : <>
-                 <FastImage
-                  source={images.Camera}
-                  style={styles.customIcon}
-                  resizeMode={FastImage.resizeMode.contain}
-                />
-                <Text style={styles.uploadText}>Add Photos/Video</Text>
-                </>}
+                {selectedImageUri ? (
+                  <FastImage
+                    source={selectedImageUri ? { uri: selectedImageUri } : null}
+                    style={styles.imagePreview}
+                    resizeMode={FastImage.resizeMode.cover}
+                  />
+                ) : (
+                  <>
+                    <FastImage
+                      source={images.Camera}
+                      style={styles.customIcon}
+                      resizeMode={FastImage.resizeMode.contain}
+                    />
+                    <Text style={styles.uploadText}>Add Photos/Video</Text>
+                  </>
+                )}
               </TouchableOpacity>
             </View>
 
@@ -299,26 +270,26 @@ const FreeConsultant = ({ navigation }) => {
             ))}
           </View>
         </ScrollView>
+      </KeyboardAvoidingView>
+      <BookingSlotModal
+        visible={modalSlotVisible}
+        onClose={() => setModalSlotVisible(false)}
+        setSelectedSlot={handleSlotSelection}
+        onBookProcess={() => {
+          setModalSlotVisible(false);
+        }}
+      />
 
-        <BookingSlotModal
-          visible={modalSlotVisible}
-          onClose={() => setModalSlotVisible(false)}
-          setSelectedSlot={handleSlotSelection}
-          onBookProcess={() => {
-            setModalSlotVisible(false);
-          }}
-        />
+      {/* Success Popup */}
+      <SuccessPopupModal
+        visible={successPopupVisible}
+        onClose={() => setSuccessPopupVisible(false)}
+        HeadText={'Successful...!'}
+        firstButtonText="Done"
+        message1={'Your Query has been successfully submitted.'}
+        message2={'Our team will respond shortly.'}
+      />
 
-        {/* Success Popup */}
-        <SuccessPopupModal
-          visible={successPopupVisible}
-          onClose={() => setSuccessPopupVisible(false)}
-          HeadText={'Successful...!'}
-          firstButtonText="Done"
-          message1={'Your Query has been successfully submitted.'}
-          message2={'Our team will respond shortly.'}
-        />
-      </View>
       <ImagePickerModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -327,7 +298,7 @@ const FreeConsultant = ({ navigation }) => {
           setSelectedImageUri('file://' + uri);
         }}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -345,11 +316,12 @@ const styles = StyleSheet.create({
   pickerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: wp('9%'),
     borderWidth: hp(0.1),
-    borderColor: '#ddd',
+    borderColor: COLORS.lightGray,
     overflow: 'hidden',
+    borderRadius: hp('8%'),
   },
   customIcon: {
     width: wp('5%'),
@@ -359,10 +331,10 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: hp('5%'),
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: wp('9%'),
     borderWidth: hp(0.1),
-    borderColor: '#ddd',
+    borderColor: COLORS.lightGray,
     paddingHorizontal: wp('4%'),
     fontSize: hp('1.4%'),
     color: '#333',
@@ -370,10 +342,10 @@ const styles = StyleSheet.create({
   textInputWithIcon: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: wp('9%'),
     borderWidth: hp(0.1),
-    borderColor: '#ddd',
+    borderColor: COLORS.lightGray,
     height: hp('5%'),
   },
   textInputInner: {
@@ -387,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eaf0f7ff',
     borderRadius: wp('3%'),
     borderWidth: hp(0.2),
-    borderColor: '#ddd',
+    borderColor: COLORS.lightGray,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
@@ -411,28 +383,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    width: wp('90%'),
-    height: hp('4.5%'),
-    fontSize: hp('1.6%'),
-    color: '#333',
-    fontFamily: Fonts.medium,
-    paddingVertical: Platform.OS === 'ios' ? hp('1%') : 0,
-    paddingHorizontal: wp('4%'),
-  },
-  inputAndroid: {
-    width: wp('90%'),
-    height: hp('4.5%'),
-    fontSize: hp('1.6%'),
-    color: '#333',
-    fontFamily: Fonts.medium,
-    paddingHorizontal: wp('4%'),
-  },
-  iconContainer: {
-    top: hp('0.5%'),
-    right: wp('2%'),
-  },
-});
+
 
 export default FreeConsultant;

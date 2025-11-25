@@ -77,7 +77,7 @@ const ServiceScreen = () => {
       >
         <FastImage
           source={images.backArrow}
-          style={styles.backImg}
+          style={[styles.backImg,{marginTop:hp('1.5%')}]}
           resizeMode={FastImage.resizeMode.contain}
         />
       </TouchableOpacity>

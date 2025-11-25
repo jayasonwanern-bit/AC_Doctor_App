@@ -16,7 +16,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [] }) => {
+const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [],headingText,ShapeRADIUS }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
 
@@ -110,9 +110,9 @@ const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [] }) => {
   return (
     <>
     <View style={styles.inputGroup}>
-      <Text style={styles.label}>Type of AC</Text>
+      <Text style={styles.label}>{headingText}</Text>
       <TouchableOpacity
-        style={styles.pickerWrapper}
+        style={[styles.pickerWrapper,{borderRadius:ShapeRADIUS}]}
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.placeholder}>Select AC type</Text>

@@ -39,6 +39,7 @@ import CompareACScreen from '../screens/Shop/CompareACScreen';
 import BookingSuccessScreen from '../customScreen/BookingSuccessScreen';
 import SelectACmodel from '../screens/Shop/SelectACmodel';
 import CompareResultScreen from '../screens/Shop/CompareResultScreen';
+import AMCFrom from '../screens/AMC/AMCFrom';
 
 
 import { COLORS } from '../utils/colors';
@@ -87,7 +88,7 @@ const AppNavigator = () => {
       />
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Splash"
+          initialRouteName="Tab"
           screenOptions={{
             headerStyle: dynamicStyles.headerStyle,
             headerTitleStyle: dynamicStyles.headerTitleStyle,
@@ -136,6 +137,7 @@ const AppNavigator = () => {
           <Stack.Screen name="SelectACmodel" component={SelectACmodel} />
           <Stack.Screen name="CompareResultScreen" component={CompareResultScreen} />
          <Stack.Screen name="BookingSuccessScreen" component={BookingSuccessScreen} />
+         <Stack.Screen name="AMCFrom" component={AMCFrom} />
         </Stack.Navigator>
       </NavigationContainer>
       </CompareProvider>

@@ -4,7 +4,6 @@ import {
   Text,
   ScrollView,
   ImageBackground,
-  Image,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -12,25 +11,28 @@ import Header from '../../components/Header';
 import Homestyles from '../Home/HomeScreenStyles';
 import images from '../../assets/images';
 import FastImage from 'react-native-fast-image';
-import { TextInput } from 'react-native-gesture-handler';
 import CustomButton from '../../components/CustomButton';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { COLORS } from '../../utils/colors';
 import { useForm, Controller } from 'react-hook-form';
-import CustomPhoneInput from '../../components/CustomInput';
+import CustomPhoneInput from '../../components/CustomPhoneInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import RNPickerSelect from 'react-native-picker-select';
+import CustomPicker from '../../components/CustomPicker';
 import ImagePickerModal from '../../components/ImagePickerModal';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import CunstomInput from '../../components/CunstomInput';
 
 const ProfileDetail = ({ navigation }) => {
-  const [countryCode, setCountryCode] = useState('IN'); // Default India
+  const [countryCode, setCountryCode] = useState('IN'); 
   const [callingCode, setCallingCode] = useState('+91');
   const [userName, setuserName] = useState('Rahul Kumar');
   const [email, setEmail] = useState('rahulkumar@gmail.com');
   const [gender, setGender] = useState('Male');
   const [showModal, setShowModal] = useState(false);
-    const [selectedImageUri, setSelectedImageUri] = useState(null);
+  const [selectedImageUri, setSelectedImageUri] = useState(null);
 
   const phoneSchema = yup.object().shape({
     phoneNumber: yup
@@ -48,12 +50,6 @@ const ProfileDetail = ({ navigation }) => {
     mode: 'onChange', // Real-time validation
   });
 
-  const genderOptions = [
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-    { label: 'Other', value: 'other' },
-  ];
-
   // render
   return (
     <View style={Homestyles.workcontainer}>
@@ -64,29 +60,34 @@ const ProfileDetail = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         {' '}
-         <TouchableOpacity activeOpacity={6} onPress={() => setShowModal(true)}>
-       <ImageBackground
-          source={selectedImageUri ? { uri: selectedImageUri }:images.userphoto}
-          style={Homestyles.profileDetailBg} 
-        >    
-          <FastImage
-            source={images.profileCamera}
-            style={Homestyles.cameraStyle}
-          />
-        </ImageBackground>
-          </TouchableOpacity>
+        <TouchableOpacity activeOpacity={6} onPress={() => setShowModal(true)}>
+          <ImageBackground
+            source={
+              selectedImageUri ? { uri: selectedImageUri } : images.userphoto
+            }
+            style={Homestyles.profileDetailBg}
+          >
+            <FastImage
+              source={images.profileCamera}
+              style={Homestyles.cameraStyle}
+            />
+          </ImageBackground>
+        </TouchableOpacity>
+
+       {/* User Name */}
+         <CunstomInput
+          label="User Name"
+          placeholder="Rahul Kumar"
+          keyboardType='default'
+          value={userName}
+          onChangeText={txt => setuserName(txt)}
+          borderRadius={hp('14%')}
+          MarginBottom={hp('0.5%')}
+        />
+
+        {/* Mobile Number */}
         <View style={Homestyles.profileDetailInfoContainer}>
-          <Text style={Homestyles.profileDetailName}>Name</Text>
-          <TextInput
-            style={Homestyles.profileDetailInput}
-            placeholder="Rahul Kumar"
-            value={userName}
-            onChangeText={txt => setuserName(txt)}
-            placeholderTextColor={COLORS.textColor}
-          />
-        </View>
-        <View style={Homestyles.profileDetailInfoContainer}>
-          <Text style={Homestyles.profileDetailName}>Name</Text>
+          <Text style={Homestyles.profileDetailName}>Mobile Number</Text>
           <Controller
             control={control}
             name="phoneNumber"
@@ -103,33 +104,32 @@ const ProfileDetail = ({ navigation }) => {
             )}
           />
         </View>
-        <View style={Homestyles.profileDetailInfoContainer}>
-          <Text style={Homestyles.profileDetailName}>Email Address</Text>
-          <TextInput
-            style={Homestyles.profileDetailInput}
-            placeholder="RahulKumar@gmail.com"
-            value={email}
-            onChangeText={txt => setEmail(txt)}
-            placeholderTextColor={COLORS.textColor}
-          />
-        </View>
-        <View style={Homestyles.profileDetailInfoContainer}>
-          <Text style={Homestyles.profileDetailName}>Gender</Text>
-          <RNPickerSelect
-            placeholder={{ label: 'Select Gender', value: null, color: '#999' }}
-            items={genderOptions}
-            onValueChange={value => setGender(value)}
-            value={gender}
-            style={pickerSelectStyles}
-            useNativeAndroidPickerStyle={false}
-            Icon={() => (
-              <Image
-                source={images.arrowdown} 
-                style={styles.dropdownIcon}
-              />
-            )}
-          />
-        </View>
+
+        {/* Email Address */}
+        <CunstomInput
+          label="Email Address"
+          placeholder="RahulKumar@gmail.com"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={txt => setEmail(txt)}
+          borderRadius={hp('14%')}
+          MarginBottom={hp('1%')}
+        />
+
+        {/* Gender */}
+        <CustomPicker
+          label="Gender"
+          value={gender}
+          onChange={value => setGender(value)}
+          items={[
+            { label: 'Male', value: 'male' },
+            { label: 'Female', value: 'female' },
+            { label: 'Other', value: 'other' },
+          ]}
+          width={wp('90%')} 
+          height={hp('5%')} 
+          borderRadius={hp('4%')} 
+        />
       </ScrollView>
 
       <View style={[Homestyles.servicesSection, { minHeight: hp(8) }]}>
@@ -167,22 +167,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const pickerSelectStyles = {
-  inputIOS: {
-    ...Homestyles.profileDetailInput,
-    paddingRight: 40, // arrow ke liye space
-    color: COLORS.black,
-  },
-  inputAndroid: {
-    ...Homestyles.profileDetailInput,
-    paddingRight: 40,
-    color: COLORS.black,
-  },
-  placeholder: {
-    color: '#999',
-  },
-  iconContainer: {
-    top: 15,
-    right: 10,
-  },
-};

@@ -57,6 +57,7 @@ const CopperPipeScreen = ({ navigation }) => {
       [field]: value,
     }));
   };
+  
   // Sync states with formData
   useEffect(() => {
     handleInputChange('propertyType', selectedProperty);
@@ -95,16 +96,16 @@ const CopperPipeScreen = ({ navigation }) => {
 
   return (
     <View style={screenStyles.workcontainer}>
-      {/* <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
-      > */}
         <Header
           title="Copper Piping"
           onBack={() => navigation.goBack()}
           onHelp={true}
         />
+         <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+              >
 
         <ScrollView
           style={screenStyles.workscrollstyle}
@@ -142,7 +143,8 @@ const CopperPipeScreen = ({ navigation }) => {
               {/* Type of AC */}
               <ACTypeSelector
                 onChange={value => handleInputChange('acTypes', value)}
-                // acTypes={customAcTypes} // Pass custom list
+                headingText={'Tye of AC'}
+                ShapeRADIUS={hp(3)}
               />
               {/* Outdoor Condenser Location*/}
               <View style={styles.inputGroup}>
@@ -255,7 +257,7 @@ const CopperPipeScreen = ({ navigation }) => {
             </View>
           </View>
         </ScrollView>
-
+</KeyboardAvoidingView>
         <View style={styles.BtnView}>
           <CustomButton
             buttonName="Submit"
@@ -367,7 +369,7 @@ const styles = StyleSheet.create({
   textInputInner: {
     flex: 1,
     fontSize: hp('1.6%'),
-    color: '#7c7b7bff',
+    color: COLORS.inputColour,
     paddingHorizontal: wp('4%'),
   },
   uploadContainer: {
@@ -391,23 +393,18 @@ const styles = StyleSheet.create({
     borderRadius: wp('3%'),
   },
   BtnView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: hp('2.5%'),
-    paddingVertical:Platform.OS === 'ios'? hp(4): hp(0),
-    backgroundColor: COLORS.white,
-    position: 'absolute',
-    bottom:Platform.OS === 'ios'? hp(0): hp(0),
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+ width: '100%',
+  paddingHorizontal: wp(4),
+  paddingVertical: hp(3),
+  backgroundColor: COLORS.white,
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  elevation: 10,
+  shadowColor: '#000',
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
   },
 });
 

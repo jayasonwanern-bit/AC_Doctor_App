@@ -9,6 +9,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images';
@@ -19,6 +20,8 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState(initialData);
   const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
+
 
   // Filters
   const [selectedRating, setSelectedRating] = useState(null);
@@ -30,6 +33,7 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
 
   // Apply Filters
   useEffect(() => {
+     setLoading(true); // show loader
     let filtered = [...initialData];
 
     // Search by name
@@ -62,6 +66,7 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
 
     setFilteredData(filtered);
     setLastSearch(searchText);
+    setLoading(false);
   }, [searchText, selectedRating, priceRange, freeDelivery, initialData]);
 
   const clearFilters = () => {
@@ -229,7 +234,11 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
       )}
 
       {/* Product List */}
-      <FlatList
+     {loading ? (
+  <View style={styles.loaderContainer}>
+    <ActivityIndicator size="large" color={COLORS.themeColor} />
+  </View>
+) :(<FlatList
         data={filteredData}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
@@ -270,7 +279,7 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text style={styles.empty}>No products found</Text>}
-      />
+      />)}
     </View>
   );
 };

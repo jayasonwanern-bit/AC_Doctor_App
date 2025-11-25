@@ -222,12 +222,12 @@ const Sterilization = ({ navigation }) => {
       </ScrollView>
 
       {/* Services and View Cart Section */}
-     {acTypes.map((ac) => (ac.showButtons && (<View style={styles.servicesSection} key="view-cart-section">
+     {acTypes.map((ac) => (ac.showButtons && (<View style={[styles.servicesSection,{flexDirection:'row',justifyContent:'space-between'}]} key="view-cart-section">
         <View>
           <Text style={styles.servicesCount}>3 services</Text>
           <Text style={styles.selectedText}>Selected</Text>
         </View>
-        <TouchableOpacity style={styles.viewCartButton} activeOpacity={2} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
+        <TouchableOpacity style={[styles.viewCartButton]} activeOpacity={2} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
           <Text style={styles.viewCartText}>View Cart</Text>
           <Image source={images.cart} style={styles.carticon} />
         </TouchableOpacity>

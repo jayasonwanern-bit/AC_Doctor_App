@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
 
   // Navigation handlers (unchanged)
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
-  const handleAMC = () => navigation.navigate('AMCScreen');
+  const handleAMC = () => navigation.navigate('AMCFrom');
   const handleCopperPipe = () => navigation.navigate('CopperPipeScreen');
   const handleSterilization = () => navigation.navigate('Sterilization');
   const handleRepair = () => navigation.navigate('RepairScreen');

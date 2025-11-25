@@ -658,7 +658,7 @@ async function requestStoragePermission() {
         </View>
       </ScrollView>
 
-      <View style={Commonstyles.servicesSection}>
+      <View style={[Commonstyles.servicesSection,{flexDirection:'row',justifyContent:'space-between'}]}>
         <TouchableOpacity
           style={[Commonstyles.boderwhiteButton, { width: wp(43) }]}
         >

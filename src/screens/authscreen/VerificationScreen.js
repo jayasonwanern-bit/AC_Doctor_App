@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     width: wp('5%'),
     height: hp('5%'),
     resizeMode: 'contain',
+    marginTop: hp('1.5%'),
   },
   subtitle: {
     fontSize: hp('1.5%'),

@@ -621,8 +621,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    borderTopRightRadius: wp('5%'),
-    borderTopLeftRadius: wp('5%'),
   },
   smallImag: {
     width: wp('4%'),

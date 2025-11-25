@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard, TouchableWithoutFeedback, StatusBar, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import CustomPhoneInput from '../../components/CustomInput';
+import CustomPhoneInput from '../../components/CustomPhoneInput';
 import { COLORS, Fonts } from '../../utils/colors';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
