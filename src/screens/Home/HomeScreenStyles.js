@@ -524,7 +524,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   workimage: {
-    width: '95%',
+    width: '92%',
     height: hp('18%'),
     resizeMode: 'contain',
     borderRadius: 15,

@@ -89,9 +89,9 @@ const styles = StyleSheet.create({
     zIndex: 100, // 👈 important when multiple pickers
   },
   label: {
-    fontSize: hp('1.5%'),
+    fontSize: hp('1.6%'),
     marginBottom: hp('1.5%'),
-    color: '#444',
+    color: '#201f1fff',
     fontWeight: '600',
   },
 });

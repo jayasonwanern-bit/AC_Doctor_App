@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -27,8 +27,10 @@ import SuccessPopupModal from '../../../customScreen/SuccessPopupModal';
 import ACTypeSelector from '../../../customScreen/ACTypeSelector';
 import MultipleUploadPhotos from '../../../components/MultipleUploadPhotos';
 import HomeScreenStyles, { works } from '../HomeScreenStyles';
-import PropertySelectionModal from '../../../customScreen/PropertySelectionModal'
+import PropertySelectionModal from '../../../customScreen/PropertySelectionModal';
 import OutdoorSelectionModal from '../../../customScreen/OutdoorSelectionModal';
+import PickerLabelUi from '../../../components/PickerLabelUi';
+import CunstomInput from '../../../components/CunstomInput';
 
 const CopperPipeScreen = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -57,7 +59,7 @@ const CopperPipeScreen = ({ navigation }) => {
       [field]: value,
     }));
   };
-  
+
   // Sync states with formData
   useEffect(() => {
     handleInputChange('propertyType', selectedProperty);
@@ -72,16 +74,19 @@ const CopperPipeScreen = ({ navigation }) => {
   }, [selectdate]);
 
   // Function to handle slot selection
- const handleSlotSelection = (slot) => {
-  if (slot) {
-    const { date,  monthNumber,year, time, Timeslot } = slot; 
-    const formattedDate = `${String( date).padStart(2, '0')}/${String( monthNumber).padStart(2, '0')}/${year}`; 
-    const formattedTime = time === 'morning' || time === 'firstHalf' ? 'First Half' : Timeslot; 
-    const formattedDateTime = `${formattedDate}, ${formattedTime}`; // e.g., "10/03/2025, First Half"
-    setSelectDate(formattedDateTime);
-    handleInputChange('dateTime', formattedDateTime); 
-  }
-};
+  const handleSlotSelection = slot => {
+    if (slot) {
+      const { date, monthNumber, year, time, Timeslot } = slot;
+      const formattedDate = `${String(date).padStart(2, '0')}/${String(
+        monthNumber,
+      ).padStart(2, '0')}/${year}`;
+      const formattedTime =
+        time === 'morning' || time === 'firstHalf' ? 'First Half' : Timeslot;
+      const formattedDateTime = `${formattedDate}, ${formattedTime}`; // e.g., "10/03/2025, First Half"
+      setSelectDate(formattedDateTime);
+      handleInputChange('dateTime', formattedDateTime);
+    }
+  };
 
   const handleSelectProperty = type => {
     setSelectedProperty(type);
@@ -96,17 +101,16 @@ const CopperPipeScreen = ({ navigation }) => {
 
   return (
     <View style={screenStyles.workcontainer}>
-        <Header
-          title="Copper Piping"
-          onBack={() => navigation.goBack()}
-          onHelp={true}
-        />
-         <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
-              >
-
+      <Header
+        title="Copper Piping"
+        onBack={() => navigation.goBack()}
+        onHelp={true}
+      />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+      >
         <ScrollView
           style={screenStyles.workscrollstyle}
           showsVerticalScrollIndicator={false}
@@ -119,26 +123,21 @@ const CopperPipeScreen = ({ navigation }) => {
               />
             </View>
 
-            <Text style={[screenStyles.workheadText, { marginBottom: hp(1) }]}>
+            <Text style={[screenStyles.workheadText]}>
               Fill Copper Piping details
             </Text>
 
             <View style={styles.FromStyle}>
               {/* Property Type */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Property Type</Text>
-                <TouchableOpacity
-                  style={styles.pickerWrapper}
-                  onPress={() => setPropertyModalVisible(true)}
-                >
-                  <Text style={styles.labelInput}>{selectedProperty || 'Select Property'}</Text>
-                  <FastImage
-                    source={images.arrowdown}
-                    style={styles.customIcon}
-                    resizeMode={FastImage.resizeMode.contain}
-                  />
-                </TouchableOpacity>
-              </View>
+              <PickerLabelUi
+                label="Property Type"
+                value={selectedProperty || 'Select Property'}
+                placeholder="Select Property'"
+                droparraw={true}
+                BorderRadius={hp(4)}
+                onPress={() => setPropertyModalVisible(true)}
+                style={{ width: '98%' }} 
+              />
 
               {/* Type of AC */}
               <ACTypeSelector
@@ -147,20 +146,16 @@ const CopperPipeScreen = ({ navigation }) => {
                 ShapeRADIUS={hp(3)}
               />
               {/* Outdoor Condenser Location*/}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Outdoor Condenser Location</Text>
-                <TouchableOpacity
-                  style={styles.pickerWrapper}
-                  onPress={() => setOutLocationModalVisible(true)}
-                >
-                  <Text style={styles.labelInput}>{selectOutDoor || 'Select the Outdoor'}</Text>
-                  <FastImage
-                    source={images.arrowdown}
-                    style={styles.customIcon}
-                    resizeMode={FastImage.resizeMode.contain}
-                  />
-                </TouchableOpacity>
-              </View>
+              <PickerLabelUi
+                label="Outdoor Condenser Location"
+                value={selectOutDoor || 'Select the Outdoor'}
+                placeholder="Select the Outdoor"
+                droparraw={true}
+                marginTop={hp(1)}
+                BorderRadius={hp(4)}
+                style={{ width: '98%' }} 
+                onPress={() => setOutLocationModalVisible(true)}
+              />
 
               {/* Pipe Run Length */}
               <View style={styles.inputGroup}>
@@ -168,19 +163,16 @@ const CopperPipeScreen = ({ navigation }) => {
                   Pipe Run Length{' '}
                   <Text style={styles.labelInput}>(Optional)</Text>
                 </Text>
-                <View style={styles.textInputWithIcon}>
-                  <TextInput
-                    style={styles.textInputInner}
-                    value={formData.pipeNumber}
-                    onChangeText={value =>
-                      handleInputChange('pipeNumber', value)
-                    }
-                    keyboardType="name-phone-pad"
-                    placeholder="Enter number of length"
-                    placeholderTextColor={COLORS.textColor}
-                  />
-                </View>
               </View>
+              <CunstomInput
+                placeholder="Enter number of length"
+                keyboardType="name-phone-pad"
+                value={formData.pipeNumber}
+                onChangeText={value => handleInputChange('pipeNumber', value)}
+                borderRadius={hp('14%')}
+                MarginBottom={hp('0.5%')}
+                containerStyle={{width:wp('88%')}}
+              />
 
               {/* Upload Photos */}
               <MultipleUploadPhotos
@@ -208,18 +200,17 @@ const CopperPipeScreen = ({ navigation }) => {
               </View>
 
               {/* Additional Notes */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Additional Notes (Optional)</Text>
-                <TextInput
-                  style={[styles.textInput, styles.notesInput]}
-                  value={formData.additionalNotes}
-                  onChangeText={value =>
-                    handleInputChange('additionalNotes', value)
-                  }
-                  placeholder="Type here..."
-                  multiline
-                />
-              </View>
+              <CunstomInput
+                label="Additional Notes (Optional)"
+                placeholder="Type here..."
+                multiline
+                numberOfLines={5}
+                value={formData.additionalNotes}
+                onChangeText={val => handleInputChange('additionalNotes', val)}
+                borderRadius={hp('1.5%')}
+                MarginTop={hp('1%')}
+                containerStyle={{width:wp('90%')}}
+              />
             </View>
 
             {/* How it works? */}
@@ -257,50 +248,52 @@ const CopperPipeScreen = ({ navigation }) => {
             </View>
           </View>
         </ScrollView>
-</KeyboardAvoidingView>
-        <View style={styles.BtnView}>
-          <CustomButton
-            buttonName="Submit"
-            margingTOP={hp('0%')}
-            btnTextColor={COLORS.white}
-            btnColor={COLORS.themeColor}
-            onPress={handleRequestConsultation}
-          />
-        </View>
-        <BookingSlotModal
-          visible={modalSlotVisible}
-          onClose={() => setModalSlotVisible(false)}
-          setSelectedSlot={handleSlotSelection}
-          onBookProcess={() => {
-            setModalSlotVisible(false);
-          }}
+      </KeyboardAvoidingView>
+      <View style={styles.BtnView}>
+        <CustomButton
+          buttonName="Submit"
+          margingTOP={hp('0%')}
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+          onPress={handleRequestConsultation}
         />
+      </View>
+      <BookingSlotModal
+        visible={modalSlotVisible}
+        onClose={() => setModalSlotVisible(false)}
+        setSelectedSlot={handleSlotSelection}
+        onBookProcess={() => {
+          setModalSlotVisible(false);
+        }}
+      />
 
-        {/* Success Popup */}
+      {/* Success Popup */}
 
-        <SuccessPopupModal
-          visible={successPopupVisible}
-          onClose={() => {setSuccessPopupVisible(false),navigation.navigate('RequestDetail')}}
-          HeadText="Wooohoo!"
-          message1="Your request has been submitted."
-          message2="Our team will connect with for further process."
-          buttonCount={2}
-          secondButtonText="Done"
-          firstButtonText="View Request"
-          onSecondButtonPress={() => setSuccessPopupVisible(false)}
-        />
+      <SuccessPopupModal
+        visible={successPopupVisible}
+        onClose={() => {
+          setSuccessPopupVisible(false), navigation.navigate('RequestDetail');
+        }}
+        HeadText="Wooohoo!"
+        message1="Your request has been submitted."
+        message2="Our team will connect with for further process."
+        buttonCount={2}
+        secondButtonText="Done"
+        firstButtonText="View Request"
+        onSecondButtonPress={() => setSuccessPopupVisible(false)}
+      />
 
-        <PropertySelectionModal
+      <PropertySelectionModal
         visible={propertyModalVisible}
         onClose={() => setPropertyModalVisible(false)}
         onSelect={handleSelectProperty}
       />
 
-        <OutdoorSelectionModal
-          visible={outLocationModalVisible}
-          onClose={() => setOutLocationModalVisible(false)}
-          onSelect={handleSelectOutdoor}
-        />
+      <OutdoorSelectionModal
+        visible={outLocationModalVisible}
+        onClose={() => setOutLocationModalVisible(false)}
+        onSelect={handleSelectOutdoor}
+      />
       {/* </KeyboardAvoidingView> */}
     </View>
   );
@@ -315,7 +308,7 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     color: COLORS.black,
     marginBottom: hp('1.5%'),
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
   },
   labelInput: {
     flex: 1,
@@ -337,11 +330,10 @@ const styles = StyleSheet.create({
   customIcon: {
     width: wp('5%'),
     height: hp('4%'),
-    tintColor: '#c37e7eff',
     marginHorizontal: hp(2),
   },
   FromStyle: {
-    backgroundColor: '#ffffffff',
+    backgroundColor: COLORS.white,
     borderRadius: wp('4%'),
     paddingVertical: wp('4%'),
     paddingHorizontal: wp('1%'),
@@ -349,7 +341,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: hp('5%'),
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: wp('9%'),
     borderWidth: hp(0.1),
     borderColor: '#ddd',
@@ -393,18 +385,18 @@ const styles = StyleSheet.create({
     borderRadius: wp('3%'),
   },
   BtnView: {
- width: '100%',
-  paddingHorizontal: wp(4),
-  paddingVertical: hp(3),
-  backgroundColor: COLORS.white,
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  elevation: 10,
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
+    width: '100%',
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(3),
+    backgroundColor: COLORS.white,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
 });
 

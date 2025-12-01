@@ -131,10 +131,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   label: {
-    fontSize: 13,
+    fontSize: 14,
     color: COLORS.black,
     marginTop: 10,
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
   },
   uploadContainer: {
     height: 90,

@@ -40,6 +40,8 @@ import BookingSuccessScreen from '../customScreen/BookingSuccessScreen';
 import SelectACmodel from '../screens/Shop/SelectACmodel';
 import CompareResultScreen from '../screens/Shop/CompareResultScreen';
 import AMCFrom from '../screens/AMC/AMCFrom';
+import AMCRequestFrom from '../screens/AMC/AMCRequestFrom';
+import AMCDashBoard from '../screens/AMC/AMCDashBoard';
 
 
 import { COLORS } from '../utils/colors';
@@ -138,6 +140,8 @@ const AppNavigator = () => {
           <Stack.Screen name="CompareResultScreen" component={CompareResultScreen} />
          <Stack.Screen name="BookingSuccessScreen" component={BookingSuccessScreen} />
          <Stack.Screen name="AMCFrom" component={AMCFrom} />
+         <Stack.Screen name="AMCRequestFrom" component={AMCRequestFrom} />
+         <Stack.Screen name="AMCDashBoard" component={AMCDashBoard} />
         </Stack.Navigator>
       </NavigationContainer>
       </CompareProvider>

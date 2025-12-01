@@ -61,7 +61,7 @@ const AccountScreenComponent = ({ navigation }) => {
       // Handle logout logic
       Alert.alert('Logout', 'Are you sure?', [
         { text: 'Cancel' },
-        { text: 'Yes', onPress: () => navigation.replace('LoginScreen') },
+        { text: 'Yes', onPress: () => navigation.replace('Login') },
       ]);
     } else {
       navigation.navigate(screen);

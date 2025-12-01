@@ -182,8 +182,13 @@ const images = {
   mitsubishi:require('./icons/mitsubishi.png'),
   vsBtn:require('./icons/vsBtn.png'),
   bannerAmc:require('./icons/bannerAmc.png'),
-
-
+  HomeAMC:require('./icons/HomeAMC.png'),
+  OfficeAMC:require('./icons/OfficeAMC.png'),
+  messageIcon:require('./icons/messageIcon.png'),
+  SplitAMC:require('./icons/SplitAMC.png'),
+  postBooking:require('./icons/postBooking.png'),
+  dashboardIcon:require('./icons/dashboardIcon.png'),
+  BillsAMS:require('./icons/BillsAMS.png'), 
 
  
 

@@ -211,10 +211,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   label: {
-    fontSize: 13,
+    fontSize: 14.5,
     color: COLORS.black,
     marginVertical: 10,
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
   },
   pickerWrapper: {
     flexDirection: 'row',
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   chipsWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf:'center',
+    alignSelf: 'flex-start',
     flexWrap:'wrap'
   },
   chipContainer: {

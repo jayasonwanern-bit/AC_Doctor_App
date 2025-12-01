@@ -24,7 +24,8 @@ import CustomButton from '../../components/CustomButton';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import SuccessPopupModal from '../../customScreen/SuccessPopupModal';
 import ImagePickerModal from '../../components/ImagePickerModal';
-import CustomPicker from '../../components/CustomPicker'
+import CustomPicker from '../../components/CustomPicker';
+import CunstomInput from '../../components/CunstomInput';
 
 const FreeConsultant = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -84,7 +85,12 @@ const FreeConsultant = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={{ marginBottom: hp('10%'), paddingHorizontal: hp(1) }}>
+          <View
+            style={{
+              marginBottom: hp('10%'),
+              paddingHorizontal: hp(1.5),
+            }}
+          >
             <View style={screenStyles.worksliderview}>
               <Image source={images.bannerOne} style={screenStyles.workimage} />
             </View>
@@ -94,84 +100,77 @@ const FreeConsultant = ({ navigation }) => {
             </Text>
 
             {/* Property Type */}
-              <CustomPicker
-                label="Property Type"
-                value={formData.propertyType}
-                onChange={value => handleInputChange('propertyType', value)}
-                items={[
-                  { label: 'Residential', value: 'Residential' },
-                  { label: 'Commercial', value: 'Commercial' },
-                  { label: 'Industrial', value: 'Industrial' },
-                ]}
-                width={wp('90%')} // any width
-                height={hp('5%')} // any height
-                borderRadius={hp('4%')} // custom radius
-              />
-         
+            <CustomPicker
+              label="Property Type"
+              value={formData.propertyType}
+              onChange={value => handleInputChange('propertyType', value)}
+              items={[
+                { label: 'Residential', value: 'Residential' },
+                { label: 'Commercial', value: 'Commercial' },
+                { label: 'Industrial', value: 'Industrial' },
+              ]}
+              width={wp('95%')} // any width
+              height={hp('5%')} // any height
+              borderRadius={hp('4%')} // custom radius
+            />
 
             {/* Brand */}
-             <CustomPicker
-                label="Brand"
-                value={formData.brand}
-                onChange={value => handleInputChange('brand', value)}
-                items={[
-                    { label: 'Blue Star', value: 'Blue Star' },
-                    { label: 'LG', value: 'LG' },
-                    { label: 'Samsung', value: 'Samsung' },
-                    { label: 'Daikin', value: 'Daikin' },
-                  ]}
-                width={wp('90%')} // any width
-                height={hp('5%')} // any height
-                borderRadius={hp('4%')} // custom radius
-              />
-    
+            <CustomPicker
+              label="Brand"
+              value={formData.brand}
+              onChange={value => handleInputChange('brand', value)}
+              items={[
+                { label: 'Blue Star', value: 'Blue Star' },
+                { label: 'LG', value: 'LG' },
+                { label: 'Samsung', value: 'Samsung' },
+                { label: 'Daikin', value: 'Daikin' },
+              ]}
+              width={wp('95%')}
+              height={hp('5%')} // any height
+              borderRadius={hp('4%')} // custom radius
+            />
 
             {/* Number of AC */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Number of AC</Text>
-              <TextInput
-                style={styles.textInput}
-                value={formData.numberOfAC}
-                onChangeText={value => handleInputChange('numberOfAC', value)}
-                keyboardType="numeric"
-                placeholder="Enter number"
-                placeholderTextColor={COLORS.textColor}
-              />
-            </View>
+            <CunstomInput
+              label="Number of AC"
+              placeholder="Enter number"
+              keyboardType="numeric"
+              value={formData.numberOfAC}
+              onChangeText={value => handleInputChange('numberOfAC', value)}
+              borderRadius={hp('14%')}
+              MarginBottom={hp('0.5%')}
+              MarginTop={hp('0.5%')}
+              width={wp('80%')}
+            />
 
             {/* Alternate Number */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Alternate Number</Text>
-              <View style={styles.textInputWithIcon}>
-                <TextInput
-                  style={styles.textInputInner}
-                  value={formData.alternateNumber}
-                  onChangeText={value =>
-                    handleInputChange('alternateNumber', value)
-                  }
-                  keyboardType="phone-pad"
-                  placeholder="Enter number"
-                  placeholderTextColor={COLORS.textColor}
-                />
-              </View>
-            </View>
+            <CunstomInput
+              label="Alternate Number"
+              placeholder="Enter number"
+              keyboardType="phone-pad"
+              value={formData.alternateNumber}
+              onChangeText={value =>
+                handleInputChange('alternateNumber', value)
+              }
+              borderRadius={hp('14%')}
+              MarginBottom={hp('0.5%')}
+              MarginTop={hp('0.5%')}
+            />
 
             {/* Select Service */}
-             <CustomPicker
-                label="Select Service"
-                value={formData.service}
-                onChange={value => handleInputChange('service', value)}
-                items={[
-                    { label: 'Installation', value: 'Installation' },
-                    { label: 'Repair', value: 'Repair' },
-                    { label: 'Maintenance', value: 'Maintenance' },
-                  ]}
-                width={wp('90%')} // any width
-                height={hp('5%')} // any height
-                borderRadius={hp('4%')} // custom radius
-              />
-
-
+            <CustomPicker
+              label="Select Service"
+              value={formData.service}
+              onChange={value => handleInputChange('service', value)}
+              items={[
+                { label: 'Installation', value: 'Installation' },
+                { label: 'Repair', value: 'Repair' },
+                { label: 'Maintenance', value: 'Maintenance' },
+              ]}
+              width={wp('95%')}// any width
+              height={hp('5%')} // any height
+              borderRadius={hp('4%')} // custom radius
+            />
 
             {/* Upload Photos */}
             <View style={styles.inputGroup}>
@@ -220,32 +219,22 @@ const FreeConsultant = ({ navigation }) => {
             </View>
 
             {/* Additional Notes */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Additional Notes (Optional)</Text>
-              <TextInput
-                style={[styles.textInput, styles.notesInput]}
-                value={formData.additionalNotes}
-                onChangeText={value =>
-                  handleInputChange('additionalNotes', value)
-                }
-                placeholder="Type here..."
-                multiline
-              />
-            </View>
-
-            <CustomButton
-              buttonName="Request Consultation"
-              margingTOP={hp('0%')}
-              btnTextColor={COLORS.white}
-              btnColor={COLORS.themeColor}
-              onPress={handleRequestConsultation}
+            <CunstomInput
+              label="Additional Notes (Optional)"
+              placeholder="Type here..."
+              multiline
+              numberOfLines={5}
+              value={formData.additionalNotes}
+              onChangeText={val => handleInputChange('additionalNotes', val)}
+              borderRadius={hp('1.5%')}
+              MarginBottom={hp('1%')}
             />
 
-            <View style={[screenStyles.worksliderview, { marginTop: hp(1.5) }]}>
-              <Image source={images.bannerTwo} style={screenStyles.workimage} />
+            <View style={[screenStyles.worksliderview]}>
+              <Image source={images.bannerTwo} style={[screenStyles.workimage,{ width: '90%',}]} />
             </View>
 
-            <Text style={[screenStyles.workheadText, { marginTop: hp('1%') }]}>
+            <Text style={[screenStyles.workheadText, { margin: hp('1%') }]}>
               FAQs
             </Text>
 
@@ -269,8 +258,21 @@ const FreeConsultant = ({ navigation }) => {
               </View>
             ))}
           </View>
+
+
         </ScrollView>
       </KeyboardAvoidingView>
+      <View style={styles.BtnView}>
+        <CustomButton
+          buttonName="Request Consultation"
+          margingTOP={hp('0%')}
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+          onPress={handleRequestConsultation}
+        />
+      </View>
+
+      {/* Booking Slot Modal */}
       <BookingSlotModal
         visible={modalSlotVisible}
         onClose={() => setModalSlotVisible(false)}
@@ -308,10 +310,10 @@ const styles = StyleSheet.create({
     marginHorizontal: wp('2%'),
   },
   label: {
-    fontSize: hp('1.5%'),
+    fontSize: hp(1.5),
     color: COLORS.black,
     marginBottom: hp('1%'),
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
   },
   pickerWrapper: {
     flexDirection: 'row',
@@ -322,11 +324,11 @@ const styles = StyleSheet.create({
     borderColor: COLORS.lightGray,
     overflow: 'hidden',
     borderRadius: hp('8%'),
+    height: hp('5%'),
   },
   customIcon: {
     width: wp('5%'),
     height: hp('4%'),
-    tintColor: '#c37e7eff',
     marginHorizontal: hp(2),
   },
   textInput: {
@@ -338,21 +340,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('4%'),
     fontSize: hp('1.4%'),
     color: '#333',
-  },
-  textInputWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderRadius: wp('9%'),
-    borderWidth: hp(0.1),
-    borderColor: COLORS.lightGray,
-    height: hp('5%'),
-  },
-  textInputInner: {
-    flex: 1,
-    fontSize: hp('1.6%'),
-    color: '#333',
-    paddingHorizontal: wp('4%'),
   },
   uploadContainer: {
     height: hp('15%'),
@@ -375,14 +362,17 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     color: '#666',
   },
-  notesInput: {
-    height: hp('15%'),
-    textAlignVertical: 'top',
-    paddingTop: hp('1.5%'),
-    borderRadius: wp('3%'),
+
+  BtnView: {
+    width: '100%',
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(3),
+    backgroundColor: COLORS.white,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
-
-
 
 export default FreeConsultant;

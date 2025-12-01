@@ -22,9 +22,12 @@ import { COLORS, Fonts } from '../../utils/colors';
 import ACTypeSelector from '../../customScreen/ACTypeSelector';
 import CustomButton from '../../components/CustomButton';
 import PlaceTypeSelector from '../../components/PlaceTypeSelector';
+import RequestConfirm from '../../customScreen/RequestConfirm';
+import CunstomInput from '../../components/CunstomInput';
 
 const AMCFrom = ({ navigation }) => {
   const [editStatus, setEditStatus] = useState(false);
+  const [successVisible, setSuccessVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '2345466567',
@@ -63,16 +66,15 @@ const AMCFrom = ({ navigation }) => {
             <Text style={[screenStyles.workheadText]}>Customer Details</Text>
 
             {/* Name */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Name</Text>
-              <TextInput
-                style={[styles.textInputInner, styles.styleofText]}
-                value={formData.name}
-                onChangeText={v => handleInputChange('name', v)}
-                placeholder="Enter Your Name"
-                placeholderTextColor={COLORS.inputColour}
-              />
-            </View>
+            <CunstomInput
+              label="Name"
+              placeholder="Enter Your Name"
+              value={formData.name}
+              onChangeText={val => handleInputChange('name', val)}
+              borderRadius={hp('1%')}
+              MarginTop={hp('1%')}
+              containerStyle={{ width: wp('88%') }}
+            />
 
             {/* Phone */}
             <View style={styles.inputGroup}>
@@ -83,7 +85,7 @@ const AMCFrom = ({ navigation }) => {
                   style={[styles.styleofText, styles.rowView]}
                   onPress={() => setEditStatus(true)}
                 >
-                  <Text style={[styles.phonefont, { flex: 1 }]}>
+                  <Text style={[styles.phonefont, { flex: 0.9 }]}>
                     {formData.phoneNumber}
                   </Text>
                   <Image source={images.edit} style={styles.editImg} />
@@ -91,43 +93,37 @@ const AMCFrom = ({ navigation }) => {
               )}
 
               {editStatus && (
-                <View style={styles.styleofText}>
-                  <TextInput
-                    style={styles.textInputInner}
-                    value={formData.phoneNumber}
-                    onChangeText={v => handleInputChange('phoneNumber', v)}
-                    placeholder="Enter Your Number"
-                    placeholderTextColor={COLORS.inputColour}
-                    keyboardType="number-pad"
-                  />
-                </View>
+                <CunstomInput
+                  placeholder="Enter Your Number"
+                  keyboardType="default"
+                  value={formData.phoneNumber}
+                  onChangeText={val => handleInputChange('phoneNumber', val)}
+                  borderRadius={hp('1%')}
+                  containerStyle={{ width: wp('88%') }}
+                />
               )}
             </View>
 
-          {/* Place Type */}
-          <View style={{marginHorizontal:hp(1)}}>
-            <PlaceTypeSelector
-              headingText="Place Type*"
-              onChange={value => handleInputChange('placeType', value)}
-            />
-          </View>
-
-            {/* Address */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Address*</Text>
-              <TextInput
-                style={[
-                  styles.textInputInner,
-                  styles.styleofText,
-                  styles.notesInput,
-                ]}
-                value={formData.address}
-                onChangeText={v => handleInputChange('address', v)}
-                placeholder="Type here..."
-                placeholderTextColor={COLORS.inputColour}
-                multiline
+            {/* Place Type */}
+            <View style={{ marginHorizontal: hp(1) }}>
+              <PlaceTypeSelector
+                headingText="Place Type*"
+                onChange={value => handleInputChange('placeType', value)}
               />
             </View>
+
+            {/* Address */}
+            <CunstomInput
+              label="Address"
+              placeholder="Type here..."
+              value={formData.modalName}
+              onChangeText={val => handleInputChange('address', val)}
+              borderRadius={hp('1%')}
+              MarginTop={hp('1%')}
+              multiline={true}
+              numberOfLines={2}
+              containerStyle={{ width: wp('92%') }}
+            />
 
             {/* AC Type */}
             <Text style={[screenStyles.workheadText, { margin: hp(1) }]}>
@@ -147,8 +143,20 @@ const AMCFrom = ({ navigation }) => {
             buttonName="Submit"
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
+            onPress={() => setSuccessVisible(true)}
           />
         </View>
+
+        <RequestConfirm
+          visible={successVisible}
+          onClose={() => setSuccessVisible(false)}
+          onViewRequest={() => {
+            setSuccessVisible(false);
+            setTimeout(() => {
+              navigation.navigate('AMCRequestFrom');
+            }, 150);
+          }}
+        />
       </KeyboardAvoidingView>
     </View>
   );
@@ -206,7 +214,6 @@ const styles = StyleSheet.create({
   phonefont: {
     fontSize: hp('1.6%'),
     color: COLORS.inputColour,
-    paddingHorizontal: wp('4%'),
   },
 
   /** FIXED BOTTOM BUTTON */
@@ -215,7 +222,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: Platform.OS === 'ios' ? hp(3) : hp(2),
+    paddingBottom: Platform.OS === 'ios' ? hp(3) : hp(3),
     paddingHorizontal: wp(5),
     backgroundColor: COLORS.white,
     paddingTop: hp(1.5),

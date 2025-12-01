@@ -36,6 +36,7 @@ import HomeScreenStyles, {
 } from '../HomeScreenStyles';
 import { MMKVLoader } from 'react-native-mmkv-storage';
 import PickerLabelUi from '../../../components/PickerLabelUi';
+import CunstomInput from '../../../components/CunstomInput';
 
 const SellOldAcScreen = ({ navigation }) => {
   const [activeSection, setActiveSection] = useState('Key Benefits');
@@ -146,7 +147,7 @@ const SellOldAcScreen = ({ navigation }) => {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
       >
         <ScrollView
-          contentContainerStyle={{ paddingBottom: hp(20) }}
+          contentContainerStyle={{ paddingBottom: hp(10) , paddingHorizontal:hp(1.5)}}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -158,7 +159,7 @@ const SellOldAcScreen = ({ navigation }) => {
               />
             </View>
 
-            <Text style={[screenStyles.workheadText, { marginBottom: hp(1) }]}>
+            <Text style={[screenStyles.workheadText]}>
               Fill your AC details
             </Text>
 
@@ -174,101 +175,76 @@ const SellOldAcScreen = ({ navigation }) => {
                     from: 'SellOldAcScreen',
                   })
                 }
+                style={{ width: '98%' }} 
+                BorderRadius={hp(4)}
               />
-
-              <View style={styles.inputGroup}>
+            
                 {/* Modal */}
-                <Text style={styles.label}>
-                  Modal <Text style={styles.labelInput}>(Optional)</Text>
-                </Text>
-                <View style={styles.textInputWithIcon}>
-                  <TextInput
-                    style={styles.textInputInner}
-                    value={formData.modalName}
-                    onChangeText={value =>
-                      handleInputChange('modalName', value)
-                    }
-                    keyboardType="default"
-                    placeholder="LGUS-Q19YNZE"
-                    placeholderTextColor={COLORS.textColor}
-                  />
-                </View>
+                 <CunstomInput
+                label="Modal (Optional)"
+                placeholder="LGUS-Q19YNZE"
+                value={formData.modalName}
+                onChangeText={val => handleInputChange('modalName', val)}
+                borderRadius={hp('2.5%')}
+                MarginTop={hp('1%')}
+                containerStyle={{width:wp('88%')}}
+              />
                
 
                 {/* Type of AC */}
-                <View style={styles.inputGroup}>
-                  <Text style={styles.label}>AC Type</Text>
-                  <TouchableOpacity
-                    style={styles.pickerWrapper}
-                    onPress={() => {
-                      setAcTonageModalVisible(true), handleSelectACtype;
-                    }}
-                  >
-                    <Text style={styles.labelInput}>
-                      {selectedAcTonage || 'Select AC'}
-                    </Text>
-                    <FastImage
-                      source={images.arrowdown}
-                      style={styles.customIcon}
-                      resizeMode={FastImage.resizeMode.contain}
-                    />
-                  </TouchableOpacity>
-                </View>
+                <PickerLabelUi
+                label="AC Type"
+                value={selectedAcTonage || 'Select AC'}
+                placeholder="Select Brand"
+                droparraw={true}
+                marginTop={hp(1)}
+                style={{ width: '98%' }} 
+                onPress={() =>{setAcTonageModalVisible(true), handleSelectACtype}}
+                BorderRadius={hp(4)}
+              />
 
-                {/* Tonnage */}
-                <View style={styles.inputGroup}>
-                  <Text style={styles.label}>Tonnage</Text>
-                  <TouchableOpacity
-                    style={styles.pickerWrapper}
-                    onPress={() => {
-                      setTonageModalVisible(true), handleSelectTonage;
-                    }}
-                  >
-                    <Text style={styles.labelInput}>
-                      {selectedTonage || 'Select Tonnage'}
-                    </Text>
-                    <FastImage
-                      source={images.arrowdown}
-                      style={styles.customIcon}
-                      resizeMode={FastImage.resizeMode.contain}
-                    />
-                  </TouchableOpacity>
-                </View>
+                {/* Tonnage */}              
+                <PickerLabelUi
+                label="Tonnage"
+                value={selectedTonage}
+                placeholder='Select Tonnage'
+                droparraw={true}
+                marginTop={hp(1)}
+                style={{ width: '98%' }} 
+                onPress={() =>{setTonageModalVisible(true), handleSelectACtype}}
+                BorderRadius={hp(4)}
+              />
 
                 {/* Age of Ac*/}
-                <View style={[styles.RowView]}>
+                <View style={[styles.twoColumnRow]}>
                   <PickerLabelUi
                     label="Age of AC"
                     value={selectAgeofAc}
                     placeholder="1-3 Years"
-                    width={wp(32)}
+                    style={{ flex: 1, marginRight: wp(6) }}
                     onPress={() => setAgeofAcModalVisible(true)}
+                    BorderRadius={hp(4)}
                   />
                   <PickerLabelUi
                     label="Condition"
                     value={selectedCondition}
                     placeholder="Good"
-                    width={wp(42)}
+                    style={{ flex: 1, }}
                     onPress={() => setConditionModalVisible(true)}
+                    BorderRadius={hp(4)}
                   />
                 </View>
 
                 {/* Ac Technologes */}
-                <View style={styles.inputGroup}>
-                  <Text style={styles.label}>AC Technology</Text>
-                  <View style={styles.textInputWithIcon}>
-                    <TextInput
-                      style={styles.textInputInner}
-                      value={formData.technology}
-                      onChangeText={value =>
-                        handleInputChange('technology', value)
-                      }
-                      keyboardType="default"
-                      placeholder="Invertor"
-                      placeholderTextColor={COLORS.textColor}
-                    />
-                  </View>
-                </View>
+                 <CunstomInput
+                label="AC Technology"
+                placeholder="Invertor"
+                value={formData.technology}
+                onChangeText={val => handleInputChange('technology', val)}
+                borderRadius={hp('2.5%')}
+                MarginTop={hp('1%')}
+                containerStyle={{width:wp('88%')}}
+              />
 
                 {/* Upload Photos */}
                 <MultipleUploadPhotos
@@ -339,7 +315,7 @@ const SellOldAcScreen = ({ navigation }) => {
                     <Text style={styles.label}>
                       Old ACs do you want to sell
                     </Text>
-                    <View style={[styles.textInputWithIcon, { width: wp(87) }]}>
+                    <View style={[styles.textInputWithIcon, { width: '100%' }]}>
                       <TextInput
                         style={styles.textInputInner}
                         value={formData.Numberofold}
@@ -352,7 +328,7 @@ const SellOldAcScreen = ({ navigation }) => {
                     </View>
                   </View>
                 )}
-              </View>
+             
             </View>
 
             <ContentSection
@@ -538,15 +514,16 @@ const styles = StyleSheet.create({
   customIcon: {
     width: wp('5%'),
     height: hp('4%'),
-    tintColor: '#c37e7eff',
     marginHorizontal: hp(2),
   },
   FromStyle: {
-    backgroundColor: '#ffffffff',
+    backgroundColor: 'white',
     borderRadius: wp('4%'),
     paddingVertical: wp('4%'),
     paddingHorizontal: wp('1%'),
     marginBottom: hp('2%'),
+    alignSelf:'center',
+    width: '100%', alignSelf: 'center' 
   },
   textInput: {
     height: hp('5%'),
@@ -601,10 +578,16 @@ const styles = StyleSheet.create({
   shadowOpacity: 0.1,
   shadowRadius: 4,
 },
+twoColumnRow: {
+  flexDirection: 'row',
+  width: '97%',
+  alignSelf: 'center',
+  marginTop: hp(1),
+},
  RowView: {
   flexDirection: 'row',
   justifyContent: 'space-between',
-  width: '100%',
+  width: '98%',
   paddingHorizontal: wp(1),
   alignSelf: 'center',
 }

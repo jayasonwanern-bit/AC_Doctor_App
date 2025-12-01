@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,8 +12,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {COLORS, Fonts} from '../utils/colors';
-
+import { COLORS, Fonts } from '../utils/colors';
 
 const CunstomInput = ({
   label,
@@ -23,9 +22,9 @@ const CunstomInput = ({
   keyboardType = 'default',
   secureTextEntry = false,
   borderColor = COLORS.lightGray,
-  borderRadius=hp(1),
-  MarginTop={},
-  MarginBottom={},
+  borderRadius = hp(1.6),
+  MarginTop = 0,
+  MarginBottom = 0,
   backgroundColor = '#fff',
   textColor = COLORS.textColor || '#333',
   placeholderTextColor = COLORS.inputColour || '#999',
@@ -39,17 +38,35 @@ const CunstomInput = ({
   showToggle = true,
   onSubmitEditing = () => {},
   returnKeyType = 'done',
-  secureTextToggleLabel = {show: 'Show', hide: 'Hide'},
+  secureTextToggleLabel = { show: 'Show', hide: 'Hide' },
 }) => {
   const [secure, setSecure] = useState(secureTextEntry);
 
   return (
-    <View style={[styles.wrapper, containerStyle,{marginBottom:MarginBottom, marginTop:MarginTop}]}>
-       {label && <Text style={styles.label}>{label}</Text>}
+    <View
+      style={[
+        styles.wrapper,
+        containerStyle,
+        {
+          marginBottom: MarginBottom,
+          marginTop: MarginTop,
+        },
+      ]}
+    >
+      {label && (
+        <Text style={multiline ?[styles.label,{marginLeft:7}] :styles.label}>
+          {label}
+        </Text>
+      )}
+
       <View
         style={[
-          styles.inputRow,
-          {borderColor: borderColor, backgroundColor: backgroundColor , borderRadius:borderRadius},
+          multiline ? styles.textAreaWrapper : styles.inputRow,
+          {
+            borderColor,
+            backgroundColor,
+            borderRadius,
+          },
         ]}
       >
         {leftIcon ? (
@@ -59,8 +76,8 @@ const CunstomInput = ({
         <TextInput
           style={[
             styles.input,
-            {color: textColor},
-            multiline ? {height: hp(10), textAlignVertical: 'top'} : {},
+            { color: COLORS.textColor || textColor },
+            multiline ? styles.multilineInput : {},
             style,
           ]}
           value={value}
@@ -68,7 +85,7 @@ const CunstomInput = ({
           placeholder={placeholder}
           placeholderTextColor={placeholderTextColor}
           keyboardType={keyboardType}
-          secureTextEntry={secure}
+          secureTextEntry={secureTextEntry ? secure : false}
           multiline={multiline}
           numberOfLines={numberOfLines}
           maxLength={maxLength}
@@ -76,7 +93,6 @@ const CunstomInput = ({
           returnKeyType={returnKeyType}
         />
 
-        {/* If secure toggle enabled and field is secure */}
         {secureTextEntry && showToggle ? (
           <TouchableOpacity
             style={styles.toggleBtn}
@@ -101,79 +117,55 @@ export default CunstomInput;
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginTop: hp('1%'),
+    width: '100%',
+    alignSelf:"center"     // LET parent decide
+  },
+
+  label: {
+    fontSize: hp(1.5),
+    color: COLORS.black,
+    marginBottom: hp(0.8),
+    fontFamily: Fonts.semiBold,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: hp(0.1),
-    borderRadius: hp(1),
-    height: hp(5),
+    height: hp(5.2),
     paddingHorizontal: wp(3),
-    backgroundColor: '#fff',
+    // width: '95%',         // FULL responsive
   },
-   label: {
-    fontSize: hp('1.5%'),
-    color: COLORS.black,
-    marginBottom: hp('1.5%'),
-    fontFamily: Fonts.semiBold,
+
+  textAreaWrapper: {
+    borderWidth: hp(0.1),
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(1),
+    width: '95%',
+    backgroundColor:'red',
+    alignSelf:'center'
+  },
+  multilineInput: {
+    textAlignVertical: 'top',
+    minHeight: hp(10),
   },
   input: {
     flex: 1,
-    fontSize: hp('1.6%'),
-    paddingVertical: Platform.OS === 'ios' ? 8 : 0,
+    fontSize: hp(1.7),
+    paddingVertical: Platform.OS === 'ios' ? 10 : 0,
   },
+
   icon: {
     width: wp(5),
     height: hp(3),
-    marginRight: wp(3),
+    marginRight: wp(2),
   },
+
   toggleBtn: {
-    paddingHorizontal: wp(2),
-    paddingVertical: hp(0.5),
+    paddingHorizontal: wp(1),
   },
+
   toggleText: {
-    fontSize: hp('1.4%'),
+    fontSize: hp(1.4),
     color: COLORS.themeColor,
-    fontFamily: Fonts.medium,
   },
 });
-
-
-
-
-// normal textinput
-//<CunstomInput
-//   label="Alternate Number"
-//   placeholder="Enter number"
-//   keyboardType="phone-pad"
-//   value={formData.alternateNumber}
-//   onChangeText={val => handleInputChange('alternateNumber', val)}
-//   borderRadius={hp('3%')}
-// />
-
-{/*
-  //Description Input
-  <CunstomInput
-  label="Additional Notes"
-  placeholder="Type here..."
-  multiline
-  numberOfLines={5}
-  value={formData.additionalNotes}
-  onChangeText={val => handleInputChange('additionalNotes', val)}
-  borderRadius={hp('2.5%')}
-  backgroundColor="#fafafa"
-/> */}
-
-//input with Icon
-{/* <CunstomInput
-  label="Your Name"
-  placeholder="Enter name"
-  value={name}
-  onChangeText={setName}
-  iconLeft={require('../assets/icons/user.png')}
-  borderRadius={hp('3%')}
-/> */}
-
-
-
