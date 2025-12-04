@@ -18,6 +18,8 @@ import Header from '../../../components/Header';
 import HomeScreenStyles from '../HomeScreenStyles';
 import CustomButton from '../../../components/CustomButton';
 import RNPickerSelect from 'react-native-picker-select';
+import CustomPicker from '../../../components/CustomPicker';
+import CunstomInput from '../../../components/CunstomInput';
 
 const OtherScreen = ({ navigation }) => {
   const [isProblem, setIsProblem] = useState('Select Problem');
@@ -38,13 +40,15 @@ const OtherScreen = ({ navigation }) => {
   ];
 
   const handleSubmit = () => {
-    if(isProblem === null || ProblemReason.trim() === '') {
+    if (isProblem === null || ProblemReason.trim() === '') {
       alert('Please select a problem and describe the issue.');
       return;
+    } else {
+      navigation.navigate('OtherCartView', {
+        problem: isProblem,
+        reason: ProblemReason,
+      });
     }
-  else {    
-    navigation.navigate('OtherCartView',{problem: isProblem, reason: ProblemReason});
-  }
     // Reset form
     setIsProblem('Select Problem');
     setProblemReason('');
@@ -96,51 +100,49 @@ const OtherScreen = ({ navigation }) => {
 
         {/* Problem of ac */}
         <View
-          style={[styles.card, { padding: hp('2%'), paddingBottom: hp('2%') }]}
+          style={[styles.card, { padding: hp('1%'), paddingBottom: hp('2%') }]}
         >
-          <RNPickerSelect
-            placeholder={{
-              label: 'Select Problem',
-              value: null,
-              color: '#999',
-            }}
-            items={ProblemOptions}
-            onValueChange={value => setIsProblem(value)}
+          
+          <View style={{ marginLeft: hp('1%') }}> 
+            <CustomPicker
             value={isProblem}
-            style={pickerSelectStyles}
-            useNativeAndroidPickerStyle={false}
-            Icon={() => (
-              <Image
-                source={images.arrowdown} // ya icon
-                style={styles.dropdownIcon}
-              />
-            )}
+            onChange={value => setIsProblem(value)}
+            items={ProblemOptions}
+            width={wp('85%')} // any width
+            height={hp('5%')} // any height
+            borderRadius={hp('4%')} // custom radius
           />
-          <TextInput
-            placeholder="Describe your problem"
-            placeholderTextColor="#aaa"
-            multiline
-            numberOfLines={3}
-            value={ProblemReason}
-            onChangeText={setProblemReason}
-            textAlignVertical="top"
-            style={styles.reasonInput}
+          </View>
+        
+          <CunstomInput
+              placeholder="Describe your problem"
+              multiline
+              numberOfLines={5}
+              value={ProblemReason}
+              onChangeText={setProblemReason}
+              borderRadius={hp('1.5%')}
+              MarginBottom={hp('1%')}
+            />
+          <CustomButton
+            buttonName="Submit"
+            margingTOP={hp('0%')}
+            btnTextColor={COLORS.white}
+            btnColor={COLORS.themeColor}
+            onPress={() => handleSubmit()}
           />
-           <CustomButton
-          buttonName="Submit"
-          margingTOP={hp('0%')}
-          btnTextColor={COLORS.white}
-          btnColor={COLORS.themeColor}
-          onPress={() =>handleSubmit()}
-        />
         </View>
 
-         <View style={HomeScreenStyles.worksliderview}>
+        <View style={HomeScreenStyles.worksliderview}>
           <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
         </View>
 
-         {/* Terms and Conditions */}
-        <View style={[styles.card, { marginBottom: hp('10%'),marginTop: hp('1.5%') }]}>
+        {/* Terms and Conditions */}
+        <View
+          style={[
+            styles.card,
+            { marginBottom: hp('10%'), marginTop: hp('1.5%') },
+          ]}
+        >
           <Text
             style={[
               HomeScreenStyles.workheadText,
@@ -156,17 +158,16 @@ const OtherScreen = ({ navigation }) => {
               Service warranty is vaild for 30 days from the date of service.
             </Text>
           </View>
-         
+
           <View style={styles.flexView}>
             <FastImage source={images.roundRightarrow} style={styles.icon} />
             <Text style={styles.title}>
-             Additional parts or materials required for repairs will be charged separately.
+              Additional parts or materials required for repairs will be charged
+              separately.
             </Text>
           </View>
         </View>
       </ScrollView>
-
-     
     </View>
   );
 };

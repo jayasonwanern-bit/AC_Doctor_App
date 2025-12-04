@@ -28,9 +28,9 @@ const AMCDashBoard = ({ navigation }) => {
       icon: images.dashboardIcon,
       onPress: () => navigation.navigate('AMCDashboard'),
     },
-    { title: 'Request a new Booking', onPress: () => {} },
-    { title: 'Past Bookings', icon: images.postBooking, onPress: () => {} },
-    { title: 'Bills', icon: images.BillsAMS, onPress: () => {} },
+    { title: 'Request a new Booking', onPress: () => navigation.navigate('ReqBookingAMC')},
+    { title: 'Past Bookings', icon: images.postBooking, onPress: () => {}},
+    { title: 'Bills', icon: images.BillsAMS, onPress: () => navigation.navigate('ListOfBill')},
   ];
 
   const stats = [
@@ -93,14 +93,6 @@ const AMCDashBoard = ({ navigation }) => {
           </View>
         ))}
       </ScrollView>
-
-      {/* Floating Chat Button */}
-      <TouchableOpacity
-        style={styles.chatButton}
-        onPress={() => navigation.navigate('Chat')}
-      >
-        <Image source={images.chatIcon} style={styles.chatIcon} />
-      </TouchableOpacity>
     </View>
   );
 };
@@ -150,7 +142,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   acIcon: {
     width: wp('13%'),
     height: wp('13%'),
@@ -216,8 +207,8 @@ const styles = StyleSheet.create({
     fontSize: hp('2%'),
     fontFamily: Fonts.bold,
     color: COLORS.red,
-    marginBottom: hp('3%'),
-    textAlignVertical: 'center',
+    marginTop: hp('-6%'),
+    textAlignVertical: 'top',
   },
 
   // ------------------ Status Cards -------------------
@@ -251,28 +242,5 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     fontFamily: Fonts.semiBold,
     color:COLORS.black,
-  },
-
-  // ------------------ Chat Button --------------------
-  chatButton: {
-    position: 'absolute',
-    bottom: hp('10%'),
-    right: wp('4%'),
-    width: wp('16%'),
-    height: wp('16%'),
-    borderRadius: wp('8%'),
-    backgroundColor: COLORS.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-  },
-
-  chatIcon: {
-    width: wp('10%'),
-    height: wp('10%'),
-    resizeMode: 'contain',
   },
 });

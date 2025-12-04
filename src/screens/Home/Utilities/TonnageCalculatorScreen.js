@@ -18,7 +18,7 @@ import FastImage from 'react-native-fast-image';
 import Header from '../../../components/Header';
 import HomeScreenStyles from '../HomeScreenStyles';
 import CustomButton from '../../../components/CustomButton';
-import RNPickerSelect from 'react-native-picker-select';
+import CustomPicker from '../../../components/CustomPicker';
 
 const TonnageCalculatorScreen = ({ navigation }) => {
   const [isPlace, setIsPlace] = useState('Select Problem');
@@ -96,23 +96,13 @@ const TonnageCalculatorScreen = ({ navigation }) => {
         <View
           style={[styles.card, { padding: hp('2%'), paddingBottom: hp('2%') }]}
         >
-          <RNPickerSelect
-            placeholder={{
-              label: 'Select Place',
-              value: null,
-              color: '#999',
-            }}
-            items={PlaceOptions}
-            onValueChange={value => setIsPlace(value)}
+           <CustomPicker
             value={isPlace}
-            style={pickerSelectStyles}
-            useNativeAndroidPickerStyle={false}
-            Icon={() => (
-              <Image
-                source={images.arrowdown} // ya icon
-                style={styles.dropdownIcon}
-              />
-            )}
+            onChange={value => setIsPlace(value)}
+            items={PlaceOptions}
+            width={wp('85%')} // any width
+            height={hp('5%')} // any height
+            borderRadius={hp('4%')} // custom radius
           />
 
           <View

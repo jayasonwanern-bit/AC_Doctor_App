@@ -63,7 +63,6 @@ const CustomPicker = ({
                 style={{
                   width: wp('4%'),
                   height: hp('2.5%'),
-                  tintColor: '#c37e7e',
                 }}
                 resizeMode={FastImage.resizeMode.contain}
               />

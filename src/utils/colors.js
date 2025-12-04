@@ -40,6 +40,13 @@ export const COLORS = {
   gold:'#ffd700',
   peacock:'#114f71',
   lightSky:'#e3f2fd',
+  lightPnk:"#FCECEC",
+  pendingBg:'#F8DD72',
+  pendingText:"#8A6F00",
+  onHoldBg:'#D3D3D3',
+  onHoldText:'#555555',
+  completedBg:'#C8FAD1',
+  completedText:'#0F8A43',  
 };
 
 export const Fonts = {

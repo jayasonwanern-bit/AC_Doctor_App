@@ -21,7 +21,6 @@ import images from '../../../assets/images';
 import FastImage from 'react-native-fast-image';
 import screenStyles, { faqData } from '../HomeScreenStyles';
 import CustomButton from '../../../components/CustomButton';
-import RNPickerSelect from 'react-native-picker-select';
 import BookingSlotModal from '../../../customScreen/BookingSlotModal';
 import SuccessPopupModal from '../../../customScreen/SuccessPopupModal';
 import ACTypeSelector from '../../../customScreen/ACTypeSelector';
@@ -35,7 +34,7 @@ import CunstomInput from '../../../components/CunstomInput';
 const CopperPipeScreen = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [modalSlotVisible, setModalSlotVisible] = useState(false); //booktime
-  const [selectedSlot, setSelectedSlot] = useState(null);
+
   const [selectdate, setSelectDate] = useState('Select date');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); // successPopup
   const [propertyModalVisible, setPropertyModalVisible] = useState(false); // prpertyPopup

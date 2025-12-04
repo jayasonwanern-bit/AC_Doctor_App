@@ -18,12 +18,12 @@ import FastImage from 'react-native-fast-image';
 import Header from '../../../components/Header';
 import HomeScreenStyles from '../HomeScreenStyles';
 import CustomButton from '../../../components/CustomButton';
-import RNPickerSelect from 'react-native-picker-select';
+import CustomPicker from '../../../components/CustomPicker';
 
 const ErrorCodeScreen = ({ navigation }) => {
   const [isPlace, setIsPlace] = useState('Select AC type');
   const [errorValue, setErrorValue] = useState('');
-  const [brandValue, setBrandValue] =useState('Select Brand');
+  const [brandValue, setBrandValue] = useState('Select Brand');
 
   const PlaceOptions = [
     { label: 'Split AC', value: 'Split AC' },
@@ -39,8 +39,8 @@ const ErrorCodeScreen = ({ navigation }) => {
     if (isPlace === null || isPlace === undefined) {
       Alert.alert('Missing Selection', 'Please select a place.');
       return;
-    }else{
-      navigation.goBack()
+    } else {
+      navigation.goBack();
     }
   };
 
@@ -60,52 +60,32 @@ const ErrorCodeScreen = ({ navigation }) => {
         <View
           style={[styles.card, { padding: hp('2%'), paddingBottom: hp('2%') }]}
         >
-          <RNPickerSelect
-          placeholder={{
-              label: 'Select Brand',
-              value: null,
-              color: '#999',
-            }}
+          <CustomPicker
+            label="Select Brand"
+            value={brandValue}
+            onChange={value => setBrandValue(value)}
             items={[
-              { label: 'Select Brand', value: '' },
               { label: 'Blue Star', value: 'Blue Star' },
               { label: 'LG', value: 'LG' },
               { label: 'Samsung', value: 'Samsung' },
               { label: 'Daikin', value: 'Daikin' },
             ]}
-            value={brandValue}
-            onValueChange={value => setBrandValue(value)}
-            style={pickerSelectStyles}
-            Icon={() => (
-              <FastImage
-                source={images.arrowdown}
-                style={styles.dropdownIcon}
-                resizeMode={FastImage.resizeMode.contain}
-              />
-            )}
-            useNativeAndroidPickerStyle={false}
+            width={wp('85%')} // any width
+            height={hp('5%')} // any height
+            borderRadius={hp('4%')} // custom radius
           />
 
-          <RNPickerSelect
-            placeholder={{
-              label: 'Select AC Type',
-              value: null,
-              color: '#999',
-            }}
-            items={PlaceOptions}
-            onValueChange={value => setIsPlace(value)}
+          <CustomPicker
+            label="Select AC Type"
             value={isPlace}
-            style={pickerSelectStyles}
-            useNativeAndroidPickerStyle={false}
-            Icon={() => (
-              <Image
-                source={images.arrowdown} // ya icon
-                style={styles.dropdownIcon}
-              />
-            )}
+            onChange={value => setIsPlace(value)}
+            items={PlaceOptions}
+            width={wp('85%')} // any width
+            height={hp('5%')} // any height
+            borderRadius={hp('4%')} // custom radius
           />
 
-          <View style={[styles.flexView]}>
+          <View style={[styles.flexView, { marginRight: wp('1%') }]}>
             <TextInput
               placeholder="Error Code"
               placeholderTextColor="#aaa"
@@ -130,7 +110,12 @@ const ErrorCodeScreen = ({ navigation }) => {
         </View>
 
         {/* Details card */}
-        <View style={[styles.card,{marginBottom:hp('7%')}]}>
+        <View
+          style={[
+            styles.card,
+            { marginBottom: hp('7%'), paddingHorizontal: wp('3%') },
+          ]}
+        >
           <Text
             style={[
               HomeScreenStyles.workheadText,
@@ -190,49 +175,23 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
   },
   flexView: {
-    flexDirection:'row',
-    alignSelf:'center',
+    flexDirection: 'row',
+    alignSelf: 'center',
     alignItems: 'center',
-    paddingHorizontal: wp('3%'),
     marginVertical: hp('1%'),
   },
-  dropdownIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
-    marginTop: 7,
-  },
+
   normalInput: {
     borderWidth: hp(0.1),
     borderColor: '#ddd',
     borderRadius: wp(6),
     padding: 12,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: COLORS.lightWhite,
     fontSize: 14,
-    color: '#333',
-    width: hp('39%'),
+    color: COLORS.lightGray,
+    width: hp('38%'),
     alignItems: 'flex-start',
   },
 });
-
-const pickerSelectStyles = {
-  inputIOS: {
-    ...HomeScreenStyles.profileDetailInput,
-    paddingRight: 40, // arrow ke liye space
-    color: COLORS.black,
-  },
-  inputAndroid: {
-    ...HomeScreenStyles.profileDetailInput,
-    paddingRight: 40,
-    color: COLORS.black,
-  },
-  placeholder: {
-    color: '#999',
-  },
-  iconContainer: {
-    top: 15,
-    right: 10,
-  },
-};
 
 export default ErrorCodeScreen;

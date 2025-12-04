@@ -42,15 +42,15 @@ import CompareResultScreen from '../screens/Shop/CompareResultScreen';
 import AMCFrom from '../screens/AMC/AMCFrom';
 import AMCRequestFrom from '../screens/AMC/AMCRequestFrom';
 import AMCDashBoard from '../screens/AMC/AMCDashBoard';
+import ReqBookingAMC from '../screens/AMC/ReqBookingAMC';
+import ListOfBill from '../screens/AMC/ListOfBill';
 
 
 import { COLORS } from '../utils/colors';
 import {
   StatusBar,
   useColorScheme,
-  View,
   Platform,
-  StyleSheet,
 } from 'react-native';
 import { CompareProvider } from '../hook/CompareContext';
 
@@ -142,6 +142,8 @@ const AppNavigator = () => {
          <Stack.Screen name="AMCFrom" component={AMCFrom} />
          <Stack.Screen name="AMCRequestFrom" component={AMCRequestFrom} />
          <Stack.Screen name="AMCDashBoard" component={AMCDashBoard} />
+         <Stack.Screen name="ReqBookingAMC" component={ReqBookingAMC} />
+         <Stack.Screen name="ListOfBill" component={ListOfBill} />
         </Stack.Navigator>
       </NavigationContainer>
       </CompareProvider>
