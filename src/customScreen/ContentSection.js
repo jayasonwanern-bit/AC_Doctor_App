@@ -1,4 +1,4 @@
-import React from 'react';
+import React  from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images';
@@ -6,8 +6,8 @@ import { COLORS, Fonts } from '../utils/colors';
 import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
 
 const ContentSection = ({ activeSection, setActiveSection, keyBenefits, serviceInclusions, termsConditions }) => {
-  
-  
+
+
   const renderContent = () => {
     if (activeSection === 'Key Benefits') {
       return (

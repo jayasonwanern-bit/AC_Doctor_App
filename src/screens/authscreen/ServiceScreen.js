@@ -22,14 +22,11 @@ const ServiceScreen = () => {
 
   const handleUseCurrentLocation = () => {
     // navigation.navigate('MapScreens'); // mapscreen
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Tab', params: { screen: 'Home' } }],
-    }); 
+      navigation.navigate('Tab', { screen: 'Home' });
   };
 
   const handleManuallyLocation = () => {
-     navigation.navigate('AddAddress', { from: 'ServiceScreen' });
+     navigation.navigate('AddAddress', { from: 'ServiceScreen'});
   };
 
   //use for get current location logic

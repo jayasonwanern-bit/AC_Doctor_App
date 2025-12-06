@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import images from '../../assets/images';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { loginUser } from '../../api/authApi';
 
 
 const phoneSchema = yup.object().shape({
@@ -29,8 +30,21 @@ const LoginScreen = ({ navigation }) => {
     mode: 'onChange',  // Real-time validation
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async(data) => {
+    const postdata = {
+      countryCode: callingCode,
+      phoneNumber: data.phoneNumber,
+    };  
+    console.log('Login Data:', postdata);
+  // try {
+  //   const res = await loginUser(postdata);
+  //   console.log('Login Response:', res);
+
+    // Navigate here after response:
     navigation.navigate('Verification', { phoneNumber: data.phoneNumber, callingCode:callingCode });
+  // } catch (error) {
+  //   console.log('Login Error:', error);
+  // }
   };
  
   return (

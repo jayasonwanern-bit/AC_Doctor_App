@@ -5,6 +5,7 @@ import FastImage from 'react-native-fast-image';
 import { COLORS } from '../utils/colors';
 
 const CustomSearchBar = ({ placeholder, value, onChangeText, keyboardType, icon }) => {
+  
   return (
     <View style={styles.container}>
       {icon && <FastImage source={icon} style={styles.icon} resizeMode="contain" />}
@@ -23,7 +24,7 @@ const CustomSearchBar = ({ placeholder, value, onChangeText, keyboardType, icon 
 const styles = StyleSheet.create({
   container: {
     marginVertical: hp('1%'),
-    borderRadius: 20,
+    borderRadius: 25,
     backgroundColor: COLORS.white,
     shadowColor: '#000',
     shadowOpacity: 0.1,

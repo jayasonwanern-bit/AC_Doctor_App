@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: hp('1.6%'),
-    marginBottom: hp('1.5%'),
+    marginBottom: hp('1%'),
     color: '#201f1fff',
     fontWeight: '600',
   },

@@ -37,6 +37,7 @@ import HomeScreenStyles, {
 import { MMKVLoader } from 'react-native-mmkv-storage';
 import PickerLabelUi from '../../../components/PickerLabelUi';
 import CunstomInput from '../../../components/CunstomInput';
+import WorkInfo from '../../../customScreen/WorkInfo';
 
 const SellOldAcScreen = ({ navigation }) => {
   const [activeSection, setActiveSection] = useState('Key Benefits');
@@ -331,64 +332,8 @@ const SellOldAcScreen = ({ navigation }) => {
              
             </View>
 
-            <ContentSection
-              activeSection={activeSection}
-              setActiveSection={setActiveSection}
-              keyBenefits={keyBenefitsData}
-              serviceInclusions={serviceInclusionsData}
-              termsConditions={termsConditionsData}
-            />
+            <WorkInfo Homwork={false} needHelp={false}/>
 
-            <View style={HomeScreenStyles.worksliderview}>
-              <Image
-                source={images.bannerTwo}
-                style={HomeScreenStyles.workimage}
-              />
-            </View>
-
-            <Text
-              style={[HomeScreenStyles.workheadText, { marginTop: hp('1%') }]}
-            >
-              FAQs
-            </Text>
-
-            {/* FAQ Items */}
-            <>
-              {faqData.map((item, index) => (
-                <View key={index} style={HomeScreenStyles.faqItem}>
-                  <TouchableOpacity
-                    onPress={() => toggleExpandFaq(index)}
-                    style={HomeScreenStyles.faquestionContainer}
-                  >
-                    <Text style={HomeScreenStyles.faquestionText}>
-                      {item.question}
-                    </Text>
-                    <Text style={HomeScreenStyles.faqarrow}>
-                      {expandedIndex === index ? '︿' : '﹀'}
-                    </Text>
-                  </TouchableOpacity>
-
-                  {expandedIndex === index && (
-                    <Text style={HomeScreenStyles.faqanswerText}>
-                      {item.answer}
-                    </Text>
-                  )}
-                </View>
-              ))}
-            </>
-
-            <TouchableOpacity
-              style={[
-                HomeScreenStyles.worksliderview,
-                { marginBottom: hp(Platform.OS === 'ios' ? 6 : 8) },
-              ]}
-              activeOpacity={6}
-            >
-              <Image
-                source={images.brands}
-                style={HomeScreenStyles.brandimage}
-              />
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

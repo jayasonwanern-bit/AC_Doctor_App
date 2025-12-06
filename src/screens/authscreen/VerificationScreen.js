@@ -10,6 +10,7 @@ import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
 import CustomButton from '../../components/CustomButton';
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
+import { VerifyOTP } from '../../api/authApi';
 
 const VerificationScreen = ({ navigation, route }) => {
   const { phoneNumber } = route.params;
@@ -34,22 +35,31 @@ const VerificationScreen = ({ navigation, route }) => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  const handleVerify = async () => {
-    if (otp.length !== 4) {
-      setError('Please enter a 4-digit OTP');
-      return;
-    }
-    try {
-    //   const result = await verifyOTP(phoneNumber, otp);
-    //   if (result.success) {
-        navigation.navigate('ServiceScreen');
-    //   } else {
-    //     setError('Invalid OTP');
-    //   }
-    } catch (error) {
-      setError('Verification failed');
-    }
+ const handleVerify = async () => {
+  if (otp.length !== 4) {
+    setError('Please enter a 4-digit OTP');
+    return;
+  }
+  const paramdata = {
+    otp: otp,
+    userId: '68d5079929154d8f119ab6f2',
   };
+  console.log('OTP Verification Data:', paramdata);
+  // try {
+  //   const result = await VerifyOTP(paramdata);
+  //   console.log('OTP Verification Response:', result);
+
+  //   if (result?.success) {
+      navigation.navigate('ServiceScreen');
+  //   } else {
+  //     setError('Invalid OTP');
+  //   }
+  // } catch (error) {
+  //   console.log('Verify API Error:', error);
+  //   setError('Verification failed');
+  // }
+};
+
 
   const handleResendOTP = async () => {
     if (canResend) {

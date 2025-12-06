@@ -71,7 +71,7 @@ const ReqBookingAMC = ({ navigation }) => {
             margingTOP={hp('0%')}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
-            onPress={() => {}}
+            onPress={() => navigation.navigate('ConfirmService')}
           />
         </TouchableOpacity>
       </ScrollView>

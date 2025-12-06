@@ -78,7 +78,7 @@ const CustomDateTimePicker = ({
 
   return (
     <View style={styles.card}>
- <Text style={styles.cardTitle}>Select Date & Time</Text>
+    <Text style={styles.cardTitle}>Select Date & Time</Text>
       {/* Month Navigation */}
       <View style={styles.monthRow}>
         <TouchableOpacity style={styles.arrowBtn} onPress={() => changeMonth(-1)}>
@@ -300,7 +300,6 @@ const styles = StyleSheet.create({
 
   // SLOT STYLES
   cardTitle: {
-    marginTop: 18,
     fontSize: 18,
     fontWeight: "600",
     color: "#333",

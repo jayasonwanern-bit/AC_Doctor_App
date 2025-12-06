@@ -165,7 +165,7 @@ const AMCFrom = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.lightWhite,
   },
   containView: {
     paddingHorizontal: hp(1.5),

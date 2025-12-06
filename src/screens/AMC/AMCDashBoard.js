@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -17,50 +18,74 @@ import { COLORS, Fonts } from '../../utils/colors';
 
 const AMCDashBoard = ({ navigation }) => {
   const acTypes = [
-    { name: 'Split AC', icon: images.SplitAMC, onPress: () => {} },
-    { name: 'Window AC', icon: images.windowAc, onPress: () => {} },
-    { name: 'Cassette AC', icon: images.casseteAc, onPress: () => {} },
+    { name: 'Split AC', icon: images.SplitAMC,},
+    { name: 'Window AC', icon: images.windowAc,},
+    { name: 'Cassette AC', icon: images.casseteAc,},
+    { name: 'VRV/VRF AC', icon: images.VRVac,},
+    { name: 'Ducted AC', icon: images.ductedAc,},
+    { name: 'Tower AC', icon: images.towerAc,},
   ];
 
   const services = [
     {
-      title: 'AMC Dashboard',
-      icon: images.dashboardIcon,
-      onPress: () => navigation.navigate('AMCDashboard'),
+      title: 'new Booking',
+      onPress: () => navigation.navigate('ReqBookingAMC'),
     },
-    { title: 'Request a new Booking', onPress: () => navigation.navigate('ReqBookingAMC')},
-    { title: 'Past Bookings', icon: images.postBooking, onPress: () => {}},
-    { title: 'Bills', icon: images.BillsAMS, onPress: () => navigation.navigate('ListOfBill')},
+    {
+      title: 'Service Report',
+      icon: images.reportIcon,
+      onPress: () => navigation.navigate('ServiceReportscreen'),
+    },
+    {
+      title: 'Bills',
+      icon: images.BillsAMS,
+      onPress: () => navigation.navigate('ListOfBill'),
+    },
+    {
+      title: 'Warranty',
+      icon: images.WarrantyIcon,
+      onPress: () => navigation.navigate('ListOfBill'),
+    },
+    {
+      title: 'Shop',
+      icon: images.shopAMC,
+      onPress: () => navigation.navigate('ListOfBill'),
+    },
+    { title: 'Payment', icon: images.PaymentIcon, onPress: () => navigation
+        .navigate('PaymentlistScreen')
+     },
   ];
 
   const stats = [
     { label: 'Total Servicing Per Unit', value: 4 },
     { label: 'Total Servicing Completed', value: 2 },
     { label: 'Remaining Servicing', value: 4 },
+    { label: 'Total Repair Call', value: 4 },
   ];
 
   return (
     <View style={styles.mainContainer}>
       <Header title="AMC DashBoard" onBack={() => navigation.goBack()} />
 
-      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
         {/* Total AC Container */}
         <View style={styles.acBox}>
-          <Text style={styles.heading}>Total AC Under AMC</Text>
+          <Text style={styles.heading}>AC Under AMC</Text>
 
           <View style={styles.acRow}>
-            {acTypes.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.acItem}
-                onPress={item.onPress}
-              >
-                <View style={styles.acIconCircle}>
-                  <Image source={item.icon} style={styles.acIcon} />
-                </View>
-                <Text style={styles.acName}>{item.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={acTypes}
+              numColumns={3}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.acItem}  onPress={() => navigation.navigate('ACUnderServiceList', { acType: item.name })}>
+                  <View style={styles.acIconCircle}>
+                    <Image source={item.icon} style={styles.acIcon} />
+                  </View>
+                  <Text style={styles.acName}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
           </View>
         </View>
 
@@ -76,7 +101,9 @@ const AMCDashBoard = ({ navigation }) => {
             >
               <View style={styles.serviceIconCircle}>
                 <Image source={item.icon} style={styles.serviceIcon} />
-                 {item.title === 'Request a new Booking' && <Text style={styles.bookText}>15</Text>}
+                {item.title === 'new Booking' && (
+                  <Text style={styles.bookText}>15</Text>
+                )}
               </View>
               <Text style={styles.serviceText}>{item.title}</Text>
             </TouchableOpacity>
@@ -84,6 +111,7 @@ const AMCDashBoard = ({ navigation }) => {
         </View>
 
         {/* Stats Section */}
+        <View style={{ marginBottom: hp('15%') }}>
         {stats.map((item, index) => (
           <View key={index} style={styles.statCard}>
             <View style={styles.statCircle}>
@@ -92,6 +120,7 @@ const AMCDashBoard = ({ navigation }) => {
             <Text style={styles.statLabel}>{item.label}</Text>
           </View>
         ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -103,7 +132,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-
   scroll: {
     flex: 1,
   },
@@ -135,7 +163,8 @@ const styles = StyleSheet.create({
 
   acItem: {
     alignItems: 'center',
-    width: wp('26%'),
+    width: wp('28%'),
+    paddingVertical: hp('1%'),
   },
 
   acIconCircle: {
@@ -177,7 +206,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   serviceItem: {
-    width: '45%',
+    width: '28%',
     backgroundColor: COLORS.white,
     paddingVertical: hp('2.5%'),
     alignItems: 'center',
@@ -196,7 +225,7 @@ const styles = StyleSheet.create({
     height: wp('12%'),
     resizeMode: 'contain',
   },
- serviceText: {
+  serviceText: {
     marginTop: hp('1%'),
     textAlign: 'center',
     fontSize: hp('1.4%'),
@@ -241,6 +270,6 @@ const styles = StyleSheet.create({
     marginLeft: wp('4%'),
     fontSize: hp('1.5%'),
     fontFamily: Fonts.semiBold,
-    color:COLORS.black,
+    color: COLORS.black,
   },
 });

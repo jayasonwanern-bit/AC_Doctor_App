@@ -189,9 +189,13 @@ const images = {
   postBooking:require('./icons/postBooking.png'),
   dashboardIcon:require('./icons/dashboardIcon.png'),
   BillsAMS:require('./icons/BillsAMS.png'), 
-
- 
-
+ PaymentIcon:require('./icons/PaymentIcon.png'), 
+ reportIcon:require('./icons/reportIcon.png'),
+ WarrantyIcon:require('./icons/WarrantyIcon.png'),
+ amcCall:require('./icons/amcCall.png'),
+ shopAMC: require('./icons/shopAMC.png'),
+ confirmedService: require('./icons/confirmedService.png'),
+Alertoctagon: require('./icons/Alertoctagon.png'),
   // Add more images as needed
 };
 

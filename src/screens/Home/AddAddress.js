@@ -64,10 +64,7 @@ const AddAddress = ({ navigation,route }) => {
     const cameFrom = route?.params?.from; 
 
   if (cameFrom === 'ServiceScreen') {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Tab', params: { screen: 'Home' } }],
-    }); 
+   navigation.navigate('Tab', { screen: 'Home' });
   } 
   else if (cameFrom === 'CustomModal') {
     setModalSlotVisible(true);

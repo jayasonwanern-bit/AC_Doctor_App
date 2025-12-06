@@ -19,7 +19,7 @@ export const COLORS = {
   red:'#c52210ff',
   black:'#000000',
   lightBlack:'#1a1a1a',
-  lightWhite:'#f5f5f5',
+  lightWhite:'#eef3f8ff',
   yellow:'#f1c40f',
   green:'#2ecc71',
   lightgreen:'#D7F5CF',

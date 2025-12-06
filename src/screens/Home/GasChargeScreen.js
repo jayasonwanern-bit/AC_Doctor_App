@@ -5,31 +5,15 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  FlatList,
-  StyleSheet,
 } from 'react-native';
 import Header from '../../components/Header';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-  heightPercentageToDP,
-  widthPercentageToDP,
-} from 'react-native-responsive-screen';
-import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
 import FastImage from 'react-native-fast-image';
-import styles, {
-  works,
-  keyBenefitsData,
-  serviceInclusionsData,
-  termsConditionsData,
-  faqData,
-} from './HomeScreenStyles';
-import ContentSection from '../../customScreen/ContentSection';
+import styles from './HomeScreenStyles';
+import WorkInfo from '../../customScreen/WorkInfo';
 
 const GasChargeScreen = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
-  const [activeSection, setActiveSection] = useState('Key Benefits');
 
   const [acTypes, setAcTypes] = useState([
     { name: 'Split AC', count: 2, showButtons: false, acIcon: images.splitAC },
@@ -75,10 +59,7 @@ const GasChargeScreen = ({ navigation }) => {
     setAcTypes(updatedAcTypes);
   };
 
-  // FAQ'S Toggle
-  const toggleExpand = index => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-  };
+
 
   return (
     <View style={styles.workcontainer}>
@@ -135,83 +116,7 @@ const GasChargeScreen = ({ navigation }) => {
           </View>
         ))}
 
-{/* How it works? */}
-        <View style={styles.workitem}>
-          <Text style={styles.utititle}>How it works?</Text>
-          <View style={styles.workContain}>
-            <FlatList
-              data={works}
-              keyExtractor={(_, index) => `work-${index}`}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.workoption}
-                  onPress={item.action}
-                >
-                  <FastImage source={item.icon} style={styles.workicon} />
-                  <Text style={[styles.utilabel, { color: COLORS.white }]}>
-                    {item.text}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </View>
-
-        <ContentSection
-          activeSection={activeSection}
-          setActiveSection={setActiveSection}
-          keyBenefits={keyBenefitsData}
-          serviceInclusions={serviceInclusionsData}
-          termsConditions={termsConditionsData}
-        />
-
-        <View style={styles.worksliderview}>
-          <Image source={images.bannerTwo} style={styles.workimage} />
-        </View>
-
-        <Text
-          style={[
-            styles.workheadText,
-            { marginTop: heightPercentageToDP('1%') },
-          ]}
-        >
-          FAQs
-        </Text>
-
-        {/* FAQ Items */}
-        <>
-          {faqData.map((item, index) => (
-            <View key={index} style={styles.faqItem}>
-              <TouchableOpacity
-                onPress={() => toggleExpand(index)}
-                style={styles.faquestionContainer}
-              >
-                <Text style={styles.faquestionText}>{item.question}</Text>
-                <Text style={styles.faqarrow}>
-                  {expandedIndex === index ? '︿' : '﹀'}
-                </Text>
-              </TouchableOpacity>
-
-              {expandedIndex === index && (
-                <Text style={styles.faqanswerText}>{item.answer}</Text>
-              )}
-            </View>
-          ))}
-        </>
-
-        <TouchableOpacity style={styles.worksliderview} activeOpacity={6}>
-          <Image source={images.brands} style={styles.brandimage} />
-        </TouchableOpacity>
-
-        <View style={[styles.brandcont]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={images.helpdesk} style={styles.smallimage} />
-            <Text style={styles.needHelp}> Need Help?</Text>
-          </View>
-          <Image source={images.chatIcon} style={styles.chaticon} />
-        </View>
+      <WorkInfo/> 
       </ScrollView>
 
       {/* Services and View Cart Section */}

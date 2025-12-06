@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp('2.5%'),
-    paddingVertical: hp('2.5%'),
+    paddingVertical: hp('2%'),
     borderBottomWidth: 1,
     borderBottomColor: '#ddd', 
   },

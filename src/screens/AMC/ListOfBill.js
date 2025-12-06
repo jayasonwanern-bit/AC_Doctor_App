@@ -6,43 +6,7 @@ import { COLORS,Fonts } from '../../utils/colors';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 
-const STATUS_COLORS = {
-  "In Progress": { bg: "#F8DD72", text: "#8A6F00" },
-  "On Hold": { bg: "#D3D3D3", text: "#555" },
-  "Completed": { bg: "#C8FAD1", text: "#0F8A43" },
-};
 
-const TicketCard = ({ ticketId, status, onPress,icon }) => {
-  const statusStyle = STATUS_COLORS[status] || STATUS_COLORS["In Progress"];
-
-  return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      {/* LEFT ICON */}
-      <View style={styles.leftIconBox}>
-        <Image
-          source={icon}
-          style={{ width: 28, height: 28, }}
-        />
-      </View>
-
-      {/* MIDDLE CONTENT */}
-      <View style={{ flex: 1 }}>
-        <Text style={styles.label}>Ticket ID</Text>
-        <Text style={styles.ticketId}>{ticketId}</Text>
-      </View>
-
-      {/* STATUS BADGE */}
-      <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
-        <Text style={[styles.statusText, { color: statusStyle.text }]}>
-          {status}
-        </Text>
-      </View>
-
-      {/* ARROW */}
-      <Text style={styles.arrow}>{">"}</Text>
-    </TouchableOpacity>
-  );
-};
 
 const ListOfBill = ({navigation}) => {
   const data = [
@@ -53,19 +17,53 @@ const ListOfBill = ({navigation}) => {
     { id: 5, ticket: "8998598540", status: "On Hold" ,icon:images.BillsAMS},
     { id: 6, ticket: "8998598540", status: "In Progress" ,icon:images.BillsAMS},
   ];
+const STATUS_COLORS = {
+  "In Progress": { bg:COLORS.pendingBg, text: COLORS.pendingBgText },
+  "On Hold": { bg: COLORS.onHoldBg, text: COLORS.onHoldText},
+  "Completed": { bg: COLORS.completedBg, text: COLORS.completedText },
+};
+
+const TicketCard = ({  status,item }) => {
+  const statusStyle = STATUS_COLORS[status] || STATUS_COLORS["In Progress"];
 
   return (
+    <TouchableOpacity style={styles.card} onPress={()=>navigation.navigate('BillViewScreen', {ticketId:item})}>
+      {/* LEFT ICON */}
+      <View style={styles.leftIconBox}>
+        <Image
+          source={item.icon}
+          style={styles.iconStyle}
+        />
+      </View>
+
+      {/* MIDDLE CONTENT */}
+      <View style={{ flex: 1 }}>
+        <Text style={styles.label}>Ticket ID</Text>
+        <Text style={styles.ticketId}>{item.ticket}</Text>
+      </View>
+
+      {/* STATUS BADGE */}
+      <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
+        <Text style={[styles.statusText, { color: statusStyle.text }]}>
+          {status}
+        </Text>
+      </View>
+
+      {/* ARROW */}
+      <Image source={images.rightArrow} style={styles.arrowStyle}/>
+    </TouchableOpacity>
+  );
+};
+  return (
     <View style={styles.screen}>
-         <Header title="List Of Bills" onBack={() => navigation.goBack()} />
+      <Header title="List Of Bills" onBack={() => navigation.goBack()} />
       <FlatList
         data={data}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item ,index}) => (
           <TicketCard
-            ticketId={item.ticket}
+            item={item}
             status={item.status}
-            icon={item.icon}
-            onPress={() => console.log("Clicked", item.ticket)}
           />
         )}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
@@ -82,12 +80,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.lightBackground, // optional
   },
-
   card: {
     flexDirection: "row",
     backgroundColor: COLORS.white,
-    padding: hp('2%'),
-    borderRadius: hp('2%'),
+    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('4%'),
+    borderRadius: hp('1%'),
     alignItems: "center",
     elevation: 3,
     shadowColor: "#000",
@@ -97,9 +95,6 @@ const styles = StyleSheet.create({
   },
 
   leftIconBox: {
-    width: hp('6%'),
-    height: hp('6%'),
-    backgroundColor: COLORS.lightPnk,
     borderRadius: hp('3%'),
     justifyContent: "center",
     alignItems: "center",
@@ -136,6 +131,12 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.semiBold,
     color: COLORS.darkGray,
   },
+  arrowStyle: {
+    width: wp('4%'),
+    height: wp('4%'),
+    resizeMode: 'contain',
+  },
+  iconStyle: { width: hp('5%'), height: hp('4%'), resizeMode: 'contain' },
 });
 
 export default ListOfBill

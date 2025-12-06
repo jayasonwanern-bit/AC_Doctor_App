@@ -44,6 +44,14 @@ import AMCRequestFrom from '../screens/AMC/AMCRequestFrom';
 import AMCDashBoard from '../screens/AMC/AMCDashBoard';
 import ReqBookingAMC from '../screens/AMC/ReqBookingAMC';
 import ListOfBill from '../screens/AMC/ListOfBill';
+import ACUnderServiceList from '../screens/AMC/ACUnderServiceList';
+import ACServiceDetails from '../screens/AMC/ACServiceDetails';
+import BillViewScreen from '../screens/AMC/BillViewScreen';
+import ConfirmService from '../screens/AMC/ConfirmService'; // --- IGNORE ---
+import PaymentlistScreen from '../screens/AMC/PaymentlistScreen'; // --- IGNORE ---
+import ServiceReportscreen from '../screens/AMC/ServiceReportscreen'; // --- IGNORE ---
+
+
 
 
 import { COLORS } from '../utils/colors';
@@ -144,6 +152,12 @@ const AppNavigator = () => {
          <Stack.Screen name="AMCDashBoard" component={AMCDashBoard} />
          <Stack.Screen name="ReqBookingAMC" component={ReqBookingAMC} />
          <Stack.Screen name="ListOfBill" component={ListOfBill} />
+         <Stack.Screen name="ACUnderServiceList" component={ACUnderServiceList} />
+         <Stack.Screen name="ACServiceDetails" component={ACServiceDetails} />
+         <Stack.Screen name="BillViewScreen" component={BillViewScreen} />       
+         <Stack.Screen name="ConfirmService" component={ConfirmService} />       
+         <Stack.Screen name="PaymentlistScreen" component={PaymentlistScreen} />       
+         <Stack.Screen name="ServiceReportscreen" component={ServiceReportscreen} />       
         </Stack.Navigator>
       </NavigationContainer>
       </CompareProvider>

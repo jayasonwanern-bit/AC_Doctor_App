@@ -5,27 +5,19 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-  heightPercentageToDP,
 } from 'react-native-responsive-screen';
 import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
 import FastImage from 'react-native-fast-image';
 import Header from '../../components/Header';
-import ContentSection from '../../customScreen/ContentSection';
-import HomeScreenStyles, {
-  works,
-  keyBenefitsData,
-  serviceInclusionsData,
-  termsConditionsData,
-  faqData,
-} from './HomeScreenStyles';
+import HomeScreenStyles from './HomeScreenStyles';
 import CustomButton from '../../components/CustomButton';
+import WorkInfo from '../../customScreen/WorkInfo';
 
 const CommericalAc = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -99,10 +91,7 @@ const CommericalAc = ({ navigation }) => {
       }),
     );
   };
-  // FAQ'S Toggle
-  const toggleExpandFaq = index => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-  };
+
 
   const renderCounter = (value, onIncrement, onDecrement) => {
     return value > 0 ? (
@@ -230,93 +219,7 @@ const CommericalAc = ({ navigation }) => {
           </View>
         ))}
 
-        {/* How it works? */}
-        <View style={HomeScreenStyles.workitem}>
-          <Text style={HomeScreenStyles.utititle}>How it works?</Text>
-          <View style={HomeScreenStyles.workContain}>
-            <FlatList
-              data={works}
-              keyExtractor={(_, index) => `work-${index}`}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={HomeScreenStyles.workoption}
-                  onPress={item.action}
-                >
-                  <FastImage
-                    source={item.icon}
-                    style={HomeScreenStyles.workicon}
-                  />
-                  <Text
-                    style={[HomeScreenStyles.utilabel, { color: COLORS.white }]}
-                  >
-                    {item.text}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </View>
-
-        <ContentSection
-          activeSection={activeSection}
-          setActiveSection={setActiveSection}
-          keyBenefits={keyBenefitsData}
-          serviceInclusions={serviceInclusionsData}
-          termsConditions={termsConditionsData}
-        />
-
-        <View style={HomeScreenStyles.worksliderview}>
-          <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
-        </View>
-
-        <Text style={[HomeScreenStyles.workheadText, { marginTop: hp('1%') }]}>
-          FAQs
-        </Text>
-
-        {/* FAQ Items */}
-        <>
-          {faqData.map((item, index) => (
-            <View key={index} style={HomeScreenStyles.faqItem}>
-              <TouchableOpacity
-                onPress={() => toggleExpandFaq(index)}
-                style={HomeScreenStyles.faquestionContainer}
-              >
-                <Text style={HomeScreenStyles.faquestionText}>
-                  {item.question}
-                </Text>
-                <Text style={HomeScreenStyles.faqarrow}>
-                  {expandedIndex === index ? '︿' : '﹀'}
-                </Text>
-              </TouchableOpacity>
-
-              {expandedIndex === index && (
-                <Text style={HomeScreenStyles.faqanswerText}>
-                  {item.answer}
-                </Text>
-              )}
-            </View>
-          ))}
-        </>
-
-        <TouchableOpacity
-          style={HomeScreenStyles.worksliderview}
-          activeOpacity={6}
-        >
-          <Image source={images.brands} style={HomeScreenStyles.brandimage} />
-        </TouchableOpacity>
-
-        <View style={[HomeScreenStyles.brandcont]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image
-              source={images.helpdesk}
-              style={HomeScreenStyles.smallimage}
-            />
-            <Text style={HomeScreenStyles.needHelp}> Need Help?</Text>
-          </View>
-          <Image source={images.chatIcon} style={HomeScreenStyles.chaticon} />
-        </View>
+         <WorkInfo/>      
       </ScrollView>
 
       {/* Services and View Cart Section */}

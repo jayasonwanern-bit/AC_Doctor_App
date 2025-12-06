@@ -7,7 +7,6 @@ import {
   StyleSheet,
   FlatList,
   ScrollView,
-  Alert,
 } from 'react-native';
 import Header from '../../components/Header';
 import {
@@ -16,6 +15,7 @@ import {
 } from 'react-native-responsive-screen';
 import images from '../../assets/images';
 import { COLORS, Fonts } from '../../utils/colors';
+import WorkInfo from '../../customScreen/WorkInfo';
 
 const AMCScreen = ({ navigation }) => {
   const items = [
@@ -45,11 +45,9 @@ const AMCScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header title="AMC" onBack={() => navigation.goBack()} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.grid} >
         {/* Banner */}
-        <View style={styles.banner}>
           <Image source={images.bannerAmc} style={styles.bannerImg} />
-        </View>
 
         {/* FlatList Grid */}
         <FlatList
@@ -57,10 +55,11 @@ const AMCScreen = ({ navigation }) => {
           renderItem={({ item }) => renderCard({ item })}
           keyExtractor={item => item.id.toString()}
           numColumns={3}
-          contentContainerStyle={styles.grid}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           scrollEnabled={false}
         />
+
+        <WorkInfo />
       </ScrollView>
 
       {/* Floating Chat Button */}
@@ -70,7 +69,7 @@ const AMCScreen = ({ navigation }) => {
         // onPress={() => navigation.navigate("Chat")}
         accessibilityLabel="Open chat"
       >
-        <Image source={images.messageIcon} style={styles.chatIcon} />
+        <Image source={images.amcCall} style={styles.chatIcon} />
       </TouchableOpacity>
     </View>
   );
@@ -80,10 +79,7 @@ export default AMCScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eef3f8ff',
-  },
-  banner: {
-    paddingHorizontal: wp(4),
+    backgroundColor: COLORS.lightWhite,
   },
 
   bannerImg: {
@@ -95,7 +91,6 @@ const styles = StyleSheet.create({
   /* Grid */
   grid: {
     paddingHorizontal: wp(4),
-    // marginTop: hp(1),
   },
   card: {
     width: wp('29%'),
@@ -108,7 +103,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.07,
     shadowRadius: wp(2),
     shadowOffset: { width: 0, height: hp(0.5) },
-    elevation: 4,
+    elevation: 1.5,
   },
 
   /* Icon Container */
