@@ -76,7 +76,7 @@ const CunstomInput = ({
         <TextInput
           style={[
             styles.input,
-            { color: COLORS.textColor || textColor },
+            { color: COLORS.textHeading || COLORS.black },
             multiline ? styles.multilineInput : {},
             style,
           ]}

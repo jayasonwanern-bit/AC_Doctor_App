@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,8 +20,12 @@ import images from '../../assets/images';
 import CustomButton from '../../components/CustomButton';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
+import { store } from '../../redux/store';
+import {addOrEditAddress} from '../../api/addressApi'
+import Toast from 'react-native-simple-toast'
 
-const AddAddress = ({ navigation,route }) => {
+const AddAddress = ({ navigation, route }) => {
+  const addressData = route?.params?.addressData;
   const [searchBar, setSearchBar] = useState('');
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
@@ -33,24 +37,42 @@ const AddAddress = ({ navigation,route }) => {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
+   const [loading, setLoading] = useState(true);
+    const userId = store?.getState()?.auth?.user?.data?._id;
 
+  // validation
   const validateFields = () => {
-    if (!city.trim()) return 'City is required';
     if (!address.trim()) return 'Address is required';
+    if (!city.trim()) return 'City is required';
+     if (!stateName.trim()) return 'State is required';
     if (!pincode.trim()) return 'Pincode is required';
     if (!/^\d{5,6}$/.test(pincode.trim()))
       return 'Pincode must be 5 or 6 digits';
-    if (!stateName.trim()) return 'State is required';
     return null;
   };
 
-  const handleSubmit = () => {
-    // const validationError = validateFields();
-    // if (validationError) {
-    //   Alert.alert('Validation Error', validationError);
-    //   return;
-    // }
+  useEffect(() => {
+  if (addressData) {
+    // setHouse(addressData.house);
+    setAddress(addressData.street);
+    setCity(addressData.city);
+    setStateName(addressData.state);
+    setPincode(addressData.zipcode);
+    // setSaveAs(addressData.saveAs);
+    // setLandmark(addressData.landmark);
+  }
+}, [addressData]);
 
+  // onSubmit button
+  const handleSubmit = async() => {
+     try {
+    const validationError = validateFields();
+    if (validationError) {
+      Alert.alert('Validation Error', validationError);
+      return;
+    }
+   setLoading(true);
+  //  confirm notification structure start
     const newAddress = {
       name: 'Sachin Gupta',
       phone: '+91 9999999999',
@@ -59,10 +81,25 @@ const AddAddress = ({ navigation,route }) => {
       isDefault,
     };
     setSelectedAddress(newAddress);
-
-    console.log('Submitted Address:', newAddress);
+    // end --
+    
+    let body = {
+      addressId: addressData?._id || "",
+      userId: userId,
+      houseNumber:'1234567',
+      street:address,
+      state:stateName,
+      city:city,
+      zipCode:pincode,
+      saveAs:'saveAs',
+      landmark:addressType,
+    };
+   const res = await addOrEditAddress(body);
+   console.log('add address response',res.data)
+  if (res?.status) {
+      Toast.show(res?.message);
+    } 
     const cameFrom = route?.params?.from; 
-
   if (cameFrom === 'ServiceScreen') {
    navigation.navigate('Tab', { screen: 'Home' });
   } 
@@ -75,6 +112,11 @@ const AddAddress = ({ navigation,route }) => {
   }
   else {
     navigation.goBack()
+  }
+} catch (error) {
+    console.log("Update Error:", error);
+  } finally {
+    setLoading(false);
   }
   };
 
@@ -139,6 +181,7 @@ const AddAddress = ({ navigation,route }) => {
           placeholder="Pincode"
            placeholderTextColor={COLORS.textColor}
           value={pincode}
+          maxLength={6}
           onChangeText={setPincode}
           keyboardType="number-pad"
           style={styles.input}
@@ -313,7 +356,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: wp(1),
     padding: wp(1.5),
-    // marginBottom: hp(0.5),
   },
   selectedTypeButton: {
     borderWidth: 1,

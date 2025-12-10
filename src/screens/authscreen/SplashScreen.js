@@ -3,14 +3,22 @@ import { View, StyleSheet } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
 import { COLORS } from '../../utils/colors';
+import { store } from '../../redux/store';
 
 const SplashScreen = ({ navigation }) => {
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('Login'); 
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  const userData = store?.getState()?.auth?.user?.data;
+  const timer = setTimeout(() => {
+    if (userData) {
+       navigation.navigate('Tab', { screen: 'Home' });   
+    } else {
+     navigation.replace('Login');  
+    }
+  }, 1500);
+   return () => clearTimeout(timer);
+}, []);
+
 
   return (
     <View style={styles.container}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect,useCallback} from 'react';
 import {
   View,
   Text,
@@ -27,10 +27,13 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context'; // Use SafeAreaView instead of SafeAreaProvider
+import { getAuthpatner,getServiceList,getBanner } from '../../api/homeApi';
+import { useFocusEffect} from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const scheme = useColorScheme();
+  const [loading, setLoading] = useState(true);
   // Dynamic styles based on scheme
   const dynamicStyles = {
     safeArea: {
@@ -53,15 +56,17 @@ const HomeScreen = ({ navigation }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   // Navigation handlers (unchanged)
+  const screens = {
+  STERILIZATION: 'Sterilization',
+  REPAIR: 'RepairScreen',
+  INSTALLATION: 'InstallationScreen',
+  COMMERCIAL_AC: 'CommericalAc',
+  GAS_CHARGING: 'GasChargeScreen',
+  OTHER: 'OtherScreen',
+};
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
   const handleAMC = () => navigation.navigate('AMCFrom');
   const handleCopperPipe = () => navigation.navigate('CopperPipeScreen');
-  const handleSterilization = () => navigation.navigate('Sterilization');
-  const handleRepair = () => navigation.navigate('RepairScreen');
-  const handleInstallation = () => navigation.navigate('InstallationScreen');
-  const handleCommercialAC = () => navigation.navigate('CommericalAc');
-  const handleGasCharging = () => navigation.navigate('GasChargeScreen');
-  const handleOther = () => navigation.navigate('OtherScreen');
   const handleCalulator = () => navigation.navigate('TonnageCalculatorScreen');
   const handleErrorcode = () => navigation.navigate('ErrorCodeScreen');
   const handleFreeConsult = () => navigation.navigate('FreeConsultant');
@@ -78,30 +83,7 @@ const HomeScreen = ({ navigation }) => {
     { label: 'Copper Pipe', icon: images.copperIcon, action: handleCopperPipe },
   ];
 
-  const bookServices = [
-    {
-      label: 'Sterilization',
-      icon: images.strerilization,
-      action: handleSterilization,
-    },
-    { label: 'Repair', icon: images.repairIcon, action: handleRepair },
-    {
-      label: 'Installation',
-      icon: images.installationIcon,
-      action: handleInstallation,
-    },
-    {
-      label: 'Commercial AC',
-      icon: images.commercialIcon,
-      action: handleCommercialAC,
-    },
-    {
-      label: 'Gas Charging',
-      icon: images.gaschargeIcon,
-      action: handleGasCharging,
-    },
-    { label: 'Other', icon: images.otherIcon, action: handleOther },
-  ];
+
 
   const utilities = [
     {
@@ -126,21 +108,21 @@ const HomeScreen = ({ navigation }) => {
     },
   ];
 
-  const bannerImages = [images.acPoster, images.acPoster, images.acPoster];
-  const Authpartner = [
-    images.lgIcon, images.MITelectricIcon,images.daikinIcon,images.hitachi,
-    images.MITelectricIcon,images.daikinIcon,images.MITelectricIcon,images.daikinIcon,
-    images.mitsubishi,images.MITelectricIcon,images.whirlpool,images.lgIcon,
-  ];
+  const [Authpartner, setAuthpartner] = useState([]);
+  const [bookServices, setBookServices] = useState([]);
+  const [bannerImages, setBannerImages] = useState([]);
 
-  const chunkArray = (array, size) => {
+  const chunkArray = (array = [], size) => {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
       result.push(array.slice(i, i + size));
     }
     return result;
   };
-  const pages = chunkArray(Authpartner, 6);
+
+  const activeData = Authpartner.filter(item => item.isActive === 1);
+
+  const pages = chunkArray(activeData, 6);
 
   useEffect(() => {
     const loadAddress = async () => {
@@ -150,12 +132,62 @@ const HomeScreen = ({ navigation }) => {
       }
     };
     loadAddress();
+
   }, []);
 
-  // button
-  const handleAddressPress = () => {
-    // navigation.navigate('SelectLocation', { onUpdate: loadAddress });
+  useFocusEffect(
+   useCallback(() => {
+    getauthservice();
+    getBookService();
+    getBannerImg();
+    }, [])
+  )
+
+  const getauthservice = async () => {
+    try {
+      setLoading(true);
+      const res = await getAuthpatner();
+      setAuthpartner(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const getBookService = async () => {
+    try {
+      setLoading(true);
+      const res = await getServiceList();
+      setBookServices(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+//  booking navigation
+  const handleServiceNavigation = (service) => {
+  const screen = screens[service?.key];
+  if (screen) {
+    navigation.navigate(screen, { service });
+  } else {
+    console.log("Screen not found for:", service?.key);
+  }
+};
+
+ const getBannerImg = async () => {
+    try {
+      setLoading(true);
+      const res = await getBanner();
+      setBannerImages(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <SafeAreaView
@@ -180,7 +212,9 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.addressRow}>
             <TouchableOpacity
               style={styles.locationContainer}
-              onPress={handleAddressPress}
+              onPress={() =>
+                navigation.navigate('SelectLocation', { onUpdate: loadAddress })
+              }
             >
               <Image
                 source={images.homeLocation}
@@ -209,10 +243,10 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 key={index}
                 style={styles.bookcard}
-                onPress={item.action}
+                onPress={() => handleServiceNavigation(item)}
               >
-                <FastImage source={item.icon} style={styles.reqicon} />
-                <Text style={styles.reqlabel}>{item.label}</Text>
+                <FastImage source={{ uri: item.icon }} style={styles.reqicon} />
+                <Text style={styles.reqlabel}>{item.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -262,20 +296,22 @@ const HomeScreen = ({ navigation }) => {
             keyExtractor={(_, index) => `page-${index}`}
             renderItem={({ item: page }) => (
               <View style={styles.authgrid}>
-                {[0, 1,2].map(row => (
+                {[0, 1, 2].map(row => (
                   <View
                     key={row}
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'flex-start',
                       marginVertical: 3,
-                    }} >
-                    {page.slice(row * 3, row * 3 + 3).map((icon, idx) => (
-                      <View
-                        key={idx}
-                        style={styles.authoption}
-                      >
-                        <FastImage source={icon} style={styles.authicon} resizeMode={FastImage.resizeMode.contain} />
+                    }}
+                  >
+                    {page.slice(row * 3, row * 3 + 3).map((item, idx) => (
+                      <View key={idx} style={styles.authoption}>
+                        <FastImage
+                          source={{ uri: item.logo }} // <-- FIX
+                          style={styles.authicon}
+                          resizeMode={FastImage.resizeMode.contain}
+                        />
                       </View>
                     ))}
                   </View>
@@ -285,63 +321,74 @@ const HomeScreen = ({ navigation }) => {
           />
         </View>
 
-         <View style={styles.uticontainer}>
-        <Text style={[styles.reqtitle, { marginLeft: hp('1.5%')},dynamicStyles.title]}>
-          Feature Product
-        </Text>
-        <FlatList
-          data={productData}
-          horizontal
-          keyExtractor={item => item.id}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <View style={styles.productCard}>
-              <View style={styles.boderinercard}>
-                <View style={styles.topRow}>
-                  <View style={styles.discountBadge}>
-                    <Text style={styles.discountText}>{item.discount}</Text>
+        <View style={styles.uticontainer}>
+          <Text
+            style={[
+              styles.reqtitle,
+              { marginLeft: hp('1.5%') },
+              dynamicStyles.title,
+            ]}
+          >
+            Feature Product
+          </Text>
+          <FlatList
+            data={productData}
+            horizontal
+            keyExtractor={item => item.id}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <View style={styles.productCard}>
+                <View style={styles.boderinercard}>
+                  <View style={styles.topRow}>
+                    <View style={styles.discountBadge}>
+                      <Text style={styles.discountText}>{item.discount}</Text>
+                    </View>
+                    <FastImage
+                      source={images.dislike}
+                      style={styles.likeButton}
+                    />
                   </View>
-                  <FastImage
-                    source={images.dislike}
-                    style={styles.likeButton}
+                  <Image
+                    source={item.image}
+                    style={styles.image}
+                    resizeMode="contain"
                   />
                 </View>
-                <Image
-                  source={item.image}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
-              </View>
-              <View style={styles.dealRow}>
-                <View style={styles.dealTag}>
-                  <Text style={styles.dealText}>Limited time deal</Text>
+                <View style={styles.dealRow}>
+                  <View style={styles.dealTag}>
+                    <Text style={styles.dealText}>Limited time deal</Text>
+                  </View>
+                  <Text style={styles.rating}>⭐ {item.rating}</Text>
                 </View>
-                <Text style={styles.rating}>⭐ {item.rating}</Text>
-              </View>
-              <Text style={styles.name} numberOfLines={1}>
-                {item.name}
-              </Text>
-              <Text style={styles.price}>{item.price}</Text>
-              <View style={styles.bottomRow}>
-                <Text style={styles.mrp}>
-                  MRP{' '}
-                  <Text
-                    style={[styles.mrp, { textDecorationLine: 'line-through' }]}
-                  >
-                    {item.mrp}
-                  </Text>
+                <Text style={styles.name} numberOfLines={1}>
+                  {item.name}
                 </Text>
-                <TouchableOpacity style={styles.addButton}>
-                  <Text style={styles.addButtonText}>Add</Text>
-                </TouchableOpacity>
+                <Text style={styles.price}>{item.price}</Text>
+                <View style={styles.bottomRow}>
+                  <Text style={styles.mrp}>
+                    MRP{' '}
+                    <Text
+                      style={[
+                        styles.mrp,
+                        { textDecorationLine: 'line-through' },
+                      ]}
+                    >
+                      {item.mrp}
+                    </Text>
+                  </Text>
+                  <TouchableOpacity style={styles.addButton}>
+                    <Text style={styles.addButtonText}>Add</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          )}
-        />
+            )}
+          />
         </View>
 
         <View style={styles.uticontainer}>
-          <Text style={[styles.utititle,dynamicStyles.title]}>Who Trust Us</Text>
+          <Text style={[styles.utititle, dynamicStyles.title]}>
+            Who Trust Us
+          </Text>
           <FlatList
             data={testimonialData}
             keyExtractor={item => item.id}

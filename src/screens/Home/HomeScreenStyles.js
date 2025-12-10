@@ -684,15 +684,11 @@ export default StyleSheet.create({
   width: '100%',
   paddingHorizontal: wp(4),
   paddingVertical: hp(2),
-  backgroundColor: COLORS.white,
+  paddingBottom:hp(6),
   position: 'absolute',
   bottom: 0,
   left: 0,
   right: 0,
-  elevation: 10,
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
   },
   servicesCount: {
     fontSize: wp('3.5%'),
@@ -1082,4 +1078,36 @@ export const CompareData = [
   {question: 'Air Conditioner PIUG Details', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
   {question: 'Air Conditioner Functions', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
 ];
+
+export const menuData = [
+    {
+      id: '1',
+      title: 'Notification',
+      icon: images.notificationRed,
+      screen: 'NotificationScreeen',
+    },
+    { id: '2', title: 'My Bookings', icon: images.bookingIcon, screen: 'MyBookingScreen' },
+    {
+      id: '3',
+      title: 'My Requests',
+      icon: images.bookingIcon,
+      screen: 'MyRequestsScreen',
+    },
+    {
+      id: '4',
+      title: 'Manage Address',
+      icon: images.addressIcon,
+      screen: 'ManageAddressScreen',
+    },
+    {
+      id: '5',
+      title: 'Annual Maintenance Contract',
+      icon: images.contractIcon,
+      screen: 'AMC',
+    },
+    { id: '6', title: 'Pay Now', icon: images.payIcon, screen: 'PayNow' },
+    { id: '7', title: 'Rate Us', icon: images.rateUSIcon, screen: 'RateUs' },
+    { id: '8', title: 'Help', icon: images.helpIcon, screen: 'Help' },
+    { id: '9', title: 'Logout', icon: images.logoutIcon, screen: 'Logout' },
+  ];
 

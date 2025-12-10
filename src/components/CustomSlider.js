@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { View, FlatList, Image, Dimensions, StyleSheet } from 'react-native';
 import {
-  View,
-  FlatList,
-  Image,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import images from '../assets/images';
 
 // Placeholder COLORS object (replace with your actual COLORS)
 const COLORS = {
@@ -24,7 +22,7 @@ const CustomSlider = ({ images }) => {
   useEffect(() => {
     if (images.length === 0) return; // Prevent autoplay if no images
     const autoplayInterval = setInterval(() => {
-      setCurrentIndex((prevIndex) => {
+      setCurrentIndex(prevIndex => {
         const nextIndex = (prevIndex + 1) % images.length;
         flatListRef.current?.scrollToIndex({
           index: nextIndex,
@@ -38,7 +36,7 @@ const CustomSlider = ({ images }) => {
   }, [images]);
 
   // Handle scroll to update current index
-  const handleScroll = (event) => {
+  const handleScroll = event => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(offsetX / width);
     setCurrentIndex(index);
@@ -47,15 +45,22 @@ const CustomSlider = ({ images }) => {
   // Render each slide
   const renderItem = ({ item }) => (
     <View style={styles.sliderview}>
-      <Image source={item} style={styles.image} />
+      <Image
+        source={
+          item?.logo
+            ? { uri: item.logo }
+            : require('../assets/icons/banner.png')
+        }
+        style={styles.image}
+      />
     </View>
   );
 
   // Customizable dot properties
-  const dotSize = wp('2%'); // Customize dot size here (width and height)
-  const dotMargin = wp('1.5%'); // Customize margin between dots here
-  const dotBottomPosition = hp('1%'); // Customize bottom positioning here
-  const dotTopPosition = hp('12%'); // Set to hp('X%') for top positioning
+  const dotSize = wp('2%');
+  const dotMargin = wp('1.5%');
+  const dotBottomPosition = hp('1%');
+  const dotTopPosition = hp('12%');
 
   return (
     <View style={styles.sliderContainer}>
@@ -84,7 +89,9 @@ const CustomSlider = ({ images }) => {
           <View
             style={[
               styles.dots,
-              dotTopPosition ? { top: dotTopPosition } : { bottom: dotBottomPosition },
+              dotTopPosition
+                ? { top: dotTopPosition }
+                : { bottom: dotBottomPosition },
             ]}
           >
             {images.map((_, index) => (
@@ -96,7 +103,8 @@ const CustomSlider = ({ images }) => {
                     width: dotSize,
                     height: dotSize,
                     marginHorizontal: dotMargin,
-                    backgroundColor: index === currentIndex ? COLORS.accent : COLORS.gray,
+                    backgroundColor:
+                      index === currentIndex ? COLORS.accent : COLORS.gray,
                   },
                 ]}
               />
@@ -121,12 +129,14 @@ const styles = StyleSheet.create({
     width: wp('98%'),
     height: hp('35%'),
     alignSelf: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     alignItems: 'center',
     justifyContent: 'center',
   },
   image: {
-    width: '93%', height: hp('15%'), borderRadius: 15 
+    width: '93%',
+    height: hp('15%'),
+    borderRadius: 15,
   },
   dots: {
     flexDirection: 'row',

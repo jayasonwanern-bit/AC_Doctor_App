@@ -1,4 +1,5 @@
 import React from 'react';
+import {LogBox} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -62,8 +63,9 @@ import {
 } from 'react-native';
 import { CompareProvider } from '../hook/CompareContext';
 
-const Stack = createStackNavigator();
+LogBox.ignoreAllLogs(true);
 
+const Stack = createStackNavigator();
 const AppNavigator = () => {
   const scheme = useColorScheme();
 
@@ -98,7 +100,7 @@ const AppNavigator = () => {
       />
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Tab"
+          initialRouteName="Splash"
           screenOptions={{
             headerStyle: dynamicStyles.headerStyle,
             headerTitleStyle: dynamicStyles.headerTitleStyle,

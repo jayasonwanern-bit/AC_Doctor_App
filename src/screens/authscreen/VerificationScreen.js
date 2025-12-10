@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -9,100 +16,110 @@ import OTPTextInput from 'react-native-otp-textinput';
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
 import CustomButton from '../../components/CustomButton';
-import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
-import { VerifyOTP } from '../../api/authApi';
+import { resendOTP, VerifyOTP } from '../../api/authApi';
+import useCountdown from '../../utils/hooks/useCountdown';
+import { useDispatch} from 'react-redux';
+import { setToken, setUser } from '../../redux/slices/authSlice';
+import Toast from 'react-native-simple-toast';
 
 const VerificationScreen = ({ navigation, route }) => {
-  const { phoneNumber } = route.params;
-  const { callingCode } = route.params;
+  const {
+    phoneNumber,
+    callingCode,
+    otp: serverOtp,
+    userId,
+    isAutoTesting,
+  } = route.params;
+ const [serverOtpState, setServerOtpState] = useState(serverOtp);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
-  const [timer, setTimer] = useState(120); // 2 minutes in seconds
-  const [canResend, setCanResend] = useState(false); // Resend enable/disable
   const intervalRef = useRef(null);
+  const { time, startCountdown, resetCountdown, status, formatTime } =
+    useCountdown();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setTimer(prev => {
-        if (prev <= 1) {
-          clearInterval(intervalRef.current);
-          setCanResend(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(intervalRef.current);
-  }, []);
+    startCountdown(30);
+  }, [startCountdown]);
 
- const handleVerify = async () => {
+
+const handleVerify = async () => {
   if (otp.length !== 4) {
     setError('Please enter a 4-digit OTP');
     return;
   }
-  const paramdata = {
-    otp: otp,
-    userId: '68d5079929154d8f119ab6f2',
-  };
-  console.log('OTP Verification Data:', paramdata);
-  // try {
-  //   const result = await VerifyOTP(paramdata);
-  //   console.log('OTP Verification Response:', result);
 
-  //   if (result?.success) {
-      navigation.navigate('ServiceScreen');
-  //   } else {
-  //     setError('Invalid OTP');
-  //   }
-  // } catch (error) {
-  //   console.log('Verify API Error:', error);
-  //   setError('Verification failed');
-  // }
+  const postdata = {
+    otp: Number(otp),
+    userId: userId,
+  };
+
+  try {
+    const res = await VerifyOTP(postdata);
+    console.log("Response:", res);
+
+    // success case
+    if (res?.data?.status === true) {
+
+      dispatch(setUser({ user: res?.data?.data }));
+      dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
+
+      Toast.show(res?.data?.message || "Verified Successfully");
+
+      navigation.replace("ServiceScreen");
+    } 
+    // failed case (but server returned status 200)
+    else {
+      Toast.show(res?.data?.message || "Invalid OTP");
+    }
+
+  } catch (error) {
+    console.log("Catch Error:", error);
+
+    // SERVER SENT ERROR MESSAGE (like status 410)
+    if (error?.response?.data?.message) {
+      Toast.show(error?.response?.data?.message);
+    }
+    // If message missing show default
+    else {
+      Toast.show("Something went wrong");
+    }
+  }
 };
 
 
-  const handleResendOTP = async () => {
-    if (canResend) {
-      try {
-        // TODO: API call to resend OTP (e.g., await sendOTP(phoneNumber))
-        setTimer(120); 
-        setCanResend(false); 
-        intervalRef.current = setInterval(() => {
-          setTimer(prev => {
-            if (prev <= 1) {
-              clearInterval(intervalRef.current);
-              setCanResend(true);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
-        setError(''); // Clear error on resend
-      } catch (error) {
-        setError('Failed to resend OTP');
-      }
-    }
-  };
 
-  // Format timer as MM:SS
-  const formatTime = seconds => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${secs
-      .toString()
-      .padStart(2, '0')}`;
-  };
+// resend otp
+  const handleResendOTP = async () => {
+  try {
+   let data = {
+      phoneNumber: phoneNumber,
+      countryCode: callingCode,
+    };
+    const result = await resendOTP(data);
+    if (result?.status) {
+      Toast.show('OTP Resend')
+       setServerOtpState(result?.otp);
+      // Timer
+      resetCountdown();
+      startCountdown(30);
+
+      // Save in Redux
+      dispatch(setUser({user:result?.data}));
+      dispatch(setToken({assessToken: result?.data?.refreshToken}));
+    }
+  } catch (error) {
+    console.log("handleResendOTP:", error);
+  }
+};
+
 
   return (
     <View style={styles.container}>
-       {/* <KeyboardAwareScrollView
-        enableOnAndroid
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ flexGrow: 1 }}
-        extraScrollHeight={100}> */}
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.goBack()}>
+        onPress={() => navigation.goBack()}
+      >
         <FastImage
           source={images.backArrow}
           style={styles.backImg}
@@ -110,6 +127,7 @@ const VerificationScreen = ({ navigation, route }) => {
         />
       </TouchableOpacity>
       <Text style={styles.title}>Verification code</Text>
+      <Text style={styles.title}>{serverOtpState}</Text>
       <FastImage
         source={images.otpIcon}
         style={styles.image}
@@ -125,32 +143,31 @@ const VerificationScreen = ({ navigation, route }) => {
         keyboardType="numeric"
         autoFocus={true}
         handleTextChange={text => setOtp(text)}
+        defaultValue={otp}
         containerStyle={styles.otpContainer}
         textInputStyle={styles.otpInput}
         tintColor={COLORS.themeColor} // Active box color
         offTintColor={COLORS.borderColor} // Inactive box color
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
-      <Text style={[styles.resendTitle,{color: COLORS.black}]}>{formatTime(timer)}</Text>
+      <TouchableOpacity
+        onPress={() => {
+          status !== 'running' && handleResendOTP();
+        }}
+      >
+        <Text style={[styles.resendTitle, { color: COLORS.black }]}>
+          {status === 'running' ? formatTime(time) : 'Resend OTP'}
+        </Text>
+      </TouchableOpacity>
 
       <CustomButton
         buttonName="Submit"
-        margingTOP={hp('6%')}
+        margingTOP={hp('3%')}
         btnTextColor={COLORS.white}
         btnColor={otp.length === 4 ? COLORS.themeColor : COLORS.disabledGrey}
         onPress={handleVerify}
         disabled={otp.length !== 4}
       />
-      <TouchableOpacity
-        style={styles.resendContainer}
-        onPress={handleResendOTP}
-        disabled={!canResend}
-      >
-        <Text style={[styles.resendTitle]}>
-         Resend OTP
-        </Text>
-      </TouchableOpacity>
-      {/* </KeyboardAwareScrollView> */}
     </View>
   );
 };
@@ -185,7 +202,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: hp('1.5%'),
-   fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.semiBold,
     textAlign: 'left',
     color: COLORS.textHeading,
     marginBottom: hp('1%'),
@@ -203,7 +220,7 @@ const styles = StyleSheet.create({
   },
   resendTitle: {
     fontSize: hp('1.5%'),
-   fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.semiBold,
     textAlign: 'center',
     color: COLORS.themeColor,
   },
@@ -217,7 +234,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.borderColor,
     borderRadius: 20,
     width: wp('13%'),
-    height: Platform.OS === 'android'? hp('6%') :hp('5%'),
+    height: Platform.OS === 'android' ? hp('6%') : hp('5%'),
     fontSize: hp('2.5%'),
     textAlign: 'center',
   },
