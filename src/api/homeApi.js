@@ -6,7 +6,7 @@ export const getAuthpatner = async (userId) => {
     const res = await api.get(endPoint.AUTH_PATNER);
     return res.data; 
   } catch (error) {
-    console.log("Profile API Error:", error?.response?.data || error);
+    console.log("API Error:", error?.response?.data || error);
     throw error;
   }
 };
@@ -16,7 +16,7 @@ export const getServiceList = async () => {
     const res = await api.get(endPoint.SERVICE_CATEGORIES);
     return res.data; 
   } catch (error) {
-    console.log("Profile API Error:", error?.response?.data || error);
+    console.log("API Error:", error?.response?.data || error);
     throw error;
   }
 };
@@ -26,7 +26,40 @@ export const getBanner = async () => {
     const res = await api.get(endPoint.BANNER_HOME);
     return res.data; 
   } catch (error) {
-    console.log("Profile API Error:", error?.response?.data || error);
+    console.log("API Error:", error?.response?.data || error);
     throw error;
   }
 };
+
+export const getBrandlist = async () => {
+  try {
+    const res = await api.get(endPoint.BRAND_LIST);
+    return res.data; 
+  } catch (error) {
+    console.log("API Error:", error?.response?.data || error);
+    throw error;
+  }
+};
+
+// free consultancy
+export const postConsultancy = async (payload) => {
+  try {
+    const res = await api.post(endPoint.CREATE_CONSULT,payload);
+    return res.data; 
+  } catch (error) {
+    console.log("API Error:", error?.response?.data || error);
+    throw error;
+  }
+};
+
+// Error code
+export const postErrorCode = async (payload) => {
+  try {
+    const res = await api.post(endPoint.ERROR_POST,payload);
+    return res.data; 
+  } catch (error) {
+    console.log("API Error:", error?.response?.data || error);
+    throw error;
+  }
+};
+

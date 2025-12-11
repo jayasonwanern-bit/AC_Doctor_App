@@ -27,7 +27,6 @@ export const updateUserProfile = async payload => {
 export const logoutUser = async (userId) => {
   try {
     const res = await api.post(`${endPoint.LOG_OUT}${userId}`);
-    console.log('url for logoiut---',res)
     return res.data;
   } catch (error) {
     throw error;

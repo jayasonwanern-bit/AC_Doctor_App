@@ -27,7 +27,8 @@ const AccountScreenComponent = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [storeData, setStoreData] = useState(null);
    const dispatch = useDispatch();
-    const userId = store?.getState()?.auth?.user?.data?._id;
+  const userId = store?.getState()?.auth?.user;
+  // console.log('usermanagr --->',userId)
 
   const handleMenuPress = async (screen) => {
     if (screen === 'Logout') {
@@ -62,8 +63,7 @@ const AccountScreenComponent = ({ navigation }) => {
    const fetchProfile = async () => {
     try {
       setLoading(true);   
-      const res = await getUserProfile(userId);
-      console.log('response accountp-',res)
+      const res = await getUserProfile(userId?._id);
       if (res?.status) {
         const data = res.data;
          setStoreData(data)

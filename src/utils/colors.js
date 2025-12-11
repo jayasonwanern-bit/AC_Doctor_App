@@ -78,5 +78,10 @@ export const STATUS_CONFIG = {
   'Re-scheduled': { bg: '#E3F2FD', text: '#1976D2' },
   'Completed': { bg: '#ECFFE9', text: '#128807' },
   'Cancelled': { bg: '#FFE5E5', text: '#D32F2F' },
+   // API-return statuses
+  'BOOKING':{ bg: '#FFF8E1', text: '#FF8C00' },
+  'COMPLETED': { bg: '#ECFFE9', text: '#128807' },
+  'UPCOMING': { bg: '#FFE7CF', text: '#D26900' },
+ 'CANCELLED': { bg: '#FFE5E5', text: '#D32F2F' },
 };
 

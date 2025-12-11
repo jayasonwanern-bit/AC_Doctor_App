@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import images from '../../../assets/images';
 import {
   View,
@@ -18,31 +18,35 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { COLORS } from '../../../utils/colors';
+import { getBrandlist } from '../../../api/homeApi';
+import { useDispatch } from 'react-redux';
+import { setBrandList } from '../../../redux/slices/authSlice';
 
-
-
-const BrandScreen = ({route}) => {
+const BrandScreen = ({ route }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
- const storage = new MMKVLoader().initialize();
-const cameFrom = route?.params?.from; 
+  const storage = new MMKVLoader().initialize();
+  const cameFrom = route?.params?.from;
+  const [brandsArry, setBrandsArry] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const Brands = [
-    { id: '1', name: 'Hitachi', logo: images.hitachiIcon },
-    { id: '2', name: 'Haier', logo: images.daikinIcon },
-    { id: '3', name: 'Blue Star', logo: images.bluestar },
-    { id: '4', name: 'LG', logo: images.lgLogo },
-    { id: '5', name: 'Samsung', logo: images.samsungicon },
-    { id: '6', name: 'Daikin', logo: images.daikinIcon },
-    { id: '7', name: 'hitachi', logo: images.hitachi },
-    { id: '8', name: 'GE', logo: images.GE },
-    { id: '9', name: 'carrier', logo: images.carrier },
-    { id: '10', name: 'Goorej', logo: images.goorej },   
-    { id: '11', name: 'Whirlpool', logo: images.whirlpool },   
-    { id: '12', name: 'Mitsubishi', logo: images.mitsubishi },   
-  ];
+  useEffect(() => {
+    getBrandList();
+  }, []);
 
-  const filteredBrands = Brands.filter(brand =>
+  const getBrandList = async () => {
+    try {
+      setLoading(true);
+      const res = await getBrandlist();
+      setBrandsArry(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredBrands = brandsArry.filter(brand =>
     brand.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -50,54 +54,61 @@ const cameFrom = route?.params?.from;
     try {
       await storage.setItem('selectedBrand', selectedBrand);
       if (cameFrom === 'SellOldAcScreen') {
-      navigation.navigate('SellOldAcScreen', { selectedBrand });
-      }
-      else  if (cameFrom === 'CompareACScreen') {
-          navigation.navigate('SelectACmodel', { fromCompare: true ,Sname :selectedBrand});
+        navigation.navigate('SellOldAcScreen', { selectedBrand });
+      } else if (cameFrom === 'CompareACScreen') {
+        navigation.navigate('SelectACmodel', {
+          fromCompare: true,
+          Sname: selectedBrand,
+        });
       }
     } catch (error) {
       console.error('Error saving brand:', error);
     }
   };
 
-  const BrandItem = ({ name, logo, onSelect }) => (
-    <TouchableOpacity style={styles.brandItem} onPress={() => onSelect(name)}>
-      <Image source={logo} style={styles.logo} />
-      {/* <Text style={styles.brandName}>{name}</Text> */}
+  const BrandItem = ({ item, onSelect }) => (
+    <TouchableOpacity
+      style={styles.brandItem}
+      onPress={() => onSelect(item.name)}
+    >
+      <Image
+        source={item?.image ? { url: item?.image } : images.lgLogo}
+        style={styles.logo}
+      />
+      <Text style={styles.brandName}>{item.name}</Text>
     </TouchableOpacity>
   );
 
-return (
+  return (
     <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
       >
-        <Header
-          title="Brand"
-          onBack={() => navigation.goBack()}
-        />
-         <View style={[styles.header,styles.searchInput]}>
-        <Image source={images.searchIcon} style={styles.serachStyle} />
-        <TextInput
-          placeholder="Search..."
-          placeholderTextColor={COLORS.textColor}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-        <View style={styles.borderContainer}> 
-          <Text style={styles.headerText}>Which is your favorite BRAND ?</Text>
-      <FlatList
-        data={filteredBrands}
-        keyExtractor={(item) => item.id}
-        numColumns={3}
-        renderItem={({ item }) => <BrandItem name={item.name} logo={item.logo} onSelect={handleSelectBrand} />}
-        contentContainerStyle={styles.listContent}
-      />
+        <Header title="Brand" onBack={() => navigation.goBack()} />
+        <View style={[styles.header, styles.searchInput]}>
+          <Image source={images.searchIcon} style={styles.serachStyle} />
+          <TextInput
+            placeholder="Search..."
+            placeholderTextColor={COLORS.textColor}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
         </View>
-        
+        <View style={styles.borderContainer}>
+          <Text style={styles.headerText}>Which is your favorite BRAND ?</Text>
+          <FlatList
+            data={filteredBrands}
+            keyExtractor={item => item.id}
+            numColumns={3}
+            renderItem={({ item }) => (
+              <BrandItem item={item} onSelect={handleSelectBrand} />
+            )}
+            contentContainerStyle={styles.listContent}
+            nestedScrollEnabled={true}
+          />
+        </View>
       </KeyboardAvoidingView>
     </View>
   );
@@ -109,25 +120,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    flexDirection:'row',
-    margin:hp(1),
-    alignItems:'center'
+    flexDirection: 'row',
+    margin: hp(1),
+    alignItems: 'center',
   },
-  serachStyle:{
+  serachStyle: {
     width: wp(10),
     height: hp(3),
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
-  borderContainer:{
+  borderContainer: {
     // margin:hp(1.5),
     // backgroundColor: '#fefcfcff',
     // borderRadius:hp(2),
-    padding:hp(2),
+    padding: hp(2),
   },
   headerText: {
     fontSize: 14,
     fontWeight: '600',
-    color:COLORS.black,
+    color: COLORS.black,
     marginBottom: hp(1.5),
   },
   searchInput: {
@@ -135,7 +146,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e2e8f0',
     borderRadius: hp(7),
-    padding:wp(1),
+    padding: wp(1),
   },
   brandItem: {
     borderRadius: hp(1),
@@ -146,23 +157,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginRight: hp(0.8),
     marginBottom: hp(1),
-    alignSelf:'center',
+    alignSelf: 'center',
   },
   logo: {
     width: wp(25.5),
     height: hp(9),
-    resizeMode:'contain',
+    resizeMode: 'contain',
     marginBottom: hp(0.8),
   },
   brandName: {
     fontSize: 12,
     fontWeight: '400',
-    color:COLORS.TextColor
+    color: COLORS.TextColor,
   },
   listContent: {
     // padding: 16,
   },
 });
-
 
 export default BrandScreen;

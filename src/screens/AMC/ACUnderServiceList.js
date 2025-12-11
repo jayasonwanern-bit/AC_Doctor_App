@@ -122,19 +122,17 @@ const ACUnderServiceList = ({ route, navigation }) => {
         title={`${acType} Under AMC`}
         onBack={() => navigation.goBack()}
       />
-<ScrollView
-  style={styles.scroll}
-  showsVerticalScrollIndicator={false}
-  nestedScrollEnabled={true}
->
-
-   
-          <CustomSearchBar
-            placeholder="Search..."
-            value={searchText}
-            onChangeText={setSearchText}
-            icon={images.searchIcon}
-          />
+      <ScrollView
+        style={styles.scroll}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+      >
+        <CustomSearchBar
+          placeholder="Search..."
+          value={searchText}
+          onChangeText={setSearchText}
+          icon={images.searchIcon}
+        />
 
         <View style={styles.mainBox}>
           <Text style={styles.heading}>Upcoming Service</Text>
@@ -164,7 +162,7 @@ const ACUnderServiceList = ({ route, navigation }) => {
               key={index}
               style={styles.acBox}
               onPress={() =>
-                 navigation.navigate('ACServiceDetails', { data: item })
+                navigation.navigate('ACServiceDetails', { data: item })
               }
             >
               <View style={styles.acIconCircle}>

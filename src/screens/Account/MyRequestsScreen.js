@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     borderBottomWidth:1,
   },
   viewDetailsBtn: {
-    backgroundColor: COLORS.red,
+    backgroundColor: COLORS.themeColor,
     paddingHorizontal: wp(4),
     paddingVertical: hp(1),
     borderRadius: wp(10),

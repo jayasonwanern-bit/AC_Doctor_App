@@ -33,14 +33,14 @@ const ProfileDetail = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState('IN');
   const [callingCode, setCallingCode] = useState('+91');
   const [phoneNumber, setphoneNumber] = useState('');
-  const [userName, setuserName] = useState('Rahul Kumar');
+  const [userName, setuserName] = useState('');
   const [email, setEmail] = useState('rahulkumar@gmail.com');
   const [gender, setGender] = useState('Male');
   const [showModal, setShowModal] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
 
   const [loading, setLoading] = useState(true);
-  const userId = store?.getState()?.auth?.user?.data?._id;
+  const userId = store?.getState()?.auth?.user;
 
   const phoneSchema = yup.object().shape({
     phoneNumber: yup
@@ -67,7 +67,7 @@ const ProfileDetail = ({ navigation }) => {
  const fetchProfile = async () => {
   try {
     setLoading(true);   
-    const res = await getUserProfile(userId);
+    const res = await getUserProfile(userId?._id);
     if (res?.status) {
       const data = res.data;
       setCallingCode(data?.countryCode);
@@ -89,7 +89,7 @@ const handleUpdateProfile = async () => {
   }
   try {
     let body = {
-      userId: String(userId),
+      userId: String(userId?._id),
       userName: String(userName),
     };
 
@@ -135,7 +135,7 @@ const handleUpdateProfile = async () => {
         {/* User Name */}
         <CunstomInput
           label="User Name"
-          placeholder="Rahul Kumar"
+          placeholder="User Name"
           keyboardType="default"
           placeholderTextColor={COLORS.textColor}
           value={userName}

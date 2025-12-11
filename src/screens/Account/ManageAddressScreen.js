@@ -19,26 +19,29 @@ import { store } from '../../redux/store';
 import {deleteAddress, getAddress} from '../../api/addressApi'
 import Toast from 'react-native-simple-toast'
 import { useFocusEffect } from '@react-navigation/native';
+import { setAddress } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 
 const ManageAddressScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [addresses, setAddresses] = useState(null);
   const [selectedId, setSelectedId] = useState(null); //seleted id store
-  const userId = store?.getState()?.auth?.user?.data?._id;
-  const userDetail = store?.getState()?.auth?.user?.data;
- 
+  const userDetail = store?.getState()?.auth?.user;
+   const dispatch = useDispatch();
+   const selectedAddressRedux = store?.getState()?.auth?.address;
+
   const handleSelect = id => {
+    const selectedAddress = addresses.find(item => item._id === id);
+    dispatch(setAddress({ address: selectedAddress }));
     setSelectedId(id);
     Toast.show('This address is now selected!');
   };
 
-  useFocusEffect(
+ useFocusEffect(
   useCallback(() => {
-    if (userId) {
-      fetchAddress();
-    }
-  }, [userId,loading])
+    fetchAddress();
+  }, [])
 );
 
 
@@ -46,12 +49,28 @@ const ManageAddressScreen = ({ navigation }) => {
     const fetchAddress = async () => {
      try {
        setLoading(true);   
-       const res = await getAddress(userId);
+       const res = await getAddress(userDetail?._id);
        console.log('response of manage',res)
        if (res?.status) {
          const data = res.data;
          setAddresses(data)
-       }
+       // CASE 1: User already selected an address manually → keep same
+      if (selectedAddressRedux?._id) {
+        const exist = data.find(a => a._id === selectedAddressRedux._id);
+        if (exist) {
+          setSelectedId(exist._id);
+          return;
+        }
+      }
+
+      // CASE 2: No previous selection → select the last one
+      if (data.length > 0) {
+        const lastAddress = data[data.length - 1];
+        setSelectedId(lastAddress._id);
+        dispatch(setAddress({ address: lastAddress }));
+      }
+    }
+
      } catch (error) {
        console.log('Error fetching profile:', error);
      } finally {

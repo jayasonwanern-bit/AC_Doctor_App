@@ -1,5 +1,5 @@
 // screens/MyRequestsScreen.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,94 +13,50 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS, Fonts } from '../../utils/colors';
-import { STATUS_CONFIG } from '../../utils/colors';
+import { COLORS, Fonts,STATUS_CONFIG } from '../../utils/colors';
 import Header from '../../components/Header';
 import images from '../../assets/images';
+import { getBookingList } from '../../api/settingApi';
+import { store } from '../../redux/store';
 
 const TABS = ['All', 'Booked', 'Completed', 'Cancelled'];
 
 const MyBookingScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('All');
+  const [loading, setLoading] = useState(true);
+  const [allRequests, setaAllRequests] = useState([]);
+  const userId = store?.getState()?.auth?.user;
 
-  // Dummy Data (Colors nahi — sirf status)
-  const allRequests = [
-    {
-      id: '1',
-      service: 'Old AC',
-      requestId: '#12345',
-      date: '05/03/2025',
-      time: '10/03/2025 - First half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: '-',
-      status: 'Upcoming',
-      actionText: 'Cancel request',
-      showReschedule: false,
-    },
-    {
-      id: '2',
-      service: 'AMC',
-      requestId: '#12345',
-      time: '10/03/2025 - First half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: 'Mohan Verma',
-      status: 'Booked',
-      actionText: 'Reschedule',
-      showReschedule: true,
-    },
-    {
-      id: '3',
-      service: 'Old AC',
-      requestId: '#12345',
-      time: '10/03/2025 - First half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: 'Mohan Verma',
-      status: 'Completed',
-      finalOffer: '₹65000/-',
-      paymentStatus: 'Paid',
-      rating: 4,
-      showReinitiate: false,
-    },
-    {
-      id: '4',
-      service: 'AMC',
-      requestId: '#12345',
-      time: 'Placed by mistake',
-      location: 'LG, Dakin',
-      status: 'Cancelled',
-      cancellationReason: 'Placed by mistake',
-      showReinitiate: true,
-    },
-    {
-      id: '5',
-      service: 'Old AC',
-      requestId: '#12345',
-      time: '15/03/2025 - Second half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: 'Mohan Verma',
-      status: 'Booked',
-      actionText: 'Cancel request',
-    },
-  ];
+  useEffect(() => {
+    getBrandList();
+  }, []);
+
+  const getBrandList = async () => {
+    try {
+      setLoading(true);
+      const res = await getBookingList(userId._id);
+      setaAllRequests(res?.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter by Tab
   const filteredRequests = allRequests.filter(item => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Booked')
-      return ['Booked', 'Booked','Upcoming'].includes(item.status);
-    if (activeTab === 'Completed') return item.status === 'Completed';
-    if (activeTab === 'Cancelled') return item.status === 'Cancelled';
+      return ['BOOKED', 'BOOKED', 'Upcoming'].includes(item.status);
+    if (activeTab === 'Completed') return item.status === 'COMPLETED';
+    if (activeTab === 'Cancelled') return item.status === 'CANCELLED';
     return false;
   });
 
   const getStatusStyle = status => {
     return STATUS_CONFIG[status] || { bg: '#f8eccaff', text: '#f0980aff' };
   };
-
+ 
   const renderRequestCard = ({ item }) => {
     const { bg, text } = getStatusStyle(item.status);
 
@@ -109,7 +65,7 @@ const MyBookingScreen = ({ navigation }) => {
         <View style={styles.cardHeader}>
           <View style={styles.serviceBadge}>
             <Image source={images.splitAC} style={styles.icon} />
-            <Text style={styles.serviceText}>{item.service}</Text>
+            <Text style={styles.serviceText}>Old AC</Text>
           </View>
           <View style={[styles.statusBadge, { backgroundColor: bg }]}>
             <Text style={[styles.statusText, { color: text }]}>
@@ -118,79 +74,83 @@ const MyBookingScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Request ID */}
-        <Text style={styles.requestId}>Request ID {item.requestId}</Text>
+         <View style={styles.row}>
+         <View style={{ width: wp(25) }}>
+            <Text style={styles.label}>Category</Text>
+            <Text style={styles.value}>Repair</Text>
+          </View>
+         <View style={{ width: wp(35) }}>
+            <Text style={styles.label}>Service Types</Text>
+            <Text style={styles.value}>Split AC, Cassette AC</Text>
+          </View>
+        </View>
 
         {/* Date & Time */}
+       {item.status !== 'CANCELLED' && <View style={styles.row}>
+          <View>
+            <Text style={styles.label}>
+              Scheduled Date & Time
+            </Text>
+            <Text style={styles.value}>{item.date.split("T")[0]}</Text>
+          </View>
+          <View style={{ width: wp(35) }}>
+            <Text style={styles.label}>Technician Assigned</Text>
+            <Text style={styles.value}>-</Text>
+          </View>
+        </View>}
+
+        {/* Total Amount */}
         <View style={styles.row}>
           <View>
-          <Text style={styles.label}>
-            {item.status === 'Cancelled' 
-              ? 'Cancellation Reason'
-              : item.status === 'Completed' ? 'Completion Date':'Inspection Date & Time'}
-          </Text>
-          <Text style={styles.value}>{item.time}</Text>
+            <Text style={styles.label}>
+              Total Amount
+            </Text>
+            <Text style={styles.value}>₹ 35000</Text>
           </View>
-           <View style={{width:wp(25)}}>
-          <Text style={styles.label}>Requested Service Details</Text>
-          <Text style={styles.value}>{item.location}</Text>
+          <View style={{ width: wp(35) }}>
+            <Text style={styles.label}>Payment Status</Text>
+            <Text style={styles.value}>NA</Text>
           </View>
         </View>
 
-          {/* AC Count */}
+        {/* AC Count */}
         <View style={styles.row}>
-           {item.acCount !== null && (<View>
-            <Text style={styles.label}>Number of AC</Text>
-            <Text style={styles.value}>{item.acCount}</Text>
-            </View>)}
-        {item.agent && (
-          <View style={{width:wp(25)}}>
-            <Text style={styles.label}>Agent</Text>
-            <Text style={styles.value}>{item.agent}</Text>
-          </View>
-          )}
+            <View>
+              <Text style={styles.label}>Payment Mode</Text>
+              <Text style={styles.value}>NA</Text>
+            </View>
         </View>
-
-        
 
         {/* Final Offer & Payment (Completed) */}
         {item.finalOffer && (
           <>
             <View style={styles.row}>
               <View>
-              <Text style={styles.label}>Final Offer</Text>
-              <Text style={styles.value}>{item.finalOffer}</Text>
+                <Text style={styles.label}>Final Offer</Text>
+                <Text style={styles.value}>{item.finalOffer}</Text>
               </View>
-             <View style={{width:wp(25)}}>
-              <Text style={styles.label}>Payment Status</Text>
-              <Text style={styles.value}>{item.paymentStatus}</Text>
+              <View style={{ width: wp(25) }}>
+                <Text style={styles.label}>Payment Status</Text>
+                <Text style={styles.value}>{item.paymentStatus}</Text>
               </View>
             </View>
-            
           </>
-        )}
-
-        {/* Cancellation Reason */}
-        {item.cancellationReason && (
-          <View style={styles.row}>
-            <Text style={styles.label}>Cancellation Reason</Text>
-            <Text style={styles.value}>{item.cancellationReason}</Text>
-          </View>
         )}
 
         {/* Action Buttons */}
         <View style={styles.actionRow}>
-          {item.showReinitiate && (
+          {item.status === 'UPCOMING' || item.status === 'BOOKED'  && (
+            <TouchableOpacity>
+              <Text style={styles.reinitiateText}>Cancel Request</Text>
+            </TouchableOpacity>
+          )}
+          {item.status === 'CANCELLED' && (
             <TouchableOpacity>
               <Text style={styles.reinitiateText}>Reinitiate Request</Text>
             </TouchableOpacity>
           )}
-          {item.actionText && (
-            <TouchableOpacity>
-              <Text style={styles.reinitiateText}>{item.actionText}</Text>
-            </TouchableOpacity>
-          )}
-           {item.status === 'Completed'&& (<View style={styles.ratingRow}>
+          {item.status === 'COMPLETED' && (
+            <View style={styles.ratingRow}>
               <Text style={styles.label}>Rate us</Text>
               <View style={styles.stars}>
                 {[...Array(5)].map((_, i) => (
@@ -206,7 +166,8 @@ const MyBookingScreen = ({ navigation }) => {
                   </Text>
                 ))}
               </View>
-            </View>)}
+            </View>
+          )}
           <TouchableOpacity
             style={styles.viewDetailsBtn}
             onPress={() =>
@@ -224,8 +185,7 @@ const MyBookingScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Header title="My Bookings" onBack={() => navigation.goBack()} />
       {/* Tabs */}
-      <View
-        style={styles.tabContainer}>
+      <View style={styles.tabContainer}>
         {TABS.map(tab => (
           <TouchableOpacity
             key={tab}
@@ -273,9 +233,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
     marginVertical: hp(1),
     width: 'auto',
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between'  
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   tab: {
     paddingHorizontal: wp(4),
@@ -316,8 +276,7 @@ const styles = StyleSheet.create({
 
   // Card
   card: {
-    backgroundColor:COLORS.white,
-    padding: wp(4),
+    backgroundColor: COLORS.white,
     borderRadius: wp(3),
     marginBottom: hp(2),
     elevation: 2,
@@ -331,17 +290,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: hp(1),
+    backgroundColor:COLORS.lightSky,
+    borderTopLeftRadius:hp(1),
+    borderTopRightRadius:hp(1),
+     padding: wp(2),
   },
   serviceBadge: {
-   flexDirection:'row',
-   alignItems:'center',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   serviceText: {
     fontSize: hp(1.6),
     color: '#666',
     fontWeight: '600',
   },
-   icon: {
+  icon: {
     width: wp(6),
     height: hp(1.5),
     resizeMode: 'cover',
@@ -366,23 +329,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: hp(1),
-    alignItems:'flex-start'
+    alignItems: 'flex-start',
+     paddingHorizontal: wp(4),
   },
   label: {
     fontSize: hp(1.6),
     color: '#666',
     flex: 1,
-    textAlign:'left',
-     marginBottom: hp(0.3),
+    textAlign: 'left',
+    marginBottom: hp(0.3),
   },
   value: {
     fontSize: hp(1.4),
     color: COLORS.black,
     fontWeight: '500',
-    textAlign:'left'
+    textAlign: 'left',
   },
   ratingRow: {
     alignItems: 'flex-start',
+    padding: wp(4),
   },
   stars: {
     flexDirection: 'row',
@@ -401,24 +366,26 @@ const styles = StyleSheet.create({
     marginTop: hp(1),
     flexWrap: 'wrap',
     gap: wp(2),
+    paddingHorizontal: wp(4),
+    paddingVertical: wp(2.5),
   },
   reinitiateText: {
     color: COLORS.themeColor,
-    fontSize: hp(1.7),
+    fontSize: hp(1.5),
     fontFamily: Fonts.semiBold,
-    borderBottomColor:COLORS.themeColor,
-    borderBottomWidth:1,
+    borderBottomColor: COLORS.themeColor,
+    borderBottomWidth: 1,
   },
   viewDetailsBtn: {
-    backgroundColor: COLORS.red,
+    backgroundColor: COLORS.themeColor,
     paddingHorizontal: wp(4),
-    paddingVertical: hp(1),
+    paddingVertical: hp(0.5),
     borderRadius: wp(10),
   },
   viewDetailsText: {
-    color:COLORS.white,
-    fontSize: hp(1.6),
-    fontWeight: '600',
+    color: COLORS.white,
+    fontSize: hp(1.4),
+    fontFamily:Fonts.medium
   },
 });
 

@@ -684,11 +684,12 @@ export default StyleSheet.create({
   width: '100%',
   paddingHorizontal: wp(4),
   paddingVertical: hp(2),
-  paddingBottom:hp(6),
+  paddingBottom:hp(3),
   position: 'absolute',
   bottom: 0,
   left: 0,
   right: 0,
+  backgroundColor:COLORS.white
   },
   servicesCount: {
     fontSize: wp('3.5%'),

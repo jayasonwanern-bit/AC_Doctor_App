@@ -56,11 +56,8 @@ const handleVerify = async () => {
 
   try {
     const res = await VerifyOTP(postdata);
-    console.log("Response:", res);
-
-    // success case
+    // console.log("Response:", res);
     if (res?.data?.status === true) {
-
       dispatch(setUser({ user: res?.data?.data }));
       dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
 
@@ -106,7 +103,7 @@ const handleVerify = async () => {
 
       // Save in Redux
       dispatch(setUser({user:result?.data}));
-      dispatch(setToken({assessToken: result?.data?.refreshToken}));
+      dispatch(setToken({accessToken: result?.data?.refreshToken}));
     }
   } catch (error) {
     console.log("handleResendOTP:", error);

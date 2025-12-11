@@ -9,6 +9,7 @@ const SplashScreen = ({ navigation }) => {
 
   useEffect(() => {
   const userData = store?.getState()?.auth?.user?.data;
+  console.log(' Splash userData---->',userData)
   const timer = setTimeout(() => {
     if (userData) {
        navigation.navigate('Tab', { screen: 'Home' });   

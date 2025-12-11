@@ -346,7 +346,7 @@ async function requestStoragePermission() {
             </Text>
             <Text style={Commonstyles.locationText}>230 Volts</Text>
           </View>
-          <View style={Commonstyles.bottomLine} />{' '}
+          <View style={Commonstyles.bottomLine} />
           <View style={Commonstyles.sergrid}>
             <Text
               style={[Commonstyles.locationText, { color: COLORS.textHeading }]}

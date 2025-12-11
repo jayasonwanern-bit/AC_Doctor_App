@@ -17,9 +17,9 @@ const api = axios.create({
 // 🔐 Request Interceptor (Attach Token with header)
 api.interceptors.request.use(
   async config => {
-    const token = store?.getState()?.auth?.assessToken;
+    const token = store?.getState()?.auth?.accessToken;
     const user = store?.getState()?.auth?.user;
-    console.log('user----',user)
+    console.log('user get----',user)
     console.log('token----',token)
 
     if (token) {
@@ -38,7 +38,7 @@ api.interceptors.response.use(
     const status = error?.response?.status;
     if (status === 401) {
       // Token expired → logout user
-      await AsyncStorage.removeItem('assessToken');
+      await AsyncStorage.removeItem('accessToken');
       // Redux Update
       // dispatchLogout();
       // NavigationService.navigate('Login');

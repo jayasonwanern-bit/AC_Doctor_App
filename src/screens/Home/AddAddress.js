@@ -31,14 +31,14 @@ const AddAddress = ({ navigation, route }) => {
   const [address, setAddress] = useState('');
   const [pincode, setPincode] = useState('');
   const [stateName, setStateName] = useState('');
-  const [addressType, setAddressType] = useState('Home');
+  const [addressType, setAddressType] = useState('');
   const [isDefault, setIsDefault] = useState(false);
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
    const [loading, setLoading] = useState(true);
-    const userId = store?.getState()?.auth?.user?.data?._id;
+    const userId = store?.getState()?.auth?.user;
 
   // validation
   const validateFields = () => {
@@ -65,6 +65,8 @@ const AddAddress = ({ navigation, route }) => {
 
   // onSubmit button
   const handleSubmit = async() => {
+    console.log('hello in add');
+    
      try {
     const validationError = validateFields();
     if (validationError) {
@@ -95,7 +97,7 @@ const AddAddress = ({ navigation, route }) => {
       landmark:addressType,
     };
    const res = await addOrEditAddress(body);
-   console.log('add address response',res.data)
+  //  console.log('add address response',res.data)
   if (res?.status) {
       Toast.show(res?.message);
     } 

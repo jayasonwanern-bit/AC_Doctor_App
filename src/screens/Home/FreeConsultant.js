@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -26,6 +26,11 @@ import SuccessPopupModal from '../../customScreen/SuccessPopupModal';
 import ImagePickerModal from '../../components/ImagePickerModal';
 import CustomPicker from '../../components/CustomPicker';
 import CunstomInput from '../../components/CunstomInput';
+import { store } from '../../redux/store';
+import Toast from 'react-native-simple-toast';
+import { getBrandlist, postConsultancy } from '../../api/homeApi';
+import { setBrandList } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const FreeConsultant = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -35,6 +40,33 @@ const FreeConsultant = ({ navigation }) => {
   const [successPopupVisible, setSuccessPopupVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
+  const [brandArray, setBrandArray] = useState([]);
+  const user = store?.getState()?.auth?.user;
+  const addressId = store?.getState()?.auth?.address;
+
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getBrandList();
+  }, []);
+
+  const getBrandList = async () => {
+    try {
+      setLoading(true);
+      const res = await getBrandlist();
+      const formatted = res?.data?.map(item => ({
+        label: item.name,
+        value: item._id,
+      }));
+      setBrandArray(formatted);
+      dispatch(setBrandList({ brandList: formatted }));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
     propertyType: '',
@@ -52,13 +84,16 @@ const FreeConsultant = ({ navigation }) => {
       [field]: value,
     }));
   };
+
   // Function to handle slot selection
   const handleSlotSelection = slot => {
     if (slot) {
-      const { date, day, year, time } = slot;
-      const formattedDate = `${date} ${day} ${year}, ${time}`;
+      const { date, monthNumber, year, time, Timeslot } = slot;
+      const formattedDate = `${year}-${monthNumber}-${date}`;
+      const formattedTime =
+        time === 'morning' || time === 'firstHalf' ? 'First Half' : Timeslot;
       setSelectDate(formattedDate);
-      handleInputChange('dateTime', formattedDate); // Update formData.dateTime
+      handleInputChange('dateTime', formattedTime); // Update formData.dateTime
     }
   };
 
@@ -68,8 +103,43 @@ const FreeConsultant = ({ navigation }) => {
   };
 
   // Handle form submission
-  const handleRequestConsultation = () => {
-    setSuccessPopupVisible(true);
+  const handleRequestConsultation = async () => {
+    // VALIDATION
+    if (!addressId?._id) return Toast.show('Please select address');
+    if (!formData.propertyType)
+      return Toast.show('Please select Property Type');
+    if (!formData.brand) return Toast.show('Please select Brand');
+    if (!formData.numberOfAC || Number(formData.numberOfAC) <= 0)
+      return Toast.show('Enter valid AC quantity');
+    if (!formData.dateTime || formData.dateTime === 'Select')
+      return Toast.show('Please select Time Slot');
+    if (!selectdate) return Toast.show('Please select Date');
+
+    const payload = {
+      user_id: user._id,
+      alternatePhone: formData.alternateNumber,
+      brandId: formData.brand,
+      quantity: Number(formData.numberOfAC),
+      comment: formData.additionalNotes,
+      place: formData.propertyType,
+      addressId: addressId._id,
+      slot: formData.dateTime === 'First Half' ? 'FIRST_HALF' : 'SECOND_HALF',
+      date: selectdate,
+      documentURL: selectedImageUri || '',
+    };
+
+    console.log('Payload to send:', payload); // NOW YOU WILL SEE CORRECT DATA
+
+    try {
+      const res = await postConsultancy(payload);
+      console.log('API Response:', res);
+      if (res?.status) {
+        Toast.show(res?.message);
+        setSuccessPopupVisible(true);
+      }
+    } catch (error) {
+      console.log('Error submitting:', error);
+    }
   };
 
   return (
@@ -119,12 +189,7 @@ const FreeConsultant = ({ navigation }) => {
               label="Brand"
               value={formData.brand}
               onChange={value => handleInputChange('brand', value)}
-              items={[
-                { label: 'Blue Star', value: 'Blue Star' },
-                { label: 'LG', value: 'LG' },
-                { label: 'Samsung', value: 'Samsung' },
-                { label: 'Daikin', value: 'Daikin' },
-              ]}
+              items={brandArray}
               width={wp('95%')}
               height={hp('5%')} // any height
               borderRadius={hp('4%')} // custom radius
@@ -167,7 +232,7 @@ const FreeConsultant = ({ navigation }) => {
                 { label: 'Repair', value: 'Repair' },
                 { label: 'Maintenance', value: 'Maintenance' },
               ]}
-              width={wp('95%')}// any width
+              width={wp('95%')} // any width
               height={hp('5%')} // any height
               borderRadius={hp('4%')} // custom radius
             />
@@ -231,7 +296,10 @@ const FreeConsultant = ({ navigation }) => {
             />
 
             <View style={[screenStyles.worksliderview]}>
-              <Image source={images.bannerTwo} style={[screenStyles.workimage,{ width: '90%',}]} />
+              <Image
+                source={images.bannerTwo}
+                style={[screenStyles.workimage, { width: '90%' }]}
+              />
             </View>
 
             <Text style={[screenStyles.workheadText, { margin: hp('1%') }]}>
@@ -258,8 +326,6 @@ const FreeConsultant = ({ navigation }) => {
               </View>
             ))}
           </View>
-
-
         </ScrollView>
       </KeyboardAvoidingView>
       <View style={styles.BtnView}>

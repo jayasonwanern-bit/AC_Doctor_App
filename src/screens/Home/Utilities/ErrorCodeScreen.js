@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -19,13 +19,19 @@ import Header from '../../../components/Header';
 import HomeScreenStyles from '../HomeScreenStyles';
 import CustomButton from '../../../components/CustomButton';
 import CustomPicker from '../../../components/CustomPicker';
+import { getBrandlist, postErrorCode } from '../../../api/homeApi';
+
 
 const ErrorCodeScreen = ({ navigation }) => {
-  const [isPlace, setIsPlace] = useState('Select AC type');
+  const [brandArray, setBrandArray] = useState([]);
+  const [brandValue, setBrandValue] = useState('');
+  const [isPlace, setIsPlace] = useState('');
   const [errorValue, setErrorValue] = useState('');
-  const [brandValue, setBrandValue] = useState('Select Brand');
 
-  const PlaceOptions = [
+  const [loading, setLoading] = useState(true);
+  
+
+   const PlaceOptions = [
     { label: 'Split AC', value: 'Split AC' },
     { label: 'Window AC', value: 'Window AC' },
     { label: 'Ducted AC', value: 'Ducted AC' },
@@ -33,16 +39,52 @@ const ErrorCodeScreen = ({ navigation }) => {
     { label: 'Concealed AC', value: 'Concealed AC' },
     { label: 'Tower AC', value: 'Tower AC' },
   ];
+  
+    useEffect(() => {
+      getBrandList();
+    }, []);
+  
+   const getBrandList = async () => {
+  try {
+    setLoading(true);
+    const res = await getBrandlist();
+
+    const formatted = res?.data?.map(item => ({
+      label: item.name,
+      value: item._id,
+    }));
+
+    setBrandArray(formatted);   // <-- dropdown list
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   //   on Calulate button press
-  const handleSubmit = () => {
-    if (isPlace === null || isPlace === undefined) {
-      Alert.alert('Missing Selection', 'Please select a place.');
-      return;
-    } else {
-      navigation.goBack();
-    }
+ const handleSubmit = async () => {
+  console.log('gwkkookkjk')
+  if (!brandValue) return Toast.show("Please select brand");
+  if (!errorValue) return Toast.show("Please enter error code");
+  if (!isPlace) return Toast.show("Please select AC type");
+
+  const payload = {
+    brandId: brandValue,
+    errorCode: "E05",
+    acType: isPlace,
   };
+
+  console.log("Payload:", payload);
+
+  try {
+    const res = await postErrorCode(payload);
+    console.log("API Response:", res.data);
+  } catch (e) {
+    console.log("Error:", e);
+  }
+};
+
 
   return (
     <View style={HomeScreenStyles.workcontainer}>
@@ -58,18 +100,13 @@ const ErrorCodeScreen = ({ navigation }) => {
 
         {/* Problem of ac */}
         <View
-          style={[styles.card, { padding: hp('2%'), paddingBottom: hp('2%') }]}
+          style={[styles.card, {  paddingVertical: hp('1.5%'),alignItems:'center' }]}
         >
           <CustomPicker
             label="Select Brand"
-            value={brandValue}
-            onChange={value => setBrandValue(value)}
-            items={[
-              { label: 'Blue Star', value: 'Blue Star' },
-              { label: 'LG', value: 'LG' },
-              { label: 'Samsung', value: 'Samsung' },
-              { label: 'Daikin', value: 'Daikin' },
-            ]}
+             value={brandValue}
+             items={brandArray}
+            onChange={value => setBrandValue(value)} 
             width={wp('85%')} // any width
             height={hp('5%')} // any height
             borderRadius={hp('4%')} // custom radius
@@ -85,7 +122,8 @@ const ErrorCodeScreen = ({ navigation }) => {
             borderRadius={hp('4%')} // custom radius
           />
 
-          <View style={[styles.flexView, { marginRight: wp('1%') }]}>
+          <View style={{ marginVertical: wp('3%'),  alignSelf:'center',
+             justifyContent:'center'}}>
             <TextInput
               placeholder="Error Code"
               placeholderTextColor="#aaa"
@@ -98,10 +136,9 @@ const ErrorCodeScreen = ({ navigation }) => {
 
           <CustomButton
             buttonName="Submit Error Codes"
-            margingTOP={hp('1%')}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
-            onPress={() => handleSubmit()}
+            onPress={handleSubmit}
           />
         </View>
 
@@ -185,11 +222,12 @@ const styles = StyleSheet.create({
     borderWidth: hp(0.1),
     borderColor: '#ddd',
     borderRadius: wp(6),
-    padding: 12,
+    paddingHorizontal: hp(2),
     backgroundColor: COLORS.lightWhite,
     fontSize: 14,
-    color: COLORS.lightGray,
+    color: COLORS.textHeading,
     width: hp('38%'),
+    height:hp(5),
     alignItems: 'flex-start',
   },
 });

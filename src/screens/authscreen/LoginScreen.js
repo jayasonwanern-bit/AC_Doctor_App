@@ -58,9 +58,9 @@ const LoginScreen = ({ navigation }) => {
     };
     try {
       const res = await loginUser(postdata);
-      console.log('Login Response:', res?.data?.assessToken);
+      // console.log('Login screen Response:-->', res?.data?.assessToken );
       // ==== Save Token ====    
-      dispatch(setToken({ assessToken: res?.data?.assessToken }));
+      dispatch(setToken({ accessToken: res?.data?.assessToken }));
       navigation.navigate('Verification', {
         phoneNumber: data.phoneNumber,
         callingCode: callingCode,
@@ -82,13 +82,6 @@ const LoginScreen = ({ navigation }) => {
       />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.mainView}>
-          {/* <KeyboardAwareScrollView
-        // enableOnAndroid
-        keyboardShouldPersistTaps="handled"
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.contentContainer}
-        // extraScrollHeight={100}
-      >  */}
           <Text style={styles.title}>Welcome</Text>
           <Text style={styles.titleHead}>Let's Keep Your AC Healthy</Text>
 
@@ -112,7 +105,6 @@ const LoginScreen = ({ navigation }) => {
                 setCountryCode={setCountryCode}
                 setCallingCode={setCallingCode}
                 phoneNumber={value}
-                // phoneNumber={'8817046783'}
                 setPhoneNumber={onChange}
                 error={errors.phoneNumber?.message}
               />
@@ -137,8 +129,6 @@ const LoginScreen = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Get Verification Code</Text>
           </TouchableOpacity>
-
-          {/* </KeyboardAwareScrollView> */}
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
