@@ -9,6 +9,8 @@ import {
   StyleSheet,
   TextInput,
   KeyboardAvoidingView,
+  Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
@@ -84,7 +86,7 @@ const BrandScreen = ({ route }) => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} // Adjust this based on your header height
+        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} 
       >
         <Header title="Brand" onBack={() => navigation.goBack()} />
         <View style={[styles.header, styles.searchInput]}>
@@ -94,11 +96,12 @@ const BrandScreen = ({ route }) => {
             placeholderTextColor={COLORS.textColor}
             value={searchQuery}
             onChangeText={setSearchQuery}
+             onSubmitEditing={() => Keyboard.dismiss()}
           />
         </View>
         <View style={styles.borderContainer}>
           <Text style={styles.headerText}>Which is your favorite BRAND ?</Text>
-          <FlatList
+         {loading ?<ActivityIndicator/> :<FlatList
             data={filteredBrands}
             keyExtractor={item => item.id}
             numColumns={3}
@@ -107,7 +110,7 @@ const BrandScreen = ({ route }) => {
             )}
             contentContainerStyle={styles.listContent}
             nestedScrollEnabled={true}
-          />
+          />}
         </View>
       </KeyboardAvoidingView>
     </View>

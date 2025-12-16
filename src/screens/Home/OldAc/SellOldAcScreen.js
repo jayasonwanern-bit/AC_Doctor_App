@@ -9,6 +9,7 @@ import {
   TextInput,
   Platform,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import Header from '../../../components/Header';
 import {
@@ -189,6 +190,7 @@ const SellOldAcScreen = ({ navigation }) => {
                 borderRadius={hp('2.5%')}
                 MarginTop={hp('1%')}
                 containerStyle={{width:wp('88%')}}
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
                
 
@@ -245,6 +247,7 @@ const SellOldAcScreen = ({ navigation }) => {
                 borderRadius={hp('2.5%')}
                 MarginTop={hp('1%')}
                 containerStyle={{width:wp('88%')}}
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
 
                 {/* Upload Photos */}
@@ -325,6 +328,7 @@ const SellOldAcScreen = ({ navigation }) => {
                         }
                         keyboardType="number-pad"
                         placeholder="8"
+                        onSubmitEditing={() => Keyboard.dismiss()}
                       />
                     </View>
                   </View>

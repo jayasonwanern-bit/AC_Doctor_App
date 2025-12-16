@@ -8,6 +8,7 @@ import {
   TextInput,
   ScrollView,
   Platform,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -84,6 +85,7 @@ const UserInfoModel = ({ visible, onClose, onProceed }) => {
               style={styles.inputContainer}
               value={userInfo.name}
               onChangeText={t => handleInputChange('name', t)}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             <Text style={styles.TitleheadText}>Number</Text>
@@ -94,6 +96,7 @@ const UserInfoModel = ({ visible, onClose, onProceed }) => {
               style={styles.inputContainer}
               value={userInfo.number}
               onChangeText={t => handleInputChange('number', t)}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             <Text style={styles.TitleheadText}>Address</Text>
@@ -104,6 +107,7 @@ const UserInfoModel = ({ visible, onClose, onProceed }) => {
               textAlignVertical="top"
               value={userInfo.address}
               onChangeText={t => handleInputChange('address', t)}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             <TouchableOpacity

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -131,6 +132,7 @@ const ErrorCodeScreen = ({ navigation }) => {
               onChangeText={setErrorValue}
               textAlignVertical="top"
               style={styles.normalInput}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           </View>
 

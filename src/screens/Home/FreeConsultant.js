@@ -10,6 +10,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Pressable,
+  Keyboard,
 } from 'react-native';
 import Header from '../../components/Header';
 import {
@@ -55,6 +56,7 @@ const FreeConsultant = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getBrandlist();
+      console.log('respondr og brand--',res)
       const formatted = res?.data?.map(item => ({
         label: item.name,
         value: item._id,
@@ -148,12 +150,13 @@ const FreeConsultant = ({ navigation }) => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('6%') : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('3%') : 0}
       >
+      
         <ScrollView
           contentContainerStyle={{ paddingBottom: hp(8) }}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps="always"
         >
           <View
             style={{
@@ -206,6 +209,7 @@ const FreeConsultant = ({ navigation }) => {
               MarginBottom={hp('0.5%')}
               MarginTop={hp('0.5%')}
               width={wp('80%')}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             {/* Alternate Number */}
@@ -220,6 +224,7 @@ const FreeConsultant = ({ navigation }) => {
               borderRadius={hp('14%')}
               MarginBottom={hp('0.5%')}
               MarginTop={hp('0.5%')}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             {/* Select Service */}
@@ -293,6 +298,7 @@ const FreeConsultant = ({ navigation }) => {
               onChangeText={val => handleInputChange('additionalNotes', val)}
               borderRadius={hp('1.5%')}
               MarginBottom={hp('1%')}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             <View style={[screenStyles.worksliderview]}>

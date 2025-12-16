@@ -10,6 +10,7 @@ import {
   Platform,
   ImageBackground,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import Header from '../../../components/Header';
 import {
@@ -437,6 +438,7 @@ const OldACRequest = ({ navigation }) => {
                   value={upiId}
                   onChange={txt => setupiId(txt)}
                   style={styles.label}
+                  onSubmitEditing={() => Keyboard.dismiss()}
                 />
               </View>
             </View>

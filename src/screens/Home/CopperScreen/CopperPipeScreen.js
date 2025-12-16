@@ -10,6 +10,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   FlatList,
+  Keyboard,
 } from 'react-native';
 import Header from '../../../components/Header';
 import {
@@ -171,6 +172,7 @@ const CopperPipeScreen = ({ navigation }) => {
                 borderRadius={hp('14%')}
                 MarginBottom={hp('0.5%')}
                 containerStyle={{width:wp('88%')}}
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
 
               {/* Upload Photos */}
@@ -209,6 +211,7 @@ const CopperPipeScreen = ({ navigation }) => {
                 borderRadius={hp('1.5%')}
                 MarginTop={hp('1%')}
                 containerStyle={{width:wp('90%')}}
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
             </View>
 

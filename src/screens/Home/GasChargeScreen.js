@@ -1,72 +1,37 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import Header from '../../components/Header';
 import images from '../../assets/images';
-import FastImage from 'react-native-fast-image';
 import styles from './HomeScreenStyles';
 import WorkInfo from '../../customScreen/WorkInfo';
+import AcList from '../../customScreen/AcList';
 
-const GasChargeScreen = ({ navigation }) => {
-  const [expandedIndex, setExpandedIndex] = useState(null);
-
-  const [acTypes, setAcTypes] = useState([
-    { name: 'Split AC', count: 2, showButtons: false, acIcon: images.splitAC },
-    {
-      name: 'Window AC',
-      count: 0,
-      showButtons: false,
-      acIcon: images.windowAc,
-    },
-    {
-      name: 'Cassette AC',
-      count: 1,
-      showButtons: false,
-      acIcon: images.casseteAc,
-    },
-    { name: 'VRV/VRF AC', count: 0, showButtons: false, acIcon: images.VRVac },
-    {
-      name: 'Ducted AC',
-      count: 0,
-      showButtons: false,
-      acIcon: images.ductedAc,
-    },
-    { name: 'Tower AC', count: 0, showButtons: false, acIcon: images.towerAc },
+const GasChargeScreen = ({ navigation, route }) => {
+  const { screenName } = route?.params;
+  const acRef = useRef();
+  const [acData, setAcData] = useState([
+    { id: 1, name: 'Split AC', icon: images.splitAC, count: 0 },
+    { id: 2, name: 'Window AC', icon: images.windowAc, count: 0 },
+    { id: 3, name: 'Cassette AC', icon: images.casseteAc, count: 0 },
+    { id: 4, name: 'VRV/VRF AC', icon: images.VRVac, count: 0 },
+    { id: 5, name: 'Ducted AC', icon: images.ductedAc, count: 0 },
+    { id: 6, name: 'Tower AC', icon: images.towerAc, count: 0 },
   ]);
+  const [selectedACs, setSelectedACs] = useState([]);
 
-  const handleAddClick = index => {
-    const updatedAcTypes = [...acTypes];
-    updatedAcTypes[index].showButtons = true;
-    setAcTypes(updatedAcTypes);
+  const totalSelected = selectedACs.reduce((sum, item) => sum + item.count, 0);
+
+  const handleAdd = index => {
+    setAcData(prev =>
+      prev.map((item, i) =>
+        i === index ? { ...item, count: item.count + 1 } : item,
+      ),
+    );
   };
-
-  const handleIncrement = index => {
-    const updatedAcTypes = [...acTypes];
-    updatedAcTypes[index].count += 1;
-    setAcTypes(updatedAcTypes);
-  };
-
-  const handleDecrement = index => {
-    const updatedAcTypes = [...acTypes];
-    if (updatedAcTypes[index].count > 0) {
-      updatedAcTypes[index].count -= 1;
-    }
-    setAcTypes(updatedAcTypes);
-  };
-
-
 
   return (
     <View style={styles.workcontainer}>
-      <Header
-        title="GasCharge"
-        onBack={() => navigation.goBack()}
-      />
+      <Header title={screenName} onBack={() => navigation.goBack()} />
 
       <ScrollView
         style={styles.workscrollstyle}
@@ -78,58 +43,39 @@ const GasChargeScreen = ({ navigation }) => {
 
         <Text style={styles.workheadText}>Select Type of AC</Text>
 
-        {acTypes.map((ac, index) => (
-          <View key={index} style={[styles.workitem,{flexDirection: 'row'}]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <FastImage
-                source={ac.acIcon}
-                style={styles.workacIconstyle}
-                resizeMode={FastImage.resizeMode.contain}
-              />
-              <Text style={styles.worktext}>{ac.name}</Text>
-            </View>
+        <AcList ref={acRef} data={acData} onChange={setSelectedACs} />
 
-            {ac.showButtons ? (
-              <View style={styles.workbuttonContainer}>
-                <TouchableOpacity
-                  style={styles.workbutton}
-                  onPress={() => handleDecrement(index)}
-                >
-                  <Text style={styles.workbuttonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.workcount}>{ac.count}</Text>
-                <TouchableOpacity
-                  style={styles.workbutton}
-                  onPress={() => handleIncrement(index)}
-                >
-                  <Text style={styles.workbuttonText}>+</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={styles.workaddButton}
-                onPress={() => handleAddClick(index)}
-              >
-                <Text style={styles.workaddButtonText}>+ Add</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
-
-      <WorkInfo/> 
+        <View style={{marginTop:'2%'}}>
+          <WorkInfo />
+        </View>
       </ScrollView>
 
       {/* Services and View Cart Section */}
-      {acTypes.map((ac, index) => (ac.showButtons &&<View style={[styles.servicesSection,{flexDirection:'row',justifyContent:'space-between'}]} key={'viewCart'}>
-        <View>
-          <Text style={styles.servicesCount}>3 services</Text>
-          <Text style={styles.selectedText}>Selected</Text>
+      {totalSelected > 0 && (
+        <View
+          style={[
+            styles.servicesSection,
+            { flexDirection: 'row', justifyContent: 'space-between' },
+          ]}
+          key={'viewCart'}
+        >
+          <View>
+            <Text style={styles.servicesCount}>{totalSelected} services</Text>
+            <Text style={styles.selectedText}>Selected</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.viewCartButton}
+            onPress={() =>
+              navigation.navigate('ViewCart', {
+                screenName: 'Sterilization AC',
+              })
+            }
+          >
+            <Text style={styles.viewCartText}>View Cart</Text>
+            <Image source={images.cart} style={styles.carticon} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.viewCartButton} onPress={()=>navigation.navigate('ViewCart', { screenName: 'Sterilization AC' })}>
-          <Text style={styles.viewCartText}>View Cart</Text>
-          <Image source={images.cart} style={styles.carticon} />
-        </TouchableOpacity>
-      </View>))}
+      )}
     </View>
   );
 };

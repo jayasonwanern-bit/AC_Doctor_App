@@ -1,6 +1,6 @@
 // src/components/CustomInput.js
 import React from 'react';
-import { View, TextInput, StyleSheet, Text, Platform } from 'react-native';
+import { View, TextInput, StyleSheet, Text, Platform,Keyboard } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import CountryPicker from 'react-native-country-picker-modal';
 import { COLORS } from '../utils/colors';
@@ -34,9 +34,10 @@ const CustomPhoneInput = ({ countryCode, setCountryCode,setCallingCode, callingC
         value={phoneNumber}
         onChangeText={setPhoneNumber}
         keyboardType="phone-pad"
-        maxLength={10}  
+        maxLength={10}
         submitBehavior='submit'
         returnKeyType='done'
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>

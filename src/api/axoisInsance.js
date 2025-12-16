@@ -6,8 +6,8 @@ import { dispatchLogout } from "../redux/store";
 // 🔥 Create axios instance
 const api = axios.create({
   // baseURL: 'https://api.acdoctor.in/api/v1/',
-  baseURL: 'http://10.0.2.2:8080/api/v1', // emulator
-  // baseURL: 'http://192.168.1.5:8080/api/v1', // emulator
+  baseURL: 'http://10.0.2.2:8080/api/v1', // android emulator
+  baseURL: 'http://localhost:8080/api/v1', // ios emulator
   headers: {
     'Content-Type': 'application/json',
   },

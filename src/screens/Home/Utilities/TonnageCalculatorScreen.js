@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -122,6 +123,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
               onChangeText={setWithValue}
               textAlignVertical="top"
               style={styles.normalInput}
+               onSubmitEditing={() => Keyboard.dismiss()}
             />
             <TextInput
               placeholder="Height in feet"
@@ -130,6 +132,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
               onChangeText={setHeightValue}
               textAlignVertical="top"
               style={styles.normalInput}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           </View>
 

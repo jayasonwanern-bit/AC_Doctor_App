@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import useLocation from '../../utils/useLocation'; 
 
@@ -77,6 +78,7 @@ const NewAddressDemo = () => {
         value={city}
         onChangeText={setCity}
         style={styles.input}
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       <TextInput
@@ -84,6 +86,7 @@ const NewAddressDemo = () => {
         value={address}
         onChangeText={setAddress}
         style={styles.input}
+         onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       <TextInput
@@ -91,6 +94,7 @@ const NewAddressDemo = () => {
         value={landmark}
         onChangeText={setLandmark}
         style={styles.input}
+         onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       <TextInput
@@ -99,6 +103,7 @@ const NewAddressDemo = () => {
         onChangeText={setPincode}
         keyboardType="number-pad"
         style={styles.input}
+         onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       <TextInput
@@ -106,6 +111,7 @@ const NewAddressDemo = () => {
         value={stateName}
         onChangeText={setStateName}
         style={styles.input}
+         onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       {locationLoading ? (
@@ -118,6 +124,7 @@ const NewAddressDemo = () => {
             onChangeText={setLatitude}
             keyboardType="decimal-pad"
             style={styles.input}
+             onSubmitEditing={() => Keyboard.dismiss()}
           />
 
           <TextInput
@@ -126,6 +133,7 @@ const NewAddressDemo = () => {
             onChangeText={setLongitude}
             keyboardType="decimal-pad"
             style={styles.input}
+             onSubmitEditing={() => Keyboard.dismiss()}
           />
         </>
       )}

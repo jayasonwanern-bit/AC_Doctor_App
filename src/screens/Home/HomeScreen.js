@@ -9,8 +9,9 @@ import {
   Platform,
   useColorScheme,
   Animated,
-  StatusBar as RNStatusBar,
-  StatusBar, // Import StatusBar
+  StatusBar,
+  ActivityIndicator,
+  Alert, 
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -33,7 +34,7 @@ import { useFocusEffect} from '@react-navigation/native';
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const scheme = useColorScheme();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   // Dynamic styles based on scheme
   const dynamicStyles = {
     safeArea: {
@@ -57,12 +58,12 @@ const HomeScreen = ({ navigation }) => {
 
   // Navigation handlers (unchanged)
   const screens = {
-  STERILIZATION: 'Sterilization',
-  REPAIR: 'RepairScreen',
-  INSTALLATION: 'InstallationScreen',
+  STERILIZATION: 'GasChargeScreen',
+  REPAIR: 'GasChargeScreen',
+  INSTALLATION: 'GasChargeScreen',
   COMMERCIAL_AC: 'CommericalAc',
   GAS_CHARGING: 'GasChargeScreen',
-  OTHER: 'OtherScreen',
+  OTHER: 'GasChargeScreen',
 };
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
   const handleAMC = () => navigation.navigate('AMCFrom');
@@ -170,7 +171,7 @@ const HomeScreen = ({ navigation }) => {
   const handleServiceNavigation = (service) => {
   const screen = screens[service?.key];
   if (screen) {
-    navigation.navigate(screen, { service });
+    navigation.navigate(screen, { screenName:service.name});
   } else {
     console.log("Screen not found for:", service?.key);
   }
@@ -212,9 +213,9 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.addressRow}>
             <TouchableOpacity
               style={styles.locationContainer}
-              onPress={() =>
-                navigation.navigate('SelectLocation', { onUpdate: loadAddress })
-              }
+              // onPress={() =>
+              //   // navigation.navigate('SelectLocation', { onUpdate: loadAddress })
+              // }
             >
               <Image
                 source={images.homeLocation}
@@ -234,11 +235,14 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Rest of the content (unchanged) */}
-        <CustomSlider images={bannerImages} />
+        {/* Banner Image */}
+       {loading ? <ActivityIndicator/> :<CustomSlider images={bannerImages} />}
+
+{/* Book a service */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Book a Services</Text>
-          <View style={styles.reqgrid}>
+         {loading ? <ActivityIndicator/>
+         : <View style={styles.reqgrid}>
             {bookServices.map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -249,9 +253,10 @@ const HomeScreen = ({ navigation }) => {
                 <Text style={styles.reqlabel}>{item.name}</Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </View>}
         </View>
 
+{/* Request a Quote */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Request a Quote</Text>
           <View style={styles.reqgrid}>
@@ -288,7 +293,7 @@ const HomeScreen = ({ navigation }) => {
         </LinearGradient>
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Authorized Service Partner</Text>
-          <FlatList
+         {loading ? <ActivityIndicator /> : <FlatList
             data={pages}
             horizontal
             pagingEnabled
@@ -318,7 +323,7 @@ const HomeScreen = ({ navigation }) => {
                 ))}
               </View>
             )}
-          />
+          />}
         </View>
 
         <View style={styles.uticontainer}>

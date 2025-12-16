@@ -10,6 +10,7 @@ import {
   SectionList,
   Alert,
   Animated,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -219,6 +220,7 @@ const NotificationScreeen = ({ navigation }) => {
             placeholderTextColor="#aaa"
             value={searchText}
             onChangeText={setSearchText}
+            onSubmitEditing={() => Keyboard.dismiss()}
           />
         </View>
 

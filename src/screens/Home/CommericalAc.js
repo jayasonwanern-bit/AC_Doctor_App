@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: hp('2%'),
     borderRadius: hp(2),
   },
-  addText: { color: '#34495E', fontSize: wp('3%') },
+  addText: { color: '#34495E', fontSize: wp('4%') },
   subOptions: { padding: wp('1%') },
   subOption: {
     flexDirection: 'row',
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
-  counterText: { fontSize: wp('4%'), color: '#34495E' },
+  counterText: { fontSize: hp('3%'), color: '#34495E' },
   counterValue: {
     fontSize: wp('4%'),
     color: '#34495E',

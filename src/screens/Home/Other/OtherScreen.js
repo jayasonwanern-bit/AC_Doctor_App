@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -122,6 +123,7 @@ const OtherScreen = ({ navigation }) => {
               onChangeText={setProblemReason}
               borderRadius={hp('1.5%')}
               MarginBottom={hp('1%')}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           <CustomButton
             buttonName="Submit"

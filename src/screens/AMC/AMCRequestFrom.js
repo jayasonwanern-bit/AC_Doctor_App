@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ImageBackground,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import Header from '../../components/Header';
 import {
@@ -443,6 +444,7 @@ const AMCRequestFrom = ({ navigation }) => {
                   keyboardType="default"
                   value={upiId}
                   onChange={txt => setupiId(txt)}
+                  onSubmitEditing={() => Keyboard.dismiss()}
                 />
               </View>
             </View>

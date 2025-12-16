@@ -9,6 +9,7 @@ import {
   Alert,
   CheckBox,
   Image,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -142,6 +143,7 @@ const AddAddress = ({ navigation, route }) => {
             keyboardType="default"
             placeholderTextColor={COLORS.textColor}
             onChangeText={setSearchBar}
+            onSubmitEditing={() => Keyboard.dismiss()}
           />
         </View>
         <Text style={styles.orText}>{Platform.OS === 'ios' ?`──────────── Or ───────────`:`───────────  Or ───────────`}</Text>
@@ -153,6 +155,7 @@ const AddAddress = ({ navigation, route }) => {
            placeholderTextColor={COLORS.textColor}
           onChangeText={setAddress}
           style={styles.input}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         <View style={styles.row}>
           <View style={styles.halfWidth}>
@@ -164,6 +167,7 @@ const AddAddress = ({ navigation, route }) => {
               keyboardType="default"
               onChangeText={setCity}
               style={styles.input}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           </View>
           <View style={styles.halfWidth}>
@@ -175,6 +179,7 @@ const AddAddress = ({ navigation, route }) => {
               keyboardType="default"
               onChangeText={setStateName}
               style={styles.input}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           </View>
         </View>
@@ -187,6 +192,7 @@ const AddAddress = ({ navigation, route }) => {
           onChangeText={setPincode}
           keyboardType="number-pad"
           style={styles.input}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         <Text style={styles.label}>Save address as</Text>
         <View style={styles.buttonGroup}>

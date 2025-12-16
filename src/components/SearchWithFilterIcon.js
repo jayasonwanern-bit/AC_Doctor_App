@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images';
@@ -81,6 +82,7 @@ const SearchWithFilterIcon = ({ initialData, onFilterChange, placeholder = "Sear
           placeholder={placeholder}
           value={searchText}
           onChangeText={setSearchText}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
           <FastImage source={images.filterImg} style={styles.filterIcon} />
@@ -151,6 +153,7 @@ const SearchWithFilterIcon = ({ initialData, onFilterChange, placeholder = "Sear
               keyboardType="numeric"
               value={priceRange[0].toString()}
               onChangeText={text => setPriceRange([+text || 0, priceRange[1]])}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
             <Text style={styles.toText}>to</Text>
             <TextInput
@@ -159,6 +162,7 @@ const SearchWithFilterIcon = ({ initialData, onFilterChange, placeholder = "Sear
               keyboardType="numeric"
               value={priceRange[1].toString()}
               onChangeText={text => setPriceRange([priceRange[0], +text || 100000])}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           </View>
 

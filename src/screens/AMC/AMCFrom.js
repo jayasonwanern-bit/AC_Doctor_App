@@ -9,6 +9,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from 'react-native';
 
 import Header from '../../components/Header';
@@ -74,6 +75,7 @@ const AMCFrom = ({ navigation }) => {
               borderRadius={hp('1%')}
               MarginTop={hp('1%')}
               containerStyle={{ width: wp('88%') }}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             {/* Phone */}
@@ -100,6 +102,7 @@ const AMCFrom = ({ navigation }) => {
                   onChangeText={val => handleInputChange('phoneNumber', val)}
                   borderRadius={hp('1%')}
                   containerStyle={{ width: wp('88%') }}
+                  onSubmitEditing={() => Keyboard.dismiss()}
                 />
               )}
             </View>
@@ -123,6 +126,7 @@ const AMCFrom = ({ navigation }) => {
               multiline={true}
               numberOfLines={2}
               containerStyle={{ width: wp('92%') }}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             {/* AC Type */}

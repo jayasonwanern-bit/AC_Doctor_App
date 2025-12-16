@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, Keyboard } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import { COLORS } from '../utils/colors';
@@ -16,6 +16,7 @@ const CustomSearchBar = ({ placeholder, value, onChangeText, keyboardType, icon 
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType || 'default'}
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
     </View>
   );

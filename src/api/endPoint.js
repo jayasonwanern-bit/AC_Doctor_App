@@ -17,10 +17,12 @@ import { create } from "react-native-mmkv-storage";
   AUTH_PATNER: 'user/partner-list', //GET
   SERVICE_CATEGORIES: 'user/service-list', //GET
   BANNER_HOME: 'user/home-screen-data', 
-  BRAND_LIST: 'user/booking-list/', //Get
+  BRAND_LIST: 'user/brand/list', //Get
+  
 
   // MY BOOKING
-  BOOKING_LIST:'user/booking-list',
+  BOOKING_LIST:'user/booking-list/',
+  BOOKING_DETAIL: 'user/booking-details/', //Get
 
   // free CONSULTANCY
   CREATE_CONSULT:"user/consultancy/create",

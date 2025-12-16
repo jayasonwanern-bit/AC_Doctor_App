@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Modal,
   Image,
+  Keyboard,
 } from 'react-native';
 import { COLORS, Fonts } from '../utils/colors';
 import {
@@ -65,6 +66,7 @@ const PlaceTypeSelector = ({
             setCustomType(txt);
             onChange(txt);
           }}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
       )}
 

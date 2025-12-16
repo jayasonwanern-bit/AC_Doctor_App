@@ -25,7 +25,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { loginUser } from '../../api/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { useDispatch } from 'react-redux';/
 import { setToken } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 
@@ -58,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
     };
     try {
       const res = await loginUser(postdata);
-      // console.log('Login screen Response:-->', res?.data?.assessToken );
+      console.log('Login screen Response:-->', res?.data );
       // ==== Save Token ====    
       dispatch(setToken({ accessToken: res?.data?.assessToken }));
       navigation.navigate('Verification', {
@@ -184,7 +183,7 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: hp('5%'),
+    marginTop: hp('2%'),
   },
   buttonText: {
     color: COLORS.white,

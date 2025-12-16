@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Keyboard } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
@@ -60,6 +60,7 @@ const CustomTextInput = ({
           secureTextEntry={secureTextEntry}
           multiline={multiline}
           numberOfLines={multiline ? numberOfLines : 1}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
 
         {/* Right Icon */}

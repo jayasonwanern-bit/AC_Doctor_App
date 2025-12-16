@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
-  Platform,Alert
+  Platform,
 } from 'react-native';
 import Header from '../../components/Header';
 import images from '../../assets/images';
@@ -31,7 +31,6 @@ const ViewCartScreen = ({route }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [modalUserVisible, setModalUserVisible] = useState(false);
   const [proceed, setProceed] = useState(false);
   const [acTypes, setAcTypes] = useState([
@@ -204,13 +203,12 @@ const bookServices = [
           )}
         />
 
-        <View
+        <TouchableOpacity onPress={()=>navigation.navigate('CouponScreen')}
           style={[
             styles.ordercontainer,
             { justifyContent: 'space-between', borderColor: COLORS.themeColor },
-          ]}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          ]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
             <Image source={images.Offer} style={styles.carticon} />
             <Text
               style={[
@@ -229,7 +227,7 @@ const bookServices = [
           >
             {'2 Offers >'}
           </Text>
-        </View>
+        </TouchableOpacity>
 
         {/* Payment Summary */}
         <View
@@ -361,7 +359,7 @@ const bookServices = [
       <View
         style={[
           styles.servicesSection,
-          { height: proceed ? hp('25%') : hp('10%') },
+          { height: proceed ? hp('30%') : hp('10%') },
         ]}
       >
         {proceed && (
@@ -381,7 +379,7 @@ const bookServices = [
                 Sachin Gupta,149, Scheme, Vijay Nagar, Indore, Madhya Paresh
                 452010
               </Text>
-              <FastImage source={images.editLight} style={styles.normalImag} />
+              {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
             <View
               style={{
@@ -392,7 +390,7 @@ const bookServices = [
             >
               <FastImage source={images.callRed} style={styles.normalImag} />
               <Text style={styles.textBottom}>+91-9876543210</Text>
-              <FastImage source={images.editLight} style={styles.normalImag} />
+              {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
             <View
               style={{
@@ -405,10 +403,11 @@ const bookServices = [
               <Text style={styles.textBottom}>
                 Sat, 15 June 2024 | 10:00 AM - 12:00 PM
               </Text>
-              <FastImage source={images.editLight} style={styles.normalImag} />
+              {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
           </>
         )}
+
         <CustomButton
           buttonName={proceed ? 'Proceed to pay' : 'Add Address & Slot'}
           margingTOP={hp('0%')}
@@ -420,14 +419,23 @@ const bookServices = [
               : setModalUserVisible(true);
           }}
         />
+       {proceed && 
+            <TouchableOpacity  style={{
+                marginVertical: hp('2%'), marginBottom: hp('2%'),
+                alignItems: 'center',
+              }}>
+              <Text style={styles.textBottom}>
+                By proceeding, you agree to our T&C, Privacy & Cancellation Policy
+              </Text>
+            </TouchableOpacity>}
       </View>
 
 {/* Present address */}
       <CustomModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
+        visible={modalUserVisible}
+        onClose={() => setModalUserVisible(false)}
         onProceed={() => {
-          setModalVisible(false);
+          setModalUserVisible(false);
           setTimeout(() => {
             setModalSlotVisible(true);
           }, 300);
@@ -435,17 +443,6 @@ const bookServices = [
         setSelectedAddress={setSelectedAddress}
       />
 
-      <UserInfoModel
-        visible={modalUserVisible}
-        onClose={() => setModalUserVisible(false)}
-        onProceed={userInfo => {
-          console.log('user Dot', userInfo);
-          setModalUserVisible(false);
-          setTimeout(() => {
-            setModalVisible(true);
-          }, 300);
-        }}
-      />
 
       <BookingSlotModal
         visible={modalSlotVisible}
@@ -454,7 +451,7 @@ const bookServices = [
         onBookProcess={() => {
           setModalSlotVisible(false);
           setTimeout(() => {
-            setConfirmModalVisible(true);
+            setProceed(true); 
           }, 300);
         }}
       />

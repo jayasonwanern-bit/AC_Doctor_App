@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -222,6 +223,7 @@ const BookingSlotModal = ({
               value={rescheduleReason}
               onChangeText={setRescheduleReason}
               textAlignVertical="top"
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           </>
         )}

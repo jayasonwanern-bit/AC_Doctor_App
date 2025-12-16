@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -18,7 +19,7 @@ import images from '../../assets/images';
 import CustomButton from '../../components/CustomButton';
 import { resendOTP, VerifyOTP } from '../../api/authApi';
 import useCountdown from '../../utils/hooks/useCountdown';
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setToken, setUser } from '../../redux/slices/authSlice';
 import Toast from 'react-native-simple-toast';
 
@@ -30,7 +31,7 @@ const VerificationScreen = ({ navigation, route }) => {
     userId,
     isAutoTesting,
   } = route.params;
- const [serverOtpState, setServerOtpState] = useState(serverOtp);
+  const [serverOtpState, setServerOtpState] = useState(serverOtp);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const intervalRef = useRef(null);
@@ -42,74 +43,69 @@ const VerificationScreen = ({ navigation, route }) => {
     startCountdown(30);
   }, [startCountdown]);
 
+  const handleVerify = async () => {
+    if (otp.length !== 4) {
+      setError('Please enter a 4-digit OTP');
+      return;
+    }
 
-const handleVerify = async () => {
-  if (otp.length !== 4) {
-    setError('Please enter a 4-digit OTP');
-    return;
-  }
+    const postdata = {
+      otp: Number(otp),
+      userId: userId,
+    };
 
-  const postdata = {
-    otp: Number(otp),
-    userId: userId,
+    try {
+      const res = await VerifyOTP(postdata);
+      // console.log("Response:", res);
+      if (res?.data?.status === true) {
+        dispatch(setUser({ user: res?.data?.data }));
+        dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
+
+        Toast.show(res?.data?.message || 'Verified Successfully');
+
+        navigation.replace('ServiceScreen');
+      }
+      // failed case (but server returned status 200)
+      else {
+        Toast.show(res?.data?.message || 'Invalid OTP');
+      }
+    } catch (error) {
+      console.log('Catch Error:', error);
+
+      // SERVER SENT ERROR MESSAGE (like status 410)
+      if (error?.response?.data?.message) {
+        Toast.show(error?.response?.data?.message);
+      }
+      // If message missing show default
+      else {
+        Toast.show('Something went wrong');
+      }
+    }
   };
 
-  try {
-    const res = await VerifyOTP(postdata);
-    // console.log("Response:", res);
-    if (res?.data?.status === true) {
-      dispatch(setUser({ user: res?.data?.data }));
-      dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
-
-      Toast.show(res?.data?.message || "Verified Successfully");
-
-      navigation.replace("ServiceScreen");
-    } 
-    // failed case (but server returned status 200)
-    else {
-      Toast.show(res?.data?.message || "Invalid OTP");
-    }
-
-  } catch (error) {
-    console.log("Catch Error:", error);
-
-    // SERVER SENT ERROR MESSAGE (like status 410)
-    if (error?.response?.data?.message) {
-      Toast.show(error?.response?.data?.message);
-    }
-    // If message missing show default
-    else {
-      Toast.show("Something went wrong");
-    }
-  }
-};
-
-
-
-// resend otp
+  // resend otp
   const handleResendOTP = async () => {
-  try {
-   let data = {
-      phoneNumber: phoneNumber,
-      countryCode: callingCode,
-    };
-    const result = await resendOTP(data);
-    if (result?.status) {
-      Toast.show('OTP Resend')
-       setServerOtpState(result?.otp);
-      // Timer
-      resetCountdown();
-      startCountdown(30);
+    try {
+      let data = {
+        phoneNumber: phoneNumber,
+        countryCode: callingCode,
+      };
+      const result = await resendOTP(data);
+      if (result?.status) {
+        Toast.show('OTP Resend');
+        setServerOtpState(result?.otp);
+        // Timer
+        resetCountdown();
+        startCountdown(30);
 
-      // Save in Redux
-      dispatch(setUser({user:result?.data}));
-      dispatch(setToken({accessToken: result?.data?.refreshToken}));
+        // Save in Redux
+        dispatch(setUser({ user: result?.data }));
+        dispatch(setToken({ accessToken: result?.data?.refreshToken }));
+      }
+    } catch (error) {
+      console.log('handleResendOTP:', error);
     }
-  } catch (error) {
-    console.log("handleResendOTP:", error);
-  }
-};
-
+  };
 
   return (
     <View style={styles.container}>
@@ -139,7 +135,12 @@ const handleVerify = async () => {
         inputCount={4}
         keyboardType="numeric"
         autoFocus={true}
-        handleTextChange={text => setOtp(text)}
+        handleTextChange={text => {
+          setOtp(text);
+          if (text.length === 4) {
+            Keyboard.dismiss(); // ✅ closes keyboard
+          }
+        }}
         defaultValue={otp}
         containerStyle={styles.otpContainer}
         textInputStyle={styles.otpInput}

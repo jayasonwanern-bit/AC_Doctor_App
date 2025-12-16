@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Keyboard,
 } from 'react-native';
 import Header from '../../components/Header';
 import Homestyles from '../Home/HomeScreenStyles';
@@ -91,8 +92,10 @@ const handleUpdateProfile = async () => {
     let body = {
       userId: String(userId?._id),
       userName: String(userName),
+      gender:gender,
+      imageUrl:selectedImageUri
     };
-
+   console.log("body RESPONSE ---> ", body);
     const res = await updateUserProfile(body);
     console.log("UPDATE RESPONSE ---> ", res);
 
@@ -124,6 +127,7 @@ const handleUpdateProfile = async () => {
             source={
               selectedImageUri ? { uri: selectedImageUri } : images.userProfile
             }
+            imageStyle={Homestyles.profilestyle}
             style={Homestyles.profileDetailBg}
           >
             <FastImage
@@ -142,6 +146,7 @@ const handleUpdateProfile = async () => {
           onChangeText={txt => setuserName(txt)}
           borderRadius={hp('14%')}
           MarginBottom={hp('0.5%')}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         {/* Mobile Number */}
         <View style={Homestyles.profileDetailInfoContainer}>
@@ -168,12 +173,13 @@ const handleUpdateProfile = async () => {
         {/* Email Address */}
         <CunstomInput
           label="Email Address"
-          placeholder="RahulKumar@gmail.com"
+          placeholder="Enter Email"
           keyboardType="email-address"
           value={email}
           onChangeText={txt => setEmail(txt)}
           borderRadius={hp('14%')}
           MarginBottom={hp('1%')}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         {/* Gender */}
         <CustomPicker
@@ -181,9 +187,9 @@ const handleUpdateProfile = async () => {
           value={gender}
           onChange={value => setGender(value)}
           items={[
-            { label: 'Male', value: 'male' },
-            { label: 'Female', value: 'female' },
-            { label: 'Other', value: 'other' },
+            { label: 'MALE', value: 'MALE' },
+            { label: 'FEMALE', value: 'FEMALE' },
+            { label: 'OTHER', value: 'OTHER' },
           ]}
           width={wp('90%')}
           height={hp('5%')}

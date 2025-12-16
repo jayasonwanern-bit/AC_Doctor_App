@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -24,7 +25,7 @@ import { useDispatch } from 'react-redux';
 
 
 const ManageAddressScreen = ({ navigation }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState(null);
   const [selectedId, setSelectedId] = useState(null); //seleted id store
   const userDetail = store?.getState()?.auth?.user;
@@ -74,7 +75,7 @@ const ManageAddressScreen = ({ navigation }) => {
      } catch (error) {
        console.log('Error fetching profile:', error);
      } finally {
-       setLoading(false);   // <-- STOP LOADER
+       setLoading(false);  
      }
    };
 
@@ -181,13 +182,13 @@ const handleDelete = (addressId) => {
       <View style={{ paddingHorizontal: wp(4) }}>
         <Text style={styles.title}>Saved Address</Text>
 
-        <FlatList
+       {loading ?<ActivityIndicator/> : <FlatList
           data={addresses}
           keyExtractor={item => item.id}
           renderItem={renderAddressItem}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.list}
-        />
+        />}
 
         {/* Add New Address Button */}
         <TouchableOpacity

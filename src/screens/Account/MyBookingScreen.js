@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -23,7 +24,7 @@ const TABS = ['All', 'Booked', 'Completed', 'Cancelled'];
 
 const MyBookingScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('All');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [allRequests, setaAllRequests] = useState([]);
   const userId = store?.getState()?.auth?.user;
 
@@ -35,7 +36,30 @@ const MyBookingScreen = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getBookingList(userId._id);
-      setaAllRequests(res?.data);
+       const flattenedData = res?.data?.flatMap(booking =>
+        booking.serviceDetails.map(service => ({
+        id: booking._id,
+        bookingId: booking.bookingId,
+        status: booking.status,
+        slot: booking.slot,
+        date: booking.date,
+        createdAt: booking.createdAt,
+
+        amount: booking.amount?.$numberDecimal
+          ? Number(booking.amount.$numberDecimal)
+          : 0,
+
+        serviceType: service.serviceType,
+        quantity: service.quantity,
+        acType: service.acType,
+        serviceId: service.service_id,
+
+        technicianName: booking.technicianName || 'Not Assigned',
+        technicianPhone: booking.technicianPhone || '',
+        orderId: booking.order_id || '',
+      }))
+    );
+      setaAllRequests(flattenedData);
     } catch (error) {
       console.log(error);
     } finally {
@@ -65,7 +89,7 @@ const MyBookingScreen = ({ navigation }) => {
         <View style={styles.cardHeader}>
           <View style={styles.serviceBadge}>
             <Image source={images.splitAC} style={styles.icon} />
-            <Text style={styles.serviceText}>Old AC</Text>
+            <Text style={styles.serviceText}>{item?.serviceType}</Text>
           </View>
           <View style={[styles.statusBadge, { backgroundColor: bg }]}>
             <Text style={[styles.statusText, { color: text }]}>
@@ -81,7 +105,7 @@ const MyBookingScreen = ({ navigation }) => {
           </View>
          <View style={{ width: wp(35) }}>
             <Text style={styles.label}>Service Types</Text>
-            <Text style={styles.value}>Split AC, Cassette AC</Text>
+            <Text style={styles.value}>{item?.serviceType}</Text>
           </View>
         </View>
 
@@ -91,11 +115,11 @@ const MyBookingScreen = ({ navigation }) => {
             <Text style={styles.label}>
               Scheduled Date & Time
             </Text>
-            <Text style={styles.value}>{item.date.split("T")[0]}</Text>
+            <Text style={styles.value}>{item?.date?.split("T")[0]},{item?.slot}</Text>
           </View>
           <View style={{ width: wp(35) }}>
             <Text style={styles.label}>Technician Assigned</Text>
-            <Text style={styles.value}>-</Text>
+            <Text style={styles.value}>{item?.technicianName}</Text>
           </View>
         </View>}
 
@@ -105,21 +129,21 @@ const MyBookingScreen = ({ navigation }) => {
             <Text style={styles.label}>
               Total Amount
             </Text>
-            <Text style={styles.value}>₹ 35000</Text>
+            <Text style={styles.value}>₹ {item?.order_amount}</Text>
           </View>
           <View style={{ width: wp(35) }}>
             <Text style={styles.label}>Payment Status</Text>
-            <Text style={styles.value}>NA</Text>
+            <Text style={styles.value}>{item?.payment_status}</Text>
           </View>
         </View>
 
         {/* AC Count */}
-        <View style={styles.row}>
+        {/* <View style={styles.row}>
             <View>
               <Text style={styles.label}>Payment Mode</Text>
               <Text style={styles.value}>NA</Text>
             </View>
-        </View>
+        </View> */}
 
         {/* Final Offer & Payment (Completed) */}
         {item.finalOffer && (
@@ -171,7 +195,7 @@ const MyBookingScreen = ({ navigation }) => {
           <TouchableOpacity
             style={styles.viewDetailsBtn}
             onPress={() =>
-              navigation.navigate('RequestDetails', { request: item })
+              navigation.navigate('BookingDetailsScreen', { bookingId: item._id })
             }
           >
             <Text style={styles.viewDetailsText}>View details</Text>
@@ -205,7 +229,7 @@ const MyBookingScreen = ({ navigation }) => {
       </View>
 
       {/* List */}
-      <FlatList
+      {loading ? <ActivityIndicator /> : <FlatList
         data={filteredRequests}
         keyExtractor={item => item.id}
         renderItem={renderRequestCard}
@@ -216,7 +240,7 @@ const MyBookingScreen = ({ navigation }) => {
             No requests found in {activeTab.toLowerCase()}
           </Text>
         }
-      />
+      />}
     </View>
   );
 };

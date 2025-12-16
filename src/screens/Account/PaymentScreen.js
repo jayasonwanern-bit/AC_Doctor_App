@@ -8,6 +8,7 @@ import {
   ScrollView,
   TextInput,
   Platform,
+  Keyboard,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -130,6 +131,7 @@ const PaymentScreen = ({ navigation, route }) => {
                       onChangeText={setCardholderName}
                       placeholder="John Doe"
                       autoCapitalize="words"
+                      onSubmitEditing={() => Keyboard.dismiss()}
                     />
                     <Image source={images.UserFilled} style={styles.inputIcon} />
                   </View>
@@ -142,6 +144,7 @@ const PaymentScreen = ({ navigation, route }) => {
                       placeholder="1234 5678 9012 3456"
                       keyboardType="numeric"
                       maxLength={16}
+                      onSubmitEditing={() => Keyboard.dismiss()}
                     />
                     <Image source={images.Cardsnum} style={styles.inputIcon} />
                   </View>
@@ -156,6 +159,7 @@ const PaymentScreen = ({ navigation, route }) => {
                           placeholder="MM/YY"
                           keyboardType="numeric"
                           maxLength={5}
+                          onSubmitEditing={() => Keyboard.dismiss()}
                         />
                         <Image source={images.Calendar} style={styles.inputIcon} />
                       </View>
@@ -170,6 +174,7 @@ const PaymentScreen = ({ navigation, route }) => {
                           placeholder="123"
                           keyboardType="numeric"
                           maxLength={3}
+                          onSubmitEditing={() => Keyboard.dismiss()}
                         />
                       </View>
                     </View>

@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-  StyleSheet,Alert, PermissionsAndroid, Platform 
+  StyleSheet,Alert, PermissionsAndroid, Platform, 
+  StatusBar,
+  useColorScheme
 } from 'react-native';
 import Commonstyles, {
-  productData,
-  testimonialData,
   WindoData,
 } from '../Home/HomeScreenStyles';
 import FastImage from 'react-native-fast-image';
@@ -31,6 +31,25 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [listLike, setListLike] = useState({});
   const { productId, product, productScreenName } = route.params;
   const bannerImages = [images.shopFrame, images.acPoster, images.shopFrame];
+  const scheme = useColorScheme();
+    // Dynamic styles based on scheme
+    const dynamicStyles = {
+      safeArea: {
+        backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#ffffff',
+      },
+      backText: {
+        color: scheme === 'dark' ? '#ffffff' : '#000000',
+      },
+      title: {
+        color: scheme === 'dark' ? '#ffffff' : '#000000',
+      },
+      helpIcon: {
+        tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
+      },
+      extraIcon: {
+        tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
+      },
+    };
 
   const products = [
     {
@@ -177,9 +196,25 @@ async function requestStoragePermission() {
 };
 
   return (
-    <SafeAreaView style={Commonstyles.safeArea}>
-      {/* Header with Location Icon and Add Location Text */}
-      <View style={Commonstyles.header}>
+   <SafeAreaView
+         style={[
+          Commonstyles.safeArea,
+           { backgroundColor: dynamicStyles.safeArea.backgroundColor },
+         ]}
+       >
+         <StatusBar
+           barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+           backgroundColor="transparent"
+           translucent={true}
+         />
+          
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={Commonstyles.container}
+      >
+     {/* Header with Location Icon and Add Location Text */}
+       <View style={Commonstyles.header}>
         <View style={Commonstyles.addressRow}>
           <TouchableOpacity
             style={Commonstyles.locationContainer}
@@ -212,12 +247,9 @@ async function requestStoragePermission() {
         </View>
       </View>
       {/* header end */}
+         
+         <View style={{paddingHorizontal: wp('2.5%') }}>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={Commonstyles.container}
-        contentContainerStyle={{ paddingHorizontal: wp('2.5%') }}
-      >
         <View
           style={[
             Commonstyles.allSideRadiusStyle,
@@ -656,6 +688,7 @@ async function requestStoragePermission() {
             contentContainerStyle={styles.listContent}
           />
         </View>
+        </View>
       </ScrollView>
 
       <View style={[Commonstyles.servicesSection,{flexDirection:'row',justifyContent:'space-between'}]}>
@@ -681,6 +714,7 @@ async function requestStoragePermission() {
           </Text>
         </TouchableOpacity>
       </View>
+
     </SafeAreaView>
   );
 };

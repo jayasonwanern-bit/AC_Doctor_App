@@ -808,12 +808,17 @@ export default StyleSheet.create({
     fontFamily: Fonts.semiBold,
   },
 //  profile details styles end
-profileDetailBg: {
-  width: wp('33%'),
-  height: hp('15%'),
+profilestyle:{
+ width: wp('33%'),
+  height: hp('14%'),
   resizeMode: 'contain',
+  borderRadius:hp('2%'),
+},
+profileDetailBg: {
+   width: wp('33%'),
   alignSelf:'center',
-  borderRadius:wp('1%'),
+  justifyContent:'center',
+  height: hp('14%'),
   marginTop: hp('2%'),
   marginBottom: hp('2%'),
 },

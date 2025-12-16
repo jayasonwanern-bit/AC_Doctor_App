@@ -11,6 +11,7 @@ import {
   ImageBackground,
   TextInput,
   Alert,
+  Keyboard,
 } from 'react-native';
 import Header from '../../../components/Header';
 import {
@@ -446,6 +447,7 @@ const RequestDetail = ({ navigation }) => {
                   keyboardType="default"
                   value={upiId}
                   onChange={txt => setupiId(txt)}
+                   onSubmitEditing={() => Keyboard.dismiss()}
                 />
               </View>
             </View>

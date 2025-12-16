@@ -49,8 +49,11 @@ import ACUnderServiceList from '../screens/AMC/ACUnderServiceList';
 import ACServiceDetails from '../screens/AMC/ACServiceDetails';
 import BillViewScreen from '../screens/AMC/BillViewScreen';
 import ConfirmService from '../screens/AMC/ConfirmService'; // --- IGNORE ---
-import PaymentlistScreen from '../screens/AMC/PaymentlistScreen'; // --- IGNORE ---
-import ServiceReportscreen from '../screens/AMC/ServiceReportscreen'; // --- IGNORE ---
+import PaymentlistScreen from '../screens/AMC/PaymentlistScreen'; // --- IGNORE 
+import ServiceReportscreen from '../screens/AMC/ServiceReportscreen'; 
+import BookingDetailsScreen from '../screens/Account/BookingDetailsScreen'; 
+import CouponScreen from '../screens/Home/CouponScreen'; 
+
 
 
 
@@ -160,6 +163,8 @@ const AppNavigator = () => {
          <Stack.Screen name="ConfirmService" component={ConfirmService} />       
          <Stack.Screen name="PaymentlistScreen" component={PaymentlistScreen} />       
          <Stack.Screen name="ServiceReportscreen" component={ServiceReportscreen} />       
+         <Stack.Screen name="BookingDetailsScreen" component={BookingDetailsScreen} />       
+         <Stack.Screen name="CouponScreen" component={CouponScreen} />       
         </Stack.Navigator>
       </NavigationContainer>
       </CompareProvider>
