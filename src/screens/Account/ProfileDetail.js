@@ -40,7 +40,7 @@ const ProfileDetail = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const userId = store?.getState()?.auth?.user;
 
   const phoneSchema = yup.object().shape({

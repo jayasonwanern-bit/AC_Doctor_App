@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert ,PermissionsAndroid,Platform, ActivityIndicator} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -8,11 +8,12 @@ import { COLORS, Fonts } from '../../utils/colors';
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
 import useLocation from '../../utils/useLocation';
-import Geolocation from '@react-native-community/geolocation';
+// import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import { useNavigation } from '@react-navigation/native';
-
-
+import { isTablet } from '../../components/TabletResponsiveSize';
+import Geolocation from '@react-native-community/geolocation';
+import GetLoaction from '../../components/GetLoaction'
 
 const ServiceScreen = () => {
   const navigation = useNavigation();
@@ -20,63 +21,62 @@ const ServiceScreen = () => {
     Geolocation.requestAuthorization();
   }, []);
 
-  const handleUseCurrentLocation = () => {
-    // navigation.navigate('MapScreens'); // mapscreen
-      navigation.navigate('Tab', { screen: 'Home' });
-  };
+const {
+    latitude,
+    longitude,
+    addressText,
+    loading,
+    error,
+    getLocation,
+  } = GetLoaction();
 
-  const handleManuallyLocation = () => {
-     navigation.navigate('AddAddress', { from: 'ServiceScreen'});
-  };
 
-  //use for get current location logic
-  // const { location, retry, isLoading } = useLocation();
-  // console.log('location', location);
-  // const handleUseCurrentLocation = async () => {
-  //   if (!location) {
-  //     retry();
-  //     return;
-  //   }
-  //   try {
-  //     const response = await Geocoder.from(
-  //       location.latitude,
-  //       location.longitude,
-  //     );
-  //     console.log('Geocoder response:', response);
 
-  //     if (response.results.length > 0) {
-  //       const result = response.results[0];
-  //       const components = result.address_components;
 
-  //       const getComp = types =>
-  //         components.find(c => types.every(t => c.types.includes(t)))
-  //           ?.long_name || '';
 
-  //       console.log('Parsed address components:', components);
+const handleUseCurrentLocation = ()=>{
+ getLocation((locationData) => {
+      navigation.reset({
+  index: 0,
+  routes: [
+    {
+      name: 'Tab',
+      state: {
+        index: 0,
+        routes: [
+          {
+            name: 'Home', 
+            params: {locationData
+            },
+          },
+        ],
+      },
+    },
+  ],
+});
+    });
+    
+}
 
-  //       const street = getComp(['route']);
-  //       const city =
-  //         getComp(['locality']) || getComp(['administrative_area_level_2']);
-  //       const state = getComp(['administrative_area_level_1']);
-  //       const postalCode = getComp(['postal_code']);
-  //       console.log('result.formatted_address', result.formatted_address);
-  //     }
-  //   } catch (err) {
-  //     console.error('Geocoding error:', err);
-  //   }
-  // };
 
+
+
+
+const handleManuallyLocation = () => {
+  navigation.navigate("AddAddress");
+};
+  
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.backButton]}
-        onPress={() => navigation.goBack()}
+        // onPress={() => navigation.goBack()}
       >
-        <FastImage
+        {/* <FastImage
           source={images.backArrow}
           style={[styles.backImg,{marginTop:hp('1.5%')}]}
           resizeMode={FastImage.resizeMode.contain}
-        />
+        /> */}
       </TouchableOpacity>
 
       <Text style={styles.title}>Find Services Near You</Text>
@@ -94,13 +94,22 @@ const ServiceScreen = () => {
         style={styles.locationButton}
         onPress={() => handleUseCurrentLocation()}
       >
+       <View style={{flexDirection:'row',alignItems:'center'}}>
+        
         <FastImage
           source={images.locationIcon}
           style={styles.backImg}
           resizeMode={FastImage.resizeMode.contain}
         />
         <Text style={styles.locationText}>Use Current Location</Text>
+         {
+                      loading?(
+                        <ActivityIndicator color={COLORS.white} size={'small'} />
+                      ):null
+                    }
+       </View>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.locationManualButton}
         onPress={() => handleManuallyLocation()}
@@ -116,17 +125,20 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: wp('5%'),
     backgroundColor: COLORS.white,
+    alignItems:"center",
+    justifyContent:"center"
   },
   backButton: {
     marginBottom: hp('2%'),
   },
   backImg: {
-    width: wp('5%'),
-    height: hp('5%'),
+    width: isTablet? wp(3.5):wp(6),
+    height:isTablet? hp(3.5):hp(6),
     resizeMode: 'contain',
     marginHorizontal: hp('1%'),
   },
   title: {
+    
     fontSize: hp('2.5%'),
     fontFamily: Fonts.bold,
     textAlign: 'center',
@@ -173,7 +185,8 @@ const styles = StyleSheet.create({
     fontSize: hp('1.8%'),
     fontFamily: Fonts.medium,
     // marginLeft: wp('2%'),
-    textAlign:'center'
+    textAlign:'center',
+    marginRight:10
   },
   errorText: {
     color: COLORS.errorRed,

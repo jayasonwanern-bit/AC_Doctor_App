@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Animated,
   StatusBar,
   ActivityIndicator,
-  Alert, 
+  Alert,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -28,10 +28,23 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context'; // Use SafeAreaView instead of SafeAreaProvider
-import { getAuthpatner,getServiceList,getBanner } from '../../api/homeApi';
-import { useFocusEffect} from '@react-navigation/native';
+import { getAuthpatner, getServiceList, getBanner } from '../../api/homeApi';
+import { useFocusEffect } from '@react-navigation/native';
+import GetLoaction from '../../components/GetLoaction';
+import { useDispatch } from 'react-redux';
+import { dispatch, store } from '../../redux/store';
+import { setAddress, setCelcius } from '../../redux/slices/authSlice';
+const weatherData = store?.getState()?.auth?.celcius;
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
+  const {
+    latitude,
+    longitude,
+    addressText,
+    // loading,
+
+    getLocation,
+  } = GetLoaction();
   const insets = useSafeAreaInsets();
   const scheme = useColorScheme();
   const [loading, setLoading] = useState(false);
@@ -54,17 +67,17 @@ const HomeScreen = ({ navigation }) => {
     },
   };
 
-  const [selectedAddress, setSelectedAddress] = useState(null);
+  const { locationData } = route.params || {};
 
-  // Navigation handlers (unchanged)
   const screens = {
-  STERILIZATION: 'GasChargeScreen',
-  REPAIR: 'GasChargeScreen',
-  INSTALLATION: 'GasChargeScreen',
-  COMMERCIAL_AC: 'CommericalAc',
-  GAS_CHARGING: 'GasChargeScreen',
-  OTHER: 'GasChargeScreen',
-};
+    STERILIZATION: 'GasChargeScreen',
+    REPAIR: 'GasChargeScreen',
+    INSTALLATION: 'GasChargeScreen',
+    COMMERCIAL_AC: 'CommericalAc',
+    GAS_CHARGING: 'GasChargeScreen',
+    OTHER: 'GasChargeScreen',
+  };
+
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
   const handleAMC = () => navigation.navigate('AMCFrom');
   const handleCopperPipe = () => navigation.navigate('CopperPipeScreen');
@@ -83,9 +96,6 @@ const HomeScreen = ({ navigation }) => {
     { label: 'AMC', icon: images.AMCicon, action: handleAMC },
     { label: 'Copper Pipe', icon: images.copperIcon, action: handleCopperPipe },
   ];
-
-
-
   const utilities = [
     {
       label: 'Tonage Calculator',
@@ -108,11 +118,9 @@ const HomeScreen = ({ navigation }) => {
       action: handleProComparison,
     },
   ];
-
   const [Authpartner, setAuthpartner] = useState([]);
   const [bookServices, setBookServices] = useState([]);
   const [bannerImages, setBannerImages] = useState([]);
-
   const chunkArray = (array = [], size) => {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
@@ -120,30 +128,63 @@ const HomeScreen = ({ navigation }) => {
     }
     return result;
   };
-
   const activeData = Authpartner.filter(item => item.isActive === 1);
-
   const pages = chunkArray(activeData, 6);
+  const [Loader, setLoader] = useState(true);
+  const [addresslocation, setAddressTextLocation] = useState('');
 
   useEffect(() => {
-    const loadAddress = async () => {
-      const addr = await getSelectedAddress();
-      if (addr) {
-        setSelectedAddress(addr.address || addr);
-      }
-    };
-    loadAddress();
+    // ✅ CASE 1: Address coming from previous screen
+    if (locationData?.address?.fullAddress) {
+      setLoader(false);
+      setAddressTextLocation(locationData.address);
+      dispatch(setAddress({ address: locationData.address }));
+      getWeather(locationData.latitude, locationData.longitude);
+      return;
+    }
 
+    // ✅ CASE 2: No address → fetch current location
+    setLoader(true);
+    getLocation(data => {
+      getWeather(data.latitude, data.longitude);
+      setAddressTextLocation(data?.address || '');
+      dispatch(setAddress({ address: data?.address }));
+      setLoader(false);
+    });
   }, []);
 
-  useFocusEffect(
-   useCallback(() => {
-    getauthservice();
-    getBookService();
-    getBannerImg();
-    }, [])
-  )
+  const [WeatherLoader, setWeatherLoader] = useState(true);
+  const [WeatherData, setWeatherData] = useState();
 
+  const getWeather = async (lat, lon) => {
+    setWeatherLoader(true);
+
+    try {
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${String(
+          lat,
+        )}&longitude=${String(lon)}&current_weather=true`,
+      );
+      const data = await response.json();
+      // return data;
+      setWeatherLoader(false);
+      setWeatherData(data);
+      dispatch(setCelcius({ celcius: data }));
+      console.log(data.current_weather_units.temperature, 'weather');
+    } catch (error) {
+      setWeatherLoader(false);
+
+      console.log(error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getauthservice();
+      getBookService();
+      getBannerImg();
+    }, []),
+  );
   const getauthservice = async () => {
     try {
       setLoading(true);
@@ -167,17 +208,17 @@ const HomeScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
-//  booking navigation
-  const handleServiceNavigation = (service) => {
-  const screen = screens[service?.key];
-  if (screen) {
-    navigation.navigate(screen, { screenName:service.name});
-  } else {
-    console.log("Screen not found for:", service?.key);
-  }
-};
+  //  booking navigation
+  const handleServiceNavigation = service => {
+    const screen = screens[service?.key];
+    if (screen) {
+      navigation.navigate(screen, { screenName: service.name });
+    } else {
+      console.log('Screen not found for:', service?.key);
+    }
+  };
 
- const getBannerImg = async () => {
+  const getBannerImg = async () => {
     try {
       setLoading(true);
       const res = await getBanner();
@@ -188,7 +229,6 @@ const HomeScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
-
 
   return (
     <SafeAreaView
@@ -211,52 +251,75 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.header}>
           <Text style={styles.locationtitle}>Location</Text>
           <View style={styles.addressRow}>
-            <TouchableOpacity
-              style={styles.locationContainer}
-              // onPress={() =>
-              //   // navigation.navigate('SelectLocation', { onUpdate: loadAddress })
-              // }
-            >
-              <Image
-                source={images.homeLocation}
-                style={styles.locationIcon}
-                resizeMode="contain"
-              />
-              <Text style={styles.locationText}>149, Vijay Nagar, Indore</Text>
-            </TouchableOpacity>
+            {Loader ? (
+              <>
+                <ActivityIndicator color={'red'} size={'small'} />
+              </>
+            ) : (
+              <View style={styles.locationContainer}>
+                <Image
+                  source={images.homeLocation}
+                  style={styles.locationIcon}
+                  resizeMode="contain"
+                />
+                <Text style={styles.locationText}>
+                  {`${addresslocation.house}  ${addresslocation.road}, ${addresslocation.city}` ||
+                    'Select Location'}
+                </Text>
+              </View>
+            )}
+
             <View style={styles.wheatherContainer}>
               <Image
                 source={images.wheatherIcon}
                 style={styles.locationIcon}
                 resizeMode="contain"
               />
-              <Text style={styles.locationText}>25°C</Text>
+              {WeatherLoader ? (
+                <>
+                  <ActivityIndicator color={'red'} size={'small'} />
+                </>
+              ) : (
+                <Text
+                  style={styles.locationText}
+                >{`${WeatherData?.current_weather?.temperature} ${WeatherData?.current_weather_units?.temperature}`}</Text>
+              )}
             </View>
           </View>
         </View>
 
         {/* Banner Image */}
-       {loading ? <ActivityIndicator/> :<CustomSlider images={bannerImages} />}
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <CustomSlider images={bannerImages} />
+        )}
 
-{/* Book a service */}
+        {/* Book a service */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Book a Services</Text>
-         {loading ? <ActivityIndicator/>
-         : <View style={styles.reqgrid}>
-            {bookServices.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.bookcard}
-                onPress={() => handleServiceNavigation(item)}
-              >
-                <FastImage source={{ uri: item.icon }} style={styles.reqicon} />
-                <Text style={styles.reqlabel}>{item.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>}
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <View style={styles.reqgrid}>
+              {bookServices.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.bookcard}
+                  onPress={() => handleServiceNavigation(item)}
+                >
+                  <FastImage
+                    source={{ uri: item.icon }}
+                    style={styles.reqicon}
+                  />
+                  <Text style={styles.reqlabel}>{item.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </View>
 
-{/* Request a Quote */}
+        {/* Request a Quote */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Request a Quote</Text>
           <View style={styles.reqgrid}>
@@ -293,37 +356,41 @@ const HomeScreen = ({ navigation }) => {
         </LinearGradient>
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Authorized Service Partner</Text>
-         {loading ? <ActivityIndicator /> : <FlatList
-            data={pages}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(_, index) => `page-${index}`}
-            renderItem={({ item: page }) => (
-              <View style={styles.authgrid}>
-                {[0, 1, 2].map(row => (
-                  <View
-                    key={row}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      marginVertical: 3,
-                    }}
-                  >
-                    {page.slice(row * 3, row * 3 + 3).map((item, idx) => (
-                      <View key={idx} style={styles.authoption}>
-                        <FastImage
-                          source={{ uri: item.logo }} // <-- FIX
-                          style={styles.authicon}
-                          resizeMode={FastImage.resizeMode.contain}
-                        />
-                      </View>
-                    ))}
-                  </View>
-                ))}
-              </View>
-            )}
-          />}
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <FlatList
+              data={pages}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(_, index) => `page-${index}`}
+              renderItem={({ item: page }) => (
+                <View style={styles.authgrid}>
+                  {[0, 1, 2].map(row => (
+                    <View
+                      key={row}
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        marginVertical: 3,
+                      }}
+                    >
+                      {page.slice(row * 3, row * 3 + 3).map((item, idx) => (
+                        <View key={idx} style={styles.authoption}>
+                          <FastImage
+                            source={{ uri: item.logo }} // <-- FIX
+                            style={styles.authicon}
+                            resizeMode={FastImage.resizeMode.contain}
+                          />
+                        </View>
+                      ))}
+                    </View>
+                  ))}
+                </View>
+              )}
+            />
+          )}
         </View>
 
         <View style={styles.uticontainer}>

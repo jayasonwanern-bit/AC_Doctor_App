@@ -9,6 +9,9 @@ import {
   TouchableWithoutFeedback,
   StatusBar,
   Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {
@@ -27,6 +30,7 @@ import { loginUser } from '../../api/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setToken } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import Toast from 'react-native-simple-toast'
 
 const phoneSchema = yup.object().shape({
   phoneNumber: yup
@@ -38,6 +42,7 @@ const phoneSchema = yup.object().shape({
 const LoginScreen = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState('IN'); // Default India
   const [callingCode, setCallingCode] = useState('+91'); // Default calling code
+    const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -56,8 +61,9 @@ const LoginScreen = ({ navigation }) => {
       phoneNumber: data.phoneNumber,
     };
     try {
+      setLoading(true)
       const res = await loginUser(postdata);
-      console.log('Login screen Response:-->', res?.data );
+      console.log('Login screen Response:-->', res);
       // ==== Save Token ====    
       dispatch(setToken({ accessToken: res?.data?.assessToken }));
       navigation.navigate('Verification', {
@@ -67,19 +73,32 @@ const LoginScreen = ({ navigation }) => {
         userId: res.data.userId,
         isAutoTesting: false, //// only for development notification
       });
+       Toast.show("Login Success", Toast.LONG);
+       Keyboard.dismiss()
     } catch (error) {
+       Toast.show("500",error, Toast.LONG);
+
+      setLoading(false)
       console.log('Login Error:', error);
     }
+    finally {
+    setLoading(false);   
+  }
   };
 
+
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={COLORS.white}
-        translucent={false}
-      />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+  <SafeAreaView style={styles.container}>
+  <StatusBar barStyle="dark-content" />
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAwareScrollView
+      keyboardShouldPersistTaps="handled"
+      enableOnAndroid
+      extraScrollHeight={hp('8%')}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
         <View style={styles.mainView}>
           <Text style={styles.title}>Welcome</Text>
           <Text style={styles.titleHead}>Let's Keep Your AC Healthy</Text>
@@ -124,28 +143,39 @@ const LoginScreen = ({ navigation }) => {
               },
             ]}
             onPress={handleSubmit(onSubmit)}
-            disabled={!isValid}
+            disabled={!isValid || loading}
           >
+            <View style={{flexDirection:'row'}}>
+
             <Text style={styles.buttonText}>Get Verification Code</Text>
+            {
+              loading?(
+                <ActivityIndicator color={COLORS.white} size={'small'} />
+              ):null
+            }
+            </View>
           </TouchableOpacity>
         </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+      </KeyboardAwareScrollView>
+  </TouchableWithoutFeedback>
+</SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+ contentContainer: {
+  flexGrow: 1,
+  // paddingBottom: hp('5%'), // prevents button cut-off
+},
   container: {
     flex: 1,
     padding: wp('5%'),
     backgroundColor: COLORS.white,
   },
-  mainView: { flex: 1, marginTop: hp(10) },
+  mainView: {
+  flexGrow: 1,
+  paddingTop: hp('4%'),
+},
   title: {
     fontSize: hp('3.6%'),
     fontFamily: Fonts.semiBold,
@@ -187,12 +217,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: COLORS.white,
-    fontSize: hp('1.6%'),
+    fontSize: hp('1.7%'),
     fontFamily: Fonts.semiBold,
+    marginRight:10
   },
-  contentContainer: {
-    flexGrow: 1,
-  },
+
 });
 
 export default LoginScreen;

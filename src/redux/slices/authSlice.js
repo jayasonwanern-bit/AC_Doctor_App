@@ -7,6 +7,7 @@ const initialState = {
   accessToken: null,
   signupToken: null,
   isInternetConected: true,
+  celcius:null,
   brandList: [], 
 };
 
@@ -23,6 +24,9 @@ const authSlice = createSlice({
     setAddress: (state, action) => {
       state.address = action.payload.address;
     },
+    setCelcius: (state, action) => {
+      state.celcius = action.payload.celcius;
+    },
      setBrandList: (state, action) => {
       state.brandList = action.payload.brandList;
     },
@@ -35,6 +39,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setToken, logout, setUser,setAddress,setBrandList } = authSlice.actions;
+export const { setToken, logout, setUser,setAddress,setBrandList , setCelcius} = authSlice.actions;
 
 export default authSlice.reducer;

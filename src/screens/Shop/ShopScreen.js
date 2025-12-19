@@ -8,8 +8,11 @@ import images from '../../assets/images';
 import CustomSlider from '../../components/CustomSlider';
 import LinearGradient from 'react-native-linear-gradient';
 import { COLORS } from '../../utils/colors';
+import { store } from '../../redux/store';
 
 const ShopScreen = ({navigation}) => {
+    const addressText = store?.getState()?.auth?.address;
+  
       const scheme = useColorScheme();
         // Dynamic styles based on scheme
         const dynamicStyles = {
@@ -108,7 +111,8 @@ const ShopScreen = ({navigation}) => {
                 style={Commonstyles.locationIcon}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={Commonstyles.locationText}>149, Vijay Nagar, Indore</Text>
+              <Text style={Commonstyles.locationText}>{`${addressText.house}  ${addressText.road}, ${addressText.city}` ||
+                    'Select Location'}</Text>
             </TouchableOpacity>
             <View style={[Commonstyles.reqgrid]}>
              <TouchableOpacity>

@@ -7,7 +7,8 @@ import {
   FlatList,
   StatusBar as RNStatusBar,
   StyleSheet,
-  Alert,StatusBar,
+  Alert,
+  StatusBar,
   useColorScheme,
 } from 'react-native';
 import {
@@ -24,32 +25,35 @@ import { store } from '../../redux/store';
 import { getUserProfile, logoutUser } from '../../api/profileApi';
 import Toast from 'react-native-simple-toast';
 import { logout } from '../../redux/slices/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AccountScreenComponent = ({ navigation }) => {
   const scheme = useColorScheme();
-      // Dynamic styles based on scheme
-      const dynamicStyles = {
-        safeArea: {
-          backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#ffffff',
-        },
-        backText: {
-          color: scheme === 'dark' ? '#ffffff' : '#000000',
-        },
-        title: {
-          color: scheme === 'dark' ? '#ffffff' : '#000000',
-        },
-        helpIcon: {
-          tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
-        },
-        extraIcon: {
-          tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
-        },
-      };
+  // Dynamic styles based on scheme
+  const dynamicStyles = {
+    safeArea: {
+      backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#ffffff',
+    },
+    backText: {
+      color: scheme === 'dark' ? '#ffffff' : '#000000',
+    },
+    title: {
+      color: scheme === 'dark' ? '#ffffff' : '#000000',
+    },
+    helpIcon: {
+      tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
+    },
+    extraIcon: {
+      tintColor: scheme === 'dark' ? '#ffffff' : '#000000',
+    },
+  };
   const [loading, setLoading] = useState(true);
   const [storeData, setStoreData] = useState(null);
   const dispatch = useDispatch();
   const userId = store?.getState()?.auth?.user;
-  console.log('usermanagr --->', userId);
+  const addressText = store?.getState()?.auth?.address;
+  const weatherData = store?.getState()?.auth?.celcius;
+  console.log('addressText --->', weatherData);
 
   const handleMenuPress = async screen => {
     if (screen === 'Logout') {
@@ -61,10 +65,19 @@ const AccountScreenComponent = ({ navigation }) => {
             try {
               const res = await logoutUser(userId?._id);
               if (res?.status) {
-                Toast.show(res?.message);
+                try {
+                  await AsyncStorage.removeItem('authToken');
+                  Toast.show(res?.message);
+                  dispatch(logout());
+                  // navigation.replace('Login');
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                  });
+                } catch (e) {
+                  console.log('Error removing token', e);
+                }
               }
-              dispatch(logout());
-              navigation.replace('Login');
             } catch (error) {
               Toast.show(error);
             }
@@ -93,31 +106,31 @@ const AccountScreenComponent = ({ navigation }) => {
     } catch (error) {
       console.log('Error fetching profile:', error);
     } finally {
-      setLoading(false);  
+      setLoading(false);
     }
   };
 
   return (
-      <SafeAreaView
-               style={[
-                Homestyles.safeArea,
-                 { backgroundColor: dynamicStyles.safeArea.backgroundColor },
-               ]}
-             >
-               <StatusBar
-                 barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-                 backgroundColor="transparent"
-                 translucent={true}
-               />
+    <SafeAreaView
+      style={[
+        Homestyles.safeArea,
+        { backgroundColor: dynamicStyles.safeArea.backgroundColor },
+      ]}
+    >
+      <StatusBar
+        barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor="transparent"
+        translucent={true}
+      />
       {/* Header with Location Icon and Add Location Text */}
       <View style={Homestyles.header}>
         <Text style={Homestyles.locationtitle}>Location</Text>
         <View style={Homestyles.addressRow}>
           <TouchableOpacity
             style={Homestyles.locationContainer}
-            onPress={() =>
-              navigation.navigate('SelectLocation', { onUpdate: loadAddress })
-            }
+            // onPress={() =>
+            //   navigation.navigate('SelectLocation', { onUpdate: loadAddress })
+            // }
           >
             <FastImage
               source={images.homeLocation}
@@ -125,7 +138,8 @@ const AccountScreenComponent = ({ navigation }) => {
               resizeMode={FastImage.resizeMode.contain}
             />
             <Text style={Homestyles.locationText}>
-              149, Vijay Nagar, Indore
+              {`${addressText.house}  ${addressText.road}, ${addressText.city}` ||
+                'Select Location'}
             </Text>
           </TouchableOpacity>
           <View style={Homestyles.wheatherContainer}>
@@ -134,7 +148,9 @@ const AccountScreenComponent = ({ navigation }) => {
               style={Homestyles.locationIcon}
               resizeMode={FastImage.resizeMode.contain}
             />
-            <Text style={Homestyles.locationText}>25°C</Text>
+            <Text
+              style={Homestyles.locationText}
+            >{`${weatherData?.current_weather?.temperature} ${weatherData?.current_weather_units?.temperature}`}</Text>
           </View>
         </View>
       </View>

@@ -4,21 +4,36 @@ import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
 import { COLORS } from '../../utils/colors';
 import { store } from '../../redux/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({ navigation }) => {
 
   useEffect(() => {
-  const userData = store?.getState()?.auth?.user?.data;
-  console.log(' Splash userData---->',userData)
-  const timer = setTimeout(() => {
-    if (userData) {
+  
+
+getData()
+
+  
+}, []);
+const getData =async ()=>{
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    // return token;
+    const timer = setTimeout(() => {
+
+    if (token) {
        navigation.navigate('Tab', { screen: 'Home' });   
     } else {
      navigation.replace('Login');  
     }
   }, 1500);
    return () => clearTimeout(timer);
-}, []);
+    
+  } catch (error) {
+    console.log('Error getting token', error);
+    return null;
+  }
+}
 
 
   return (

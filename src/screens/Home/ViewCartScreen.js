@@ -359,7 +359,7 @@ const bookServices = [
       <View
         style={[
           styles.servicesSection,
-          { height: proceed ? hp('30%') : hp('10%') },
+          { height: proceed ? hp('33%') : hp('10%') },
         ]}
       >
         {proceed && (
@@ -421,11 +421,10 @@ const bookServices = [
         />
        {proceed && 
             <TouchableOpacity  style={{
-                marginVertical: hp('2%'), marginBottom: hp('2%'),
-                alignItems: 'center',
+                marginVertical: hp('2%'), marginBottom: hp('3%'),
               }}>
               <Text style={styles.textBottom}>
-                By proceeding, you agree to our T&C, Privacy & Cancellation Policy
+                By proceeding, you agree to our T&C, Privacy & Cancellation Policy.
               </Text>
             </TouchableOpacity>}
       </View>

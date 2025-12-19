@@ -4,9 +4,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert,
-  Platform,
   Keyboard,
+  TouchableWithoutFeedback,
+  StatusBar,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -22,6 +22,10 @@ import useCountdown from '../../utils/hooks/useCountdown';
 import { useDispatch } from 'react-redux';
 import { setToken, setUser } from '../../redux/slices/authSlice';
 import Toast from 'react-native-simple-toast';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { isTablet } from '../../components/TabletResponsiveSize';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VerificationScreen = ({ navigation, route }) => {
   const {
@@ -29,7 +33,6 @@ const VerificationScreen = ({ navigation, route }) => {
     callingCode,
     otp: serverOtp,
     userId,
-    isAutoTesting,
   } = route.params;
   const [serverOtpState, setServerOtpState] = useState(serverOtp);
   const [otp, setOtp] = useState('');
@@ -38,12 +41,13 @@ const VerificationScreen = ({ navigation, route }) => {
   const { time, startCountdown, resetCountdown, status, formatTime } =
     useCountdown();
   const dispatch = useDispatch();
-
+  const [Loader, setLoader] = useState(false);
   useEffect(() => {
     startCountdown(30);
   }, [startCountdown]);
 
   const handleVerify = async () => {
+    setLoader(true);
     if (otp.length !== 4) {
       setError('Please enter a 4-digit OTP');
       return;
@@ -53,33 +57,62 @@ const VerificationScreen = ({ navigation, route }) => {
       otp: Number(otp),
       userId: userId,
     };
-
     try {
       const res = await VerifyOTP(postdata);
-      // console.log("Response:", res);
+      console.log("Response:", res?.data?.data?.refreshToken);
       if (res?.data?.status === true) {
-        dispatch(setUser({ user: res?.data?.data }));
+        // console
+
+
+
+ try {
+    await AsyncStorage.setItem('authToken', res?.data?.data?.refreshToken);
+ dispatch(setUser({ user: res?.data?.data }));
         dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
 
         Toast.show(res?.data?.message || 'Verified Successfully');
 
-        navigation.replace('ServiceScreen');
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'ServiceScreen',
+            },
+          ],
+        });
+        Keyboard.dismiss();
+        setLoader(false);
+  } catch (error) {
+        Toast.show('Auth Not Found');
+
+    console.log('Error saving token', error);
+  }
+
+       
       }
       // failed case (but server returned status 200)
       else {
         Toast.show(res?.data?.message || 'Invalid OTP');
+        setLoader(false);
       }
     } catch (error) {
+      setLoader(false);
+
       console.log('Catch Error:', error);
 
       // SERVER SENT ERROR MESSAGE (like status 410)
       if (error?.response?.data?.message) {
         Toast.show(error?.response?.data?.message);
+        setLoader(false);
       }
       // If message missing show default
       else {
+        setLoader(false);
+
         Toast.show('Something went wrong');
       }
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -108,69 +141,92 @@ const VerificationScreen = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <FastImage
-          source={images.backArrow}
-          style={styles.backImg}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-      </TouchableOpacity>
-      <Text style={styles.title}>Verification code</Text>
-      <Text style={styles.title}>{serverOtpState}</Text>
-      <FastImage
-        source={images.otpIcon}
-        style={styles.image}
-        resizeMode={FastImage.resizeMode.contain}
-      />
-      <Text style={styles.otptitle}>Enter OTP to Verify</Text>
-      <Text style={styles.subtitle}>
-        We've sent a 4-digit code to {callingCode}{' '}
-        {phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1XXXX$3')}
-      </Text>
-      <OTPTextInput
-        inputCount={4}
-        keyboardType="numeric"
-        autoFocus={true}
-        handleTextChange={text => {
-          setOtp(text);
-          if (text.length === 4) {
-            Keyboard.dismiss(); // ✅ closes keyboard
-          }
-        }}
-        defaultValue={otp}
-        containerStyle={styles.otpContainer}
-        textInputStyle={styles.otpInput}
-        tintColor={COLORS.themeColor} // Active box color
-        offTintColor={COLORS.borderColor} // Inactive box color
-      />
-      {error && <Text style={styles.errorText}>{error}</Text>}
-      <TouchableOpacity
-        onPress={() => {
-          status !== 'running' && handleResendOTP();
-        }}
-      >
-        <Text style={[styles.resendTitle, { color: COLORS.black }]}>
-          {status === 'running' ? formatTime(time) : 'Resend OTP'}
-        </Text>
-      </TouchableOpacity>
+    <SafeAreaView style={styles.SafeAreaViewContainer}>
+      <StatusBar barStyle="dark-content" />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAwareScrollView
+          keyboardShouldPersistTaps="handled"
+          enableOnAndroid
+          extraScrollHeight={hp('8%')}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.container}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack('')}
+            >
+              <FastImage
+                source={images.backArrow}
+                style={styles.backImg}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+            </TouchableOpacity>
+            <Text style={styles.title}>Verification code</Text>
+            <Text style={styles.title}>{serverOtpState}</Text>
+            <FastImage
+              source={images.otpIcon}
+              style={styles.image}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+            <Text style={styles.otptitle}>Enter OTP to Verify</Text>
+            <Text style={styles.subtitle}>
+              We've sent a 4-digit code to {callingCode}{' '}
+              {phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1XXXX$3')}
+            </Text>
+            <OTPTextInput
+              inputCount={4}
+              keyboardType="numeric"
+              autoFocus={false}
+              handleTextChange={text => {
+                setOtp(text);
+                if (text.length === 4) {
+                  Keyboard.dismiss();
+                }
+              }}
+              defaultValue={otp}
+              containerStyle={styles.otpContainer}
+              textInputStyle={styles.otpInput}
+              tintColor={COLORS.themeColor} // Active box color
+              offTintColor={COLORS.borderColor} // Inactive box color
+            />
+            {error && <Text style={styles.errorText}>{error}</Text>}
+            <TouchableOpacity
+              onPress={() => {
+                status !== 'running' && handleResendOTP();
+              }}
+            >
+              {/* <View style={{flexDirection:'row',alignItems:'center'}}> */}
 
-      <CustomButton
-        buttonName="Submit"
-        margingTOP={hp('3%')}
-        btnTextColor={COLORS.white}
-        btnColor={otp.length === 4 ? COLORS.themeColor : COLORS.disabledGrey}
-        onPress={handleVerify}
-        disabled={otp.length !== 4}
-      />
-    </View>
+              <Text style={[styles.resendTitle, { color: COLORS.black }]}>
+                {status === 'running' ? formatTime(time) : 'Resend OTP'}
+              </Text>
+
+              <CustomButton
+                buttonName="Submit"
+                margingTOP={hp('3%')}
+                btnTextColor={COLORS.white}
+                btnColor={
+                  otp.length === 4 ? COLORS.themeColor : COLORS.disabledGrey
+                }
+                onPress={handleVerify}
+                disabled={otp.length !== 4}
+                Loader={Loader}
+              />
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  SafeAreaViewContainer: {
+    flex: 1,
+    // padding: wp('5%'),
+    backgroundColor: COLORS.white,
+  },
   container: {
     flex: 1,
     padding: wp('5%'),
@@ -226,13 +282,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: hp('1%'),
     marginTop: hp('0.5%'),
+    // height
   },
   otpInput: {
+    // height
     borderWidth: 1,
     borderColor: COLORS.borderColor,
     borderRadius: 20,
-    width: wp('13%'),
-    height: Platform.OS === 'android' ? hp('6%') : hp('5%'),
+    width: isTablet ? wp(6) : wp('13%'),
+    // height: Platform.OS === 'android' ? hp('6%') : hp('5%'),
+    height: hp(6),
+
     fontSize: hp('2.5%'),
     textAlign: 'center',
   },

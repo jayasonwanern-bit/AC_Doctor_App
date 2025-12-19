@@ -6,6 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
+import { isTablet } from '../../components/TabletResponsiveSize';
 
 export default StyleSheet.create({
   safeArea: { flex: 1},
@@ -32,6 +33,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginLeft: wp(0.2),
+
   },
   oneWidthRow: {
     flexDirection: 'row',
@@ -43,18 +46,19 @@ export default StyleSheet.create({
     fontSize: hp('1.5%'),
     color: COLORS.gray,
     fontFamily: Fonts.semiBold,
-    marginLeft: wp('1.5%'),
+    marginLeft: wp(0.5),
   },
   locationIcon: {
-    width: wp('5%'),
-    height: hp('3%'),
-    marginRight: wp('2%'),
+    width: isTablet? wp('2%'):wp(6),
+    height: isTablet? wp('2%'):wp(6),
+    // marginRight:isTablet? wp(0.2):wp(2),
     alignSelf: 'flex-start',
   },
   locationText: {
     fontSize: hp('1.5%'),
     color: COLORS.black,
     fontFamily: Fonts.medium,
+    marginLeft:wp(0.2)
   },
   mediumText: {
     fontSize: hp('1.7%'),

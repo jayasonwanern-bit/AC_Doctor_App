@@ -1,89 +1,109 @@
-// src/components/CustomInput.js
 import React from 'react';
-import { View, TextInput, StyleSheet, Text, Platform,Keyboard } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { View, TextInput, StyleSheet, Text, Keyboard } from 'react-native';
 import CountryPicker from 'react-native-country-picker-modal';
-import { COLORS } from '../utils/colors';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { COLORS, Fonts } from '../utils/colors';
+import {isTablet} from "../components/TabletResponsiveSize"
+const CustomPhoneInput = ({
+  countryCode,
+  setCountryCode,
+  setCallingCode,
+  callingCode,
+  phoneNumber,
+  setPhoneNumber,
+  error,
+}) => {
+  return (
+    <View style={styles.wrapper}>
+      {/* PHONE INPUT BOX */}
+      <View style={styles.flexContain}>
+        <View style={styles.container}>
+          {/* COUNTRY PICKER */}
+          <CountryPicker
+            withFlag
+            withCallingCode={false}
+            withFilter
+            countryCode={countryCode}
+            onSelect={country => {
+              setCountryCode(country.cca2);
+              setCallingCode(`+${country.callingCode[0]}`);
+            }}
+            containerButtonStyle={styles.countryPicker}
+          />
 
-const CustomPhoneInput = ({ countryCode, setCountryCode,setCallingCode, callingCode,phoneNumber, setPhoneNumber, error }) => {
+          {/* CALLING CODE */}
+          <Text style={styles.callingCode}>{callingCode}</Text>
+        </View>
+        <View style={[styles.container, { width: isTablet ? wp(70) :wp(62) }]}>
+          {/* PHONE INPUT */}
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your mobile number"
+            placeholderTextColor={COLORS.textColor}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            keyboardType="number-pad"
+            maxLength={10}
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+        </View>
+      </View>
 
-    return (
-    <View style={styles.container}>
-        <View style={styles.inboxBorder}>
-      <CountryPicker
-        withFlag
-        withCallingCode
-        withFilter
-        translation="eng"
-        countryCode={countryCode}
-        onSelect={(country) => {
-          setCountryCode(country.cca2); // e.g., 'IN'
-          setCallingCode(`+${country.callingCode[0]}`); // e.g., '+91'
-        }}
-        containerButtonStyle={styles.countryPicker}
-      />
-      <Text style={styles.callingCode}>
-        {callingCode} {/* Displays +91, +1, etc. */}
-      </Text>
-     </View>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your mobile number"
-        placeholderTextColor={COLORS.textColor}
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        keyboardType="phone-pad"
-        maxLength={10}
-        submitBehavior='submit'
-        returnKeyType='done'
-        onSubmitEditing={() => Keyboard.dismiss()}
-      />
+      {/* ERROR MESSAGE */}
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
+  wrapper: {
+    width: '100%',
+    marginTop: hp('1%'),
+  },
+ flexContain:{ 
+  flexDirection: 'row', 
+  justifyContent: 'space-between' 
+},
   container: {
     flexDirection: 'row',
+    justifyContent:"center",
     alignItems: 'center',
-  },
-  inboxBorder:{
-    flexDirection: 'row',
-    marginVertical: hp('2%'),
     borderWidth: 1,
-    alignItems: 'center',
     borderColor: '#ccc',
-    borderRadius: 20,
-    paddingHorizontal: wp('2%'),
-    height: hp('4.5%'),
-  },
-  countryPicker: {
-    // marginRight: wp('1%'),
-  },
-  callingCode: {
-    fontSize: hp('1.8%'),
-    // marginRight: wp('1%'),
-  },
-  input: {
-   flex: 1,
-    height: hp('4.8%'), 
-    marginLeft: wp('2.5%'),
-    marginVertical: hp('2%'),
-    borderWidth: 1,
-    alignItems: 'center',
-    borderColor: '#ccc',
-    borderRadius: 20,
+    borderRadius: 25,
     paddingHorizontal: wp('3%'),
-    // paddingVertical: wp('3%'),
+    height: hp('5%'),
+    width: isTablet ? wp(18) : wp(25)
   },
+
+  countryPicker: {
+    marginRight: wp('2%'),
+  },
+
+  callingCode: {
+    fontSize: hp('1.7%'),
+    // fontSize: hp('1.7%'),
+    color:COLORS.black,
+    fontFamily:Fonts.medium,
+    // fontWeight: '500',
+    marginRight: wp('2%'),
+  },
+
+  input: {
+    flex: 1,
+    fontSize: hp('1.7%'),
+    color:COLORS.black,
+    fontFamily:Fonts.medium,
+    paddingVertical: 0, // important for iOS
+  },
+
   errorText: {
+    marginTop: hp('0.8%'),
     color: COLORS.errorRed,
-    fontSize: hp('1.5%'),
-    textAlign:'center',
-    position: 'absolute',
-    bottom: -hp('0.5%'),
+    fontSize: hp('1.4%'),
   },
 });
 
