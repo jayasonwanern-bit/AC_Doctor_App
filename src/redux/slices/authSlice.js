@@ -2,13 +2,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  address:null,
+  address: null,
   user: null,
   accessToken: null,
   signupToken: null,
   isInternetConected: true,
-  celcius:null,
-  brandList: [], 
+  celcius: null,
+  brandList: [],
+  brandName: '',
 };
 
 const authSlice = createSlice({
@@ -27,18 +28,27 @@ const authSlice = createSlice({
     setCelcius: (state, action) => {
       state.celcius = action.payload.celcius;
     },
-     setBrandList: (state, action) => {
+    setBrandList: (state, action) => {
       state.brandList = action.payload.brandList;
     },
-
+    setBrand: (state, action) => {
+      state.brandName = action.payload.brandName;
+    },
     logout: state => {
       state.user = null;
       state.accessToken = null;
     },
-    
   },
 });
 
-export const { setToken, logout, setUser,setAddress,setBrandList , setCelcius} = authSlice.actions;
+export const {
+  setToken,
+  logout,
+  setUser,
+  setAddress,
+  setBrandList,
+  setCelcius,
+  setBrand,
+} = authSlice.actions;
 
 export default authSlice.reducer;

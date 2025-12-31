@@ -19,12 +19,13 @@ import images from '../assets/images';
 const PlaceTypeSelector = ({
   headingText = 'Place Type',
   onChange = () => {},
+  stylesContain,
 }) => {
   const [selectedType, setSelectedType] = useState('');
   const [customType, setCustomType] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  const placeOptions = ['Home', 'Office', 'Hostel', 'Industry', 'Other'];
+  const placeOptions = ['Residential', 'Commercial', 'Industrial'];
 
   const handleSelect = value => {
     setSelectedType(value);
@@ -39,7 +40,7 @@ const PlaceTypeSelector = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, stylesContain]}>
       <Text style={styles.label}>{headingText}</Text>
 
       {/* When NOT Other → Show Dropdown */}
@@ -95,6 +96,7 @@ export default PlaceTypeSelector;
 const styles = StyleSheet.create({
   container: {
     marginTop: hp(1.5),
+    alignSelf: 'center',
   },
   label: {
     fontSize: hp(1.6),
@@ -114,10 +116,10 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignSelf:'flex-start'
+    alignSelf: 'flex-start',
   },
   dropdownText: {
-    flex:1,
+    flex: 1,
     fontSize: hp(1.7),
     color: COLORS.black,
     fontFamily: Fonts.regular,

@@ -9,7 +9,7 @@ import images from '../../assets/images';
 import { isTablet } from '../../components/TabletResponsiveSize';
 
 export default StyleSheet.create({
-  safeArea: { flex: 1},
+  safeArea: { flex: 1 },
   container: { flex: 1 },
   content: {},
   header: {
@@ -34,31 +34,29 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginLeft: wp(0.2),
-
   },
   oneWidthRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: hp (2),
+    marginTop: hp(2),
   },
   locationtitle: {
-    fontSize: hp('1.5%'),
+    fontSize: isTablet ? hp('1.6%') : hp('1.5%'),
     color: COLORS.gray,
     fontFamily: Fonts.semiBold,
     marginLeft: wp(0.5),
   },
   locationIcon: {
-    width: isTablet? wp('2%'):wp(6),
-    height: isTablet? wp('2%'):wp(6),
-    // marginRight:isTablet? wp(0.2):wp(2),
+    width: isTablet ? wp('2%') : wp(6),
+    height: isTablet ? wp('2%') : wp(6),
     alignSelf: 'flex-start',
   },
   locationText: {
-    fontSize: hp('1.5%'),
+    fontSize: isTablet ? hp('1.6%') : hp('1.5%'),
     color: COLORS.black,
     fontFamily: Fonts.medium,
-    marginLeft:wp(0.2)
+    marginLeft: wp(0.2),
   },
   mediumText: {
     fontSize: hp('1.7%'),
@@ -82,7 +80,7 @@ export default StyleSheet.create({
     borderWidth: 0.5,
     borderColor: COLORS.themeColor,
     marginRight: wp('2%'),
-    padding: hp('0.5%'),
+    padding: isTablet ? hp('0.8%') : hp('0.5%'),
   },
   reqcontainer: {
     marginVertical: hp('1%'),
@@ -92,7 +90,7 @@ export default StyleSheet.create({
     marginHorizontal: hp('1.5%'),
   },
   reqtitle: {
-    fontSize: wp('3.5%'),
+    fontSize: isTablet ? wp(2.5) : wp(3.5),
     fontFamily: Fonts.semiBold,
     color: COLORS.black,
     marginBottom: hp('1%'),
@@ -109,29 +107,32 @@ export default StyleSheet.create({
     marginBottom: hp('0.5%'),
   },
   reqicon: {
-    width: wp('14%'),
-    height: wp('14%'),
+    width: isTablet ? wp(11) : wp(14),
+    height: isTablet ? wp(11) : wp(14),
     resizeMode: 'contain',
   },
   reqlabel: {
-    fontSize: wp('2.8%'),
+    fontSize: isTablet ? wp(1.8) : wp(3),
     color: COLORS.black,
     textAlign: 'center',
     marginTop: hp('1%'),
+    fontFamily: Fonts.medium,
   },
   uticontainer: {
     margin: hp('1%'),
     borderRadius: wp('3%'),
     padding: wp('1%'),
+    // paddingVertical: hp(3),
   },
   utigrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
-    paddingVertical: hp('1.5%'),
+    paddingTop: hp(2),
+    paddingBottom: hp(2),
   },
   utititle: {
-    fontSize: wp('3.5%'),
+    fontSize: isTablet ? wp(2.5) : wp(3.5),
     fontFamily: Fonts.semiBold,
     color: COLORS.black,
     marginLeft: wp('2%'),
@@ -161,15 +162,15 @@ export default StyleSheet.create({
     marginTop: hp('1%'),
   },
   authoption: {
-     width: wp('30%'),
+    width: wp('30%'),
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical:wp('1%'),
+    marginVertical: wp('1%'),
   },
   authgrid: {
-   justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical:wp('1.5%'),
+    paddingVertical: wp('1.5%'),
   },
   authicon: {
     width: wp('25%'),
@@ -195,35 +196,36 @@ export default StyleSheet.create({
     color: COLORS.black,
   },
   bookcard: {
-    width: wp('25%'),
+    width: isTablet ? wp('20%') : wp('25%'),
     alignItems: 'center',
     marginVertical: hp('1%'),
   },
- bottomLine:{
-  borderBottomWidth: hp('0.1%'),
-  borderBottomColor:COLORS.borderColor,
-  marginVertical:hp(1)
- },
+  bottomLine: {
+    borderBottomWidth: hp('0.1%'),
+    borderBottomColor: COLORS.borderColor,
+    marginVertical: hp(1),
+  },
   productCard: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: wp('2%'),
     marginBottom: hp('0.5%'),
-    width: wp('50%'), 
+    width: wp('50%'),
     shadowColor: '#080808ff',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 4,
     marginHorizontal: wp('2%'),
-    marginLeft: wp('3%'),
+    // marginLeft: wp('3%'),
   },
   boderinercard: {
     backgroundColor: COLORS.white,
     borderRadius: wp('3%'),
     borderColor: COLORS.borderColor,
     borderWidth: wp('0.2%'),
-    height: wp('25%'),
+    // height: wp('25%'),
+    paddingBottom: 10,
     marginVertical: hp('0.5%'),
   },
   topRow: {
@@ -246,13 +248,9 @@ export default StyleSheet.create({
     color: '#e74c3c',
   },
   image: {
-    width: '50%',
-    height: hp('15%'), // Adjusted height
-    marginBottom: 8,
+    width: '80%',
+
     alignSelf: 'center',
-    resizeMode: 'center',
-    position: 'absolute',
-    top: hp('-1.5%'),
   },
   dealRow: {
     flexDirection: 'row',
@@ -376,7 +374,7 @@ export default StyleSheet.create({
   },
 
   impcard: {
-    width: wp('90%'),
+    width: wp(95),
     backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: wp('3.3%'),
@@ -440,8 +438,8 @@ export default StyleSheet.create({
   },
 
   bannerStyle: {
-    width: wp('90%'),
-    height: hp('15%'),
+    width: isTablet ? wp(95) : wp(93),
+    height: isTablet ? hp(30) : hp(18),
     borderRadius: 12,
     alignSelf: 'center',
     resizeMode: 'cover',
@@ -449,7 +447,7 @@ export default StyleSheet.create({
   },
 
   sercard: {
-    width: wp('90%'),
+    width: wp(95),
     marginBottom: hp('5%'),
     alignSelf: 'center',
   },
@@ -495,8 +493,9 @@ export default StyleSheet.create({
   footerText: { fontSize: hp('1.5%'), color: COLORS.black },
 
   // sterilization styles
-  workContain:{
-  alignSelf:'flex-start',height: hp('14%'),
+  workContain: {
+    alignSelf: 'flex-start',
+    height: hp('14%'),
   },
   workoption: {
     marginVertical: hp('1%'),
@@ -519,7 +518,7 @@ export default StyleSheet.create({
     borderTopLeftRadius: wp('2%'),
     borderTopRightRadius: wp('2%'),
   },
-  workcontainer: { flex: 1,backgroundColor:'#fafafaff' },
+  workcontainer: { flex: 1, backgroundColor: '#fafafaff' },
   worksliderview: {
     marginVertical: hp('0.5%'),
     width: wp('100%'),
@@ -528,14 +527,13 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   workimage: {
-    width: '92%',
-    height: hp('18%'),
+    width: isTablet ? wp(93) : wp(93),
+    height: isTablet ? wp(40) : wp(40),
     resizeMode: 'contain',
-    borderRadius: 15,
   },
   workscrollstyle: { flex: 1, paddingHorizontal: wp('3%') },
   workheadText: {
-    fontSize: wp('3.6%'),
+    fontSize: isTablet ? wp(2.8) : wp(4),
     fontFamily: Fonts.semiBold,
     marginBottom: hp('1%'),
   },
@@ -565,23 +563,27 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
-    width: wp('7.3%'),
-    height: hp('3.5%'),
-    alignSelf:'center'
+    width: isTablet ? wp(6) : wp(7.3),
+    height: isTablet ? wp(6) : wp(7.3),
+    alignSelf: 'center',
   },
   workbuttonText: {
-    fontSize: wp('5%'),
+    fontSize: isTablet ? wp(3) : wp(5),
     color: COLORS.black,
     textAlignVertical: 'top',
     fontFamily: Fonts.medium,
-    marginBottom: Platform.OS === 'ios' ?hp('0.5%'):wp('2%'), 
-    position:'absolute'
+    marginBottom: Platform.OS === 'ios' ? hp('0.5%') : wp('2%'),
+    position: 'absolute',
   },
   workcount: {
-    fontSize: wp('3.5%'),
+    // fontSize: wp('3.5%'),
     marginHorizontal: 4,
     color: COLORS.themeColor,
     textAlign: 'center',
+    // color: '#fff',
+    fontFamily: Fonts.medium,
+    // textAlign: 'center',
+    fontSize: isTablet ? hp(1.5) : hp('1.3%'),
   },
   workaddButton: {
     borderColor: COLORS.darkGray,
@@ -601,22 +603,24 @@ export default StyleSheet.create({
   serviceCartButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     paddingVertical: wp('0%'),
     paddingHorizontal: hp('1%'),
     backgroundColor: COLORS.themeColor,
     borderRadius: wp(2),
-    width:wp(43)
+    width: wp(43),
   },
   boderwhiteButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     paddingVertical: wp('0%'),
     paddingHorizontal: hp('1%'),
     backgroundColor: COLORS.themeColor,
     borderRadius: wp(2),
-    backgroundColor:COLORS.white, borderWidth:1,borderColor:COLORS.TextColor
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.TextColor,
   },
 
   // FAQ STYLE
@@ -631,30 +635,30 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    padding: 15,
   },
   faquestionText: {
-    fontSize: wp('3.8%'),
+    fontSize: isTablet ? hp('1.7%') : hp('1.6%'),
     color: COLORS.black,
     fontFamily: Fonts.semiBold,
     marginVertical: wp('2%'),
   },
   faqarrow: {
     alignSelf: 'center',
-    fontSize: 16,
+    fontSize: 18,
     color: COLORS.darkText,
   },
   faqanswerText: {
-    fontSize: wp('3%'),
-    color: COLORS.textHeading,
+    fontSize: isTablet ? hp(1.5) : hp(1.5),
     fontFamily: Fonts.medium,
-    paddingHorizontal: wp('3%'),
+    color: COLORS.textHeading,
+    paddingHorizontal: isTablet ? wp(1.5) : wp('3%'),
     paddingBottom: wp('3%'),
     lineHeight: 20,
   },
   brandimage: {
-    width: wp('94%'),
-    height: hp('7%'),
+    width: isTablet ? wp(95) : wp(95),
+    height: isTablet ? wp(15) : wp(15),
     resizeMode: 'contain',
   },
   smallimage: {
@@ -671,32 +675,33 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: wp('3%'),
     justifyContent: 'space-between',
-     marginTop:hp(2)
+    marginTop: hp(1),
+    paddingVertical: isTablet ? wp(1.5) : wp(1.5),
   },
-  needHelp:{
+  needHelp: {
     fontSize: wp('3.7%'),
     color: COLORS.textHeading,
     fontFamily: Fonts.semiBold,
-    marginLeft:wp('4%')
+    marginLeft: wp('4%'),
   },
-  chaticon:{
+  chaticon: {
     width: wp('20%'),
     height: hp('4.5%'),
     resizeMode: 'contain',
   },
-   servicesSection: {
-  width: '100%',
-  paddingHorizontal: wp(4),
-  paddingVertical: hp(2),
-  paddingBottom:hp(3),
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  backgroundColor:COLORS.white
+  servicesSection: {
+    width: '100%',
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(2),
+    paddingBottom: hp(3),
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.white,
   },
   servicesCount: {
-    fontSize: wp('3.5%'),
+    fontSize: isTablet ? wp(2.5) : wp('3.5%'),
     fontFamily: Fonts.semiBold,
     color: COLORS.darkText,
   },
@@ -709,63 +714,89 @@ export default StyleSheet.create({
   viewCartButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: wp('0%'),
-    paddingHorizontal: hp('1%'),
+    // paddingVertical: wp('0%'),
+    paddingVertical: wp(1),
+    paddingHorizontal: wp('3%'),
     backgroundColor: COLORS.themeColor,
     borderRadius: wp(10),
   },
   viewCartText: {
-    fontSize: wp('3%'),
+    fontSize: isTablet ? wp(2.5) : wp('3%'),
     fontFamily: Fonts.semiBold,
     color: COLORS.white,
     marginRight: 4,
   },
 
-  carticon:{
-    width: wp('5%'),
-    height: hp('5%'),
+  carticon: {
+    width: wp('4%'),
+    height: wp('4%'),
     resizeMode: 'contain',
   },
   // Btn View
-    BtnView: {
-   width: '100%',
-  paddingHorizontal: wp(4),
-  paddingVertical: hp(3),
-  backgroundColor: COLORS.white,
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  elevation: 10,
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
+  BtnView: {
+    width: '100%',
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(3),
+    backgroundColor: COLORS.white,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
 
   // account styles
   accountbg: {
-    width: wp('18%'),
-    height: hp('9%'),
+    width: isTablet ? wp(16) : wp(20),
+    height: isTablet ? wp(16) : wp(20),
     resizeMode: 'cover',
-    borderRadius:wp('2%'),
-     marginLeft: wp('1%'),
+    borderRadius: wp('2%'),
+    marginLeft: wp('1%'),
   },
   accounttitle: {
     fontSize: hp('1.8%'),
     color: COLORS.black,
     fontFamily: Fonts.semiBold,
-  }, 
+  },
   accountNumber: {
     fontSize: hp('1.5%'),
     color: COLORS.textColor,
     fontFamily: Fonts.medium,
     marginLeft: wp('1%'),
-  }, 
-  accountline:{flexDirection:'row', alignItems:'center', marginTop:hp('0.5%'), marginBottom: wp('1%')},
-  accountbgcontainer: { marginBottom: hp('0.5%'), backgroundColor: COLORS.white, borderRadius:wp('2%'), marginHorizontal:hp('0.5%')  },
-  accountinfocontainer: { marginBottom: hp('1%'), backgroundColor: COLORS.white ,marginHorizontal:hp('0.5%')  },
-  accountMaincontainer: { marginVertical: hp('1%'), backgroundColor: COLORS.white, borderRadius:wp('2%'), marginHorizontal:hp('1.5%'),flexDirection:'row' ,alignItems:'center',paddingVertical:hp('1%')  },
-  accountcontainer: { backgroundColor: COLORS.white ,marginHorizontal:hp('0.5%')  },  
+  },
+  accountline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: hp('0.5%'),
+    marginBottom: wp('1%'),
+  },
+  accountbgcontainer: {
+    marginBottom: hp('0.5%'),
+    backgroundColor: COLORS.white,
+    borderRadius: wp('2%'),
+    marginHorizontal: hp('0.5%'),
+  },
+  accountinfocontainer: {
+    marginBottom: hp('1%'),
+    backgroundColor: COLORS.white,
+    marginHorizontal: hp('0.5%'),
+  },
+  accountMaincontainer: {
+    marginVertical: hp('1%'),
+    backgroundColor: COLORS.white,
+    borderRadius: wp('2%'),
+    marginHorizontal: hp('1.5%'),
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: hp('1%'),
+  },
+  accountcontainer: {
+    backgroundColor: COLORS.white,
+    marginHorizontal: hp('0.5%'),
+  },
   callIcon: {
     width: wp('4%'),
     height: hp('3%'),
@@ -776,6 +807,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingVertical: hp(1.3),
+    marginBottom: hp(1),
     paddingHorizontal: wp(4),
     borderRadius: wp(3),
     marginVertical: hp(0.5),
@@ -811,54 +843,55 @@ export default StyleSheet.create({
     color: COLORS.themeColor,
     fontFamily: Fonts.semiBold,
   },
-//  profile details styles end
-profilestyle:{
- width: wp('33%'),
-  height: hp('14%'),
-  resizeMode: 'contain',
-  borderRadius:hp('2%'),
-},
-profileDetailBg: {
-   width: wp('33%'),
-  alignSelf:'center',
-  justifyContent:'center',
-  height: hp('14%'),
-  marginTop: hp('2%'),
-  marginBottom: hp('2%'),
-},
-cameraStyle: {
-  width: wp('8.8%'),
-  height: hp('4%'),
-  resizeMode: 'contain',
-  position: 'absolute',
-  left: wp('25%'),
-  bottom: hp('-1.5%'),
-},
-profileDetailInput: {
-  borderWidth: 1,
-  borderColor: COLORS.borderColor,
-  borderRadius: wp('6%'),
-  paddingHorizontal: wp('3%'),
-  paddingVertical: hp('1.5%'),
-  fontSize: hp('1.6%'),
-  color: COLORS.black,
-  fontFamily: Fonts.medium,
-  marginVertical: hp('1.5%'),
-  backgroundColor: COLORS.white,
-},
-profileDetailName: {
-  fontSize: hp('1.5%'),
-  color: COLORS.black,
-  fontFamily: Fonts.medium,
-  marginTop: hp('1%'),
-},
-allSideRadiusStyle:{ 
-    width:wp('95%'),
-    alignSelf:'center',
-    marginTop: hp('1%'), 
+  //  profile details styles end
+  profilestyle: {
+    width: isTablet ? wp(18) : wp(25),
+    height: isTablet ? wp(18) : wp(25),
+    resizeMode: 'contain',
+    borderRadius: hp('2%'),
+    backgroundColor: 'red',
+  },
+  profileDetailBg: {
+    width: isTablet ? wp(18) : wp(25),
+    height: isTablet ? wp(18) : wp(25),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: hp(5),
+    marginBottom: hp('2%'),
+  },
+  cameraStyle: {
+    width: isTablet ? wp(10) : wp(12),
+    height: isTablet ? wp(10) : wp(12),
+    resizeMode: 'contain',
+    position: 'absolute',
+    left: isTablet ? wp(12) : wp(18),
+    top: isTablet ? wp(14) : wp(18),
+  },
+  profileDetailInput: {
+    borderWidth: 1,
+    borderColor: COLORS.borderColor,
+    borderRadius: wp('6%'),
+    paddingHorizontal: wp('3%'),
+    paddingVertical: hp('1.5%'),
+    fontSize: hp('1.6%'),
+    color: COLORS.black,
+    fontFamily: Fonts.medium,
+    marginVertical: hp('1.5%'),
+    backgroundColor: COLORS.white,
+  },
+  profileDetailName: {
+    fontSize: hp('1.5%'),
+    color: COLORS.black,
+    fontFamily: Fonts.medium,
+    marginTop: hp('1%'),
+  },
+  allSideRadiusStyle: {
+    width: wp('95%'),
+    alignSelf: 'center',
+    marginTop: hp('1%'),
     paddingBottom: hp('1%'),
     backgroundColor: COLORS.white,
-    borderRadius:wp(3),
+    borderRadius: wp(3),
     paddingVertical: hp('1%'),
     paddingHorizontal: wp('2.5%'),
     elevation: 5,
@@ -866,7 +899,7 @@ allSideRadiusStyle:{
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-},
+  },
 });
 
 export const productData = [
@@ -878,7 +911,7 @@ export const productData = [
     discount: '36% off',
     rating: '4.3',
     reviews: 'Limited time deal',
-    image: images.demoAc, // Adjust path
+    image: images.AC_indoor, // Adjust path
   },
   {
     id: '2',
@@ -888,7 +921,7 @@ export const productData = [
     discount: '35% off',
     rating: '4.5',
     reviews: 'Limited time deal',
-    image: images.demoAc, // Adjust path
+    image: images.ACimage, // Adjust path
   },
   {
     id: '3',
@@ -898,7 +931,7 @@ export const productData = [
     discount: '34% off',
     rating: '4.2',
     reviews: 'Limited time deal',
-    image: images.demoAc, // Adjust path
+    image: images.AC_indoor, // Adjust path
   },
   {
     id: '4',
@@ -908,7 +941,7 @@ export const productData = [
     discount: '35% off',
     rating: '4.4',
     reviews: 'Limited time deal',
-    image: images.demoAc, // Adjust path
+    image: images.ACimage, // Adjust path
   },
   {
     id: '5',
@@ -918,7 +951,7 @@ export const productData = [
     discount: '34% off',
     rating: '4.1',
     reviews: 'Limited time deal',
-    image: images.demoAc, // Adjust path
+    image: images.ACimage, // Adjust path
   },
 ];
 
@@ -1067,57 +1100,158 @@ export const faqData = [
 ];
 
 export const WindoData = [
-  {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
-              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},
- {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
-              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},
-  {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
-              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},
-  {question: 'Manufacture Details', title :'Brand' , text:'Voltas', capacity:'2 Tons', cooling:'3200 Watts', feature:'Antibacterial coaring',colour:'White',voltage:'230 volts', product:` 84D x 84D x 23H 
-              Centimeters`, noise:'44 dB',floor:'180 Square Feet', power:'Corded Electric'},           
+  {
+    question: 'Manufacture Details',
+    title: 'Brand',
+    text: 'Voltas',
+    capacity: '2 Tons',
+    cooling: '3200 Watts',
+    feature: 'Antibacterial coaring',
+    colour: 'White',
+    voltage: '230 volts',
+    product: ` 84D x 84D x 23H 
+              Centimeters`,
+    noise: '44 dB',
+    floor: '180 Square Feet',
+    power: 'Corded Electric',
+  },
+  {
+    question: 'Manufacture Details',
+    title: 'Brand',
+    text: 'Voltas',
+    capacity: '2 Tons',
+    cooling: '3200 Watts',
+    feature: 'Antibacterial coaring',
+    colour: 'White',
+    voltage: '230 volts',
+    product: ` 84D x 84D x 23H 
+              Centimeters`,
+    noise: '44 dB',
+    floor: '180 Square Feet',
+    power: 'Corded Electric',
+  },
+  {
+    question: 'Manufacture Details',
+    title: 'Brand',
+    text: 'Voltas',
+    capacity: '2 Tons',
+    cooling: '3200 Watts',
+    feature: 'Antibacterial coaring',
+    colour: 'White',
+    voltage: '230 volts',
+    product: ` 84D x 84D x 23H 
+              Centimeters`,
+    noise: '44 dB',
+    floor: '180 Square Feet',
+    power: 'Corded Electric',
+  },
+  {
+    question: 'Manufacture Details',
+    title: 'Brand',
+    text: 'Voltas',
+    capacity: '2 Tons',
+    cooling: '3200 Watts',
+    feature: 'Antibacterial coaring',
+    colour: 'White',
+    voltage: '230 volts',
+    product: ` 84D x 84D x 23H 
+              Centimeters`,
+    noise: '44 dB',
+    floor: '180 Square Feet',
+    power: 'Corded Electric',
+  },
 ];
 
 export const CompareData = [
-  {question: 'Manufacture Details', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},
- {question: 'Product Dimensions(Open)', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},
-  {question: 'Air Conditioner Features', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},
-  {question: 'Air Conditioner Functions', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
-  {question: 'Air Conditioner Physical Attributes', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
-  {question: 'Air Conditioner Screen Specification', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
-  {question: 'Remote Control Details', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
-  {question: 'Air Conditioner PIUG Details', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
-  {question: 'Air Conditioner Functions', title :'Brand' , secondTitle:'Model Series', Thirdtitle:'Model Number'},           
+  {
+    question: 'Manufacture Details',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Product Dimensions(Open)',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Air Conditioner Features',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Air Conditioner Functions',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Air Conditioner Physical Attributes',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Air Conditioner Screen Specification',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Remote Control Details',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Air Conditioner PIUG Details',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
+  {
+    question: 'Air Conditioner Functions',
+    title: 'Brand',
+    secondTitle: 'Model Series',
+    Thirdtitle: 'Model Number',
+  },
 ];
 
 export const menuData = [
-    {
-      id: '1',
-      title: 'Notification',
-      icon: images.notificationRed,
-      screen: 'NotificationScreeen',
-    },
-    { id: '2', title: 'My Bookings', icon: images.bookingIcon, screen: 'MyBookingScreen' },
-    {
-      id: '3',
-      title: 'My Requests',
-      icon: images.bookingIcon,
-      screen: 'MyRequestsScreen',
-    },
-    {
-      id: '4',
-      title: 'Manage Address',
-      icon: images.addressIcon,
-      screen: 'ManageAddressScreen',
-    },
-    {
-      id: '5',
-      title: 'Annual Maintenance Contract',
-      icon: images.contractIcon,
-      screen: 'AMC',
-    },
-    { id: '6', title: 'Pay Now', icon: images.payIcon, screen: 'PayNow' },
-    { id: '7', title: 'Rate Us', icon: images.rateUSIcon, screen: 'RateUs' },
-    { id: '8', title: 'Help', icon: images.helpIcon, screen: 'Help' },
-    { id: '9', title: 'Logout', icon: images.logoutIcon, screen: 'Logout' },
-  ];
-
+  {
+    id: '1',
+    title: 'Notification',
+    icon: images.notificationRed,
+    screen: 'NotificationScreeen',
+  },
+  {
+    id: '2',
+    title: 'My Bookings',
+    icon: images.bookingIcon,
+    screen: 'MyBookingScreen',
+  },
+  {
+    id: '3',
+    title: 'My Requests',
+    icon: images.bookingIcon,
+    screen: 'MyRequestsScreen',
+  },
+  {
+    id: '4',
+    title: 'Manage Address',
+    icon: images.addressIcon,
+    screen: 'ManageAddressScreen',
+  },
+  {
+    id: '5',
+    title: 'Annual Maintenance Contract',
+    icon: images.contractIcon,
+    screen: 'AMC',
+  },
+  { id: '6', title: 'Pay Now', icon: images.payIcon, screen: 'PayNow' },
+  { id: '7', title: 'Rate Us', icon: images.rateUSIcon, screen: 'RateUs' },
+  { id: '8', title: 'Help', icon: images.helpIcon, screen: 'Help' },
+  { id: '9', title: 'Logout', icon: images.logoutIcon, screen: 'Logout' },
+];

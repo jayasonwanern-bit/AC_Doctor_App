@@ -31,11 +31,10 @@ import PropertySelectionModal from '../../../customScreen/PropertySelectionModal
 import OutdoorSelectionModal from '../../../customScreen/OutdoorSelectionModal';
 import PickerLabelUi from '../../../components/PickerLabelUi';
 import CunstomInput from '../../../components/CunstomInput';
+import { isTablet } from '../../../components/TabletResponsiveSize';
 
 const CopperPipeScreen = ({ navigation }) => {
-  const [expandedIndex, setExpandedIndex] = useState(null);
   const [modalSlotVisible, setModalSlotVisible] = useState(false); //booktime
-
   const [selectdate, setSelectDate] = useState('Select date');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); // successPopup
   const [propertyModalVisible, setPropertyModalVisible] = useState(false); // prpertyPopup
@@ -136,7 +135,7 @@ const CopperPipeScreen = ({ navigation }) => {
                 droparraw={true}
                 BorderRadius={hp(4)}
                 onPress={() => setPropertyModalVisible(true)}
-                style={{ width: '98%' }} 
+                style={{ width: isTablet ? wp(90) : wp(90) }}
               />
 
               {/* Type of AC */}
@@ -153,7 +152,7 @@ const CopperPipeScreen = ({ navigation }) => {
                 droparraw={true}
                 marginTop={hp(1)}
                 BorderRadius={hp(4)}
-                style={{ width: '98%' }} 
+                style={{ width: isTablet ? wp(90) : wp(90) }}
                 onPress={() => setOutLocationModalVisible(true)}
               />
 
@@ -171,7 +170,7 @@ const CopperPipeScreen = ({ navigation }) => {
                 onChangeText={value => handleInputChange('pipeNumber', value)}
                 borderRadius={hp('14%')}
                 MarginBottom={hp('0.5%')}
-                containerStyle={{width:wp('88%')}}
+                containerStyle={{ width: wp('88%') }}
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
 
@@ -203,6 +202,7 @@ const CopperPipeScreen = ({ navigation }) => {
               {/* Additional Notes */}
               <CunstomInput
                 label="Additional Notes (Optional)"
+                lablestyle={{ marginLeft: isTablet ? wp(2.5) : wp(3) }}
                 placeholder="Type here..."
                 multiline
                 numberOfLines={5}
@@ -210,7 +210,7 @@ const CopperPipeScreen = ({ navigation }) => {
                 onChangeText={val => handleInputChange('additionalNotes', val)}
                 borderRadius={hp('1.5%')}
                 MarginTop={hp('1%')}
-                containerStyle={{width:wp('90%')}}
+                containerStyle={{ width: isTablet ? wp(90) : wp(90) }}
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
             </View>

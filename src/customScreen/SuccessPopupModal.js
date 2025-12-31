@@ -9,7 +9,11 @@ import {
 } from 'react-native';
 import images from '../assets/images';
 import { COLORS, Fonts } from '../utils/colors';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+import { isTablet } from '../components/TabletResponsiveSize';
 
 const SuccessPopupModal = ({
   visible,
@@ -43,7 +47,9 @@ const SuccessPopupModal = ({
           </View>
 
           {/* Success Message */}
-          <Text style={[styles.title, { color: HeadTextColor }]}>{HeadText}</Text>
+          <Text style={[styles.title, { color: HeadTextColor }]}>
+            {HeadText}
+          </Text>
           <Text style={styles.message}>{message1}</Text>
           <Text style={styles.message}>{message2}</Text>
 
@@ -56,7 +62,8 @@ const SuccessPopupModal = ({
                   {
                     width: buttonCount === 1 ? wp('70%') : wp('33%'), // Full width for 1 button, half for 2
                     alignSelf: buttonCount === 1 ? 'center' : 'flex-start',
-                    backgroundColor: buttonCount >= 1 ? COLORS.themeColor : '#ffffff',
+                    backgroundColor:
+                      buttonCount >= 1 ? COLORS.themeColor : '#ffffff',
                     marginRight: buttonCount === 2 ? 10 : 0, // Add spacing between buttons when 2 are present
                   },
                 ]}
@@ -79,12 +86,14 @@ const SuccessPopupModal = ({
                   styles.secondButton,
                   {
                     backgroundColor: '#ffffff',
-                    width: wp('40%'), 
+                    width: wp('40%'),
                   },
                 ]}
                 onPress={onSecondButtonPress}
               >
-                <Text style={[styles.doneButtonText, {color:'#676464ff' },]}>{secondButtonText}</Text>
+                <Text style={[styles.doneButtonText, { color: '#676464ff' }]}>
+                  {secondButtonText}
+                </Text>
               </TouchableOpacity>
             )}
           </View>
@@ -140,9 +149,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   doneButton: {
-    paddingVertical: 8.5,
+    paddingVertical: isTablet ? wp(1.5) : 8.5,
     alignItems: 'center',
-     borderRadius: hp(10),
+    borderRadius: hp(10),
   },
   secondButton: {
     backgroundColor: COLORS.themeColor,

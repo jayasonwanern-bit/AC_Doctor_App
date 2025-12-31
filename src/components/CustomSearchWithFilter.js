@@ -9,20 +9,19 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  ActivityIndicator,
   Keyboard,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { COLORS } from '../utils/colors';
+import CustomLoader from './CustomLoader';
 
-const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
+const CustomSearchWithFilter = ({ initialData, onProductPress }) => {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState(initialData);
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
-
 
   // Filters
   const [selectedRating, setSelectedRating] = useState(null);
@@ -34,7 +33,7 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
 
   // Apply Filters
   useEffect(() => {
-     setLoading(true); // show loader
+    setLoading(true); // show loader
     let filtered = [...initialData];
 
     // Search by name
@@ -94,7 +93,6 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
       </View>
     );
   };
-
 
   const FilterTag = ({ label, onRemove }) => (
     <View style={styles.filterTag}>
@@ -238,52 +236,66 @@ const CustomSearchWithFilter = ({ initialData,onProductPress }) => {
       )}
 
       {/* Product List */}
-     {loading ? (
-  <View style={styles.loaderContainer}>
-    <ActivityIndicator size="large" color={COLORS.themeColor} />
-  </View>
-) :(<FlatList
-        data={filteredData}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-        style={{ marginBottom: 17 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.productCard} onPress={() => onProductPress(item)}>
-            <FastImage source={{ uri: item.image }} style={styles.productImg} />
-            <View style={styles.productInfo}>
-              <Text style={styles.productTitle} numberOfLines={2}>
-                {item.title}
-              </Text>
-              <View style={styles.ratingRow}>
-                <StarRating rating={item.rating} />
-                <Text style={[styles.reviewCount, { marginTop:-5 }]}>({item.reviews})</Text>
-              </View>
-              <View style={styles.ratingRow}>
-                <Text style={styles.price}>₹{item.price.toLocaleString()}</Text>
-                <Text
-                  style={[
-                    styles.reviewCount,
-                    {
-                      textDecorationLine: 'line-through',
-                      textDecorationStyle: 'solid',
-                    },
-                  ]}
-                >
-                  ({item.originalPrice})
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <CustomLoader size={60} />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredData}
+          keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
+          style={{ marginBottom: 17 }}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.productCard}
+              onPress={() => onProductPress(item)}
+            >
+              <FastImage
+                source={{ uri: item.image }}
+                style={styles.productImg}
+              />
+              <View style={styles.productInfo}>
+                <Text style={styles.productTitle} numberOfLines={2}>
+                  {item.title}
                 </Text>
-                <Text style={[styles.freeDelivery, { marginTop: 0 }]}>
-                  {'  '}
-                  {item.discount}
-                </Text>
+                <View style={styles.ratingRow}>
+                  <StarRating rating={item.rating} />
+                  <Text style={[styles.reviewCount, { marginTop: -5 }]}>
+                    ({item.reviews})
+                  </Text>
+                </View>
+                <View style={styles.ratingRow}>
+                  <Text style={styles.price}>
+                    ₹{item.price.toLocaleString()}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.reviewCount,
+                      {
+                        textDecorationLine: 'line-through',
+                        textDecorationStyle: 'solid',
+                      },
+                    ]}
+                  >
+                    ({item.originalPrice})
+                  </Text>
+                  <Text style={[styles.freeDelivery, { marginTop: 0 }]}>
+                    {'  '}
+                    {item.discount}
+                  </Text>
+                </View>
+                {item.freeDelivery && (
+                  <Text style={styles.freeDelivery}>Free Delivery</Text>
+                )}
               </View>
-              {item.freeDelivery && (
-                <Text style={styles.freeDelivery}>Free Delivery</Text>
-              )}
-            </View>
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No products found</Text>}
-      />)}
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            <Text style={styles.empty}>No products found</Text>
+          }
+        />
+      )}
     </View>
   );
 };
@@ -315,7 +327,12 @@ const styles = StyleSheet.create({
   },
   filterTagText: { fontSize: 14, color: '#1976d2' },
   removeTag: { marginLeft: 8, fontWeight: 'bold', color: '#1976d2' },
-  clearAll: { color: '#d32f2f', fontWeight: '600', marginLeft: 8 ,marginTop:6},
+  clearAll: {
+    color: '#d32f2f',
+    fontWeight: '600',
+    marginLeft: 8,
+    marginTop: 6,
+  },
 
   filterModal: {
     backgroundColor: '#fff',
@@ -325,7 +342,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   filterTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
-  filterLabel: { fontSize: 16, marginBottom: 8, fontWeight: '600',color: '#666', },
+  filterLabel: {
+    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: '600',
+    color: '#666',
+  },
 
   ratingContainer: {
     flexDirection: 'row',
@@ -356,9 +378,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#ddd',
-    marginRight: 8,marginBottom: 12 
+    marginRight: 8,
+    marginBottom: 12,
   },
-  ratingBtnActive: { borderWidth:1,  borderColor: '#1976d2' },
+  ratingBtnActive: { borderWidth: 1, borderColor: '#1976d2' },
   ratingText: { color: '#666', fontSize: 14 },
   // active: white
 
@@ -382,7 +405,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     marginRight: 8,
   },
-  checkboxActive: {  borderWidth:3, borderColor: '#1976d2' },
+  checkboxActive: { borderWidth: 3, borderColor: '#1976d2' },
   checkboxLabel: { fontSize: 16 },
 
   applyBtn: {

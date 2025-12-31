@@ -15,6 +15,7 @@ const GasChargeScreen = ({ navigation, route }) => {
     { id: 3, name: 'Cassette AC', icon: images.casseteAc, count: 0 },
     { id: 4, name: 'VRV/VRF AC', icon: images.VRVac, count: 0 },
     { id: 5, name: 'Ducted AC', icon: images.ductedAc, count: 0 },
+    { id: 5, name: 'Chiller AC', icon: images.chilarIcon, count: 0 },
     { id: 6, name: 'Tower AC', icon: images.towerAc, count: 0 },
   ]);
   const [selectedACs, setSelectedACs] = useState([]);
@@ -45,7 +46,7 @@ const GasChargeScreen = ({ navigation, route }) => {
 
         <AcList ref={acRef} data={acData} onChange={setSelectedACs} />
 
-        <View style={{marginTop:'2%'}}>
+        <View style={{ marginTop: '2%' }}>
           <WorkInfo />
         </View>
       </ScrollView>
@@ -61,7 +62,7 @@ const GasChargeScreen = ({ navigation, route }) => {
         >
           <View>
             <Text style={styles.servicesCount}>{totalSelected} services</Text>
-            <Text style={styles.selectedText}>Selected</Text>
+            <Text style={styles.servicesCount}>Selected</Text>
           </View>
           <TouchableOpacity
             style={styles.viewCartButton}

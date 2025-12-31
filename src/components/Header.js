@@ -1,21 +1,38 @@
 // src/components/Header.js
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, useColorScheme, StatusBar, Image } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  useColorScheme,
+  StatusBar,
+  Image,
+  Platform,
+} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images'; // Adjust path if needed
 import COLORS, { Fonts } from '../utils/colors'; // Adjust path if needed
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import { isTablet } from './TabletResponsiveSize';
 
-const Header = ({ 
-  title = 'My App', 
-  onBack, 
-  onHelp, 
+const Header = ({
+  title = 'My App',
+  onBack,
+  onHelp,
   onAddImage,
- AddIcon,
- onImgclick
+  AddIcon,
+  onImgclick,
 }) => {
-  const insets = useSafeAreaInsets(); 
+  const insets = useSafeAreaInsets();
   const scheme = useColorScheme();
 
   // Dynamic styles based on scheme
@@ -38,30 +55,40 @@ const Header = ({
   };
 
   return (
-
-    <View style={[styles.safeArea, { paddingTop: Platform.OS === 'android' ? insets.top : insets.top,backgroundColor: dynamicStyles.safeArea.backgroundColor}]}>
-        <StatusBar
-         barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-          backgroundColor="transparent"
-          translucent={true} 
-        />
+    <View
+      style={[
+        styles.safeArea,
+        {
+          paddingTop: Platform.OS === 'android' ? insets.top : insets.top,
+          backgroundColor: dynamicStyles.safeArea.backgroundColor,
+        },
+      ]}
+    >
+      <StatusBar
+        barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor="transparent"
+        translucent={true}
+      />
       <View style={styles.header}>
         {onBack && (
           <TouchableOpacity style={styles.backButton} onPress={onBack}>
-             <Image
+            <Image
               source={images.backArrow}
               style={[styles.backIcon, dynamicStyles.extraIcon]}
-              resizeMode='contain'
+              resizeMode="contain"
             />
           </TouchableOpacity>
         )}
-        <Text style={[styles.title, dynamicStyles.title]}>{title}</Text>
+
+        <TouchableOpacity onPress={onBack} style={{ flex: 1 }}>
+          <Text style={[styles.title, dynamicStyles.title]}>{title}</Text>
+        </TouchableOpacity>
         {onHelp && (
           <TouchableOpacity style={styles.helpButton} onPress={onHelp}>
             <Image
               source={images.questionIcon}
               style={[styles.helpIcon, dynamicStyles.helpIcon]}
-              resizeMode='contain'
+              resizeMode="contain"
             />
           </TouchableOpacity>
         )}
@@ -69,13 +96,13 @@ const Header = ({
           <TouchableOpacity style={styles.helpButton} onPress={onImgclick}>
             <Image
               source={AddIcon}
-              style={[styles.extraIcon, dynamicStyles.extraIcon]} resizeMode='contain'
+              style={[styles.extraIcon, dynamicStyles.extraIcon]}
+              resizeMode="contain"
             />
           </TouchableOpacity>
         )}
-        
       </View>
-     </View>
+    </View>
   );
 };
 
@@ -89,22 +116,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('2.5%'),
     paddingVertical: hp('2%'),
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd', 
+    borderBottomColor: '#ddd',
   },
   backButton: {
     paddingRight: wp('3%'),
   },
   backIcon: {
-     width: wp('5%'),
-     height: wp('5%'),
-     resizeMode:'contain'
+    width: isTablet ? wp(3) : wp('5%'),
+    height: isTablet ? wp(3) : wp('5%'),
+    resizeMode: 'contain',
   },
   title: {
-    fontSize: wp('4%'),
+    fontSize: isTablet ? wp(3) : wp('4%'),
     fontFamily: Fonts.semiBold,
     flex: 1,
     textAlign: 'left',
-    marginLeft:wp('2')
+    marginLeft: wp('2'),
   },
   helpButton: {
     paddingLeft: wp('3%'),

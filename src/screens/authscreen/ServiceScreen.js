@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert ,PermissionsAndroid,Platform, ActivityIndicator} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,13 +7,11 @@ import {
 import { COLORS, Fonts } from '../../utils/colors';
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
-import useLocation from '../../utils/useLocation';
-// import Geolocation from '@react-native-community/geolocation';
-import Geocoder from 'react-native-geocoding';
 import { useNavigation } from '@react-navigation/native';
 import { isTablet } from '../../components/TabletResponsiveSize';
 import Geolocation from '@react-native-community/geolocation';
-import GetLoaction from '../../components/GetLoaction'
+import GetLoaction from '../../components/GetLoaction';
+import CustomLoader from '../../components/CustomLoader';
 
 const ServiceScreen = () => {
   const navigation = useNavigation();
@@ -21,51 +19,35 @@ const ServiceScreen = () => {
     Geolocation.requestAuthorization();
   }, []);
 
-const {
-    latitude,
-    longitude,
-    addressText,
-    loading,
-    error,
-    getLocation,
-  } = GetLoaction();
+  const { latitude, longitude, addressText, loading, error, getLocation } =
+    GetLoaction();
 
-
-
-
-
-const handleUseCurrentLocation = ()=>{
- getLocation((locationData) => {
+  const handleUseCurrentLocation = () => {
+    getLocation(locationData => {
       navigation.reset({
-  index: 0,
-  routes: [
-    {
-      name: 'Tab',
-      state: {
         index: 0,
         routes: [
           {
-            name: 'Home', 
-            params: {locationData
+            name: 'Tab',
+            state: {
+              index: 0,
+              routes: [
+                {
+                  name: 'Home',
+                  params: { locationData },
+                },
+              ],
             },
           },
         ],
-      },
-    },
-  ],
-});
+      });
     });
-    
-}
+  };
 
+  const handleManuallyLocation = () => {
+    navigation.navigate('AddAddress');
+  };
 
-
-
-
-const handleManuallyLocation = () => {
-  navigation.navigate("AddAddress");
-};
-  
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -94,27 +76,24 @@ const handleManuallyLocation = () => {
         style={styles.locationButton}
         onPress={() => handleUseCurrentLocation()}
       >
-       <View style={{flexDirection:'row',alignItems:'center'}}>
-        
-        <FastImage
-          source={images.locationIcon}
-          style={styles.backImg}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-        <Text style={styles.locationText}>Use Current Location</Text>
-         {
-                      loading?(
-                        <ActivityIndicator color={COLORS.white} size={'small'} />
-                      ):null
-                    }
-       </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <FastImage
+            source={images.locationIcon}
+            style={styles.backImg}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          <Text style={styles.locationText}>Use Current Location</Text>
+          {loading ? <CustomLoader size={15} /> : null}
+        </View>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.locationManualButton}
         onPress={() => handleManuallyLocation()}
       >
-        <Text style={[styles.locationText,{color:COLORS.black}]}>Enter Location Manually</Text>
+        <Text style={[styles.locationText, { color: COLORS.black }]}>
+          Enter Location Manually
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -125,20 +104,19 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: wp('5%'),
     backgroundColor: COLORS.white,
-    alignItems:"center",
-    justifyContent:"center"
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   backButton: {
     marginBottom: hp('2%'),
   },
   backImg: {
-    width: isTablet? wp(3.5):wp(6),
-    height:isTablet? hp(3.5):hp(6),
+    width: isTablet ? wp(3.5) : wp(6),
+    height: isTablet ? hp(3.5) : hp(6),
     resizeMode: 'contain',
     marginHorizontal: hp('1%'),
   },
   title: {
-    
     fontSize: hp('2.5%'),
     fontFamily: Fonts.bold,
     textAlign: 'center',
@@ -161,12 +139,12 @@ const styles = StyleSheet.create({
   locationManualButton: {
     height: hp('5.4%'),
     borderColor: COLORS.black,
-    borderWidth:hp('0.1%'),
+    borderWidth: hp('0.1%'),
     borderRadius: 25,
     width: wp('90%'),
     alignSelf: 'center',
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     marginTop: hp('3%'),
   },
   locationButton: {
@@ -185,8 +163,8 @@ const styles = StyleSheet.create({
     fontSize: hp('1.8%'),
     fontFamily: Fonts.medium,
     // marginLeft: wp('2%'),
-    textAlign:'center',
-    marginRight:10
+    textAlign: 'center',
+    marginRight: 10,
   },
   errorText: {
     color: COLORS.errorRed,

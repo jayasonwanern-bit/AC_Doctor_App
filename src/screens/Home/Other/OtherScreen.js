@@ -5,7 +5,6 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  TextInput,
   Keyboard,
 } from 'react-native';
 import {
@@ -18,9 +17,11 @@ import FastImage from 'react-native-fast-image';
 import Header from '../../../components/Header';
 import HomeScreenStyles from '../HomeScreenStyles';
 import CustomButton from '../../../components/CustomButton';
-import RNPickerSelect from 'react-native-picker-select';
 import CustomPicker from '../../../components/CustomPicker';
 import CunstomInput from '../../../components/CunstomInput';
+import { isTablet } from '../../../components/TabletResponsiveSize';
+import ACTypeSelector from '../../../customScreen/ACTypeSelector';
+import Toast from 'react-native-simple-toast';
 
 const OtherScreen = ({ navigation }) => {
   const [isProblem, setIsProblem] = useState('Select Problem');
@@ -39,15 +40,28 @@ const OtherScreen = ({ navigation }) => {
     { label: 'Outdoor fan motor fault', value: 'Outdoor fan motor fault' },
     { label: 'Others', value: 'Others' },
   ];
+  const [formData, setFormData] = useState({
+    isProblem: isProblem,
+    reason: ProblemReason,
+    acType: '',
+  });
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleSubmit = () => {
     if (isProblem === null || ProblemReason.trim() === '') {
-      alert('Please select a problem and describe the issue.');
+      Toast.show('Please select a problem and describe the issue.');
       return;
     } else {
       navigation.navigate('OtherCartView', {
         problem: isProblem,
         reason: ProblemReason,
+        acType: formData.acType,
       });
     }
     // Reset form
@@ -100,31 +114,35 @@ const OtherScreen = ({ navigation }) => {
         </View>
 
         {/* Problem of ac */}
-        <View
-          style={[styles.card, { padding: hp('1%'), paddingBottom: hp('2%') }]}
-        >
-          
-          <View style={{ marginLeft: hp('1%') }}> 
-            <CustomPicker
-            value={isProblem}
-            onChange={value => setIsProblem(value)}
-            items={ProblemOptions}
-            width={wp('85%')} // any width
-            height={hp('5%')} // any height
-            borderRadius={hp('4%')} // custom radius
+        <View style={styles.cardAdditional}>
+          <ACTypeSelector
+            onChange={v => handleInputChange('acType', v)}
+            headingText={'Add AC'}
+            ShapeRADIUS={hp(3)}
           />
-          </View>
-        
-          <CunstomInput
-              placeholder="Describe your problem"
-              multiline
-              numberOfLines={5}
-              value={ProblemReason}
-              onChangeText={setProblemReason}
-              borderRadius={hp('1.5%')}
-              MarginBottom={hp('1%')}
-              onSubmitEditing={() => Keyboard.dismiss()}
+
+          <View>
+            <CustomPicker
+              value={isProblem}
+              onChange={value => handleInputChange('isProblem', value)}
+              items={ProblemOptions}
+              width={isTablet ? wp(90) : wp(88)} // any width
+              height={hp('5%')} // any height
+              borderRadius={hp('4%')} // custom radius
             />
+          </View>
+
+          <CunstomInput
+            placeholder="Describe your problem"
+            multiline
+            numberOfLines={5}
+            value={ProblemReason}
+            onChangeText={val => handleInputChange('reason', val)}
+            borderRadius={hp('1.5%')}
+            MarginBottom={hp('1%')}
+            onSubmitEditing={() => Keyboard.dismiss()}
+            containerStyle={{ width: isTablet ? wp(90) : wp(88) }}
+          />
           <CustomButton
             buttonName="Submit"
             margingTOP={hp('0%')}
@@ -183,22 +201,33 @@ const styles = StyleSheet.create({
     borderColor: COLORS.lightSky,
     borderWidth: wp(0.2),
   },
+  cardAdditional: {
+    backgroundColor: COLORS.white,
+    borderRadius: wp('3%'),
+    marginBottom: hp('1%'),
+    elevation: 2,
+    borderColor: COLORS.lightSky,
+    borderWidth: wp(0.2),
+    padding: hp('1%'),
+    paddingBottom: hp('2%'),
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
   boderLine: {
     borderColor: COLORS.lightSky,
     borderWidth: wp(0.1),
     marginVertical: hp('0.5%'),
   },
   icon: {
-    width: wp('7%'),
-    height: wp('7%'),
+    width: isTablet ? wp(5) : wp(5.5),
+    height: isTablet ? wp(5) : wp(5.5),
     marginRight: wp('3%'),
     alignItems: 'center',
     resizeMode: 'contain',
-    tintColor: COLORS.themeColor,
   },
   title: {
-    flex: 1,
-    fontSize: wp('3%'),
+    width: isTablet ? wp(80) : wp(80),
+    fontSize: isTablet ? wp(2.5) : wp('3%'),
     color: COLORS.black,
     fontFamily: Fonts.regular,
   },

@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
   Keyboard,
+  Alert,
 } from 'react-native';
 import Header from '../../components/Header';
 import {
@@ -32,6 +33,9 @@ import Toast from 'react-native-simple-toast';
 import { getBrandlist, postConsultancy } from '../../api/homeApi';
 import { setBrandList } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import { isTablet } from '../../components/TabletResponsiveSize';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { getPresignedUrl, uploadImageToS3 } from '../../api/profileApi';
 
 const FreeConsultant = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -56,7 +60,7 @@ const FreeConsultant = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getBrandlist();
-      console.log('respondr og brand--',res)
+      console.log('respondr og brand--', res);
       const formatted = res?.data?.map(item => ({
         label: item.name,
         value: item._id,
@@ -78,6 +82,7 @@ const FreeConsultant = ({ navigation }) => {
     service: 'Select',
     dateTime: 'Select',
     additionalNotes: '',
+    userId: user?._id,
   });
 
   const handleInputChange = (field, value) => {
@@ -106,57 +111,90 @@ const FreeConsultant = ({ navigation }) => {
 
   // Handle form submission
   const handleRequestConsultation = async () => {
-    // VALIDATION
-    if (!addressId?._id) return Toast.show('Please select address');
+    // VALIDATIONS
     if (!formData.propertyType)
       return Toast.show('Please select Property Type');
-    if (!formData.brand) return Toast.show('Please select Brand');
+
     if (!formData.numberOfAC || Number(formData.numberOfAC) <= 0)
-      return Toast.show('Enter valid AC quantity');
+      return Toast.show('Enter Number of Ac');
+
+    if (!formData.alternateNumber || Number(formData.alternateNumber) <= 0)
+      return Toast.show('Enter valid Alternate Number');
+
+    if (!formData.service) return Toast.show('Select your service');
+
     if (!formData.dateTime || formData.dateTime === 'Select')
       return Toast.show('Please select Time Slot');
+
     if (!selectdate) return Toast.show('Please select Date');
-
-    const payload = {
-      user_id: user._id,
-      alternatePhone: formData.alternateNumber,
-      brandId: formData.brand,
-      quantity: Number(formData.numberOfAC),
-      comment: formData.additionalNotes,
-      place: formData.propertyType,
-      addressId: addressId._id,
-      slot: formData.dateTime === 'First Half' ? 'FIRST_HALF' : 'SECOND_HALF',
-      date: selectdate,
-      documentURL: selectedImageUri || '',
-    };
-
-    console.log('Payload to send:', payload); // NOW YOU WILL SEE CORRECT DATA
+    if (!addressId?._id) {
+      Alert.alert('Please Add Address First');
+      return;
+    }
 
     try {
+      let documentUrl = '';
+
+      // 1️⃣ If image selected → upload to S3
+      // if (selectedImageUri) {
+      //   const presRes = await getPresignedUrl();
+      //   const presignedUrl = presRes?.data;
+
+      //   if (!presignedUrl) {
+      //     throw new Error('Presigned URL not received');
+      //   }
+      //   console.log('Image  selectedImage Uri Path:', selectedImageUri);
+      //   await uploadImageToS3(presignedUrl, selectedImageUri);
+
+      //   // clean S3 URL
+      //   documentUrl = presignedUrl.split('?')[0];
+      // }
+
+      // 2️⃣ Build payload (addressId OPTIONAL)
+      const payload = {
+        user_id: formData.userId,
+        addressId: addressId?._id,
+        place: formData.propertyType,
+        brandId: formData.brand,
+        quantity: Number(formData.numberOfAC),
+        alternatePhone: formData.alternateNumber,
+        comment: formData.additionalNotes,
+        slot: formData.dateTime === 'First Half' ? 'FIRST_HALF' : 'SECOND_HALF',
+        date: selectdate,
+        file: selectedImageUri,
+        // documentURL: documentUrl,
+      };
+      console.log('Payload to send:', payload);
+      // ✅ Add addressId only if exists
+      if (addressId?._id) {
+        payload.addressId = addressId._id;
+      }
+
+      // 3️⃣ API call
       const res = await postConsultancy(payload);
-      console.log('API Response:', res);
+      console.log('response----->', res);
       if (res?.status) {
         Toast.show(res?.message);
         setSuccessPopupVisible(true);
       }
     } catch (error) {
       console.log('Error submitting:', error);
+      Toast.show('Something went wrong');
     }
   };
 
   return (
     <View style={screenStyles.workcontainer}>
       <Header title="Free Consultation" onBack={() => navigation.goBack()} />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('3%') : 0}
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: hp(8) }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="always"
       >
-      
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: hp(8) }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="always"
+        <KeyboardAwareScrollView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? hp(0) : 0}
         >
           <View
             style={{
@@ -182,8 +220,8 @@ const FreeConsultant = ({ navigation }) => {
                 { label: 'Commercial', value: 'Commercial' },
                 { label: 'Industrial', value: 'Industrial' },
               ]}
-              width={wp('95%')} // any width
-              height={hp('5%')} // any height
+              width={isTablet ? wp(90) : wp(90)}
+              height={isTablet ? hp(4.5) : hp(5)} // any height
               borderRadius={hp('4%')} // custom radius
             />
 
@@ -193,14 +231,14 @@ const FreeConsultant = ({ navigation }) => {
               value={formData.brand}
               onChange={value => handleInputChange('brand', value)}
               items={brandArray}
-              width={wp('95%')}
-              height={hp('5%')} // any height
+              width={isTablet ? wp(90) : wp(90)}
+              height={isTablet ? hp(4.5) : hp(5)} // any height
               borderRadius={hp('4%')} // custom radius
             />
 
             {/* Number of AC */}
             <CunstomInput
-              label="Number of AC"
+              label="Quantity (Number of AC)"
               placeholder="Enter number"
               keyboardType="numeric"
               value={formData.numberOfAC}
@@ -208,13 +246,13 @@ const FreeConsultant = ({ navigation }) => {
               borderRadius={hp('14%')}
               MarginBottom={hp('0.5%')}
               MarginTop={hp('0.5%')}
-              width={wp('80%')}
+              containerStyle={{ width: isTablet ? wp(90) : wp('88%') }}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
 
             {/* Alternate Number */}
             <CunstomInput
-              label="Alternate Number"
+              label="Alternate Mobile Number"
               placeholder="Enter number"
               keyboardType="phone-pad"
               value={formData.alternateNumber}
@@ -224,7 +262,9 @@ const FreeConsultant = ({ navigation }) => {
               borderRadius={hp('14%')}
               MarginBottom={hp('0.5%')}
               MarginTop={hp('0.5%')}
+              containerStyle={{ width: isTablet ? wp(90) : wp('88%') }}
               onSubmitEditing={() => Keyboard.dismiss()}
+              maxLength={10}
             />
 
             {/* Select Service */}
@@ -237,7 +277,7 @@ const FreeConsultant = ({ navigation }) => {
                 { label: 'Repair', value: 'Repair' },
                 { label: 'Maintenance', value: 'Maintenance' },
               ]}
-              width={wp('95%')} // any width
+              mainViewwidth={isTablet ? wp(60) : wp('95%')} // any width
               height={hp('5%')} // any height
               borderRadius={hp('4%')} // custom radius
             />
@@ -298,6 +338,7 @@ const FreeConsultant = ({ navigation }) => {
               onChangeText={val => handleInputChange('additionalNotes', val)}
               borderRadius={hp('1.5%')}
               MarginBottom={hp('1%')}
+              containerStyle={{ width: isTablet ? wp(90) : wp('88%') }}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
 
@@ -332,8 +373,8 @@ const FreeConsultant = ({ navigation }) => {
               </View>
             ))}
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+      </ScrollView>
       <View style={styles.BtnView}>
         <CustomButton
           buttonName="Request Consultation"
@@ -380,12 +421,14 @@ const styles = StyleSheet.create({
   inputGroup: {
     marginBottom: hp('2%'),
     marginHorizontal: wp('2%'),
+    width: isTablet ? wp(90) : wp('88%'),
+    alignSelf: 'center',
   },
   label: {
     fontSize: hp(1.5),
     color: COLORS.black,
     marginBottom: hp('1%'),
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.regular,
   },
   pickerWrapper: {
     flexDirection: 'row',
@@ -395,7 +438,6 @@ const styles = StyleSheet.create({
     borderWidth: hp(0.1),
     borderColor: COLORS.lightGray,
     overflow: 'hidden',
-    borderRadius: hp('8%'),
     height: hp('5%'),
   },
   customIcon: {
@@ -438,7 +480,7 @@ const styles = StyleSheet.create({
   BtnView: {
     width: '100%',
     paddingHorizontal: wp(4),
-    paddingVertical: hp(3),
+    paddingVertical: hp(2.5),
     backgroundColor: COLORS.white,
     position: 'absolute',
     bottom: 0,

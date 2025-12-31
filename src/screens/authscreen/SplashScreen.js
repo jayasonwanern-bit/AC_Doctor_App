@@ -7,34 +7,25 @@ import { store } from '../../redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({ navigation }) => {
-
   useEffect(() => {
-  
-
-getData()
-
-  
-}, []);
-const getData =async ()=>{
-  try {
-    const token = await AsyncStorage.getItem('authToken');
-    // return token;
-    const timer = setTimeout(() => {
-
-    if (token) {
-       navigation.navigate('Tab', { screen: 'Home' });   
-    } else {
-     navigation.replace('Login');  
+    getData();
+  }, []);
+  const getData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      // return token;
+      const timer = setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: token ? 'Tab' : 'Login' }],
+        });
+      }, 1500);
+      return () => clearTimeout(timer);
+    } catch (error) {
+      console.log('Error getting token', error);
+      return null;
     }
-  }, 1500);
-   return () => clearTimeout(timer);
-    
-  } catch (error) {
-    console.log('Error getting token', error);
-    return null;
-  }
-}
-
+  };
 
   return (
     <View style={styles.container}>

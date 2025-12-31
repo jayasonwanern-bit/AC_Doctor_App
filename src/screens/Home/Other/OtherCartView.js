@@ -19,13 +19,14 @@ import { COLORS, Fonts } from '../../../utils/colors';
 import CustomButton from '../../../components/CustomButton';
 import CustomModal from '../../../components/CustomModal';
 import BookingSlotModal from '../../../customScreen/BookingSlotModal';
+import { isTablet } from '../../../components/TabletResponsiveSize';
 
 const OtherCartView = ({ navigation, route }) => {
-  const { problem, reason } = route.params;
-    const [modalVisible, setModalVisible] = React.useState(false);
-    const [modalSlotVisible, setModalSlotVisible] = React.useState(false);
-    const [selectedAddress, setSelectedAddress] = React.useState(null);
-    const [selectedSlot, setSelectedSlot] = React.useState(null);
+  const { problem, reason, acType } = route.params;
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalSlotVisible, setModalSlotVisible] = React.useState(false);
+  const [selectedAddress, setSelectedAddress] = React.useState(null);
+  const [selectedSlot, setSelectedSlot] = React.useState(null);
 
   const frequentlyAddedItems = [
     {
@@ -74,7 +75,7 @@ const OtherCartView = ({ navigation, route }) => {
         navigation.navigate('RepairScreen');
         break;
       case 'Installation':
-        navigation.navigate('InstallationScreen');
+        navigation.navigate('GasChargeScreen');
         break;
       case 'Commerical AC':
         navigation.navigate('CommericalAc');
@@ -109,20 +110,16 @@ const OtherCartView = ({ navigation, route }) => {
 
         {/* other and edit */}
         <View style={styles.card}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: hp('1%'),
-            }}
-          >
+          <View style={styles.cardRow}>
             <Text style={styles.title}>Other</Text>
-            <Text style={[styles.title, { color: COLORS.themeColor }]}>
+            {/* <Text style={[styles.title, { color: COLORS.themeColor }]}>
               Edit
-            </Text>
+            </Text> */}
           </View>
           <View style={styles.boderLine} />
+          <Text style={styles.headtitle}>
+            Ac Type :<Text style={styles.Normaltitle}> {acType}</Text>
+          </Text>
           <Text style={styles.headtitle}>
             Problem :<Text style={styles.Normaltitle}> {problem}</Text>
           </Text>
@@ -160,7 +157,7 @@ const OtherCartView = ({ navigation, route }) => {
           margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
-          onPress={() =>setModalVisible(true)}
+          onPress={() => setModalVisible(true)}
         />
       </View>
 
@@ -202,19 +199,25 @@ const styles = StyleSheet.create({
     marginTop: hp('1%'),
     padding: wp('3%'),
   },
+  cardRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: hp('1%'),
+  },
   title: {
-    fontSize: wp('3.5%'),
+    fontSize: isTablet ? wp(2.4) : wp('3.5%'),
     color: COLORS.black,
     fontFamily: Fonts.semiBold,
   },
   headtitle: {
-    fontSize: wp('3.4%'),
+    fontSize: isTablet ? wp(2.3) : wp('3.4%'),
     color: COLORS.black,
     fontFamily: Fonts.medium,
     marginVertical: hp('1%'),
   },
   Normaltitle: {
-    fontSize: wp('3.2%'),
+    fontSize: isTablet ? wp(2.3) : wp('3.2%'),
     color: COLORS.textHeading,
     fontFamily: Fonts.regular,
     marginVertical: hp('1%'),
@@ -225,18 +228,22 @@ const styles = StyleSheet.create({
     marginVertical: hp('0.5%'),
   },
   titleService: {
-    fontSize: wp('3.5%'),
+    fontSize: isTablet ? wp(2.5) : wp('3.5%'),
     color: COLORS.black,
     fontFamily: Fonts.medium,
     textAlign: 'center',
   },
-  Iconservices: { width: wp('12%'), height: hp('10%'), resizeMode: 'contain' },
-    bottomBtn: { 
-        position: 'absolute',
-        bottom: hp('2%'),
-        left: wp('5%'),
-        right: wp('5%'),
-    },
+  Iconservices: {
+    width: isTablet ? wp(9) : wp('12%'),
+    height: hp('10%'),
+    resizeMode: 'contain',
+  },
+  bottomBtn: {
+    position: 'absolute',
+    bottom: hp('2%'),
+    left: wp('5%'),
+    right: wp('5%'),
+  },
 });
 
 export default OtherCartView;

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  ActivityIndicator,
   Alert,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -14,6 +13,7 @@ import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
+import CustomLoader from './CustomLoader';
 
 const { width } = Dimensions.get('window');
 
@@ -94,9 +94,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
             disabled={!!loading}
           >
             <Text style={styles.btnText}>Camera</Text>
-            {loading === 'camera' && (
-              <ActivityIndicator size="small" color="#007AFF" />
-            )}
+            {loading === 'camera' && <CustomLoader size={40} />}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -105,9 +103,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
             disabled={!!loading}
           >
             <Text style={styles.btnText}>Gallery</Text>
-            {loading === 'gallery' && (
-              <ActivityIndicator size="small" color="#34C759" />
-            )}
+            {loading === 'gallery' && <CustomLoader size={40} />}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.cancel} onPress={onClose}>

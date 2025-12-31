@@ -15,8 +15,15 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import { isTablet } from '../components/TabletResponsiveSize';
 
-const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [],headingText,ShapeRADIUS }) => {
+const ACTypeSelector = ({
+  onChange,
+  acTypes: customAcTypes = [],
+  headingText,
+  ShapeRADIUS,
+  HeadingStyle,
+}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
 
@@ -41,6 +48,12 @@ const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [],headingText,Shap
       count: 0,
       showButtons: false,
       acIcon: images.ductedAc,
+    },
+    {
+      name: 'Chiller AC',
+      acIcon: images.chilarIcon,
+      count: 0,
+      showButtons: false,
     },
     { name: 'Tower AC', count: 0, showButtons: false, acIcon: images.towerAc },
   ];
@@ -109,35 +122,36 @@ const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [],headingText,Shap
 
   return (
     <>
-    <View style={styles.inputGroup}>
-      <Text style={styles.label}>{headingText}</Text>
-      <TouchableOpacity
-        style={[styles.pickerWrapper,{borderRadius:ShapeRADIUS}]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.placeholder}>Select AC type</Text>
-        <FastImage
-          source={images.arrowdown}
-          style={styles.customIcon}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-      </TouchableOpacity>
+      <View style={styles.inputGroup}>
+        <Text style={[styles.label, HeadingStyle]}>{headingText}</Text>
+        <TouchableOpacity
+          style={[styles.pickerWrapper, { borderRadius: ShapeRADIUS }]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.placeholder}>Select AC type</Text>
+          <FastImage
+            source={images.arrowdown}
+            style={styles.customIcon}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+        </TouchableOpacity>
 
-      {Object.keys(selectedItems).length > 0 ? (
-        <View style={styles.chipsWrapper}>{renderChips()}</View>
-      ) : (
-        <View style={{ marginTop: -25 }} />
-      )}
-
-    
-    </View>
+        {Object.keys(selectedItems).length > 0 ? (
+          <View style={styles.chipsWrapper}>{renderChips()}</View>
+        ) : (
+          <View style={{ marginTop: -25 }} />
+        )}
+      </View>
       <Modal
         transparent={true}
         animationType="slide"
         visible={isModalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <TouchableOpacity style={styles.modalBackground} onPress={() => setModalVisible(false)}>
+        <TouchableOpacity
+          style={styles.modalBackground}
+          onPress={() => setModalVisible(false)}
+        >
           <View style={styles.modalContainer}>
             <FlatList
               data={finalAcTypes}
@@ -201,7 +215,6 @@ const ACTypeSelector = ({ onChange, acTypes: customAcTypes = [],headingText,Shap
         </TouchableOpacity>
       </Modal>
     </>
-    
   );
 };
 
@@ -226,8 +239,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 45,
     marginBottom: 8,
-    width:wp(88),
-    alignSelf:'center'
+    width: wp(88),
+    alignSelf: 'center',
   },
   placeholder: {
     flex: 1,
@@ -235,8 +248,8 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   customIcon: {
-    width: wp(5),
-    height: hp(5),
+    width: isTablet ? wp(3) : wp(4),
+    height: isTablet ? wp(3) : wp(4),
     // tintColor: '#c37e7eff',
   },
   customIAccon: {
@@ -246,21 +259,21 @@ const styles = StyleSheet.create({
     // tintColor: '#c37e7eff',
   },
   modalBackground: {
-  flex:1,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  justifyContent: 'flex-end',
-  alignItems: 'center',
-  zIndex: 999,
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    zIndex: 999,
   },
   modalContainer: {
-   backgroundColor: '#fff',
-  borderTopLeftRadius: 20,
-  borderTopRightRadius: 20,
-  padding: 20,
-  width: '100%',
-  maxHeight: '70%',
-  alignSelf: 'center',
-  paddingBottom: hp(Platform.OS === 'android' ? 3 : 4),
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    width: '100%',
+    maxHeight: '70%',
+    alignSelf: 'center',
+    paddingBottom: hp(Platform.OS === 'android' ? 3 : 4),
   },
   item: {
     flexDirection: 'row',
@@ -281,7 +294,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    flexWrap:'wrap'
+    flexWrap: 'wrap',
   },
   chipContainer: {
     flexDirection: 'row',
@@ -324,7 +337,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     paddingVertical: 6,
-    paddingHorizontal:12,
+    paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: COLORS.textHeading,
     borderRadius: 15,

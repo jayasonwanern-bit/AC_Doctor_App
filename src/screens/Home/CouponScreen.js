@@ -5,7 +5,6 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -13,6 +12,7 @@ import {
 } from 'react-native-responsive-screen';
 import { COLORS, Fonts } from '../../utils/colors';
 import Header from '../../components/Header';
+import CustomLoader from '../../components/CustomLoader';
 
 const CouponScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -69,8 +69,8 @@ const CouponScreen = ({ navigation }) => {
 
       {/* Content */}
       <View style={styles.rowBtw}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.desc}>{item.description}</Text>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.desc}>{item.description}</Text>
       </View>
 
       {/* Footer */}
@@ -95,7 +95,7 @@ const CouponScreen = ({ navigation }) => {
 
       <View style={styles.screnContainer}>
         {loading ? (
-          <ActivityIndicator size="large" color={COLORS.themeColor} />
+          <CustomLoader size={40} />
         ) : (
           <FlatList
             data={coupons}
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   bgColor: {
     backgroundColor: COLORS.white,
-    marginTop:hp("1.5%")
+    marginTop: hp('1.5%'),
   },
   card: {
     backgroundColor: COLORS.white,
@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
     marginBottom: hp('2%'),
   },
 
-  
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -6,19 +6,18 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   Image,
-  ActivityIndicator,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS, Fonts,STATUS_CONFIG } from '../../utils/colors';
+import { COLORS, Fonts, STATUS_CONFIG } from '../../utils/colors';
 import Header from '../../components/Header';
 import images from '../../assets/images';
 import { getBookingList } from '../../api/settingApi';
 import { store } from '../../redux/store';
+import CustomLoader from '../../components/CustomLoader';
 
 const TABS = ['All', 'Booked', 'Completed', 'Cancelled'];
 
@@ -36,29 +35,29 @@ const MyBookingScreen = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getBookingList(userId._id);
-       const flattenedData = res?.data?.flatMap(booking =>
+      const flattenedData = res?.data?.flatMap(booking =>
         booking.serviceDetails.map(service => ({
-        id: booking._id,
-        bookingId: booking.bookingId,
-        status: booking.status,
-        slot: booking.slot,
-        date: booking.date,
-        createdAt: booking.createdAt,
+          id: booking._id,
+          bookingId: booking.bookingId,
+          status: booking.status,
+          slot: booking.slot,
+          date: booking.date,
+          createdAt: booking.createdAt,
 
-        amount: booking.amount?.$numberDecimal
-          ? Number(booking.amount.$numberDecimal)
-          : 0,
+          amount: booking.amount?.$numberDecimal
+            ? Number(booking.amount.$numberDecimal)
+            : 0,
 
-        serviceType: service.serviceType,
-        quantity: service.quantity,
-        acType: service.acType,
-        serviceId: service.service_id,
+          serviceType: service.serviceType,
+          quantity: service.quantity,
+          acType: service.acType,
+          serviceId: service.service_id,
 
-        technicianName: booking.technicianName || 'Not Assigned',
-        technicianPhone: booking.technicianPhone || '',
-        orderId: booking.order_id || '',
-      }))
-    );
+          technicianName: booking.technicianName || 'Not Assigned',
+          technicianPhone: booking.technicianPhone || '',
+          orderId: booking.order_id || '',
+        })),
+      );
       setaAllRequests(flattenedData);
     } catch (error) {
       console.log(error);
@@ -80,7 +79,7 @@ const MyBookingScreen = ({ navigation }) => {
   const getStatusStyle = status => {
     return STATUS_CONFIG[status] || { bg: '#f8eccaff', text: '#f0980aff' };
   };
- 
+
   const renderRequestCard = ({ item }) => {
     const { bg, text } = getStatusStyle(item.status);
 
@@ -98,37 +97,37 @@ const MyBookingScreen = ({ navigation }) => {
           </View>
         </View>
 
-         <View style={styles.row}>
-         <View style={{ width: wp(25) }}>
+        <View style={styles.row}>
+          <View style={{ width: wp(25) }}>
             <Text style={styles.label}>Category</Text>
             <Text style={styles.value}>Repair</Text>
           </View>
-         <View style={{ width: wp(35) }}>
+          <View style={{ width: wp(35) }}>
             <Text style={styles.label}>Service Types</Text>
             <Text style={styles.value}>{item?.serviceType}</Text>
           </View>
         </View>
 
         {/* Date & Time */}
-       {item.status !== 'CANCELLED' && <View style={styles.row}>
-          <View>
-            <Text style={styles.label}>
-              Scheduled Date & Time
-            </Text>
-            <Text style={styles.value}>{item?.date?.split("T")[0]},{item?.slot}</Text>
+        {item.status !== 'CANCELLED' && (
+          <View style={styles.row}>
+            <View>
+              <Text style={styles.label}>Scheduled Date & Time</Text>
+              <Text style={styles.value}>
+                {item?.date?.split('T')[0]},{item?.slot}
+              </Text>
+            </View>
+            <View style={{ width: wp(35) }}>
+              <Text style={styles.label}>Technician Assigned</Text>
+              <Text style={styles.value}>{item?.technicianName}</Text>
+            </View>
           </View>
-          <View style={{ width: wp(35) }}>
-            <Text style={styles.label}>Technician Assigned</Text>
-            <Text style={styles.value}>{item?.technicianName}</Text>
-          </View>
-        </View>}
+        )}
 
         {/* Total Amount */}
         <View style={styles.row}>
           <View>
-            <Text style={styles.label}>
-              Total Amount
-            </Text>
+            <Text style={styles.label}>Total Amount</Text>
             <Text style={styles.value}>₹ {item?.order_amount}</Text>
           </View>
           <View style={{ width: wp(35) }}>
@@ -163,11 +162,12 @@ const MyBookingScreen = ({ navigation }) => {
 
         {/* Action Buttons */}
         <View style={styles.actionRow}>
-          {item.status === 'UPCOMING' || item.status === 'BOOKED'  && (
-            <TouchableOpacity>
-              <Text style={styles.reinitiateText}>Cancel Request</Text>
-            </TouchableOpacity>
-          )}
+          {item.status === 'UPCOMING' ||
+            (item.status === 'BOOKED' && (
+              <TouchableOpacity>
+                <Text style={styles.reinitiateText}>Cancel Request</Text>
+              </TouchableOpacity>
+            ))}
           {item.status === 'CANCELLED' && (
             <TouchableOpacity>
               <Text style={styles.reinitiateText}>Reinitiate Request</Text>
@@ -195,7 +195,9 @@ const MyBookingScreen = ({ navigation }) => {
           <TouchableOpacity
             style={styles.viewDetailsBtn}
             onPress={() =>
-              navigation.navigate('BookingDetailsScreen', { bookingId: item._id })
+              navigation.navigate('BookingDetailsScreen', {
+                bookingId: item._id,
+              })
             }
           >
             <Text style={styles.viewDetailsText}>View details</Text>
@@ -229,18 +231,22 @@ const MyBookingScreen = ({ navigation }) => {
       </View>
 
       {/* List */}
-      {loading ? <ActivityIndicator /> : <FlatList
-        data={filteredRequests}
-        keyExtractor={item => item.id}
-        renderItem={renderRequestCard}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.list}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            No requests found in {activeTab.toLowerCase()}
-          </Text>
-        }
-      />}
+      {loading ? (
+        <CustomLoader size={40} />
+      ) : (
+        <FlatList
+          data={filteredRequests}
+          keyExtractor={item => item.id}
+          renderItem={renderRequestCard}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.list}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>
+              No requests found in {activeTab.toLowerCase()}
+            </Text>
+          }
+        />
+      )}
     </View>
   );
 };
@@ -314,10 +320,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: hp(1),
-    backgroundColor:COLORS.lightSky,
-    borderTopLeftRadius:hp(1),
-    borderTopRightRadius:hp(1),
-     padding: wp(2),
+    backgroundColor: COLORS.lightSky,
+    borderTopLeftRadius: hp(1),
+    borderTopRightRadius: hp(1),
+    padding: wp(2),
   },
   serviceBadge: {
     flexDirection: 'row',
@@ -354,7 +360,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: hp(1),
     alignItems: 'flex-start',
-     paddingHorizontal: wp(4),
+    paddingHorizontal: wp(4),
   },
   label: {
     fontSize: hp(1.6),
@@ -409,7 +415,7 @@ const styles = StyleSheet.create({
   viewDetailsText: {
     color: COLORS.white,
     fontSize: hp(1.4),
-    fontFamily:Fonts.medium
+    fontFamily: Fonts.medium,
   },
 });
 

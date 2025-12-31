@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   Pressable,
   Keyboard,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -23,11 +24,19 @@ const BookingSlotModal = ({
   setSelectedSlot,
   isReschedule = false,
 }) => {
+  const scrollRef = useRef(null);
+
+  const today = new Date();
+  const currentDate = today.getDate();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [rescheduleReason, setRescheduleReason] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // Default to current month
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [days, setDays] = useState([]);
 
   const monthNames = [
     'January',
@@ -43,221 +52,211 @@ const BookingSlotModal = ({
     'November',
     'December',
   ];
-  const currentMonth = monthNames[new Date().getMonth()];
-  const currentYear = new Date().getFullYear();
-  const currentDate = new Date().getDate(); // Today's date (e.g., 11 for 11th October 2025)
-
-  // Generate days for the selected month and year
-  const generateDays = (month, year) => {
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysArray = [];
-
-    for (let date = 1; date <= daysInMonth; date++) {
-      const day = new Date(year, month, date).toLocaleDateString('en-US', {
-        weekday: 'short',
-      });
-      daysArray.push({ date, day: day.slice(0, 3) });
-    }
-    return daysArray;
-  };
-
-  const [days, setDays] = useState(generateDays(selectedMonth, selectedYear));
-
-  useEffect(() => {
-    setDays(generateDays(selectedMonth, selectedYear));
-    // Set default selected day to today's date if within the month
-    const todayIndex = days.findIndex(day => day.date === currentDate);
-    if (todayIndex !== -1) {
-      setSelectedDay(todayIndex);
-    }
-  }, [selectedMonth, selectedYear, currentDate]);
 
   const timeSlots = [
     { label: 'First Half', time: '10:00 AM - 02:00 PM' },
-    { label: 'Second Half', time: '02:00 PM - 08:00 PM' },
+    { label: 'Second Half', time: '02:00 PM - 07:00 PM' },
   ];
 
-  const handleProceedPress = () => {
-    if (
-      selectedDay !== null &&
-      selectedTime !== null &&
-      setSelectedSlot &&
-      typeof setSelectedSlot === 'function'
-    ) {
-      const selectedDayObj = days[selectedDay];
-      const slot = {
-        date: selectedDayObj.date,
-        day: selectedDayObj.day,
-        month: monthNames[selectedMonth], // Month name (e.g., 'October')
-        monthNumber: selectedMonth + 1, // Month number (1-12, e.g., 10 for October)
-        year: selectedYear,
-        time: timeSlots[selectedTime].time, // e.g., '02:00 PM - 08:00 PM'
-        Timeslot: timeSlots[selectedTime].label, // e.g., 'First Half'
-        reason: isReschedule ? (rescheduleReason || null) : undefined,
-      };
-      setSelectedSlot(slot);
-      onBookProcess();
+  const generateDays = (month, year) => {
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    return Array.from({ length: totalDays }, (_, i) => {
+      const date = i + 1;
+      const day = new Date(year, month, date)
+        .toLocaleDateString('en-US', { weekday: 'short' })
+        .slice(0, 3);
+      return { date, day };
+    });
+  };
+
+  const isPastDate = date => {
+    const check = new Date(selectedYear, selectedMonth, date);
+    check.setHours(0, 0, 0, 0);
+
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+
+    return check < todayDate;
+  };
+
+  useEffect(() => {
+    const updatedDays = generateDays(selectedMonth, selectedYear);
+    setDays(updatedDays);
+
+    if (selectedMonth === currentMonth && selectedYear === currentYear) {
+      const todayIndex = updatedDays.findIndex(d => d.date === currentDate);
+
+      if (todayIndex !== -1) {
+        setSelectedDay(todayIndex);
+
+        setTimeout(() => {
+          scrollRef.current?.scrollTo({
+            x: todayIndex * wp(15),
+            animated: true,
+          });
+        }, 300);
+      }
+    } else {
+      setSelectedDay(null);
     }
+  }, [selectedMonth, selectedYear, visible]);
+
+  const handleProceedPress = () => {
+    if (selectedDay === null || selectedTime === null) return;
+
+    const dayObj = days[selectedDay];
+
+    setSelectedSlot({
+      date: dayObj.date,
+      day: dayObj.day,
+      month: monthNames[selectedMonth],
+      monthNumber: selectedMonth + 1,
+      year: selectedYear,
+      time: timeSlots[selectedTime].time,
+      Timeslot: timeSlots[selectedTime].label,
+      reason: isReschedule ? rescheduleReason : undefined,
+    });
+
+    onBookProcess();
   };
 
   return (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={visible}
-    onRequestClose={onClose}
-  >
-    {/* BACKDROP */}
-    <View style={styles.overlay}>
-      
-      {/* TAP OUTSIDE TO CLOSE */}
-      <Pressable style={styles.backdrop} onPress={onClose} />
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={styles.overlay}>
+        <Pressable style={styles.backdrop} onPress={onClose} />
 
-      {/* BOTTOM SHEET */}
-      <View style={styles.modalContent}>
-        <Text style={styles.title}>Book a slot</Text>
+        <View style={styles.modalContent}>
+          <Text style={styles.title}>Book a Slot</Text>
 
-        {/* DATE SECTION */}
-        <Text style={styles.sectionLabel}>Date</Text>
+          <Text style={styles.sectionLabel}>Date</Text>
 
-        <View style={styles.monthYearSelector}>
-          <TouchableOpacity
-            style={styles.monthButton}
-            onPress={() => {
-              const newMonth = selectedMonth - 1;
-              if (newMonth < 0) {
-                setSelectedMonth(11);
-                setSelectedYear(selectedYear - 1);
-              } else {
-                setSelectedMonth(newMonth);
-              }
-            }}
+          <View style={styles.monthYearSelector}>
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedMonth === 0) {
+                  setSelectedMonth(11);
+                  setSelectedYear(y => y - 1);
+                } else {
+                  setSelectedMonth(m => m - 1);
+                }
+              }}
+            >
+              <Text style={styles.navText}>{'<<'}</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.monthText}>
+              {monthNames[selectedMonth]} {selectedYear}
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedMonth === 11) {
+                  setSelectedMonth(0);
+                  setSelectedYear(y => y + 1);
+                } else {
+                  setSelectedMonth(m => m + 1);
+                }
+              }}
+            >
+              <Text style={styles.navText}>{'>>'}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.daysContainer}
           >
-            <Text style={styles.navText}>{'<<'}</Text>
-          </TouchableOpacity>
+            {days.map((day, index) => {
+              const disabled = isPastDate(day.date);
+              return (
+                <TouchableOpacity
+                  key={index}
+                  disabled={disabled}
+                  style={[
+                    styles.dayButton,
+                    selectedDay === index && !disabled && styles.selectedDay,
+                    disabled && styles.disabledDay,
+                  ]}
+                  onPress={() => setSelectedDay(index)}
+                >
+                  <Text
+                    style={[styles.dateNumber, disabled && styles.disabledText]}
+                  >
+                    {day.date}
+                  </Text>
+                  <Text
+                    style={[styles.dayName, disabled && styles.disabledText]}
+                  >
+                    {day.day}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
 
-          <Text style={styles.monthText}>{monthNames[selectedMonth]}</Text>
+          <Text style={styles.sectionLabel}>Time</Text>
 
+          <View style={styles.timeContainer}>
+            {timeSlots.map((slot, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.timeButton,
+                  selectedTime === index && styles.selectedTime,
+                ]}
+                onPress={() => setSelectedTime(index)}
+              >
+                <Text style={styles.timeLabel}>{slot.label}</Text>
+                <Text style={styles.timeText}>{slot.time}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {isReschedule && (
+            <>
+              <Text style={styles.sectionLabel}>Reason of Rescheduling</Text>
+              <TextInput
+                style={styles.reasonInput}
+                placeholder="Type here..."
+                multiline
+                value={rescheduleReason}
+                onChangeText={setRescheduleReason}
+              />
+            </>
+          )}
           <TouchableOpacity
-            style={styles.monthButton}
-            onPress={() => {
-              const newMonth = (selectedMonth + 1) % 12;
-              if (newMonth === 0) {
-                setSelectedYear(selectedYear + 1);
-              }
-              setSelectedMonth(newMonth);
-            }}
+            style={styles.proceedButton}
+            onPress={handleProceedPress}
           >
-            <Text style={styles.navText}>{'>>'}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.yearButton, { marginLeft: wp(4) }]}
-            onPress={() => {
-              if (selectedYear > 2025) {
-                setSelectedYear(selectedYear - 1);
-              }
-            }}
-          >
-            <Text style={styles.navText}>{'<<'}</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.yearText}>{selectedYear}</Text>
-
-          <TouchableOpacity
-            style={styles.yearButton}
-            onPress={() => setSelectedYear(selectedYear + 1)}
-          >
-            <Text style={styles.navText}>{'>>'}</Text>
+            <Text style={styles.proceedText}>Proceed</Text>
           </TouchableOpacity>
         </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.daysContainer}
-        >
-          {days.map((day, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.dayButton,
-                selectedDay === index && styles.selectedDay,
-              ]}
-              onPress={() => setSelectedDay(index)}
-            >
-              <Text style={styles.dateNumber}>{day.date}</Text>
-              <Text style={styles.dayName}>{day.day}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        <Text style={styles.sectionLabel}>Time</Text>
-
-        <View style={styles.timeContainer}>
-          {timeSlots.map((slot, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.timeButton,
-                selectedTime === index && styles.selectedTime,
-              ]}
-              onPress={() => setSelectedTime(index)}
-            >
-              <Text style={styles.timeLabel}>{slot.label}</Text>
-              <Text style={styles.timeText}>{slot.time}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {isReschedule && (
-          <>
-            <Text style={styles.sectionLabel}>Reason of Rescheduling</Text>
-            <TextInput
-              style={styles.reasonInput}
-              placeholder="Type here..."
-              placeholderTextColor={COLORS.inputColour}
-              multiline
-              numberOfLines={3}
-              value={rescheduleReason}
-              onChangeText={setRescheduleReason}
-              textAlignVertical="top"
-              onSubmitEditing={() => Keyboard.dismiss()}
-            />
-          </>
-        )}
-
-        <TouchableOpacity
-          style={styles.proceedButton}
-          onPress={handleProceedPress}
-        >
-          <Text style={styles.proceedText}>Proceed</Text>
-        </TouchableOpacity>
-
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
 };
+
+// export default BookingSlotModal;
 
 const styles = StyleSheet.create({
   overlay: {
-  flex: 1,
-  backgroundColor: COLORS.transparent,
-  justifyContent: 'flex-end',
-},
+    flex: 1,
+    backgroundColor: COLORS.transparent,
+    justifyContent: 'flex-end',
+  },
   backdrop: {
     flex: 1,
   },
   modalContent: {
-  width: '100%',
-  paddingHorizontal: wp(5),
-  paddingVertical: hp(2),
-  backgroundColor: COLORS.white,
-  borderTopLeftRadius: wp(6),
-  borderTopRightRadius: wp(6),
-  paddingBottom: Platform.OS === 'ios' ? hp(3) : hp(3),
+    width: '100%',
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(2),
+    backgroundColor: COLORS.white,
+    borderTopLeftRadius: wp(6),
+    borderTopRightRadius: wp(6),
+    paddingBottom: Platform.OS === 'ios' ? hp(3) : hp(3),
   },
   title: {
     fontSize: hp(2),
@@ -373,6 +372,14 @@ const styles = StyleSheet.create({
     color: COLORS.themeColor,
     fontSize: hp(2),
     fontWeight: '500',
+  },
+  disabledDay: {
+    backgroundColor: 'lightgrey',
+    borderColor: 'grey',
+  },
+
+  disabledText: {
+    color: '#b5b5b5',
   },
 });
 

@@ -4,11 +4,20 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { COLORS, Fonts } from '../utils/colors';
+import { rf } from '../components/Resposive';
+import { isTablet } from '../components/TabletResponsiveSize';
 
 const AcList = forwardRef(({ data, onChange }, ref) => {
- const [acList, setAcList] = useState(data);
+  const [acList, setAcList] = useState(data);
 
   // ✅ Increment / Decrement
   const updateCount = (id, type) => {
@@ -17,11 +26,9 @@ const AcList = forwardRef(({ data, onChange }, ref) => {
         ? {
             ...item,
             count:
-              type === 'inc'
-                ? item.count + 1
-                : Math.max(item.count - 1, 0),
+              type === 'inc' ? item.count + 1 : Math.max(item.count - 1, 0),
           }
-        : item
+        : item,
     );
 
     setAcList(updated);
@@ -33,13 +40,13 @@ const AcList = forwardRef(({ data, onChange }, ref) => {
   // ✅ selected ACs
   const selectedACs = useMemo(
     () => acList.filter(item => item.count > 0),
-    [acList]
+    [acList],
   );
 
   // ✅ total count
   const totalCount = useMemo(
     () => selectedACs.reduce((sum, item) => sum + item.count, 0),
-    [selectedACs]
+    [selectedACs],
   );
 
   // ✅ expose data to parent via ref
@@ -64,13 +71,19 @@ const AcList = forwardRef(({ data, onChange }, ref) => {
         </TouchableOpacity>
       ) : (
         <View style={styles.mainCounterView}>
-          <TouchableOpacity onPress={() => updateCount(item.id, 'dec')} style={styles.counterBorder}>
+          <TouchableOpacity
+            onPress={() => updateCount(item.id, 'dec')}
+            style={styles.counterBorder}
+          >
             <Text style={styles.counterBtn}>-</Text>
           </TouchableOpacity>
 
           <Text style={styles.count}>{item.count}</Text>
 
-          <TouchableOpacity onPress={() => updateCount(item.id, 'inc')} style={styles.counterBorder}>
+          <TouchableOpacity
+            onPress={() => updateCount(item.id, 'inc')}
+            style={styles.counterBorder}
+          >
             <Text style={styles.counterBtn}>+</Text>
           </TouchableOpacity>
         </View>
@@ -100,19 +113,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    alignSelf:'center',
+    alignSelf: 'center',
     width: '100%',
   },
   leftRow: { flexDirection: 'row', alignItems: 'center' },
   icon: { width: 42, height: 42, marginRight: 12 },
-  name: { fontSize: 16, fontWeight: '500' },
+  name: { fontSize: isTablet ? rf(9) : rf(13), fontFamily: Fonts.semiBold },
   addBtn: {
     borderWidth: 0.5,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 6,
   },
-  addText: { fontWeight: '400',color:'black' },
+  addText: { fontWeight: '400', color: 'black' },
   counter: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -121,19 +134,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   counterBtn: { fontSize: 20, fontWeight: 'bold', paddingHorizontal: 8 },
-  count: { fontSize: 16 },
-   counterBorder: {
+  count: {
+    fontSize: 16,
+    color: COLORS.themeColor,
+    fontWeight: '600',
+  },
+  counterBorder: {
     alignItems: 'center',
     borderWidth: 1,
-    borderColor:'gray',
+    borderColor: 'gray',
     borderRadius: 30,
     padding: 2,
-    height:32.5
+    height: 32.5,
   },
-  mainCounterView:{
-    width: '25%',
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center'
-  }
+  mainCounterView: {
+    width: '23%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
 });

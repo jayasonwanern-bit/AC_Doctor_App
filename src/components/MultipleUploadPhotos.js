@@ -1,77 +1,354 @@
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   StyleSheet,
+//   FlatList,
+//   Platform,
+//   Alert,
+// } from 'react-native';
+// import FastImage from 'react-native-fast-image';
+// import ImagePicker from 'react-native-image-crop-picker';
+// import { COLORS, Fonts } from '../utils/colors';
+// import images from '../assets/images';
+// import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+// const MultipleUploadPhotos = ({ onChange, OptionalText = '' }) => {
+//   const [uploadedItems, setUploadedItems] = useState([]);
+
+//   // Handle image/video selection with crop picker
+//   const handlePickImageOrVideo = () => {
+//     const options = {
+//       mediaType: 'any', // 'photo' or 'video' or 'any'
+//       cropping: true, // Enable cropping for photos
+//       compressImageQuality: 0.8, // Compress quality
+//       maxFiles: 1, // Single selection (change to higher for multiple)
+//       includeBase64: false,
+//       width: 500,
+//       height: 500,
+//       MultipleUploadPhotos: true,
+//     };
+
+//     Alert.alert(
+//       'Select Option',
+//       'Choose an action',
+//       [
+//         {
+//           text: 'Gallery',
+//           onPress: () => {
+//             ImagePicker.openPicker(options)
+//               .then(response => {
+//                 const uri = response.path || response.uri; // iOS/Android compatibility
+//                 const type = response.mime.includes('video')
+//                   ? 'video'
+//                   : 'photo';
+//                 const newItem = { id: Date.now(), uri, type };
+//                 const updatedItems = [...uploadedItems, newItem];
+//                 setUploadedItems(updatedItems);
+//                 onChange(updatedItems);
+//               })
+//               .catch(error => {
+//                 console.log('Gallery Error: ', error);
+//                 Alert.alert(
+//                   'Error',
+//                   'Something went wrong while picking from gallery.',
+//                 );
+//               });
+//           },
+//         },
+//         {
+//           text: 'Camera',
+//           onPress: () => {
+//             ImagePicker.openCamera(options)
+//               .then(response => {
+//                 const uri = response.path || response.uri;
+//                 const type = response.mime.includes('video')
+//                   ? 'video'
+//                   : 'photo';
+//                 const newItem = { id: Date.now(), uri, type };
+//                 const updatedItems = [...uploadedItems, newItem];
+//                 setUploadedItems(updatedItems);
+//                 onChange(updatedItems);
+//               })
+//               .catch(error => {
+//                 console.log('Camera Error: ', error);
+//                 Alert.alert(
+//                   'Error',
+//                   'Something went wrong while using the camera.',
+//                 );
+//               });
+//           },
+//         },
+//         { text: 'Cancel', style: 'cancel' },
+//       ],
+//       { cancelable: true },
+//     );
+//   };
+
+//   // Handle removing an upload
+//   const handleRemoveUpload = id => {
+//     const updatedItems = uploadedItems.filter(item => item.id !== id);
+//     setUploadedItems(updatedItems);
+//     onChange(updatedItems);
+//   };
+
+//   // Render each upload item
+//   const renderItem = ({ item }) => (
+//     <View style={styles.uploadCard}>
+//       <FastImage
+//         source={{ uri: item.uri }}
+//         style={styles.cardImage}
+//         resizeMode={FastImage.resizeMode.cover}
+//       />
+//       {item.type === 'video' && (
+//         <View style={styles.playButton}>
+//           <FastImage
+//             source={images.Play}
+//             style={styles.playIcon}
+//             resizeMode={FastImage.resizeMode.contain}
+//           />
+//         </View>
+//       )}
+//       <TouchableOpacity
+//         style={styles.removeButton}
+//         onPress={() => handleRemoveUpload(item.id)}
+//       >
+//         <Text style={styles.removeText}>×</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+
+//   return (
+//     <SafeAreaProvider>
+//       <View style={styles.inputGroup}>
+//         <Text style={styles.label}>
+//           Upload Photos/Drawings{' '}
+//           <Text style={styles.labelInput}>{OptionalText}</Text>
+//         </Text>
+//         <FlatList
+//           data={uploadedItems}
+//           renderItem={renderItem}
+//           keyExtractor={item => item.id.toString()}
+//           numColumns={3}
+//           columnWrapperStyle={styles.row}
+//           ListFooterComponent={
+//             uploadedItems.length < 3 ? (
+//               <TouchableOpacity
+//                 style={styles.uploadContainer}
+//                 onPress={handlePickImageOrVideo}
+//               >
+//                 <FastImage
+//                   source={images.Camera}
+//                   style={styles.customIcon}
+//                   resizeMode={FastImage.resizeMode.contain}
+//                 />
+//                 <Text style={styles.uploadText}>Add Photo/Video</Text>
+//               </TouchableOpacity>
+//             ) : null
+//           }
+//         />
+//       </View>
+//     </SafeAreaProvider>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   inputGroup: {
+//     marginBottom: 4,
+//     marginHorizontal: 10,
+//   },
+//   label: {
+//     fontSize: 14,
+//     color: COLORS.black,
+//     marginTop: 10,
+//     fontFamily: Fonts.semiBold,
+//   },
+//   uploadContainer: {
+//     height: 90,
+//     backgroundColor: '#eaf0f7ff',
+//     borderRadius: 10,
+//     borderWidth: 1,
+//     borderColor: '#ddd',
+//     borderStyle: 'dashed',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginVertical: 5,
+//     width: 100,
+//     marginTop: 12,
+//   },
+//   customIcon: {
+//     width: 30,
+//     height: 30,
+//     tintColor: '#666',
+//   },
+//   uploadText: {
+//     fontSize: 10,
+//     color: '#666',
+//     marginTop: 5,
+//     textAlign: 'center',
+//   },
+//   labelInput: {
+//     flex: 1,
+//     fontSize: 12,
+//     color: '#969494ff',
+//     marginLeft: 1,
+//     fontFamily: Fonts.medium,
+//   },
+//   uploadCard: {
+//     height: 100,
+//     backgroundColor: '#fff',
+//     borderRadius: 10,
+//     borderWidth: 1,
+//     borderColor: '#ddd',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     margin: 5,
+//     width: 100,
+//     position: 'relative',
+//     overflow: 'hidden',
+//   },
+//   cardImage: {
+//     width: '100%',
+//     height: '100%',
+//   },
+//   playButton: {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: [{ translateX: -15 }, { translateY: -15 }],
+//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+//     borderRadius: 20,
+//     padding: 5,
+//   },
+//   playIcon: {
+//     width: 30,
+//     height: 30,
+//     tintColor: '#fff',
+//   },
+//   removeButton: {
+//     position: 'absolute',
+//     top: 5,
+//     right: 5,
+//     backgroundColor: '#dc3545',
+//     borderRadius: 10,
+//     width: 20,
+//     height: 20,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   removeText: {
+//     color: '#fff',
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//   },
+//   row: {
+//     flex: 1,
+//     justifyContent: 'flex-start',
+//   },
+// });
+
+// export default MultipleUploadPhotos;
+
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Platform, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Alert,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
 import { COLORS, Fonts } from '../utils/colors';
 import images from '../assets/images';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { isTablet } from './TabletResponsiveSize';
 
-const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
-
+const MultipleUploadPhotos = ({ onChange, OptionalText = '' }) => {
   const [uploadedItems, setUploadedItems] = useState([]);
 
-  // Handle image/video selection with crop picker
+  // Pick multiple images
   const handlePickImageOrVideo = () => {
     const options = {
-      mediaType: 'any', // 'photo' or 'video' or 'any'
-      cropping: true, // Enable cropping for photos
-      compressImageQuality: 0.8, // Compress quality
-      maxFiles: 1, // Single selection (change to higher for multiple)
+      mediaType: 'photo', // photo only (change to 'any' if needed)
+      multiple: true, // ✅ allow multiple selection
+      maxFiles: 150, // ✅ limit
+      compressImageQuality: 0.8,
       includeBase64: false,
-      width: 500,
-      height: 500,
     };
 
-    Alert.alert(
-      'Select Option',
-      'Choose an action',
-      [
-        {
-          text: 'Gallery',
-          onPress: () => {
-            ImagePicker.openPicker(options).then(response => {
-              const uri = response.path || response.uri; // iOS/Android compatibility
-              const type = response.mime.includes('video') ? 'video' : 'photo';
-              const newItem = { id: Date.now(), uri, type };
+    Alert.alert('Select Option', 'Choose an action', [
+      {
+        text: 'Gallery',
+        onPress: () => {
+          ImagePicker.openPicker(options)
+            .then(response => {
+              // response is an ARRAY
+              const newItems = response.map(item => ({
+                id: `${item.path}_${Date.now()}`,
+                uri: item.path,
+                type: 'photo',
+              }));
+
+              const updatedItems = [...uploadedItems, ...newItems];
+              setUploadedItems(updatedItems);
+              onChange && onChange(updatedItems);
+            })
+            .catch(error => {
+              if (error?.code !== 'E_PICKER_CANCELLED') {
+                console.log('Gallery Error:', error);
+                Alert.alert(
+                  'Error',
+                  'Something went wrong while picking images.',
+                );
+              }
+            });
+        },
+      },
+      {
+        text: 'Camera',
+        onPress: () => {
+          ImagePicker.openCamera({
+            mediaType: 'photo',
+            cropping: true,
+            compressImageQuality: 0.8,
+          })
+            .then(response => {
+              const newItem = {
+                id: `${response.path}_${Date.now()}`,
+                uri: response.path,
+                type: 'photo',
+              };
+
               const updatedItems = [...uploadedItems, newItem];
               setUploadedItems(updatedItems);
-              onChange(updatedItems);
-            }).catch(error => {
-              console.log('Gallery Error: ', error);
-              Alert.alert('Error', 'Something went wrong while picking from gallery.');
+              onChange && onChange(updatedItems);
+            })
+            .catch(error => {
+              if (error?.code !== 'E_PICKER_CANCELLED') {
+                console.log('Camera Error:', error);
+                Alert.alert(
+                  'Error',
+                  'Something went wrong while using camera.',
+                );
+              }
             });
-          },
         },
-        {
-          text: 'Camera',
-          onPress: () => {
-            ImagePicker.openCamera(options).then(response => {
-              const uri = response.path || response.uri;
-              const type = response.mime.includes('video') ? 'video' : 'photo';
-              const newItem = { id: Date.now(), uri, type };
-              const updatedItems = [...uploadedItems, newItem];
-              setUploadedItems(updatedItems);
-              onChange(updatedItems);
-            }).catch(error => {
-              console.log('Camera Error: ', error);
-              Alert.alert('Error', 'Something went wrong while using the camera.');
-            });
-          },
-        },
-        { text: 'Cancel', style: 'cancel' },
-      ],
-      { cancelable: true }
-    );
+      },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
   };
 
-  // Handle removing an upload
-  const handleRemoveUpload = (id) => {
+  // Remove image
+  const handleRemoveUpload = id => {
     const updatedItems = uploadedItems.filter(item => item.id !== id);
     setUploadedItems(updatedItems);
-    onChange(updatedItems);
+    onChange && onChange(updatedItems);
   };
 
-  // Render each upload item
+  // Render each image
   const renderItem = ({ item }) => (
     <View style={styles.uploadCard}>
       <FastImage
@@ -79,15 +356,7 @@ const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
         style={styles.cardImage}
         resizeMode={FastImage.resizeMode.cover}
       />
-      {item.type === 'video' && (
-        <View style={styles.playButton}>
-          <FastImage
-            source={images.Play}
-            style={styles.playIcon}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-        </View>
-      )}
+
       <TouchableOpacity
         style={styles.removeButton}
         onPress={() => handleRemoveUpload(item.id)}
@@ -99,28 +368,36 @@ const MultipleUploadPhotos = ({ onChange,OptionalText='' }) => {
 
   return (
     <SafeAreaProvider>
-    <View style={styles.inputGroup}>
-      <Text style={styles.label}>Upload Photos/Drawings <Text style={styles.labelInput}>{OptionalText}</Text></Text>
-      <FlatList
-        data={uploadedItems}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        numColumns={3}
-        columnWrapperStyle={styles.row}
-        ListFooterComponent={
-         uploadedItems.length < 3 ? (
-            <TouchableOpacity style={styles.uploadContainer} onPress={handlePickImageOrVideo}>
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>
+          Upload Photos <Text style={styles.labelInput}>{OptionalText}</Text>
+        </Text>
+
+        <FlatList
+          data={uploadedItems}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          numColumns={isTablet ? 6 : 3}
+          columnWrapperStyle={styles.row}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={12}
+          windowSize={10}
+          removeClippedSubviews={true}
+          ListFooterComponent={
+            <TouchableOpacity
+              style={styles.uploadContainer}
+              onPress={handlePickImageOrVideo}
+            >
               <FastImage
                 source={images.Camera}
                 style={styles.customIcon}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={styles.uploadText}>Add Photo/Video</Text>
+              <Text style={styles.uploadText}>Add Photos</Text>
             </TouchableOpacity>
-          ) : null
-        }
-      />
-    </View>
+          }
+        />
+      </View>
     </SafeAreaProvider>
   );
 };
@@ -136,6 +413,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontFamily: Fonts.semiBold,
   },
+  labelInput: {
+    fontSize: 12,
+    color: '#969494ff',
+    fontFamily: Fonts.medium,
+  },
   uploadContainer: {
     height: 90,
     backgroundColor: '#eaf0f7ff',
@@ -145,9 +427,8 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 5,
+    margin: 5,
     width: 100,
-    marginTop: 12,
   },
   customIcon: {
     width: 30,
@@ -158,45 +439,21 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#666',
     marginTop: 5,
-    textAlign:'center'
+    textAlign: 'center',
   },
-   labelInput: {
-      flex: 1,
-      fontSize: 12,
-      color: '#969494ff',
-      marginLeft: 1,     
-      fontFamily: Fonts.medium,
-    },
   uploadCard: {
     height: 100,
     backgroundColor: '#fff',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    justifyContent: 'center',
-    alignItems: 'center',
     margin: 5,
     width: 100,
-    position: 'relative',
     overflow: 'hidden',
   },
   cardImage: {
     width: '100%',
     height: '100%',
-  },
-  playButton: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -15 }, { translateY: -15 }],
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 20,
-    padding: 5,
-  },
-  playIcon: {
-    width: 30,
-    height: 30,
-    tintColor: '#fff',
   },
   removeButton: {
     position: 'absolute',
@@ -215,10 +472,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   row: {
-    flex: 1,
     justifyContent: 'flex-start',
   },
 });
 
 export default MultipleUploadPhotos;
-

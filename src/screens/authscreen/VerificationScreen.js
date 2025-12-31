@@ -28,12 +28,7 @@ import { isTablet } from '../../components/TabletResponsiveSize';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VerificationScreen = ({ navigation, route }) => {
-  const {
-    phoneNumber,
-    callingCode,
-    otp: serverOtp,
-    userId,
-  } = route.params;
+  const { phoneNumber, callingCode, otp: serverOtp, userId } = route.params;
   const [serverOtpState, setServerOtpState] = useState(serverOtp);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -59,36 +54,35 @@ const VerificationScreen = ({ navigation, route }) => {
     };
     try {
       const res = await VerifyOTP(postdata);
-      console.log("Response:", res?.data?.data?.refreshToken);
+      console.log('Response:', res?.data?.data?.refreshToken);
       if (res?.data?.status === true) {
         // console
 
+        try {
+          await AsyncStorage.setItem(
+            'authToken',
+            res?.data?.data?.refreshToken,
+          );
+          dispatch(setUser({ user: res?.data?.data }));
+          dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
 
+          Toast.show(res?.data?.message || 'Verified Successfully');
 
- try {
-    await AsyncStorage.setItem('authToken', res?.data?.data?.refreshToken);
- dispatch(setUser({ user: res?.data?.data }));
-        dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'ServiceScreen',
+              },
+            ],
+          });
+          Keyboard.dismiss();
+          setLoader(false);
+        } catch (error) {
+          Toast.show('Auth Not Found');
 
-        Toast.show(res?.data?.message || 'Verified Successfully');
-
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'ServiceScreen',
-            },
-          ],
-        });
-        Keyboard.dismiss();
-        setLoader(false);
-  } catch (error) {
-        Toast.show('Auth Not Found');
-
-    console.log('Error saving token', error);
-  }
-
-       
+          console.log('Error saving token', error);
+        }
       }
       // failed case (but server returned status 200)
       else {

@@ -26,6 +26,7 @@ import { getUserProfile, logoutUser } from '../../api/profileApi';
 import Toast from 'react-native-simple-toast';
 import { logout } from '../../redux/slices/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomLoader from '../../components/CustomLoader';
 
 const AccountScreenComponent = ({ navigation }) => {
   const scheme = useColorScheme();
@@ -53,7 +54,28 @@ const AccountScreenComponent = ({ navigation }) => {
   const userId = store?.getState()?.auth?.user;
   const addressText = store?.getState()?.auth?.address;
   const weatherData = store?.getState()?.auth?.celcius;
-  console.log('addressText --->', weatherData);
+
+  useEffect(() => {
+    if (userId) {
+      fetchProfile();
+    }
+  }, [userId]);
+
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const res = await getUserProfile(userId?._id);
+      console.log('User Profile Response:', res);
+      if (res?.success) {
+        const data = res.data;
+        setStoreData(data);
+      }
+    } catch (error) {
+      console.log('Error fetching profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleMenuPress = async screen => {
     if (screen === 'Logout') {
@@ -89,27 +111,6 @@ const AccountScreenComponent = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    if (userId) {
-      fetchProfile();
-    }
-  }, [userId]);
-
-  const fetchProfile = async () => {
-    try {
-      setLoading(true);
-      const res = await getUserProfile(userId?._id);
-      if (res?.status) {
-        const data = res.data;
-        setStoreData(data);
-      }
-    } catch (error) {
-      console.log('Error fetching profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <SafeAreaView
       style={[
@@ -126,20 +127,18 @@ const AccountScreenComponent = ({ navigation }) => {
       <View style={Homestyles.header}>
         <Text style={Homestyles.locationtitle}>Location</Text>
         <View style={Homestyles.addressRow}>
-          <TouchableOpacity
-            style={Homestyles.locationContainer}
-            // onPress={() =>
-            //   navigation.navigate('SelectLocation', { onUpdate: loadAddress })
-            // }
-          >
+          <TouchableOpacity style={Homestyles.locationContainer}>
             <FastImage
               source={images.homeLocation}
               style={Homestyles.locationIcon}
               resizeMode={FastImage.resizeMode.contain}
             />
             <Text style={Homestyles.locationText}>
-              {`${addressText.house}  ${addressText.road}, ${addressText.city}` ||
-                'Select Location'}
+              {addressText || addressText
+                ? `${addressText?.house || ''} ${addressText?.road || ''}, ${
+                    addressText?.city || ''
+                  }`
+                : 'Select Location'}
             </Text>
           </TouchableOpacity>
           <View style={Homestyles.wheatherContainer}>
@@ -155,36 +154,50 @@ const AccountScreenComponent = ({ navigation }) => {
         </View>
       </View>
 
-      {/* profile */}
+      {/* profile Detail */}
       <TouchableOpacity
         style={Homestyles.accountMaincontainer}
         onPress={() => navigation.navigate('ProfileDetail')}
       >
-        <View style={Homestyles.accountcontainer}>
-          <FastImage
-            source={images.userProfile}
-            style={Homestyles.accountbg}
-            resizeMode={FastImage.resizeMode.cover}
-          />
-        </View>
-        <View style={Homestyles.accountcontainer}>
-          <Text style={Homestyles.accounttitle}>{storeData?.name}</Text>
-          <View style={Homestyles.accountline}>
-            <Image
-              source={images.Call}
-              style={Homestyles.callIcon}
-              resizeMode="contain"
-            />
-            <Text style={Homestyles.accountNumber}>
-              {storeData?.countryCode} {storeData?.phoneNumber}
-            </Text>
-          </View>
-          <Text
-            style={[Homestyles.accountNumber, { color: COLORS.themeColor }]}
-          >
-            {'Complete your profile >'}
-          </Text>
-        </View>
+        {loading ? (
+          <>
+            <CustomLoader size={20} />
+          </>
+        ) : (
+          <>
+            <View style={Homestyles.accountcontainer}>
+              <FastImage
+                source={
+                  storeData.profilePhoto
+                    ? { uri: storeData?.profilePhoto }
+                    : images.userProfile
+                }
+                style={Homestyles.accountbg}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+            </View>
+            <View style={Homestyles.accountcontainer}>
+              <Text style={Homestyles.accounttitle}>
+                {storeData?.name || 'Add Name'}
+              </Text>
+              <View style={Homestyles.accountline}>
+                <Image
+                  source={images.Call}
+                  style={Homestyles.callIcon}
+                  resizeMode="contain"
+                />
+                <Text style={Homestyles.accountNumber}>
+                  {storeData?.countryCode} {storeData?.phoneNumber}
+                </Text>
+              </View>
+              <Text
+                style={[Homestyles.accountNumber, { color: COLORS.themeColor }]}
+              >
+                {'Complete your profile >'}
+              </Text>
+            </View>
+          </>
+        )}
       </TouchableOpacity>
 
       {/* service booked */}
@@ -211,6 +224,7 @@ const AccountScreenComponent = ({ navigation }) => {
           </Text>
         </View>
       </View>
+
       {/* Menu List */}
       <View style={styles.container}>
         <FlatList
@@ -243,7 +257,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   list: {
-    padding: wp(3),
+    padding: wp(2),
     paddingBottom: hp(15),
   },
 });

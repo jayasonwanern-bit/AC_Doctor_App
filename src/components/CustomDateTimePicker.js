@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-} from "react-native";
-import { COLORS } from "../utils/colors";
-
+} from 'react-native';
+import { COLORS } from '../utils/colors';
 
 const CustomDateTimePicker = ({
-    activeColor = "#2E86DE",
-    inactiveColor = "#000000",
-    onChangeDate,
-    onChangeSlot,
+  activeColor = '#2E86DE',
+  inactiveColor = '#000000',
+  onChangeDate,
+  onChangeSlot,
 }) => {
-    const today = new Date();
-    const daysShort = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+  const today = new Date();
+  const daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(today);
-  const [selectedSlot, setSelectedSlot] = useState("first");
+  const [selectedSlot, setSelectedSlot] = useState('first');
 
   // ---------------- GENERATE DAYS OF THE MONTH ---------------- //
   const getDays = () => {
@@ -47,7 +46,7 @@ const CustomDateTimePicker = ({
   };
 
   // Change month
-  const changeMonth = (direction) => {
+  const changeMonth = direction => {
     let newMonth = currentMonth + direction;
     let newYear = currentYear;
 
@@ -64,7 +63,7 @@ const CustomDateTimePicker = ({
   };
 
   // Select date
-  const handleSelectDate = (day) => {
+  const handleSelectDate = day => {
     if (!day.date) return;
 
     const newDate = new Date(currentYear, currentMonth, day.date);
@@ -78,25 +77,30 @@ const CustomDateTimePicker = ({
 
   return (
     <View style={styles.card}>
-    <Text style={styles.cardTitle}>Select Date & Time</Text>
+      <Text style={styles.cardTitle}>Select Date & Time</Text>
       {/* Month Navigation */}
       <View style={styles.monthRow}>
-        <TouchableOpacity style={styles.arrowBtn} onPress={() => changeMonth(-1)}>
+        <TouchableOpacity
+          style={styles.arrowBtn}
+          onPress={() => changeMonth(-1)}
+        >
           <Text style={styles.arrow}>‹</Text>
         </TouchableOpacity>
 
         <Text style={styles.monthText}>
-          {new Date(currentYear, currentMonth).toLocaleString("en-US", {
-            month: "long",
-            year: "numeric",
+          {new Date(currentYear, currentMonth).toLocaleString('en-US', {
+            month: 'long',
+            year: 'numeric',
           })}
         </Text>
 
-        <TouchableOpacity style={styles.arrowBtn} onPress={() => changeMonth(1)}>
+        <TouchableOpacity
+          style={styles.arrowBtn}
+          onPress={() => changeMonth(1)}
+        >
           <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
       </View>
-
 
       {/* Horizontal Dates */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -118,7 +122,7 @@ const CustomDateTimePicker = ({
                 <Text
                   style={[
                     styles.dayLabel,
-                    { color: day.date ? inactiveColor : "#CCC" },
+                    { color: day.date ? inactiveColor : '#CCC' },
                     isSelected && { color: activeColor },
                   ]}
                 >
@@ -132,12 +136,9 @@ const CustomDateTimePicker = ({
                   ]}
                 >
                   <Text
-                    style={[
-                      styles.dayNumber,
-                      isSelected && { color: "#fff" },
-                    ]}
+                    style={[styles.dayNumber, isSelected && { color: '#fff' }]}
                   >
-                    {day.date || ""}
+                    {day.date || ''}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -152,17 +153,17 @@ const CustomDateTimePicker = ({
       <View style={styles.slotRow}>
         {/* FIRST HALF */}
         <TouchableOpacity
-          onPress={() => setSelectedSlot("first")}
+          onPress={() => setSelectedSlot('first')}
           style={[
             styles.slotBox,
-            selectedSlot === "first" && styles.slotActive,
+            selectedSlot === 'first' && styles.slotActive,
           ]}
         >
           <View style={styles.slotHeader}>
             <Text
               style={[
                 styles.slotTitle,
-                selectedSlot === "first" && styles.slotTitleActive,
+                selectedSlot === 'first' && styles.slotTitleActive,
               ]}
             >
               First Half
@@ -171,13 +172,13 @@ const CustomDateTimePicker = ({
             <View
               style={[
                 styles.radioOuter,
-                selectedSlot === "first" && styles.radioOuterActive,
+                selectedSlot === 'first' && styles.radioOuterActive,
               ]}
             >
               <View
                 style={[
                   styles.radioInner,
-                  selectedSlot === "first" && styles.radioInnerActive,
+                  selectedSlot === 'first' && styles.radioInnerActive,
                 ]}
               />
             </View>
@@ -186,7 +187,7 @@ const CustomDateTimePicker = ({
           <Text
             style={[
               styles.slotTime,
-              selectedSlot === "first" && styles.slotTimeActive,
+              selectedSlot === 'first' && styles.slotTimeActive,
             ]}
           >
             10:00 AM To 02:00 PM
@@ -195,28 +196,28 @@ const CustomDateTimePicker = ({
 
         {/* SECOND HALF */}
         <TouchableOpacity
-          onPress={() => setSelectedSlot("second")}
+          onPress={() => setSelectedSlot('second')}
           style={[
             styles.slotBox,
-            selectedSlot === "second" && styles.slotActive,
+            selectedSlot === 'second' && styles.slotActive,
           ]}
         >
           <View style={styles.slotHeader}>
             <Text style={styles.slotTitle}>Second Half</Text>
 
-              <View
+            <View
               style={[
                 styles.radioOuter,
-                selectedSlot === "second" && styles.radioOuterActive,
+                selectedSlot === 'second' && styles.radioOuterActive,
               ]}
             >
               <View
                 style={[
                   styles.radioInner,
-                  selectedSlot === "second" && styles.radioInnerActive,
+                  selectedSlot === 'second' && styles.radioInnerActive,
                 ]}
               />
-              </View>
+            </View>
           </View>
 
           <Text style={styles.slotTime}>02:00 PM To 08:00 PM</Text>
@@ -231,90 +232,90 @@ export default CustomDateTimePicker;
 // -------------------- STYLES -------------------- //
 
 const styles = StyleSheet.create({
-     card: {
-        backgroundColor: '#FFFFFF',
-        padding:16,
-        borderRadius: 16,
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
-        elevation: 3,
-      },
+  card: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 3,
+  },
   monthRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginVertical: 12,
   },
 
   monthText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 
   arrowBtn: {
     paddingHorizontal: 15,
     paddingVertical: 2,
-    backgroundColor: "#F2F2F2",
+    backgroundColor: '#F2F2F2',
     borderRadius: 22,
-    alignItems:'center'
+    alignItems: 'center',
   },
 
   arrow: {
     fontSize: 25,
-    fontWeight: "600",
-    textAlign:'center'
+    fontWeight: '600',
+    textAlign: 'center',
   },
 
   daysRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 10,
   },
 
   dayBox: {
-    alignItems: "center",
+    alignItems: 'center',
     marginRight: 15,
   },
 
   dayLabel: {
     fontSize: 13,
     marginBottom: 4,
-    fontWeight: "500",
+    fontWeight: '500',
   },
 
   dateCircle: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#EAF0F6",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#EAF0F6',
   },
 
   dayNumber: {
     fontSize: 15,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 
   // SLOT STYLES
   cardTitle: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#333",
+    fontWeight: '600',
+    color: '#333',
   },
 
   slotRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 10,
   },
 
   slotBox: {
-    width: "48%",
+    width: '48%',
     borderWidth: 1.4,
-    borderColor: "#D9D9D9",
+    borderColor: '#D9D9D9',
     borderRadius: 14,
     padding: 12,
   },
@@ -323,17 +324,15 @@ const styles = StyleSheet.create({
     borderColor: '#207cccff',
   },
 
- 
-
   slotHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 
   slotTitle: {
     fontSize: 16,
-    color: "#333",
+    color: '#333',
   },
 
   slotTitleActive: {
@@ -343,7 +342,7 @@ const styles = StyleSheet.create({
   slotTime: {
     fontSize: 13,
     marginTop: 4,
-    color: "#555",
+    color: '#555',
   },
 
   slotTimeActive: {
@@ -355,9 +354,9 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 15,
     borderWidth: 1.5,
-    borderColor: "#999",
-    justifyContent: "center",
-    alignItems: "center",
+    borderColor: '#999',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   radioOuterActive: {
@@ -368,7 +367,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 6,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
 
   radioInnerActive: {

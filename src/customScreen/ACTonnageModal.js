@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, Image} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  FlatList,
+  Image,
+  Platform,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import images from '../assets/images';
 import {
@@ -11,7 +20,7 @@ import { COLORS, Fonts } from '../utils/colors';
 const ACTonnageModal = ({ visible, onClose, onSelect }) => {
   const [selectedType, setSelectedType] = useState(null);
 
-   const defaultAcTypes = [
+  const defaultAcTypes = [
     { name: 'Split AC', showButtons: false, acIcon: images.splitG },
     {
       name: 'Window AC',
@@ -28,6 +37,11 @@ const ACTonnageModal = ({ visible, onClose, onSelect }) => {
       name: 'Ducted AC',
       showButtons: false,
       acIcon: images.ductedG,
+    },
+    {
+      name: 'Chiller AC',
+      showButtons: false,
+      acIcon: images.chilerG,
     },
     { name: 'Tower AC', showButtons: false, acIcon: images.towerG },
   ];
@@ -47,15 +61,18 @@ const ACTonnageModal = ({ visible, onClose, onSelect }) => {
       ]}
       onPress={() => setSelectedType(item.name)}
     >
-        <FastImage
-                style={[styles.icon ,{tintColor:selectedType === item.name && COLORS.themeColor}]}
-                source={item.acIcon}
-                resizeMode={FastImage.resizeMode.contain}
-                onError={() => console.log('ResidentBuild image failed')}
-              />
+      <FastImage
+        style={[
+          styles.icon,
+          // { tintColor: selectedType === item.name && '#4a90e2' },
+        ]}
+        source={item.acIcon}
+        resizeMode={FastImage.resizeMode.contain}
+        onError={() => console.log('ResidentBuild image failed')}
+      />
       <Text
         style={[
-         styles.buttonText,
+          styles.buttonText,
           { color: selectedType === item.name && '#4a90e2' },
         ]}
       >
@@ -81,13 +98,13 @@ const ACTonnageModal = ({ visible, onClose, onSelect }) => {
           style={styles.modalContent}
           onStartShouldSetResponder={() => true}
         >
-          <Text style={[styles.buttonText,{textAlign:'center',fontSize: hp(1.6),fontFamily:Fonts.semiBold}]}>Select AC Type</Text>
+          <Text style={styles.headingText}>Select AC Type</Text>
 
-        <View style={styles.acTypeContainer}>
+          <View style={styles.acTypeContainer}>
             <FlatList
               data={defaultAcTypes}
               renderItem={renderAcTypeItem}
-              keyExtractor={(item) => item.name}
+              keyExtractor={item => item.name}
               numColumns={3}
               columnWrapperStyle={styles.row}
               contentContainerStyle={styles.acList}
@@ -127,36 +144,42 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     paddingBottom: hp(Platform.OS === 'android' ? 4 : 5),
   },
+  headingText: {
+    textAlign: 'center',
+    fontSize: hp(2),
+    color: COLORS.black,
+    fontFamily: Fonts.bold,
+    marginBottom: hp(2),
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop:9
+    marginTop: 9,
   },
   button: {
-    flex: 1,
+    width: wp(26),
     backgroundColor: '#FFF',
     borderRadius: 10,
-    paddingVertical: hp(2),
-    paddingHorizontal: hp(0),
-    margin: 8,
+    paddingVertical: hp(1),
+    margin: 5,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#DDD',
+    // borderWidth: 1,
+    // borderColor: '#DDD',
   },
   selectedButton: {
     borderColor: COLORS.themeColor,
     borderWidth: 1,
   },
   icon: {
-    width: wp(10),
-    height: hp(4),
-    marginBottom: 10,
+    width: wp(12),
+    height: hp(5),
+    marginBottom: 8,
   },
   buttonText: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.7),
     color: '#333',
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
   },
   doneButton: {
     backgroundColor: COLORS.themeColor,

@@ -27,6 +27,7 @@ import CustomButton from '../../../components/CustomButton';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Value } from 'react-native/types_generated/Libraries/Animated/AnimatedExports';
 import FastImage from 'react-native-fast-image';
+import { isTablet } from '../../../components/TabletResponsiveSize';
 
 const OldACRequest = ({ navigation }) => {
   const [reqStatus, setReqStatus] = useState(''); //Schedule, ReScheduled, complete, Accepted, Decline
@@ -426,8 +427,8 @@ const OldACRequest = ({ navigation }) => {
                   borderRadius: hp(5),
                   borderWidth: wp(0.3),
                   borderColor: COLORS.lightGray,
-                  padding:Platform.OS === 'ios'? hp(1.7): hp(0.5),
-                  paddingHorizontal:Platform.OS === 'ios'? hp(1.7): hp(2.5),
+                  padding: Platform.OS === 'ios' ? hp(1.7) : hp(0.5),
+                  paddingHorizontal: Platform.OS === 'ios' ? hp(1.7) : hp(2.5),
                   marginVertical: wp(1.5),
                 }}
               >
@@ -576,19 +577,28 @@ const OldACRequest = ({ navigation }) => {
               <TouchableOpacity
                 style={[
                   styles.copperRow,
-                  { width: wp('90'), alignSelf: 'center' },
+                  { width: isTablet ? wp(90) : wp(90), alignSelf: 'center' },
                 ]}
               >
                 <Text style={[styles.label, { color: COLORS.black }]}>
                   Your AC details
                 </Text>
                 {detailStatus === 'Request' && (
-                  <TouchableOpacity style={[styles.copperRow]}>
+                  <TouchableOpacity
+                    style={[styles.copperRow, { borderBottomColor: '#F5F7FA' }]}
+                  >
                     <Image
                       source={images.editIcon}
                       style={styles.showiconStyle}
                     />
-                    <Text style={[styles.label, { color: COLORS.themeColor }]}>
+                    <Text
+                      style={[
+                        styles.label,
+                        {
+                          color: COLORS.themeColor,
+                        },
+                      ]}
+                    >
                       Edit
                     </Text>
                   </TouchableOpacity>
@@ -599,7 +609,8 @@ const OldACRequest = ({ navigation }) => {
             {/* AC Names List */}
             {Object.keys(acData).map(acName => (
               <>
-                <TouchableOpacity key={'AC Names list'}
+                <TouchableOpacity
+                  key={'AC Names list'}
                   onPress={() => toggleExpand(acName)}
                   style={styles.acHeader}
                 >
@@ -759,12 +770,16 @@ const OldACRequest = ({ navigation }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.doneButton, { backgroundColor: COLORS.white }]}
-            onPress={() => setReqStatus(prev => prev === 'Schedule' ? 'complete' : 'Schedule')}
+            onPress={() =>
+              setReqStatus(prev =>
+                prev === 'Schedule' ? 'complete' : 'Schedule',
+              )
+            }
           >
             <Text
               style={[styles.doneButtonText, { color: COLORS.textHeading }]}
             >
-             Next
+              Next
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -828,12 +843,11 @@ const OldACRequest = ({ navigation }) => {
         </View>
       )}
 
-{/* are oyu reschedule */}
-  <SuccessPopupModal
+      {/* are oyu reschedule */}
+      <SuccessPopupModal
         visible={successResheduleVisible}
         onClose={() => {
-          setSResheduleVisible(false),
-          setModalSlotVisible(true);
+          setSResheduleVisible(false), setModalSlotVisible(true);
         }}
         setIcon={images.questionMark}
         HeadTextColor="black"
@@ -844,7 +858,7 @@ const OldACRequest = ({ navigation }) => {
         firstButtonText="Reschedule"
         secondButtonText="Cancel Reschedule"
         onSecondButtonPress={() => {
-          setSResheduleVisible(false),setSuccessPopupVisible(true);
+          setSResheduleVisible(false), setSuccessPopupVisible(true);
         }}
       />
       {/* cancel request Popup */}
@@ -881,7 +895,7 @@ const OldACRequest = ({ navigation }) => {
         secondButtonText="Done"
         firstButtonText="View Request"
         onSecondButtonPress={() => {
-          setConfirmPopupVisible(false)
+          setConfirmPopupVisible(false);
         }}
       />
 
@@ -1003,7 +1017,7 @@ const styles = StyleSheet.create({
     padding: hp(0.5),
     borderTopLeftRadius: wp(3),
     borderTopRightRadius: wp(3),
-    width: wp(95.5),
+    width: isTablet ? wp(98) : wp(95.5),
     alignSelf: 'center',
   },
   statusBarRow: {
@@ -1018,8 +1032,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: wp(6),
-    height: hp(1.5),
-    resizeMode: 'cover',
+    height: wp(6),
+    resizeMode: 'contain',
   },
   statusText: {
     fontSize: hp(1.5),

@@ -10,7 +10,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
-  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
@@ -21,8 +20,10 @@ import {
 } from 'react-native-responsive-screen';
 import { COLORS } from '../../../utils/colors';
 import { getBrandlist } from '../../../api/homeApi';
-import { useDispatch } from 'react-redux';
-import { setBrandList } from '../../../redux/slices/authSlice';
+import CustomLoader from '../../../components/CustomLoader';
+import { dispatch } from '../../../redux/store';
+import { setBrand } from '../../../redux/slices/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BrandScreen = ({ route }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,12 +52,12 @@ const BrandScreen = ({ route }) => {
   const filteredBrands = brandsArry.filter(brand =>
     brand.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
-
   const handleSelectBrand = async selectedBrand => {
     try {
-      await storage.setItem('selectedBrand', selectedBrand);
+      await AsyncStorage.setItem('selectedBrand', selectedBrand);
+
       if (cameFrom === 'SellOldAcScreen') {
-        navigation.navigate('SellOldAcScreen', { selectedBrand });
+        navigation.goBack();
       } else if (cameFrom === 'CompareACScreen') {
         navigation.navigate('SelectACmodel', {
           fromCompare: true,
@@ -86,7 +87,7 @@ const BrandScreen = ({ route }) => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')} 
+        keyboardVerticalOffset={Platform.OS === 'ios' ? hp('0.5%') : hp('1%')}
       >
         <Header title="Brand" onBack={() => navigation.goBack()} />
         <View style={[styles.header, styles.searchInput]}>
@@ -96,21 +97,25 @@ const BrandScreen = ({ route }) => {
             placeholderTextColor={COLORS.textColor}
             value={searchQuery}
             onChangeText={setSearchQuery}
-             onSubmitEditing={() => Keyboard.dismiss()}
+            onSubmitEditing={() => Keyboard.dismiss()}
           />
         </View>
         <View style={styles.borderContainer}>
           <Text style={styles.headerText}>Which is your favorite BRAND ?</Text>
-         {loading ?<ActivityIndicator/> :<FlatList
-            data={filteredBrands}
-            keyExtractor={item => item.id}
-            numColumns={3}
-            renderItem={({ item }) => (
-              <BrandItem item={item} onSelect={handleSelectBrand} />
-            )}
-            contentContainerStyle={styles.listContent}
-            nestedScrollEnabled={true}
-          />}
+          {loading ? (
+            <CustomLoader size={40} />
+          ) : (
+            <FlatList
+              data={filteredBrands}
+              keyExtractor={item => item.id}
+              numColumns={3}
+              renderItem={({ item }) => (
+                <BrandItem item={item} onSelect={handleSelectBrand} />
+              )}
+              contentContainerStyle={styles.listContent}
+              nestedScrollEnabled={true}
+            />
+          )}
         </View>
       </KeyboardAvoidingView>
     </View>

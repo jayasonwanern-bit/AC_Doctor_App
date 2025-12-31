@@ -7,10 +7,10 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  ActivityIndicator,
   Keyboard,
 } from 'react-native';
-import useLocation from '../../utils/useLocation'; 
+import useLocation from '../../utils/useLocation';
+import CustomLoader from '../../components/CustomLoader';
 
 const NewAddressDemo = () => {
   const [city, setCity] = useState('');
@@ -40,10 +40,12 @@ const NewAddressDemo = () => {
     if (!address.trim()) return 'Address is required';
     if (!landmark.trim()) return 'Landmark is required';
     if (!pincode.trim()) return 'Pincode is required';
-    if (!/^\d{5,6}$/.test(pincode.trim())) return 'Pincode must be 5 or 6 digits';
+    if (!/^\d{5,6}$/.test(pincode.trim()))
+      return 'Pincode must be 5 or 6 digits';
     if (!stateName.trim()) return 'State is required';
     if (!latitude || isNaN(parseFloat(latitude))) return 'Latitude is invalid';
-    if (!longitude || isNaN(parseFloat(longitude))) return 'Longitude is invalid';
+    if (!longitude || isNaN(parseFloat(longitude)))
+      return 'Longitude is invalid';
     return null;
   };
 
@@ -86,7 +88,7 @@ const NewAddressDemo = () => {
         value={address}
         onChangeText={setAddress}
         style={styles.input}
-         onSubmitEditing={() => Keyboard.dismiss()}
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       <TextInput
@@ -94,7 +96,7 @@ const NewAddressDemo = () => {
         value={landmark}
         onChangeText={setLandmark}
         style={styles.input}
-         onSubmitEditing={() => Keyboard.dismiss()}
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       <TextInput
@@ -103,7 +105,7 @@ const NewAddressDemo = () => {
         onChangeText={setPincode}
         keyboardType="number-pad"
         style={styles.input}
-         onSubmitEditing={() => Keyboard.dismiss()}
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       <TextInput
@@ -111,11 +113,11 @@ const NewAddressDemo = () => {
         value={stateName}
         onChangeText={setStateName}
         style={styles.input}
-         onSubmitEditing={() => Keyboard.dismiss()}
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
 
       {locationLoading ? (
-        <ActivityIndicator size="small" color="blue" />
+        <CustomLoader size={40} />
       ) : (
         <>
           <TextInput
@@ -124,7 +126,7 @@ const NewAddressDemo = () => {
             onChangeText={setLatitude}
             keyboardType="decimal-pad"
             style={styles.input}
-             onSubmitEditing={() => Keyboard.dismiss()}
+            onSubmitEditing={() => Keyboard.dismiss()}
           />
 
           <TextInput
@@ -133,7 +135,7 @@ const NewAddressDemo = () => {
             onChangeText={setLongitude}
             keyboardType="decimal-pad"
             style={styles.input}
-             onSubmitEditing={() => Keyboard.dismiss()}
+            onSubmitEditing={() => Keyboard.dismiss()}
           />
         </>
       )}

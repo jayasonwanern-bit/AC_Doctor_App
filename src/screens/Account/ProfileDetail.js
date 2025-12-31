@@ -28,20 +28,26 @@ import {
 import CunstomInput from '../../components/CunstomInput';
 import Toast from 'react-native-simple-toast';
 import { store } from '../../redux/store';
-import { getUserProfile, updateUserProfile } from '../../api/profileApi';
+import {
+  getPresignedUrl,
+  getUserProfile,
+  updateUserProfile,
+  uploadImageToS3,
+} from '../../api/profileApi';
+import { isTablet } from '../../components/TabletResponsiveSize';
 
 const ProfileDetail = ({ navigation }) => {
+  const userId = store?.getState()?.auth?.user;
   const [countryCode, setCountryCode] = useState('IN');
   const [callingCode, setCallingCode] = useState('+91');
   const [phoneNumber, setphoneNumber] = useState('');
   const [userName, setuserName] = useState('');
-  const [email, setEmail] = useState('rahulkumar@gmail.com');
+  const [email, setEmail] = useState('');
   const [gender, setGender] = useState('Male');
   const [showModal, setShowModal] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
 
   const [loading, setLoading] = useState(false);
-  const userId = store?.getState()?.auth?.user;
 
   const phoneSchema = yup.object().shape({
     phoneNumber: yup
@@ -65,139 +71,174 @@ const ProfileDetail = ({ navigation }) => {
     }
   }, [userId]);
 
- const fetchProfile = async () => {
-  try {
-    setLoading(true);   
-    const res = await getUserProfile(userId?._id);
-    if (res?.status) {
-      const data = res.data;
-      setCallingCode(data?.countryCode);
-      setuserName(data?.name);
-      setphoneNumber(data?.phoneNumber);
+  // get profile data
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const res = await getUserProfile(userId?._id);
+      if (res?.success) {
+        const data = res.data;
+        setCallingCode(data?.countryCode);
+        setuserName(data?.name);
+        setphoneNumber(data?.phoneNumber);
+        setEmail(data?.email);
+        setGender(data?.gender);
+        setSelectedImageUri(data?.profilePhoto);
+      }
+    } catch (error) {
+      console.log('Error fetching profile:', error);
+    } finally {
+      setLoading(false); // <-- STOP LOADER
     }
-  } catch (error) {
-    console.log('Error fetching profile:', error);
-  } finally {
-    setLoading(false);   // <-- STOP LOADER
-  }
-};
+  };
 
-const handleUpdateProfile = async () => {
-  setLoading(true);
-   if (!userName?.trim()) {
-    Toast.show('Please enter User Name.', Toast.LONG);
-    return;
-  }
-  try {
-    let body = {
-      userId: String(userId?._id),
-      userName: String(userName),
-      gender:gender,
-      imageUrl:selectedImageUri
-    };
-   console.log("body RESPONSE ---> ", body);
-    const res = await updateUserProfile(body);
-    console.log("UPDATE RESPONSE ---> ", res);
+  // update profile api
+  const handleUpdateProfile = async () => {
+    setLoading(true);
 
-    if (res?.status) {
-      Toast.show(res?.message);
-    } 
-  } catch (error) {
-    console.log("Update Error:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      let cleanImageUrl = '';
+      if (selectedImageUri) {
+        // 1️⃣ Get presigned URL
+        const presRes = await getPresignedUrl();
+        const presignedUrl = presRes?.data;
+        console.log('Presigned URL:', presignedUrl);
 
+        if (!presignedUrl) {
+          Toast.show('Presigned URL not received');
+        } else {
+          console.log('ßß');
+        }
+
+        // // 2️⃣ Upload image to S3
+        if (selectedImageUri) {
+          await uploadImageToS3(presignedUrl, selectedImageUri);
+        }
+
+        // // 3️⃣ Clean S3 URL (remove ?)
+        cleanImageUrl = presignedUrl.split('?')[0];
+      }
+      // 4️⃣ Update profile API body
+      const body = {
+        userId: String(userId?._id),
+        userName: String(userName),
+        gender: gender,
+        email: String(email),
+        profilePhotoUrl: cleanImageUrl || '',
+      };
+      console.log('Update  Body---:', body);
+
+      // 5️⃣ Call update profile API
+      const res = await updateUserProfile(body);
+      console.log('Update Profile Body:', res);
+
+      if (res?.status) {
+        Toast.show('Profile updated successfully');
+      }
+    } catch (error) {
+      console.log('Profile Update Error:', error);
+      Toast.show('Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={Homestyles.workcontainer}>
       <Header title="Profile Detail" onBack={() => navigation.goBack()} />
 
- {loading ? (
-      <Text style={{ textAlign: 'center', marginTop: 20 }}>Loading...</Text>
-    ) : (
-      <>
-      <ScrollView
-        style={Homestyles.workscrollstyle}
-        showsVerticalScrollIndicator={false}
-      >
-        <TouchableOpacity activeOpacity={6} onPress={() => setShowModal(true)}>
-          <ImageBackground
-            source={
-              selectedImageUri ? { uri: selectedImageUri } : images.userProfile
-            }
-            imageStyle={Homestyles.profilestyle}
-            style={Homestyles.profileDetailBg}
+      {loading ? (
+        <Text style={{ textAlign: 'center', marginTop: 20 }}>Loading...</Text>
+      ) : (
+        <>
+          <ScrollView
+            style={Homestyles.workscrollstyle}
+            showsVerticalScrollIndicator={false}
           >
-            <FastImage
-              source={images.profileCamera}
-              style={Homestyles.cameraStyle}
+            <TouchableOpacity
+              activeOpacity={6}
+              onPress={() => setShowModal(true)}
+            >
+              <ImageBackground
+                source={
+                  selectedImageUri
+                    ? { uri: selectedImageUri }
+                    : images.userProfile
+                }
+                imageStyle={Homestyles.profilestyle}
+                style={Homestyles.profileDetailBg}
+              >
+                <FastImage
+                  source={images.profileCamera}
+                  style={Homestyles.cameraStyle}
+                />
+              </ImageBackground>
+            </TouchableOpacity>
+
+            {/* User Name */}
+            <CunstomInput
+              label="User Name"
+              placeholder="User Name"
+              keyboardType="default"
+              placeholderTextColor={COLORS.textColor}
+              value={userName}
+              onChangeText={txt => setuserName(txt)}
+              borderRadius={hp('14%')}
+              MarginBottom={hp('0.5%')}
+              MarginTop={isTablet ? hp(10) : hp(5)}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
-          </ImageBackground>
-        </TouchableOpacity>
-        {/* User Name */}
-        <CunstomInput
-          label="User Name"
-          placeholder="User Name"
-          keyboardType="default"
-          placeholderTextColor={COLORS.textColor}
-          value={userName}
-          onChangeText={txt => setuserName(txt)}
-          borderRadius={hp('14%')}
-          MarginBottom={hp('0.5%')}
-          onSubmitEditing={() => Keyboard.dismiss()}
-        />
-        {/* Mobile Number */}
-        <View style={Homestyles.profileDetailInfoContainer}>
-          <Text style={Homestyles.profileDetailName}>Mobile Number</Text>
-          <Controller
-            control={control}
-            name="phoneNumber"
-            render={({ field: { onChange, value } }) => (
-              <CustomPhoneInput
-                countryCode={countryCode}
-                callingCode={callingCode}
-                setCountryCode={setCountryCode}
-                setCallingCode={setCallingCode}
-                phoneNumber={phoneNumber}
-                setPhoneNumber={val => {
-                  onChange(val);
-                  setphoneNumber(val);
-                }}
-                error={errors.phoneNumber?.message}
+            {/* Mobile Number */}
+            <View style={Homestyles.profileDetailInfoContainer}>
+              <Text style={Homestyles.profileDetailName}>Mobile Number</Text>
+              <Controller
+                control={control}
+                name="phoneNumber"
+                render={({ field: { onChange, value } }) => (
+                  <CustomPhoneInput
+                    countryCode={countryCode}
+                    callingCode={callingCode}
+                    setCountryCode={setCountryCode}
+                    setCallingCode={setCallingCode}
+                    phoneNumber={phoneNumber}
+                    setPhoneNumber={val => {
+                      onChange(val);
+                      setphoneNumber(val);
+                    }}
+                    error={errors.phoneNumber?.message}
+                  />
+                )}
               />
-            )}
-          />
-        </View>
-        {/* Email Address */}
-        <CunstomInput
-          label="Email Address"
-          placeholder="Enter Email"
-          keyboardType="email-address"
-          value={email}
-          onChangeText={txt => setEmail(txt)}
-          borderRadius={hp('14%')}
-          MarginBottom={hp('1%')}
-          onSubmitEditing={() => Keyboard.dismiss()}
-        />
-        {/* Gender */}
-        <CustomPicker
-          label="Gender"
-          value={gender}
-          onChange={value => setGender(value)}
-          items={[
-            { label: 'MALE', value: 'MALE' },
-            { label: 'FEMALE', value: 'FEMALE' },
-            { label: 'OTHER', value: 'OTHER' },
-          ]}
-          width={wp('90%')}
-          height={hp('5%')}
-          borderRadius={hp('4%')}
-        />
-      </ScrollView>
-      </>
-    )}
+            </View>
+            {/* Email Address */}
+            <CunstomInput
+              label="Email Address"
+              placeholder="Enter Email"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={txt => setEmail(txt)}
+              borderRadius={hp('14%')}
+              MarginBottom={hp('1%')}
+              MarginTop={isTablet ? hp(7) : hp(2)}
+              onSubmitEditing={() => Keyboard.dismiss()}
+            />
+            {/* Gender */}
+            <CustomPicker
+              label="Gender"
+              value={gender}
+              onChange={value => setGender(value)}
+              items={[
+                { label: 'MALE', value: 'MALE' },
+                { label: 'FEMALE', value: 'FEMALE' },
+                { label: 'OTHER', value: 'OTHER' },
+              ]}
+              width={wp(90)}
+              height={hp('5%')}
+              borderRadius={hp('4%')}
+            />
+          </ScrollView>
+        </>
+      )}
 
       <View style={[Homestyles.servicesSection, { minHeight: hp(8) }]}>
         <CustomButton

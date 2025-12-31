@@ -25,7 +25,8 @@ const BillViewScreen = ({ navigation, route }) => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ padding: wp('4%') }} nestedScrollEnabled={true}
+        style={{ padding: wp('4%') }}
+        nestedScrollEnabled={true}
       >
         {/* USER CARD */}
         <View style={[styles.card, { padding: wp('4%') }]}>
@@ -35,8 +36,34 @@ const BillViewScreen = ({ navigation, route }) => {
               <Text style={styles.value}>Irshad Khan</Text>
             </View>
 
-            <TouchableOpacity style={[styles.changeBtn,{backgroundColor:ticketId.status === 'In Progress' ? COLORS.pendingBg :ticketId.status === 'On Hold'? COLORS.onHoldBg: COLORS.completedBg}]}>
-              <Text style={[styles.changeText,{color:ticketId.status === 'In Progress' ? COLORS.pendingText :ticketId.status === 'On Hold'? COLORS.onHoldText: COLORS.completedText}]}>{ticketId.status}</Text>
+            <TouchableOpacity
+              style={[
+                styles.changeBtn,
+                {
+                  backgroundColor:
+                    ticketId.status === 'In Progress'
+                      ? COLORS.pendingBg
+                      : ticketId.status === 'On Hold'
+                      ? COLORS.onHoldBg
+                      : COLORS.completedBg,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.changeText,
+                  {
+                    color:
+                      ticketId.status === 'In Progress'
+                        ? COLORS.pendingText
+                        : ticketId.status === 'On Hold'
+                        ? COLORS.onHoldText
+                        : COLORS.completedText,
+                  },
+                ]}
+              >
+                {ticketId.status}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -230,11 +257,11 @@ const styles = StyleSheet.create({
   },
   yayView: {
     flexDirection: 'row',
-    width: wp('92%'),
+    width: wp(92.2),
     alignItems: 'center',
     alignSelf: 'center',
-    borderBottomLeftRadius: wp('3%'),
-    borderBottomRightRadius: wp('3%'),
+    borderBottomLeftRadius: wp(2),
+    borderBottomRightRadius: wp(2),
     backgroundColor: COLORS.lightSky,
   },
   tagicon: {

@@ -7,7 +7,6 @@ import {
   Image,
   StyleSheet,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -17,20 +16,20 @@ import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
 import Header from '../../components/Header';
 import { store } from '../../redux/store';
-import {deleteAddress, getAddress} from '../../api/addressApi'
-import Toast from 'react-native-simple-toast'
+import { deleteAddress, getAddress } from '../../api/addressApi';
+import Toast from 'react-native-simple-toast';
 import { useFocusEffect } from '@react-navigation/native';
 import { setAddress } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-
+import CustomLoader from '../../components/CustomLoader';
 
 const ManageAddressScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState(null);
   const [selectedId, setSelectedId] = useState(null); //seleted id store
   const userDetail = store?.getState()?.auth?.user;
-   const dispatch = useDispatch();
-   const selectedAddressRedux = store?.getState()?.auth?.address;
+  const dispatch = useDispatch();
+  const selectedAddressRedux = store?.getState()?.auth?.address;
 
   const handleSelect = id => {
     const selectedAddress = addresses.find(item => item._id === id);
@@ -39,90 +38,86 @@ const ManageAddressScreen = ({ navigation }) => {
     Toast.show('This address is now selected!');
   };
 
- useFocusEffect(
-  useCallback(() => {
-    fetchAddress();
-  }, [])
-);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAddress();
+    }, []),
+  );
 
+  const fetchAddress = async () => {
+    try {
+      setLoading(true);
+      const res = await getAddress(userDetail?._id);
+      console.log('response of manage', res);
+      if (res?.status) {
+        const data = res.data;
+        setAddresses(data);
+        // CASE 1: User already selected an address manually → keep same
+        if (selectedAddressRedux?._id) {
+          const exist = data.find(a => a._id === selectedAddressRedux._id);
+          if (exist) {
+            setSelectedId(exist._id);
+            return;
+          }
+        }
 
-// get list address
-    const fetchAddress = async () => {
-     try {
-       setLoading(true);   
-       const res = await getAddress(userDetail?._id);
-       console.log('response of manage',res)
-       if (res?.status) {
-         const data = res.data;
-         setAddresses(data)
-       // CASE 1: User already selected an address manually → keep same
-      if (selectedAddressRedux?._id) {
-        const exist = data.find(a => a._id === selectedAddressRedux._id);
-        if (exist) {
-          setSelectedId(exist._id);
-          return;
+        // CASE 2: No previous selection → select the last one
+        if (data.length > 0) {
+          const lastAddress = data[data.length - 1];
+          setSelectedId(lastAddress._id);
+          dispatch(setAddress({ address: lastAddress }));
         }
       }
-
-      // CASE 2: No previous selection → select the last one
-      if (data.length > 0) {
-        const lastAddress = data[data.length - 1];
-        setSelectedId(lastAddress._id);
-        dispatch(setAddress({ address: lastAddress }));
-      }
+    } catch (error) {
+      console.log('Error fetching profile:', error);
+    } finally {
+      setLoading(false);
     }
-
-     } catch (error) {
-       console.log('Error fetching profile:', error);
-     } finally {
-       setLoading(false);  
-     }
-   };
+  };
 
   // edit address
-  const handleEdit = (id) => {
-  const selectedAddress = addresses.find(item => item._id === id);
-  navigation.navigate('AddAddress', { 
-    from: 'ManageAddressScreen',
-    addressData: selectedAddress,
-  });
-};
+  const handleEdit = id => {
+    const selectedAddress = addresses.find(item => item._id === id);
+    navigation.navigate('AddAddress', {
+      from: 'ManageAddressScreen',
+      addressData: selectedAddress,
+    });
+  };
 
-// delete address
-const handleDelete = (addressId) => {
-  Alert.alert("Delete Address", "Are you sure you want to delete?", [
-    { text: "Cancel", style: "cancel" },
-    {
-      text: "Delete",
-      style: "destructive",
-      onPress: async () => {
-        // Call API
-        try {
-          setLoading(true);
-          
-           const res = await deleteAddress(addressId);
-          if (res?.status) {
-            Toast.show( res?.message );
-             setLoading(prev => !prev);
-          } else {
-            Toast.show("Delete failed, try again!");
+  // delete address
+  const handleDelete = addressId => {
+    Alert.alert('Delete Address', 'Are you sure you want to delete?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          // Call API
+          try {
+            setLoading(true);
+
+            const res = await deleteAddress(addressId);
+            if (res?.status) {
+              Toast.show(res?.message);
+              setLoading(prev => !prev);
+              fetchAddress();
+            } else {
+              Toast.show('Delete failed, try again!');
+            }
+          } catch (error) {
+            console.log('Delete error =>', error);
+            Toast.show('Something went wrong');
+          } finally {
+            setLoading(false);
           }
-        } catch (error) {
-          console.log("Delete error =>", error);
-          Toast.show("Something went wrong");
-        } finally {
-          setLoading(false);
-        }
+        },
       },
-    },
-  ]);
-};
+    ]);
+  };
 
-
-
-// list of address
+  // list of address
   const renderAddressItem = ({ item }) => {
-    const isSelected = selectedId === item.id;
+    const isSelected = selectedId === item._id;
 
     return (
       <TouchableOpacity
@@ -132,7 +127,12 @@ const handleDelete = (addressId) => {
       >
         {/* Radio Button */}
         <View style={styles.radioContainer}>
-          <View style={[styles.radio, item._id === selectedId && styles.radioSelected]}>
+          <View
+            style={[
+              styles.radio,
+              item._id === selectedId && styles.radioSelected,
+            ]}
+          >
             {item._id === selectedId && <View style={styles.radioDot} />}
           </View>
         </View>
@@ -149,8 +149,12 @@ const handleDelete = (addressId) => {
             )}
           </View>
 
-          <Text style={styles.address}>{item.street}, {item.city} {item.state},{item.zipcode}</Text>
-          <Text style={styles.phone}>{userDetail.countryCode} {userDetail.phoneNumber}</Text>
+          <Text style={styles.address}>
+            {item.street}, {item.city} {item.state},{item.zipcode}
+          </Text>
+          <Text style={styles.phone}>
+            {userDetail.countryCode} {userDetail.phoneNumber}
+          </Text>
 
           {/* Edit & Delete Icons */}
           <View style={styles.actions}>
@@ -182,13 +186,17 @@ const handleDelete = (addressId) => {
       <View style={{ paddingHorizontal: wp(4) }}>
         <Text style={styles.title}>Saved Address</Text>
 
-       {loading ?<ActivityIndicator/> : <FlatList
-          data={addresses}
-          keyExtractor={item => item.id}
-          renderItem={renderAddressItem}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.list}
-        />}
+        {loading ? (
+          <CustomLoader size={40} />
+        ) : (
+          <FlatList
+            data={addresses}
+            keyExtractor={item => item._id}
+            renderItem={renderAddressItem}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.list}
+          />
+        )}
 
         {/* Add New Address Button */}
         <TouchableOpacity
@@ -295,8 +303,8 @@ const styles = StyleSheet.create({
   },
   address: {
     fontSize: hp(1.5),
-    color:COLORS.textHeading,
-    fontFamily:Fonts.medium,
+    color: COLORS.textHeading,
+    fontFamily: Fonts.medium,
     lineHeight: hp(2.7),
   },
   phone: {

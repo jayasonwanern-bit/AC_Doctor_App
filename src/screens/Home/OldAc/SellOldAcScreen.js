@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -39,6 +39,12 @@ import { MMKVLoader } from 'react-native-mmkv-storage';
 import PickerLabelUi from '../../../components/PickerLabelUi';
 import CunstomInput from '../../../components/CunstomInput';
 import WorkInfo from '../../../customScreen/WorkInfo';
+import { isTablet } from '../../../components/TabletResponsiveSize';
+import { forceTouchGestureHandlerProps } from 'react-native-gesture-handler/lib/typescript/handlers/ForceTouchGestureHandler';
+import { dispatch, store } from '../../../redux/store';
+import { setBrand } from '../../../redux/slices/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SellOldAcScreen = ({ navigation }) => {
   const [activeSection, setActiveSection] = useState('Key Benefits');
@@ -55,14 +61,19 @@ const SellOldAcScreen = ({ navigation }) => {
   const [selectedCondition, setSelectedCondition] = useState('');
   const [AgeofAcModalVisible, setAgeofAcModalVisible] = useState(false);
   const [selectAgeofAc, setSelectedAgeofAc] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('');
+  // const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState('');
+
   const storage = new MMKVLoader().initialize();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [addAcStatus, setAddAcStatus] = useState(false);
+  const [selectNumberAC, setSelectNumberAC] = useState('');
+  const [addAcStatus, setAddAcStatus] = useState(true);
+  const brandNanme = store?.getState()?.auth?.brandName;
+  console.log(brandNanme, 'jatin');
 
   const [formData, setFormData] = useState({
-    brand: selectedBrand,
+    brand: selectedBrands,
     acTypes: selectedAcTonage,
     tonnName: selectedTonage,
     tonnageName: selectAgeofAc,
@@ -74,27 +85,38 @@ const SellOldAcScreen = ({ navigation }) => {
     uploadedPhotos: [],
     address: selectedAddress,
   });
-
+  // console.log(formData, 'sell old ac screeen');
   const handleInputChange = (field, value) => {
+    // console.log(field, value, 'lololololo');
     setFormData(prev => ({
       ...prev,
+      Numberofold: selectNumberAC,
       [field]: value,
     }));
   };
-
   // brand name fetching
-  useEffect(() => {
-    const loadSelectedBrand = async () => {
-      try {
-        const brand = await storage.getItem('selectedBrand');
-        if (brand) setSelectedBrand(brand);
-      } catch (error) {
-        console.error('Error loading brand:', error);
-      }
-    };
-    loadSelectedBrand();
-  }, []);
-  //Sync states with formData
+
+  console.log('shri', selectedBrands);
+
+  useFocusEffect(
+    useCallback(() => {
+      const getBrand = async () => {
+        const brand = await AsyncStorage.getItem('selectedBrand');
+        if (brand) {
+          setSelectedBrands(brand);
+        }
+      };
+
+      getBrand();
+    }, []),
+  );
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        AsyncStorage.removeItem('selectedBrand');
+      };
+    }, []),
+  );
 
   useEffect(() => {
     handleInputChange('dateTime', selectdate);
@@ -134,26 +156,38 @@ const SellOldAcScreen = ({ navigation }) => {
   // Handle form submission
   const handleRequestConsultation = () => {
     setModalVisible(true);
+    // setModalSlotVisible(true);
+    setAddAcStatus(true);
   };
   // FAQ'S Toggle
   const toggleExpandFaq = index => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
-
+  const handelGoBack = async () => {
+    try {
+      await AsyncStorage.setItem('selectedBrand', '');
+    } catch (error) {
+      console.error('Error saving brand:', error);
+    }
+    navigation.goBack();
+  };
   return (
     <View style={screenStyles.workcontainer}>
-      <Header title="Old AC" onBack={() => navigation.goBack()} onHelp={true} />
+      <Header title="Old AC" onBack={() => handelGoBack()} onHelp={true} />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <ScrollView
-          contentContainerStyle={{ paddingBottom: hp(10) , paddingHorizontal:hp(1.5)}}
+          contentContainerStyle={{
+            paddingBottom: hp(10),
+            paddingHorizontal: hp(1.5),
+          }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={{ marginBottom: hp('10%')}}>
+          <View style={{ marginBottom: hp('10%') }}>
             <View style={screenStyles.worksliderview}>
               <Image
                 source={images.BannerFive}
@@ -169,7 +203,7 @@ const SellOldAcScreen = ({ navigation }) => {
               {/* Brand */}
               <PickerLabelUi
                 label="Brand"
-                value={selectedBrand || 'Select Brand'}
+                value={selectedBrands || 'Select Brand'}
                 placeholder="Select Brand"
                 droparraw={true}
                 onPress={() =>
@@ -177,167 +211,153 @@ const SellOldAcScreen = ({ navigation }) => {
                     from: 'SellOldAcScreen',
                   })
                 }
-                style={{ width: '98%' }} 
+                style={{ width: '98%' }}
                 BorderRadius={hp(4)}
               />
-            
-                {/* Modal */}
-                 <CunstomInput
-                label="Modal (Optional)"
-                placeholder="LGUS-Q19YNZE"
+
+              {/* Modal */}
+              <CunstomInput
                 value={formData.modalName}
                 onChangeText={val => handleInputChange('modalName', val)}
+                label="Model (Optional)"
+                placeholder="LGUS-Q19YNZE"
                 borderRadius={hp('2.5%')}
                 MarginTop={hp('1%')}
-                containerStyle={{width:wp('88%')}}
+                containerStyle={{ width: isTablet ? wp('92%') : wp(88) }}
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
-               
 
-                {/* Type of AC */}
-                <PickerLabelUi
+              {/* Type of AC */}
+              <PickerLabelUi
                 label="AC Type"
                 value={selectedAcTonage || 'Select AC'}
                 placeholder="Select Brand"
                 droparraw={true}
                 marginTop={hp(1)}
-                style={{ width: '98%' }} 
-                onPress={() =>{setAcTonageModalVisible(true), handleSelectACtype}}
+                style={{ width: '98%' }}
+                onPress={() => {
+                  setAcTonageModalVisible(true), handleSelectACtype;
+                }}
                 BorderRadius={hp(4)}
               />
 
-                {/* Tonnage */}              
-                <PickerLabelUi
+              {/* Tonnage */}
+              <PickerLabelUi
                 label="Tonnage"
                 value={selectedTonage}
-                placeholder='Select Tonnage'
+                placeholder="Select Tonnage"
                 droparraw={true}
                 marginTop={hp(1)}
-                style={{ width: '98%' }} 
-                onPress={() =>{setTonageModalVisible(true), handleSelectACtype}}
+                style={{ width: '98%' }}
+                onPress={() => {
+                  setTonageModalVisible(true), handleSelectACtype;
+                }}
                 BorderRadius={hp(4)}
               />
 
-                {/* Age of Ac*/}
-                <View style={[styles.twoColumnRow]}>
-                  <PickerLabelUi
-                    label="Age of AC"
-                    value={selectAgeofAc}
-                    placeholder="1-3 Years"
-                    style={{ flex: 1, marginRight: wp(6) }}
-                    onPress={() => setAgeofAcModalVisible(true)}
-                    BorderRadius={hp(4)}
-                  />
-                  <PickerLabelUi
-                    label="Condition"
-                    value={selectedCondition}
-                    placeholder="Good"
-                    style={{ flex: 1, }}
-                    onPress={() => setConditionModalVisible(true)}
-                    BorderRadius={hp(4)}
-                  />
-                </View>
+              {/* Age of Ac*/}
+              <View style={[styles.twoColumnRow]}>
+                <PickerLabelUi
+                  label="Age of AC"
+                  value={selectAgeofAc}
+                  placeholder="1-3 Years"
+                  style={{ flex: 1, marginRight: wp(6) }}
+                  onPress={() => setAgeofAcModalVisible(true)}
+                  BorderRadius={hp(4)}
+                />
+                <PickerLabelUi
+                  label="Condition"
+                  value={selectedCondition}
+                  placeholder="Good"
+                  style={{ flex: 1 }}
+                  onPress={() => setConditionModalVisible(true)}
+                  BorderRadius={hp(4)}
+                />
+              </View>
 
-                {/* Ac Technologes */}
-                 <CunstomInput
+              {/* Ac Technologes */}
+              <CunstomInput
                 label="AC Technology"
                 placeholder="Invertor"
                 value={formData.technology}
                 onChangeText={val => handleInputChange('technology', val)}
                 borderRadius={hp('2.5%')}
                 MarginTop={hp('1%')}
-                containerStyle={{width:wp('88%')}}
+                containerStyle={{ width: isTablet ? wp(92) : wp('88%') }}
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
 
-                {/* Upload Photos */}
-                <MultipleUploadPhotos
-                  onChange={value => handleInputChange('uploadedPhotos', value)}
-                  OptionalText="(Front,Back and Serial Number)"
-                />
+              {/* Upload Photos */}
+              <MultipleUploadPhotos
+                onChange={value => handleInputChange('uploadedPhotos', value)}
+                OptionalText="(Front,Back and Serial Number)"
+              />
 
-                {/* Select Date & Time */}
-                <View style={styles.inputGroup}>
-                  <Text style={styles.label}>
-                    Preferred Inspection Date & Time
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.pickerWrapper}
-                    onPress={() => setModalSlotVisible(true)}
-                  >
-                    <Text
-                      style={[
-                        { flex: 1, marginLeft: wp(4) },
-                        styles.uploadText,
-                      ]}
-                    >
-                      {selectdate}
-                    </Text>
-                    <FastImage
-                      source={images.Calendar}
-                      style={styles.customIcon}
-                      resizeMode={FastImage.resizeMode.contain}
-                    />
-                  </TouchableOpacity>
-                </View>
-
-                <View style={{ marginTop: hp(2) }}>
-                  <TouchableOpacity
-                    style={styles.RowView}
-                    onPress={() => setAddAcStatus(true)}
-                  >
-                    <Text style={[styles.labelInput, { marginLeft: wp(0) }]}>
-                      Bulk Add ↑
-                    </Text>
-                    <Text
-                      style={[
-                        styles.labelInput,
-                        {
-                          color: COLORS.themeColor,
-                          marginLeft: wp(27),
-                          textDecorationLine: 'underline',
-                        },
-                      ]}
-                    >
-                      Add Another AC +
-                    </Text>
-                  </TouchableOpacity>
+              {/* Select Date & Time */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>
+                  Preferred Inspection Date & Time
+                </Text>
+                <TouchableOpacity
+                  style={styles.pickerWrapper}
+                  onPress={() => {
+                    setModalSlotVisible(true);
+                  }}
+                >
                   <Text
-                    style={[
-                      styles.labelInput,
-                      { fontSize: hp(1.3), marginVertical: wp(2) },
-                    ]}
+                    style={[{ flex: 1, marginLeft: wp(4) }, styles.uploadText]}
                   >
-                    Note: You can add up to 5 ACs manually. If you have more
-                    than 5 ACs, please use Bulk Add option for a faster process.
+                    {selectdate}
                   </Text>
-                </View>
+                  <FastImage
+                    source={images.Calendar}
+                    style={styles.customIcon}
+                    resizeMode={FastImage.resizeMode.contain}
+                  />
+                </TouchableOpacity>
+              </View>
 
-                {/* Sell Ac */}
-                {addAcStatus && (
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.label}>
-                      Old ACs do you want to sell
-                    </Text>
-                    <View style={[styles.textInputWithIcon, { width: '100%' }]}>
-                      <TextInput
-                        style={styles.textInputInner}
-                        value={formData.Numberofold}
-                        onChangeText={value =>
-                          handleInputChange('Numberofold', value)
-                        }
-                        keyboardType="number-pad"
-                        placeholder="8"
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                      />
-                    </View>
-                  </View>
-                )}
-             
+              {/* <View style={{ marginTop: hp(2) }}> */}
+              <TouchableOpacity
+                style={styles.RowView}
+                onPress={() => {
+                  setModalVisible(true);
+                  setAddAcStatus(false);
+                }}
+              >
+                <Text style={[styles.labelInput, {}]}>Bulk Add ↑</Text>
+                <Text
+                  style={[
+                    styles.labelInput,
+                    {
+                      color: COLORS.themeColor,
+                      // marginLeft: wp(27),
+                      textDecorationLine: 'underline',
+                    },
+                  ]}
+                >
+                  Add Another AC +
+                </Text>
+              </TouchableOpacity>
+              <Text
+                style={[
+                  styles.labelInput,
+                  {
+                    fontSize: hp(1.3),
+                    marginVertical: wp(2),
+                    width: wp(88),
+                    alignSelf: 'center',
+                  },
+                ]}
+              >
+                Note: You can add up to 5 ACs manually. If you have more than 5
+                ACs, please use Bulk Add option for a faster process.
+              </Text>
+
+              {/* Sell Ac */}
             </View>
 
-            <WorkInfo Homwork={false} needHelp={false}/>
-
+            <WorkInfo Homwork={false} needHelp={false} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -405,6 +425,9 @@ const SellOldAcScreen = ({ navigation }) => {
 
       {/* add address */}
       <CustomModal
+        numberofAC={selectNumberAC}
+        addAcStatus={addAcStatus}
+        handleInputChange={handleInputChange}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onProceed={() => {
@@ -414,6 +437,8 @@ const SellOldAcScreen = ({ navigation }) => {
           }, 300);
         }}
         setSelectedAddress={setSelectedAddress}
+        setNumberofAC={setSelectNumberAC}
+        setvalue={setSelectNumberAC}
       />
     </View>
   );
@@ -431,7 +456,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.semiBold,
   },
   labelInput: {
-    flex: 1,
+    // flex: 1,
     fontSize: hp('1.5%'),
     color: '#585656ff',
     marginLeft: hp('1%'),
@@ -471,8 +496,9 @@ const styles = StyleSheet.create({
     paddingVertical: wp('4%'),
     paddingHorizontal: wp('1%'),
     marginBottom: hp('2%'),
-    alignSelf:'center',
-    width: '100%', alignSelf: 'center' 
+    alignSelf: 'center',
+    width: '100%',
+    // alignSelf: 'center',
   },
   textInput: {
     height: hp('5%'),
@@ -514,32 +540,33 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   BtnView: {
-  width: '100%',
-  paddingHorizontal: wp(4),
-  paddingVertical: hp(3),
-  backgroundColor: COLORS.white,
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  elevation: 10,
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-},
-twoColumnRow: {
-  flexDirection: 'row',
-  width: '97%',
-  alignSelf: 'center',
-  marginTop: hp(1),
-},
- RowView: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  width: '98%',
-  paddingHorizontal: wp(1),
-  alignSelf: 'center',
-}
-
+    width: '100%',
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(3),
+    backgroundColor: COLORS.white,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  twoColumnRow: {
+    flexDirection: 'row',
+    width: '97%',
+    alignSelf: 'center',
+    marginTop: hp(1),
+  },
+  RowView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '96%',
+    // backgroundColor: 'red',
+    marginTop: hp(2),
+    paddingHorizontal: wp(1),
+    alignSelf: 'center',
+  },
 });
 export default SellOldAcScreen;

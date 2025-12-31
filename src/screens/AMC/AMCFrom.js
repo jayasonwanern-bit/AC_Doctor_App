@@ -25,13 +25,14 @@ import CustomButton from '../../components/CustomButton';
 import PlaceTypeSelector from '../../components/PlaceTypeSelector';
 import RequestConfirm from '../../customScreen/RequestConfirm';
 import CunstomInput from '../../components/CunstomInput';
+import { isTablet } from '../../components/TabletResponsiveSize';
 
 const AMCFrom = ({ navigation }) => {
   const [editStatus, setEditStatus] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: '2345466567',
+    name: '',
     phoneNumber: '9876543210',
     address: '',
     addAc: '',
@@ -57,65 +58,77 @@ const AMCFrom = ({ navigation }) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: hp(12) }}
+          contentContainerStyle={[
+            styles.containView,
+            { paddingBottom: hp(12) },
+          ]}
         >
-          <View style={styles.containView}>
-            <View style={screenStyles.worksliderview}>
-              <Image source={images.bannerAmc} style={screenStyles.workimage} />
-            </View>
+          {/* <View style={styles.containView}> */}
+          <View style={screenStyles.worksliderview}>
+            <Image source={images.bannerAmc} style={screenStyles.workimage} />
+          </View>
+          <Text style={[screenStyles.workheadText]}>Customer Details</Text>
+          {/* Name */}
+          <CunstomInput
+            label="Name"
+            placeholder="Enter Your Name"
+            value={formData.name}
+            onChangeText={val => handleInputChange('name', val)}
+            borderRadius={hp('1%')}
+            MarginTop={hp('1%')}
+            containerStyle={{ width: isTablet ? wp(90) : wp(90) }}
+            onSubmitEditing={() => Keyboard.dismiss()}
+          />
+          {/* Phone */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Phone No.</Text>
 
-            <Text style={[screenStyles.workheadText]}>Customer Details</Text>
-
-            {/* Name */}
-            <CunstomInput
-              label="Name"
-              placeholder="Enter Your Name"
-              value={formData.name}
-              onChangeText={val => handleInputChange('name', val)}
-              borderRadius={hp('1%')}
-              MarginTop={hp('1%')}
-              containerStyle={{ width: wp('88%') }}
-              onSubmitEditing={() => Keyboard.dismiss()}
-            />
-
-            {/* Phone */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Phone No.</Text>
-
-              {!editStatus && (
-                <Pressable
-                  style={[styles.styleofText, styles.rowView]}
-                  onPress={() => setEditStatus(true)}
+            {!editStatus && (
+              <Pressable
+                style={[styles.styleofText, styles.rowView]}
+                onPress={() => setEditStatus(true)}
+              >
+                <Text
+                  style={[
+                    styles.phonefont,
+                    {
+                      width: isTablet ? wp(83) : wp(75),
+                    },
+                  ]}
                 >
-                  <Text style={[styles.phonefont, { flex: 0.9 }]}>
-                    {formData.phoneNumber}
-                  </Text>
-                  <Image source={images.edit} style={styles.editImg} />
-                </Pressable>
-              )}
+                  {formData.phoneNumber}
+                </Text>
+                <Image source={images.edit} style={styles.editImg} />
+              </Pressable>
+            )}
 
-              {editStatus && (
-                <CunstomInput
-                  placeholder="Enter Your Number"
-                  keyboardType="default"
-                  value={formData.phoneNumber}
-                  onChangeText={val => handleInputChange('phoneNumber', val)}
-                  borderRadius={hp('1%')}
-                  containerStyle={{ width: wp('88%') }}
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                />
-              )}
-            </View>
-
-            {/* Place Type */}
-            <View style={{ marginHorizontal: hp(1) }}>
-              <PlaceTypeSelector
-                headingText="Place Type*"
-                onChange={value => handleInputChange('placeType', value)}
+            {editStatus && (
+              <CunstomInput
+                placeholder="Enter Your Number"
+                keyboardType="default"
+                value={formData.phoneNumber}
+                onChangeText={val => handleInputChange('phoneNumber', val)}
+                borderRadius={hp('1%')}
+                containerStyle={{ width: isTablet ? wp(92) : wp(90) }}
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
-            </View>
-
-            {/* Address */}
+            )}
+          </View>
+          {/* Place Type */}
+          <PlaceTypeSelector
+            headingText="Place Type*"
+            onChange={value => handleInputChange('placeType', value)}
+            stylesContain={{
+              marginHorizontal: hp(2),
+              width: isTablet ? wp(92) : wp(88),
+            }}
+          />
+          {/* Address */}
+          <View
+            style={{
+              marginHorizontal: hp(4),
+            }}
+          >
             <CunstomInput
               label="Address"
               placeholder="Type here..."
@@ -125,20 +138,21 @@ const AMCFrom = ({ navigation }) => {
               MarginTop={hp('1%')}
               multiline={true}
               numberOfLines={2}
-              containerStyle={{ width: wp('92%') }}
+              containerStyle={{ width: isTablet ? wp(90) : wp(88) }}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
-
-            {/* AC Type */}
-            <Text style={[screenStyles.workheadText, { margin: hp(1) }]}>
-              Related to AC
-            </Text>
-            <ACTypeSelector
-              onChange={v => handleInputChange('addAc', v)}
-              headingText={'Add AC'}
-              ShapeRADIUS={hp(1)}
-            />
           </View>
+          {/* AC Type */}
+          <Text style={[screenStyles.workheadText, { margin: hp(1) }]}>
+            Related to AC
+          </Text>
+          <ACTypeSelector
+            onChange={v => handleInputChange('addAc', v)}
+            headingText={'Add AC'}
+            ShapeRADIUS={hp(1)}
+            HeadingStyle={{ marginLeft: isTablet ? wp(2) : wp(2) }}
+          />
+          {/* </View> */}
         </ScrollView>
 
         {/* FIXED BOTTOM BUTTON */}
@@ -172,12 +186,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightWhite,
   },
   containView: {
-    paddingHorizontal: hp(1.5),
+    marginHorizontal: hp(2),
     marginBottom: hp(2),
   },
   inputGroup: {
     marginTop: hp('1.5%'),
-    marginHorizontal: wp('2%'),
+    marginHorizontal: wp(2.5),
   },
   label: {
     fontSize: hp('1.5%'),

@@ -9,11 +9,7 @@ import {
   TouchableWithoutFeedback,
   StatusBar,
   Image,
-  KeyboardAvoidingView,
-  ScrollView,
-  ActivityIndicator,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -27,10 +23,10 @@ import images from '../../assets/images';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { loginUser } from '../../api/authApi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setToken } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-import Toast from 'react-native-simple-toast'
+import Toast from 'react-native-simple-toast';
+import CustomLoader from '../../components/CustomLoader';
 
 const phoneSchema = yup.object().shape({
   phoneNumber: yup
@@ -42,7 +38,7 @@ const phoneSchema = yup.object().shape({
 const LoginScreen = ({ navigation }) => {
   const [countryCode, setCountryCode] = useState('IN'); // Default India
   const [callingCode, setCallingCode] = useState('+91'); // Default calling code
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -54,17 +50,16 @@ const LoginScreen = ({ navigation }) => {
   });
   const dispatch = useDispatch();
 
-
   const onSubmit = async data => {
     const postdata = {
       countryCode: callingCode,
       phoneNumber: data.phoneNumber,
     };
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await loginUser(postdata);
       console.log('Login screen Response:-->', res);
-      // ==== Save Token ====    
+      // ==== Save Token ====
       dispatch(setToken({ accessToken: res?.data?.assessToken }));
       navigation.navigate('Verification', {
         phoneNumber: data.phoneNumber,
@@ -73,109 +68,101 @@ const LoginScreen = ({ navigation }) => {
         userId: res.data.userId,
         isAutoTesting: false, //// only for development notification
       });
-       Toast.show("Login Success", Toast.LONG);
-       Keyboard.dismiss()
+      Toast.show('Login Success', Toast.LONG);
+      Keyboard.dismiss();
     } catch (error) {
-       Toast.show("500",error, Toast.LONG);
+      Toast.show('500', error, Toast.LONG);
 
-      setLoading(false)
+      setLoading(false);
       console.log('Login Error:', error);
+    } finally {
+      setLoading(false);
     }
-    finally {
-    setLoading(false);   
-  }
   };
 
-
-
   return (
-  <SafeAreaView style={styles.container}>
-  <StatusBar barStyle="dark-content" />
-  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <KeyboardAwareScrollView
-      keyboardShouldPersistTaps="handled"
-      enableOnAndroid
-      extraScrollHeight={hp('8%')}
-      contentContainerStyle={styles.contentContainer}
-      showsVerticalScrollIndicator={false}
-    >
-        <View style={styles.mainView}>
-          <Text style={styles.title}>Welcome</Text>
-          <Text style={styles.titleHead}>Let's Keep Your AC Healthy</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAwareScrollView
+          keyboardShouldPersistTaps="handled"
+          enableOnAndroid
+          extraScrollHeight={hp('8%')}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.mainView}>
+            <Text style={styles.title}>Welcome</Text>
+            <Text style={styles.titleHead}>Let's Keep Your AC Healthy</Text>
 
-          <Image
-            source={images.login}
-            style={styles.image}
-            resizeMode={'contain'}
-          />
+            <Image
+              source={images.login}
+              style={styles.image}
+              resizeMode={'contain'}
+            />
 
-          <Text style={styles.textNumber}>
-            Enter your mobile number to continue
-          </Text>
+            <Text style={styles.textNumber}>
+              Enter your mobile number to continue
+            </Text>
 
-          <Controller
-            control={control}
-            name="phoneNumber"
-            render={({ field: { onChange, value } }) => (
-              <CustomPhoneInput
-                countryCode={countryCode}
-                callingCode={callingCode}
-                setCountryCode={setCountryCode}
-                setCallingCode={setCallingCode}
-                phoneNumber={value}
-                setPhoneNumber={onChange}
-                error={errors.phoneNumber?.message}
-              />
-            )}
-          />
+            <Controller
+              control={control}
+              name="phoneNumber"
+              render={({ field: { onChange, value } }) => (
+                <CustomPhoneInput
+                  countryCode={countryCode}
+                  callingCode={callingCode}
+                  setCountryCode={setCountryCode}
+                  setCallingCode={setCallingCode}
+                  phoneNumber={value}
+                  setPhoneNumber={onChange}
+                  error={errors.phoneNumber?.message}
+                />
+              )}
+            />
 
-          <Text style={styles.secureText}>
-            Securing your personal information is our priority.
-          </Text>
+            <Text style={styles.secureText}>
+              Securing your personal information is our priority.
+            </Text>
 
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: isValid
-                  ? COLORS.themeColor
-                  : COLORS.disabledGrey,
-              },
-            ]}
-            onPress={handleSubmit(onSubmit)}
-            disabled={!isValid || loading}
-          >
-            <View style={{flexDirection:'row'}}>
-
-            <Text style={styles.buttonText}>Get Verification Code</Text>
-            {
-              loading?(
-                <ActivityIndicator color={COLORS.white} size={'small'} />
-              ):null
-            }
-            </View>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAwareScrollView>
-  </TouchableWithoutFeedback>
-</SafeAreaView>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: isValid
+                    ? COLORS.themeColor
+                    : COLORS.disabledGrey,
+                },
+              ]}
+              onPress={handleSubmit(onSubmit)}
+              disabled={!isValid || loading}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.buttonText}>Get Verification Code</Text>
+                {loading ? <CustomLoader size={14} /> : null}
+              </View>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
- contentContainer: {
-  flexGrow: 1,
-  // paddingBottom: hp('5%'), // prevents button cut-off
-},
+  contentContainer: {
+    flexGrow: 1,
+    // paddingBottom: hp('5%'), // prevents button cut-off
+  },
   container: {
     flex: 1,
     padding: wp('5%'),
     backgroundColor: COLORS.white,
   },
   mainView: {
-  flexGrow: 1,
-  paddingTop: hp('4%'),
-},
+    flexGrow: 1,
+    paddingTop: hp('4%'),
+  },
   title: {
     fontSize: hp('3.6%'),
     fontFamily: Fonts.semiBold,
@@ -219,9 +206,8 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: hp('1.7%'),
     fontFamily: Fonts.semiBold,
-    marginRight:10
+    marginRight: 10,
   },
-
 });
 
 export default LoginScreen;

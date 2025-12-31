@@ -22,9 +22,10 @@ import CustomModal from '../../components/CustomModal';
 import { useNavigation } from '@react-navigation/native';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
-import UserInfoModel from '../../customScreen/UserInfoModel';
+import { isTablet } from '../../components/TabletResponsiveSize';
+import { store } from '../../redux/store';
 
-const ViewCartScreen = ({route }) => {
+const ViewCartScreen = ({ route }) => {
   const { screenName } = route.params || { screenName: 'Unknown' };
   const navigation = useNavigation();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
@@ -33,6 +34,7 @@ const ViewCartScreen = ({route }) => {
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [modalUserVisible, setModalUserVisible] = useState(false);
   const [proceed, setProceed] = useState(false);
+  const [numberofAC, setNumberofAC] = useState('');
   const [acTypes, setAcTypes] = useState([
     { name: 'Split AC', count: 2, showButtons: false },
 
@@ -42,26 +44,42 @@ const ViewCartScreen = ({route }) => {
       showButtons: false,
     },
   ]);
+  const userDetails = store?.getState()?.auth?.user;
 
- // BookingActions (replace alert with your action)
- const handleSterilization = () => navigation.navigate('Sterilization');
+  // BookingActions (replace alert with your action)
+  const handleSterilization = () => navigation.navigate('Sterilization');
   const handleRepair = () => navigation.navigate('RepairScreen');
   const handleInstallation = () => navigation.navigate('InstallationScreen');
   const handleCommercialAC = () => navigation.navigate('CommericalAc');
   const handleGasCharging = () => navigation.navigate('GasChargeScreen');
   const handleOther = () => navigation.navigate('OtherScreen');
 
-// 2️⃣ Then define the array
-const bookServices = [
-  { label: 'Sterilization', icon: images.strerilization, action: handleSterilization },
-  { label: 'Repair', icon: images.repairIcon, action: handleRepair },
-  { label: 'Installation', icon: images.installationIcon, action: handleInstallation },
-  { label: 'Commercial AC', icon: images.commercialIcon, action: handleCommercialAC },
-  { label: 'Gas Charging', icon: images.gaschargeIcon, action: handleGasCharging },
-  { label: 'Other', icon: images.otherIcon, action: handleOther },
-];
+  // 2️⃣ Then define the array
+  const bookServices = [
+    {
+      label: 'Sterilization',
+      icon: images.strerilization,
+      action: handleSterilization,
+    },
+    { label: 'Repair', icon: images.repairIcon, action: handleRepair },
+    {
+      label: 'Installation',
+      icon: images.installationIcon,
+      action: handleInstallation,
+    },
+    {
+      label: 'Commercial AC',
+      icon: images.commercialIcon,
+      action: handleCommercialAC,
+    },
+    {
+      label: 'Gas Charging',
+      icon: images.gaschargeIcon,
+      action: handleGasCharging,
+    },
+    { label: 'Other', icon: images.otherIcon, action: handleOther },
+  ];
 
- 
   // Handle Increment
   const handleIncrement = index => {
     const updatedAcTypes = [...acTypes];
@@ -77,7 +95,6 @@ const bookServices = [
     }
     setAcTypes(updatedAcTypes);
   };
-
 
   return (
     <View style={styles.container}>
@@ -186,14 +203,22 @@ const bookServices = [
           keyExtractor={(_, index) => `work-${index}`}
           horizontal
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item,index }) => (
+          renderItem={({ item, index }) => (
             <TouchableOpacity
-             key={index} activeOpacity={0.7}
+              key={index}
+              activeOpacity={0.7}
               style={[styles.utioption, { width: wp('27%'), zIndex: 9999 }]}
               onPress={item.action}
             >
               <FastImage source={item.icon} style={styles.utiicon} />
-              <Text style={[styles.headText,{ width: wp('20%'),textAlign:'center' , height: hp('4.5%'),}]}>{item.label}</Text>
+              <Text
+                style={[
+                  styles.headText,
+                  { width: wp('20%'), textAlign: 'center', height: hp('4.5%') },
+                ]}
+              >
+                {item.label}
+              </Text>
               <View style={styles.addBtn}>
                 <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
                   Add
@@ -203,12 +228,14 @@ const bookServices = [
           )}
         />
 
-        <TouchableOpacity onPress={()=>navigation.navigate('CouponScreen')}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CouponScreen')}
           style={[
             styles.ordercontainer,
             { justifyContent: 'space-between', borderColor: COLORS.themeColor },
-          ]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          ]}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Image source={images.Offer} style={styles.carticon} />
             <Text
               style={[
@@ -339,7 +366,13 @@ const bookServices = [
           ]}
         >
           <Text style={styles.headText}>Cancellation policy</Text>
-          <View style={{ flexDirection: 'row', marginVertical: hp('1%'), alignItems:'center' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginVertical: hp('1%'),
+              alignItems: 'center',
+            }}
+          >
             <FastImage source={images.timeLight} style={styles.smallImag} />
             <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
               Orders cannot be cancelled within 2 hours of the scheduled service
@@ -376,8 +409,9 @@ const bookServices = [
                 style={styles.normalImag}
               />
               <Text style={styles.textBottom}>
-                Sachin Gupta,149, Scheme, Vijay Nagar, Indore, Madhya Paresh
-                452010
+                {userDetails?.name || ''},{selectedAddress?.street || ''},
+                {selectedAddress?.city || ''}, {selectedAddress?.state || ''},
+                {selectedAddress?.zipcode || ''}
               </Text>
               {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
@@ -388,8 +422,14 @@ const bookServices = [
                 alignItems: 'center',
               }}
             >
-              <FastImage source={images.callRed} style={styles.normalImag} />
-              <Text style={styles.textBottom}>+91-9876543210</Text>
+              <FastImage
+                source={images.callRed}
+                style={styles.normalImag}
+                resizeMode="contain"
+              />
+              <Text style={styles.textBottom}>
+                {userDetails?.countryCode}-{userDetails?.phoneNumber}
+              </Text>
               {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
             <View
@@ -401,7 +441,11 @@ const bookServices = [
             >
               <FastImage source={images.timeRed} style={styles.normalImag} />
               <Text style={styles.textBottom}>
-                Sat, 15 June 2024 | 10:00 AM - 12:00 PM
+                {selectedSlot.date}
+                {'/'}
+                {selectedSlot.monthNumber}
+                {'/'}
+                {selectedSlot.year}, {selectedSlot.Timeslot}
               </Text>
               {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
@@ -419,17 +463,22 @@ const bookServices = [
               : setModalUserVisible(true);
           }}
         />
-       {proceed && 
-            <TouchableOpacity  style={{
-                marginVertical: hp('2%'), marginBottom: hp('3%'),
-              }}>
-              <Text style={styles.textBottom}>
-                By proceeding, you agree to our T&C, Privacy & Cancellation Policy.
-              </Text>
-            </TouchableOpacity>}
+        {proceed && (
+          <TouchableOpacity
+            style={{
+              marginVertical: hp('2%'),
+              marginBottom: hp('3%'),
+            }}
+          >
+            <Text style={styles.textBottom}>
+              By proceeding, you agree to our T&C, Privacy & Cancellation
+              Policy.
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-{/* Present address */}
+      {/* Present address */}
       <CustomModal
         visible={modalUserVisible}
         onClose={() => setModalUserVisible(false)}
@@ -439,9 +488,11 @@ const bookServices = [
             setModalSlotVisible(true);
           }, 300);
         }}
+        numberofAC={numberofAC}
+        setvalue={setNumberofAC}
+        addAcStatus={false}
         setSelectedAddress={setSelectedAddress}
       />
-
 
       <BookingSlotModal
         visible={modalSlotVisible}
@@ -450,7 +501,7 @@ const bookServices = [
         onBookProcess={() => {
           setModalSlotVisible(false);
           setTimeout(() => {
-            setProceed(true); 
+            setProceed(true);
           }, 300);
         }}
       />
@@ -459,7 +510,7 @@ const bookServices = [
         visible={confirmModalVisible}
         onClose={() => {
           setConfirmModalVisible(false);
-          setProceed(true); 
+          setProceed(true);
         }}
         selectedAddress={selectedAddress}
         selectedSlot={selectedSlot}
@@ -514,7 +565,7 @@ const styles = StyleSheet.create({
   workText: {
     fontSize: hp('1.6%'),
     color: COLORS.textHeading,
-    fontFamily: Fonts.medium, 
+    fontFamily: Fonts.medium,
   },
   workButtonContainer: {
     flexDirection: 'row',
@@ -528,20 +579,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
-    width: wp('7.5%'),
-    height: hp('3.5%'),
+    width: isTablet ? wp(6) : wp(),
+    height: isTablet ? wp(6) : wp(7.5),
     alignSelf: 'center',
     borderColor: '#ddd',
-    alignItems:"center",
-    justifyContent:'center'
   },
   workButtonText: {
-    fontSize: wp('5%'),
+    fontSize: isTablet ? wp(3) : wp(3),
     color: COLORS.black,
     textAlignVertical: 'top',
     fontFamily: Fonts.medium,
-    marginBottom: Platform.OS === 'ios' ?hp('0.5%'):wp('2%'), 
-    position:'absolute'
+    marginBottom: Platform.OS === 'ios' ? hp('0.5%') : wp('2%'),
+    position: 'absolute',
   },
   workCount: {
     fontSize: hp('1.6%'),
@@ -611,7 +660,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    alignItems: 'center',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -619,14 +667,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   smallImag: {
-    width: wp('4%'),
-    height: hp('1.9%'),
+    width: isTablet ? wp(3) : wp(4),
+    height: isTablet ? hp(1.9) : hp(1.9),
     resizeMode: 'contain',
     marginRight: hp('1%'),
   },
   normalImag: {
-    width: wp('4%'),
-    height: hp('2%'),
+    width: isTablet ? wp(4) : wp(5),
+    height: isTablet ? wp(4) : wp(5),
     resizeMode: 'contain',
   },
   textBottom: {

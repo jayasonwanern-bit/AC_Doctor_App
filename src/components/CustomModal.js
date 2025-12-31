@@ -8,6 +8,8 @@ import {
   Image,
   Platform,
   FlatList,
+  Keyboard,
+  TextInput,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -20,52 +22,34 @@ import { store } from '../redux/store';
 import { getAddress } from '../api/addressApi';
 import { useDispatch } from 'react-redux';
 import { setAddress } from '../redux/slices/authSlice';
+import CustomLoader from './CustomLoader';
 
-const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
+const CustomModal = ({
+  visible,
+  onClose,
+  onProceed,
+  setSelectedAddress,
+  addAcStatus,
+  setvalue, // ✅ setter from parent
+  numberofAC, // ✅ value from parent
+}) => {
   const navigation = useNavigation();
-  const userDetail = store?.getState()?.auth?.user;
-  const [loading, setLoading] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
   const dispatch = useDispatch();
+
+  const userDetail = store?.getState()?.auth?.user;
   const selectedAddressRedux = store?.getState()?.auth?.address;
 
-  const [savedAddresses, setSavedAddresses] = useState([
-    {
-      name: 'Sachin Gupta',
-      address: '149, Scheme8, Vijay Nagar, Indore, Madhya Pradesh 452010',
-      phone: '+91 9999999999',
-      default: true,
-      selected: false,
-    },
-    {
-      name: 'Sachin Gupta',
-      address: '149, Scheme8, Vijay Nagar, Indore, Madhya Pradesh 452010',
-      phone: '+91 9999999999',
-      default: false,
-      selected: false,
-    },
-  ]);
-  const [selectedAddressIndex, setSelectedAddressIndex] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
 
-  useEffect(() => {
-    if (visible && savedAddresses.length > 0) {
-      const updatedAddresses = savedAddresses.map((addr, index) => ({
-        ...addr,
-        default: index === 0,
-      }));
-      setSavedAddresses(updatedAddresses);
-      setSelectedAddressIndex(0);
-    }
-  }, [visible, savedAddresses.length]);
-
-  // api address data
+  // 🔹 Fetch address on focus
   useFocusEffect(
     useCallback(() => {
       fetchAddress();
     }, []),
   );
 
-  // get list address
   const fetchAddress = async () => {
     try {
       setLoading(true);
@@ -75,65 +59,76 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
         const data = res.data || [];
         setSavedAddresses(data);
 
-        // ✅ CASE 1: Redux already has selected address
+        // Priority: redux selected address
         if (selectedAddressRedux?._id) {
-          const exist = data.find(a => a._id === selectedAddressRedux._id);
-
-          if (exist) {
-            setSelectedId(exist._id);
-            return;
-          }
-        }
-
-        // ✅ CASE 2: No previous selection → select last address
-        if (data.length > 0) {
+          setSelectedId(selectedAddressRedux._id);
+        } else if (data.length > 0) {
           const lastAddress = data[data.length - 1];
           setSelectedId(lastAddress._id);
           dispatch(setAddress({ address: lastAddress }));
         }
       }
     } catch (error) {
-      console.log('Error fetching address:', error);
+      console.log('Fetch address error:', error);
     } finally {
       setLoading(false);
     }
   };
+
   const handleAddressSelect = address => {
     setSelectedId(address._id);
     dispatch(setAddress({ address }));
   };
 
-
   const handleProceedPress = () => {
-    if (
-      selectedAddressIndex !== null &&
-      setSelectedAddress &&
-      typeof setSelectedAddress === 'function'
-    ) {
-      const selectedAddr = savedAddresses[selectedAddressIndex];
-      setSelectedAddress(selectedAddr); // Set selected address in parent
-      onProceed(); // Proceed to next modal
+    if (!selectedId) return;
+
+    const selectedAddress = savedAddresses.find(
+      item => item._id === selectedId,
+    );
+
+    if (selectedAddress && setSelectedAddress) {
+      setSelectedAddress(selectedAddress);
     }
+
+    onProceed();
   };
 
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent
       visible={visible}
       onRequestClose={onClose}
-      statusBarTranslucent={true}
+      statusBarTranslucent
     >
       <TouchableOpacity
-        onPress={() => onClose()}
         style={styles.modalContainer}
-        activeOpacity={2}
+        activeOpacity={1}
+        onPress={onClose}
       >
         <View style={styles.modalContent}>
+          {/* 🔹 Old AC Input */}
+          {addAcStatus === false && (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Old ACs do you want to sell</Text>
+
+              <TextInput
+                value={numberofAC}
+                onChangeText={setvalue}
+                keyboardType="number-pad"
+                placeholder="8"
+                placeholderTextColor={COLORS.TextColor}
+                style={styles.numberInput}
+              />
+            </View>
+          )}
+
+          {/* 🔹 Header */}
           <View style={styles.inFlexrow}>
             <Text style={styles.headerText}>Saved Addresses</Text>
+
             <TouchableOpacity
-              activeOpacity={2}
               onPress={() => {
                 onClose();
                 navigation.navigate('AddAddress', { from: 'CustomModal' });
@@ -143,67 +138,68 @@ const CustomModal = ({ visible, onClose, onProceed, setSelectedAddress }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={{ height: hp(22) }}>
-            <FlatList
-              data={savedAddresses}
-              keyExtractor={item => item._id}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item: address }) => {
-                const isSelected = selectedId === address._id;
+          {/* 🔹 Address List */}
+          <View style={{ maxHeight: hp(40) }}>
+            {loading ? (
+              <CustomLoader size={40} />
+            ) : savedAddresses.length === 0 ? (
+              <Text style={styles.emptyText}>No address found</Text>
+            ) : (
+              <FlatList
+                data={savedAddresses}
+                keyExtractor={item => item._id}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => {
+                  const isSelected = selectedId === item._id;
 
-                return (
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={[
-                      styles.addressContainer,
-                      isSelected && styles.selectedAddress,
-                    ]}
-                    onPress={() => handleAddressSelect(address)}
-                  >
-                    {/* Radio */}
-                    <Image
-                      source={isSelected ? images.onbutton : images.offbutton}
-                      style={styles.showiconStyle}
-                    />
+                  return (
+                    <TouchableOpacity
+                      style={[
+                        styles.addressContainer,
+                        isSelected && styles.selectedAddress,
+                      ]}
+                      onPress={() => handleAddressSelect(item)}
+                    >
+                      <Image
+                        source={isSelected ? images.onbutton : images.offbutton}
+                        style={styles.showiconStyle}
+                      />
 
-                    {/* Address */}
-                    <View style={{ width: wp('80%') }}>
-                      <View style={styles.inFlexrow}>
-                        <Text style={styles.addressName}>
-                          {userDetail.name}
-                          {'   '}
-                          <Text style={styles.markstyle}>
-                            {address.landmark}
+                      <View style={{ width: wp(78) }}>
+                        <View style={styles.inFlexrow}>
+                          <Text style={styles.addressName}>
+                            {userDetail?.name}
                           </Text>
+                          {isSelected && (
+                            <Text style={styles.defaultTag}>Default</Text>
+                          )}
+                        </View>
+
+                        <Text style={styles.addressDetails}>
+                          {item?.street}, {item?.city}, {item?.state},{' '}
+                          {item?.zipcode}
                         </Text>
 
-                        {address._id === selectedId && (
-                          <Text style={styles.defaultTag}>Default</Text>
-                        )}
+                        <Text style={styles.addressPhone}>
+                          {userDetail?.phoneNumber}
+                        </Text>
                       </View>
-
-                      <Text style={styles.addressDetails}>
-                        {address.street}, {address.city}, {address.state},{' '}
-                        {address.zipcode}
-                      </Text>
-
-                      <Text style={styles.addressPhone}>
-                        {userDetail.phoneNumber}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              }}
-            />
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            )}
           </View>
 
-          <TouchableOpacity
-            style={styles.proceedButton}
-            activeOpacity={2}
-            onPress={handleProceedPress} // Use separate function
-          >
-            <Text style={styles.proceedButtonText}>Proceed</Text>
-          </TouchableOpacity>
+          {/* 🔹 Proceed */}
+          {savedAddresses.length > 0 && (
+            <TouchableOpacity
+              style={styles.proceedButton}
+              onPress={handleProceedPress}
+            >
+              <Text style={styles.proceedButtonText}>Proceed</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </TouchableOpacity>
     </Modal>
@@ -227,6 +223,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
+    height: 'auto',
     alignSelf: 'center',
     width: wp('100%'),
     paddingBottom: hp(Platform.OS === 'android' ? 4 : 4), // add this line for android

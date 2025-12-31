@@ -7,10 +7,10 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  ActivityIndicator,
   Keyboard,
 } from 'react-native';
-import useLocation from '../../utils/useLocation'; 
+import useLocation from '../../utils/useLocation';
+import CustomLoader from '../../components/CustomLoader';
 
 const AddAdress = () => {
   const [city, setCity] = useState('');
@@ -40,10 +40,12 @@ const AddAdress = () => {
     if (!address.trim()) return 'Address is required';
     if (!landmark.trim()) return 'Landmark is required';
     if (!pincode.trim()) return 'Pincode is required';
-    if (!/^\d{5,6}$/.test(pincode.trim())) return 'Pincode must be 5 or 6 digits';
+    if (!/^\d{5,6}$/.test(pincode.trim()))
+      return 'Pincode must be 5 or 6 digits';
     if (!stateName.trim()) return 'State is required';
     if (!latitude || isNaN(parseFloat(latitude))) return 'Latitude is invalid';
-    if (!longitude || isNaN(parseFloat(longitude))) return 'Longitude is invalid';
+    if (!longitude || isNaN(parseFloat(longitude)))
+      return 'Longitude is invalid';
     return null;
   };
 
@@ -115,7 +117,7 @@ const AddAdress = () => {
       />
 
       {locationLoading ? (
-        <ActivityIndicator size="small" color="blue" />
+        <CustomLoader size={20} />
       ) : (
         <>
           <TextInput

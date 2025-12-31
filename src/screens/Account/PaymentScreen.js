@@ -18,6 +18,7 @@ import images from '../../assets/images';
 import Header from '../../components/Header';
 import { COLORS, Fonts } from '../../utils/colors';
 import CustomButton from '../../components/CustomButton';
+import { isTablet } from '../../components/TabletResponsiveSize';
 
 const PaymentScreen = ({ navigation, route }) => {
   const { selectedAddress, selectedSlot } = route.params || {};
@@ -52,9 +53,9 @@ const PaymentScreen = ({ navigation, route }) => {
     },
   ];
 
-  const toggleCardDetails = (methodId) => {
+  const toggleCardDetails = methodId => {
     if (methodId === 'card') {
-      setOpenCard((prev) => !prev);
+      setOpenCard(prev => !prev);
     } else {
       setOpenCard(false); // Close card details if another method is selected
     }
@@ -62,7 +63,7 @@ const PaymentScreen = ({ navigation, route }) => {
   };
 
   const handleSubmit = () => {
-    navigation.navigate('BookingSuccessScreen')
+    navigation.navigate('BookingSuccessScreen');
     // if (selectedPaymentMethod === 'card') {
     //   if (
     //     cardNumber.length === 16 &&
@@ -97,7 +98,7 @@ const PaymentScreen = ({ navigation, route }) => {
       >
         <View style={styles.paymentContainer}>
           <Text style={styles.sectionLabel}>Select Payment Mode</Text>
-          {paymentMethods.map((method) => (
+          {paymentMethods.map(method => (
             <TouchableOpacity
               key={method.id}
               style={[
@@ -111,14 +112,19 @@ const PaymentScreen = ({ navigation, route }) => {
                   <Image source={method.icon} style={styles.paymentIcon} />
                   <Text style={styles.paymentLabel}>{method.label}</Text>
                 </View>
-                {method.arrow && <Image source={method.arrow} style={styles.paymentArrow} />}
+                {method.arrow && (
+                  <Image source={method.arrow} style={styles.paymentArrow} />
+                )}
               </View>
               {method.id === 'card' && openCard && (
                 <View style={styles.cardDetailsContainer}>
                   <Text style={styles.saveCardText}>Saved Cards</Text>
                   <View style={styles.saveCardRow}>
                     <Image source={images.vista} style={styles.saveCardIcon} />
-                    <Image source={images.punjabcart} style={styles.saveCardIcon} />
+                    <Image
+                      source={images.punjabcart}
+                      style={styles.saveCardIcon}
+                    />
                     <TouchableOpacity style={styles.addNewStyle}>
                       <Text style={styles.label}>+ Add new</Text>
                     </TouchableOpacity>
@@ -133,7 +139,10 @@ const PaymentScreen = ({ navigation, route }) => {
                       autoCapitalize="words"
                       onSubmitEditing={() => Keyboard.dismiss()}
                     />
-                    <Image source={images.UserFilled} style={styles.inputIcon} />
+                    <Image
+                      source={images.UserFilled}
+                      style={styles.inputIcon}
+                    />
                   </View>
                   <Text style={styles.label}>Card Number</Text>
                   <View style={styles.inputContainer}>
@@ -161,7 +170,10 @@ const PaymentScreen = ({ navigation, route }) => {
                           maxLength={5}
                           onSubmitEditing={() => Keyboard.dismiss()}
                         />
-                        <Image source={images.Calendar} style={styles.inputIcon} />
+                        <Image
+                          source={images.Calendar}
+                          style={styles.inputIcon}
+                        />
                       </View>
                     </View>
                     <View style={styles.halfInput}>
@@ -185,7 +197,7 @@ const PaymentScreen = ({ navigation, route }) => {
           ))}
           <CustomButton
             buttonName="Make Payment"
-            margingTOP={hp('40%')}
+            margingTOP={isTablet ? hp(35) : hp(40)}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
             onPress={handleSubmit}
@@ -254,8 +266,8 @@ const styles = StyleSheet.create({
     padding: wp('4%'),
     backgroundColor: COLORS.white,
     borderRadius: wp('2%'),
-    width:wp('90%'),
-    alignSelf:'center'
+    width: wp('90%'),
+    alignSelf: 'center',
   },
   saveCardText: {
     fontSize: hp('1.5%'),
@@ -295,7 +307,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: wp('6%'),
     paddingHorizontal: wp('3%'),
-    paddingVertical: hp(Platform.OS === 'ios' ?'1%':'0%'),
+    paddingVertical: hp(Platform.OS === 'ios' ? '1%' : '0%'),
     marginBottom: hp('2%'),
   },
   inputText: {

@@ -16,6 +16,7 @@ import {
 import images from '../../assets/images';
 import { COLORS, Fonts } from '../../utils/colors';
 import WorkInfo from '../../customScreen/WorkInfo';
+import { isTablet } from '../../components/TabletResponsiveSize';
 
 const AMCScreen = ({ navigation }) => {
   const items = [
@@ -45,9 +46,12 @@ const AMCScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header title="AMC" onBack={() => navigation.goBack()} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.grid} >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.grid}
+      >
         {/* Banner */}
-          <Image source={images.bannerAmc} style={styles.bannerImg} />
+        <Image source={images.bannerAmc} style={styles.bannerImg} />
 
         {/* FlatList Grid */}
         <FlatList
@@ -83,8 +87,8 @@ const styles = StyleSheet.create({
   },
 
   bannerImg: {
-    width: '100%',
-    height: hp(20),
+    width: isTablet ? wp(93) : wp(93),
+    height: isTablet ? wp(45) : wp(45),
     borderRadius: wp(4),
     resizeMode: 'contain',
   },
@@ -111,13 +115,13 @@ const styles = StyleSheet.create({
     borderRadius: wp(10),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: hp(1),
+    marginBottom: isTablet ? hp(1) : hp(2),
   },
 
   /* Icon */
   icon: {
-    width: wp(15),
-    height: hp(5),
+    width: isTablet ? wp(95) : wp(95),
+    height: isTablet ? wp(10) : wp(15),
     resizeMode: 'contain',
   },
 

@@ -7,11 +7,16 @@ import {
 import { COLORS } from '../utils/colors';
 import { useNavigation } from '@react-navigation/native';
 
-const ConfirmationModal = ({ visible, onClose, selectedAddress, selectedSlot }) => {
-    const navigation = useNavigation()
-    const handleProceed = () => {
-    onClose(); 
-    navigation.navigate('PaymentScreen'); 
+const ConfirmationModal = ({
+  visible,
+  onClose,
+  selectedAddress,
+  selectedSlot,
+}) => {
+  const navigation = useNavigation();
+  const handleProceed = () => {
+    onClose();
+    navigation.navigate('PaymentScreen');
   };
   return (
     <Modal
@@ -22,9 +27,9 @@ const ConfirmationModal = ({ visible, onClose, selectedAddress, selectedSlot }) 
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-            <TouchableOpacity onPress={onClose} style={styles.crossBtn}>
-          <Text style={styles.crossText}>X</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={onClose} style={styles.crossBtn}>
+            <Text style={styles.crossText}>X</Text>
+          </TouchableOpacity>
           <Text style={styles.title}>Confirm Booking</Text>
           <Text style={styles.sectionLabel}>Selected Address</Text>
           {selectedAddress && (
@@ -35,20 +40,29 @@ const ConfirmationModal = ({ visible, onClose, selectedAddress, selectedSlot }) 
             </View>
           )}
           <Text style={styles.sectionLabel}>Selected Slot</Text>
-          
+
           {selectedSlot && (
             <View style={styles.slotBox}>
               <Text style={styles.slotText}>
-                Date: {selectedSlot.date}{'/'}{selectedSlot.monthNumber}{'/'}{selectedSlot.year}
+                Date: {selectedSlot.date}
+                {'/'}
+                {selectedSlot.monthNumber}
+                {'/'}
+                {selectedSlot.year}
               </Text>
               <Text style={styles.slotText}>Time: {selectedSlot.Timeslot}</Text>
             </View>
           )}
-          <TouchableOpacity style={styles.confirmButton} onPress={handleProceed}>
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={handleProceed}
+          >
             <Text style={styles.confirmButtonText}>Process to pay</Text>
           </TouchableOpacity>
 
-          <Text style={styles.policyLabel}>By proceeding, you agree to our T&C, Privacy & Cancellation Policy</Text>
+          <Text style={styles.policyLabel}>
+            By proceeding, you agree to our T&C, Privacy & Cancellation Policy
+          </Text>
         </View>
       </View>
     </Modal>
@@ -71,21 +85,21 @@ const styles = StyleSheet.create({
   },
   crossText: {
     fontSize: hp('2%'),
-    color:COLORS.maroon,
+    color: COLORS.maroon,
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  crossBtn:{
-borderWidth: 1,
+  crossBtn: {
+    borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: wp('7%'),
     padding: wp('1%'),
-    width:wp('9%'),
-    height:hp(4),
-    alignSelf:'flex-end',
-    position:'absolute',
-    top:-16,
-    right:-3,
+    width: wp('9%'),
+    height: hp(4),
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    top: -16,
+    right: -3,
     backgroundColor: '#fff',
   },
   title: {
@@ -97,7 +111,7 @@ borderWidth: 1,
   sectionLabel: {
     fontSize: hp('1.8%'),
     color: '#1d1c1cff',
-     fontWeight:'600',
+    fontWeight: '600',
     marginBottom: hp('1%'),
   },
   addressBox: {
@@ -122,11 +136,11 @@ borderWidth: 1,
   slotText: {
     fontSize: hp('1.5%'),
     color: '#726e6eff',
-    fontWeight:'500',
+    fontWeight: '500',
     marginBottom: hp('1%'),
   },
   confirmButton: {
-    backgroundColor: '#328ee4ff', // Green color for confirm
+    backgroundColor: '#328ee4ff',
     padding: hp('1.4%'),
     borderRadius: wp('5%'),
     alignItems: 'center',

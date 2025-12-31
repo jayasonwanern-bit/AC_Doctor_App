@@ -1,5 +1,8 @@
-import { Dimensions, Platform } from "react-native";
+import { Dimensions, Platform } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-export const isTablet = Platform.OS === 'ios' && width >= 768;
+// Use smaller side to avoid landscape issue
+const shortSide = Math.min(width, height);
+
+export const isTablet = shortSide >= 600;

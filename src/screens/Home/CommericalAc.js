@@ -18,6 +18,8 @@ import Header from '../../components/Header';
 import HomeScreenStyles from './HomeScreenStyles';
 import CustomButton from '../../components/CustomButton';
 import WorkInfo from '../../customScreen/WorkInfo';
+import { isTablet } from '../../components/TabletResponsiveSize';
+import { rf } from '../../components/Resposive';
 
 const CommericalAc = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -91,7 +93,6 @@ const CommericalAc = ({ navigation }) => {
       }),
     );
   };
-
 
   const renderCounter = (value, onIncrement, onDecrement) => {
     return value > 0 ? (
@@ -168,7 +169,9 @@ const CommericalAc = ({ navigation }) => {
                       >
                         <Text style={HomeScreenStyles.workbuttonText}>-</Text>
                       </TouchableOpacity>
-                      <Text style={HomeScreenStyles.workcount}>{ac.totalCount}</Text>
+                      <Text style={HomeScreenStyles.workcount}>
+                        {ac.totalCount}
+                      </Text>
                       <TouchableOpacity
                         style={HomeScreenStyles.workbutton}
                         onPress={() => handleIncrement(index, 'repair')}
@@ -185,7 +188,6 @@ const CommericalAc = ({ navigation }) => {
                     </TouchableOpacity>
                   )}
                 </View>
-
               </TouchableOpacity>
               {isExpanded[index] && (
                 <View style={styles.subOptions}>
@@ -219,7 +221,7 @@ const CommericalAc = ({ navigation }) => {
           </View>
         ))}
 
-         <WorkInfo/>      
+        <WorkInfo />
       </ScrollView>
 
       {/* Services and View Cart Section */}
@@ -259,21 +261,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     resizeMode: 'contain',
   },
-  workacIconstyle: { width: wp('10%'), height: wp('10%') },
+  workacIconstyle: {
+    width: isTablet ? wp(8) : wp(11),
+    height: isTablet ? wp(8) : wp(11),
+  },
   title: {
     flex: 1,
-    fontSize: wp('3.5%'),
-    color: COLORS.black,
+    fontSize: isTablet ? rf(9) : rf(13),
     fontFamily: Fonts.semiBold,
+    color: COLORS.black,
   },
+  // addButton: {
+  //   borderColor: '#bcc4c6ff',
+  //   borderWidth: wp(0.3),
+  //   padding: wp('2%'),
+  //   paddingHorizontal: hp('2%'),
+  //   borderRadius: hp(2),
+  // },
+  // addText: { color: '#34495E', fontSize: wp('4%') },
   addButton: {
-    borderColor: '#bcc4c6ff',
-    borderWidth: wp(0.3),
-    padding: wp('2%'),
-    paddingHorizontal: hp('2%'),
-    borderRadius: hp(2),
+    borderWidth: 0.5,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
   },
-  addText: { color: '#34495E', fontSize: wp('4%') },
+  addText: { fontWeight: '400', color: 'black' },
   subOptions: { padding: wp('1%') },
   subOption: {
     flexDirection: 'row',
@@ -283,19 +295,19 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#ECF0F1',
   },
-  subText: { fontSize: wp('3%'), color: '#34495E' },
+  subText: { fontSize: isTablet ? wp(2.3) : wp('3%'), color: '#34495E' },
   counter: { flexDirection: 'row', alignItems: 'center' },
   counterButton: {
-    width: wp('7%'),
-    height: wp('7%'),
+    width: isTablet ? wp(5) : wp('7%'),
+    height: isTablet ? wp(5) : wp('7%'),
     backgroundColor: '#ECF0F1',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
   },
-  counterText: { fontSize: hp('3%'), color: '#34495E' },
+  counterText: { fontSize: isTablet ? wp(2.5) : hp('3%'), color: '#34495E' },
   counterValue: {
-    fontSize: wp('4%'),
+    fontSize: isTablet ? wp(2) : wp('4%'),
     color: '#34495E',
     marginHorizontal: wp('2%'),
   },

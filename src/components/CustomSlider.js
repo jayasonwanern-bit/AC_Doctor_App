@@ -1,12 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, FlatList, Image, Dimensions, StyleSheet } from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import images from '../assets/images';
+import { isTablet } from './TabletResponsiveSize';
+import { wp, hp } from '../components/Resposive';
 
-// Placeholder COLORS object (replace with your actual COLORS)
 const COLORS = {
   lightGray: '#F5F5F5',
   gray: '#999999',
@@ -18,9 +14,9 @@ const CustomSlider = ({ images }) => {
   const flatListRef = useRef(null);
   const { width } = Dimensions.get('window');
 
-  // Autoplay configuration
   useEffect(() => {
-    if (images.length === 0) return; // Prevent autoplay if no images
+    if (!images || images.length === 0) return;
+
     const autoplayInterval = setInterval(() => {
       setCurrentIndex(prevIndex => {
         const nextIndex = (prevIndex + 1) % images.length;
@@ -30,19 +26,17 @@ const CustomSlider = ({ images }) => {
         });
         return nextIndex;
       });
-    }, 4000); // 4 seconds autoplay timeout
+    }, 4000);
 
     return () => clearInterval(autoplayInterval);
   }, [images]);
 
-  // Handle scroll to update current index
   const handleScroll = event => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(offsetX / width);
     setCurrentIndex(index);
   };
 
-  // Render each slide
   const renderItem = ({ item }) => (
     <View style={styles.sliderview}>
       <Image
@@ -52,99 +46,83 @@ const CustomSlider = ({ images }) => {
             : require('../assets/icons/banner.png')
         }
         style={styles.image}
+        resizeMode="cover"
       />
     </View>
   );
 
-  // Customizable dot properties
   const dotSize = wp('2%');
   const dotMargin = wp('1.5%');
-  const dotBottomPosition = hp('1%');
   const dotTopPosition = hp('12%');
 
   return (
-    <View style={styles.sliderContainer}>
-      <View style={styles.slider}>
-        {images.length > 0 ? (
-          <FlatList
-            ref={flatListRef}
-            data={images}
-            renderItem={renderItem}
-            keyExtractor={(_, index) => index.toString()}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
+    <View style={{ flex: 1 }}>
+      {images && images.length > 0 ? (
+        <FlatList
+          ref={flatListRef}
+          style={{
+            marginRight: isTablet ? wp(2.4) : wp(3),
+            marginLeft: isTablet ? wp(0.6) : wp(1),
+          }}
+          data={images}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => index.toString()}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+        />
+      ) : (
+        <View style={styles.sliderview}>
+          <Image
+            source={{ uri: 'https://via.placeholder.com/800x400' }}
+            style={styles.image}
+            resizeMode="cover"
           />
-        ) : (
-          <View style={styles.sliderview}>
-            <Image
-              source={{ uri: 'https://via.placeholder.com/800x400' }}
-              style={styles.image}
+        </View>
+      )}
+
+      {images && images.length > 1 && (
+        <View style={[styles.dots, { top: dotTopPosition }]}>
+          {images.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                {
+                  width: dotSize,
+                  height: dotSize,
+                  marginHorizontal: dotMargin,
+                  backgroundColor:
+                    index === currentIndex ? COLORS.accent : COLORS.gray,
+                },
+              ]}
             />
-          </View>
-        )}
-        {images.length > 1 && (
-          <View
-            style={[
-              styles.dots,
-              dotTopPosition
-                ? { top: dotTopPosition }
-                : { bottom: dotBottomPosition },
-            ]}
-          >
-            {images.map((_, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.dot,
-                  {
-                    width: dotSize,
-                    height: dotSize,
-                    marginHorizontal: dotMargin,
-                    backgroundColor:
-                      index === currentIndex ? COLORS.accent : COLORS.gray,
-                  },
-                ]}
-              />
-            ))}
-          </View>
-        )}
-      </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  sliderContainer: {
-    height: hp('20%'),
-    marginVertical: hp('0%'),
-  },
-  slider: {
-    height: hp('20%'),
-    overflow: 'hidden',
-  },
   sliderview: {
-    width: wp('98%'),
-    height: hp('35%'),
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: hp(1),
+    marginHorizontal: isTablet ? wp(1.6) : wp(2),
   },
   image: {
-    width: '93%',
-    height: hp('15%'),
-    borderRadius: 15,
+    width: isTablet ? wp(95) : wp(93),
+    height: isTablet ? hp(30) : hp(18),
+    borderRadius: 12,
   },
   dots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'absolute',
     width: '100%',
     height: hp('14%'),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dot: {
     borderRadius: 999,

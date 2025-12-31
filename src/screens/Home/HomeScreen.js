@@ -10,7 +10,6 @@ import {
   useColorScheme,
   Animated,
   StatusBar,
-  ActivityIndicator,
   Alert,
 } from 'react-native';
 import {
@@ -34,8 +33,9 @@ import GetLoaction from '../../components/GetLoaction';
 import { useDispatch } from 'react-redux';
 import { dispatch, store } from '../../redux/store';
 import { setAddress, setCelcius } from '../../redux/slices/authSlice';
-const weatherData = store?.getState()?.auth?.celcius;
-
+import OnTopScreen from '../../components/OnTopScreen';
+import { isTablet } from '../../components/TabletResponsiveSize';
+import CustomLoader from '../../components/CustomLoader';
 const HomeScreen = ({ navigation, route }) => {
   const {
     latitude,
@@ -51,7 +51,7 @@ const HomeScreen = ({ navigation, route }) => {
   // Dynamic styles based on scheme
   const dynamicStyles = {
     safeArea: {
-      backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#ffffff',
+      backgroundColor: scheme === 'dark' ? '#1a1a1a' : '#F4F8FE',
     },
     backText: {
       color: scheme === 'dark' ? '#ffffff' : '#000000',
@@ -73,9 +73,10 @@ const HomeScreen = ({ navigation, route }) => {
     STERILIZATION: 'GasChargeScreen',
     REPAIR: 'GasChargeScreen',
     INSTALLATION: 'GasChargeScreen',
+    COMPRESSOR: 'GasChargeScreen',
     COMMERCIAL_AC: 'CommericalAc',
     GAS_CHARGING: 'GasChargeScreen',
-    OTHER: 'GasChargeScreen',
+    OTHER: 'OtherScreen',
   };
 
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
@@ -94,8 +95,14 @@ const HomeScreen = ({ navigation, route }) => {
   const requestQuote = [
     { label: 'Sell Old AC', icon: images.sellAcIcon, action: handleSellOldAC },
     { label: 'AMC', icon: images.AMCicon, action: handleAMC },
+    {
+      label: 'Free Consultancy',
+      icon: images.consultancyIcon,
+      action: handleFreeConsult,
+    },
     { label: 'Copper Pipe', icon: images.copperIcon, action: handleCopperPipe },
   ];
+
   const utilities = [
     {
       label: 'Tonage Calculator',
@@ -106,11 +113,6 @@ const HomeScreen = ({ navigation, route }) => {
       label: 'Error Codes',
       icon: images.errorCodeIcon,
       action: handleErrorcode,
-    },
-    {
-      label: 'Free Consultancy',
-      icon: images.consultancyIcon,
-      action: handleFreeConsult,
     },
     {
       label: 'Product Comparison',
@@ -208,6 +210,7 @@ const HomeScreen = ({ navigation, route }) => {
       setLoading(false);
     }
   };
+
   //  booking navigation
   const handleServiceNavigation = service => {
     const screen = screens[service?.key];
@@ -220,13 +223,13 @@ const HomeScreen = ({ navigation, route }) => {
 
   const getBannerImg = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const res = await getBanner();
       setBannerImages(res?.data || []);
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      setLoading(true);
     }
   };
 
@@ -239,21 +242,17 @@ const HomeScreen = ({ navigation, route }) => {
     >
       <StatusBar
         barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor="transparent"
+        backgroundColor={'#F4F8FE'}
         translucent={true}
       />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.container}
-        contentContainerStyle={styles.content}
-      >
+      <OnTopScreen>
         {/* Header with Location Icon and Add Location Text */}
         <View style={styles.header}>
           <Text style={styles.locationtitle}>Location</Text>
           <View style={styles.addressRow}>
             {Loader ? (
               <>
-                <ActivityIndicator color={'red'} size={'small'} />
+                <CustomLoader size={20} />
               </>
             ) : (
               <View style={styles.locationContainer}>
@@ -277,7 +276,7 @@ const HomeScreen = ({ navigation, route }) => {
               />
               {WeatherLoader ? (
                 <>
-                  <ActivityIndicator color={'red'} size={'small'} />
+                  <CustomLoader size={20} />
                 </>
               ) : (
                 <Text
@@ -289,17 +288,13 @@ const HomeScreen = ({ navigation, route }) => {
         </View>
 
         {/* Banner Image */}
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <CustomSlider images={bannerImages} />
-        )}
+        {loading ? <CustomLoader /> : <CustomSlider images={bannerImages} />}
 
         {/* Book a service */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Book a Services</Text>
           {loading ? (
-            <ActivityIndicator />
+            <CustomLoader size={40} />
           ) : (
             <View style={styles.reqgrid}>
               {bookServices.map((item, index) => (
@@ -340,7 +335,7 @@ const HomeScreen = ({ navigation, route }) => {
           colors={['#ecd5d0ff', '#ede3dbff', '#b9d4e7ff']}
           style={styles.uticontainer}
         >
-          <Text style={styles.utititle}>Utilities</Text>
+          <Text style={[styles.utititle, { marginTop: hp(1) }]}>Utilities</Text>
           <View style={styles.utigrid}>
             {utilities.map((item, index) => (
               <TouchableOpacity
@@ -357,7 +352,7 @@ const HomeScreen = ({ navigation, route }) => {
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Authorized Service Partner</Text>
           {loading ? (
-            <ActivityIndicator />
+            <CustomLoader size={20} />
           ) : (
             <FlatList
               data={pages}
@@ -393,7 +388,7 @@ const HomeScreen = ({ navigation, route }) => {
           )}
         </View>
 
-        <View style={styles.uticontainer}>
+        <View style={[styles.uticontainer, { padding: wp('0%') }]}>
           <Text
             style={[
               styles.reqtitle,
@@ -423,6 +418,7 @@ const HomeScreen = ({ navigation, route }) => {
                   <Image
                     source={item.image}
                     style={styles.image}
+                    // resizeMode="contain"
                     resizeMode="contain"
                   />
                 </View>
@@ -457,6 +453,7 @@ const HomeScreen = ({ navigation, route }) => {
           />
         </View>
 
+        {/* who trust Us */}
         <View style={styles.uticontainer}>
           <Text style={[styles.utititle, dynamicStyles.title]}>
             Who Trust Us
@@ -484,6 +481,8 @@ const HomeScreen = ({ navigation, route }) => {
             )}
           />
         </View>
+
+        {/* Impact on Society */}
         <View style={styles.impcard}>
           <View style={[styles.impgrid, { alignItems: 'center' }]}>
             <View style={styles.borderSmall} />
@@ -521,6 +520,7 @@ const HomeScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </View>
+
         <FastImage source={images.homebanner} style={styles.bannerStyle} />
 
         <View style={styles.sercard}>
@@ -579,7 +579,9 @@ const HomeScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
+        {/* </ScrollView>
+         */}
+      </OnTopScreen>
     </SafeAreaView>
   );
 };
