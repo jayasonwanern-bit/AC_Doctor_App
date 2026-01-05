@@ -76,7 +76,7 @@ const ProfileDetail = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
-      if (res?.success) {
+      if (res?.status) {
         const data = res.data;
         setCallingCode(data?.countryCode);
         setuserName(data?.name);
@@ -126,7 +126,6 @@ const ProfileDetail = ({ navigation }) => {
         email: String(email),
         profilePhotoUrl: cleanImageUrl || '',
       };
-      console.log('Update  Body---:', body);
 
       // 5️⃣ Call update profile API
       const res = await updateUserProfile(body);

@@ -35,32 +35,40 @@ const MyBookingScreen = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getBookingList(userId._id);
-      const flattenedData = res?.data?.flatMap(booking =>
-        booking.serviceDetails.map(service => ({
-          id: booking._id,
-          bookingId: booking.bookingId,
-          status: booking.status,
-          slot: booking.slot,
-          date: booking.date,
-          createdAt: booking.createdAt,
 
-          amount: booking.amount?.$numberDecimal
-            ? Number(booking.amount.$numberDecimal)
-            : 0,
+      if (res?.success && Array.isArray(res?.data)) {
+        const flattenedData = res.data.flatMap(booking =>
+          (booking.serviceDetails || []).map(service => ({
+            id: booking?._id,
+            bookingId: booking?.bookingId,
+            order_id: booking?.order_id,
+            status: booking?.status,
+            slot: booking?.slot,
+            date: booking?.date,
+            createdAt: booking?.createdAt,
 
-          serviceType: service.serviceType,
-          quantity: service.quantity,
-          acType: service.acType,
-          serviceId: service.service_id,
+            amount: booking.amount?.$numberDecimal
+              ? Number(booking.amount.$numberDecimal)
+              : 0,
 
-          technicianName: booking.technicianName || 'Not Assigned',
-          technicianPhone: booking.technicianPhone || '',
-          orderId: booking.order_id || '',
-        })),
-      );
-      setaAllRequests(flattenedData);
+            // ✅ service-level data (FIXED)
+            quantity: service.quantity,
+            acType: service.acType,
+            serviceId: service.service_id,
+            serviceType: service.serviceType,
+
+            technicianName: booking?.technicianName || 'Not Assigned',
+            technicianPhone: booking?.technicianPhone || '',
+            orderId: booking?.order_id || '',
+            payment_status: booking?.payment_status || 'Pending',
+            order_amount: booking?.order_amount || 0,
+          })),
+        );
+
+        setaAllRequests(flattenedData);
+      }
     } catch (error) {
-      console.log(error);
+      console.log('Booking Error:', error);
     } finally {
       setLoading(false);
     }
@@ -75,6 +83,7 @@ const MyBookingScreen = ({ navigation }) => {
     if (activeTab === 'Cancelled') return item.status === 'CANCELLED';
     return false;
   });
+  console.log('Filtered Requests:', allRequests);
 
   const getStatusStyle = status => {
     return STATUS_CONFIG[status] || { bg: '#f8eccaff', text: '#f0980aff' };

@@ -10,6 +10,7 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     getData();
   }, []);
+
   const getData = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');

@@ -191,6 +191,9 @@ const images = {
   confirmedService: require('./icons/confirmedService.png'),
   Alertoctagon: require('./icons/Alertoctagon.png'),
   chilarIcon: require('./icons/chilarIcon.png'),
+  fcBIcon: require('./icons/fcBIcon.png'),
+  amcBIcon: require('./icons/amcBIcon.png'),
+  OCBicon: require('./icons/OCBicon.png'),
   // Add more images as needed
 };
 

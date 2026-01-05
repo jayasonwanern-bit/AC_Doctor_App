@@ -1,5 +1,5 @@
 // screens/MyRequestsScreen.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -17,78 +17,47 @@ import { COLORS, Fonts } from '../../utils/colors';
 import { STATUS_CONFIG } from '../../utils/colors';
 import Header from '../../components/Header';
 import images from '../../assets/images';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { store } from '../../redux/store';
+import { getConsultancy } from '../../api/homeApi';
+import { isTablet } from '../../components/TabletResponsiveSize';
 
 const TABS = ['All', 'Scheduled', 'Completed', 'Cancelled'];
 
 const MyRequestsScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('All');
+  const user = store?.getState()?.auth?.user;
+  const [data, setData] = useState([]);
 
-  // Dummy Data (Colors nahi — sirf status)
-  const allRequests = [
-    {
-      id: '1',
-      service: 'Old AC',
-      requestId: '#12345',
-      date: '05/03/2025',
-      time: '10/03/2025 - First half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: '-',
-      status: 'Under Review',
-      actionText: 'Cancel request',
-      showReschedule: false,
-    },
-    {
-      id: '2',
-      service: 'AMC',
-      requestId: '#12345',
-      time: '10/03/2025 - First half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: 'Mohan Verma',
-      status: 'Scheduled',
-      actionText: 'Reschedule',
-      showReschedule: true,
-    },
-    {
-      id: '3',
-      service: 'Old AC',
-      requestId: '#12345',
-      time: '10/03/2025 - First half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: 'Mohan Verma',
-      status: 'Completed',
-      finalOffer: '₹65000/-',
-      paymentStatus: 'Paid',
-      rating: 4,
-      showReinitiate: false,
-    },
-    {
-      id: '4',
-      service: 'AMC',
-      requestId: '#12345',
-      time: 'Placed by mistake',
-      location: 'LG, Dakin',
-      status: 'Cancelled',
-      cancellationReason: 'Placed by mistake',
-      showReinitiate: true,
-    },
-    {
-      id: '5',
-      service: 'Old AC',
-      requestId: '#12345',
-      time: '15/03/2025 - Second half',
-      location: 'LG, Dakin',
-      acCount: 2,
-      agent: 'Mohan Verma',
-      status: 'Re-scheduled',
-      actionText: 'Cancel request',
-    },
-  ];
+  useEffect(() => {
+    getFreeConsultancy();
+  }, []);
+
+  const getFreeConsultancy = async userId => {
+    try {
+      const res = await getConsultancy(user?._id);
+
+      //  add serviceName to each item
+      const updatedData =
+        res?.data?.map(item => ({
+          ...item,
+          serviceName: 'Free Consultancy',
+          status: 'Under Review',
+        })) || [];
+
+      // ✅ set state here
+      setData(updatedData);
+      return updatedData;
+    } catch (error) {
+      console.log('API Error:', error?.response?.data || error);
+      throw error;
+    }
+  };
+
+  // console.log('Consultancy Requests ===>', data);
 
   // Filter by Tab
-  const filteredRequests = allRequests.filter(item => {
+  const filteredRequests = data.filter(item => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Scheduled')
       return ['Scheduled', 'Re-scheduled'].includes(item.status);
@@ -106,67 +75,75 @@ const MyRequestsScreen = ({ navigation }) => {
 
     return (
       <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={styles.serviceBadge}>
-            <Image source={images.splitAC} style={styles.icon} />
-            <Text style={styles.serviceText}>{item.service}</Text>
+        <View style={styles.skybluecard}>
+          <View style={styles.cardHeader}>
+            <View style={styles.serviceBadge}>
+              <Image source={images.icon} style={styles.icon} />
+              <Text style={styles.serviceText}>{item.serviceName}</Text>
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: bg }]}>
+              <Text style={[styles.statusText, { color: text }]}>
+                {/* {item.status} */} Under Review
+              </Text>
+            </View>
           </View>
-          <View style={[styles.statusBadge, { backgroundColor: bg }]}>
-            <Text style={[styles.statusText, { color: text }]}>
-              {item.status}
-            </Text>
-          </View>
+          {/* Request ID */}
+          <Text style={styles.requestId}>Request ID {item.requestId}</Text>
         </View>
-
-        {/* Request ID */}
-        <Text style={styles.requestId}>Request ID {item.requestId}</Text>
 
         {/* Date & Time */}
         <View style={styles.row}>
           <View>
-          <Text style={styles.label}>
-            {item.status === 'Cancelled' 
-              ? 'Cancellation Reason'
-              : item.status === 'Completed' ? 'Completion Date':'Inspection Date & Time'}
-          </Text>
-          <Text style={styles.value}>{item.time}</Text>
+            <Text style={styles.label}>
+              {item.status === 'Cancelled'
+                ? 'Cancellation Reason'
+                : item.status === 'Completed'
+                ? 'Completion Date'
+                : item.status === 'Under Review'
+                ? 'Reviewed on'
+                : 'Inspection Date & Time'}
+            </Text>
+            <Text style={styles.value}>
+              {item.date.split('T')[0]}, {item.slot}
+            </Text>
           </View>
-           <View style={{width:wp(25)}}>
-          <Text style={styles.label}>Requested Service Details</Text>
-          <Text style={styles.value}>{item.location}</Text>
+          <View style={{ width: wp(25) }}>
+            <Text style={styles.label}>AC Type</Text>
+            <Text style={styles.value}>{item.brandData}</Text>
           </View>
         </View>
 
-          {/* AC Count */}
+        {/* AC Count */}
         <View style={styles.row}>
-           {item.acCount !== null && (<View>
-            <Text style={styles.label}>Number of AC</Text>
-            <Text style={styles.value}>{item.acCount}</Text>
-            </View>)}
-        {item.agent && (
-          <View style={{width:wp(25)}}>
-            <Text style={styles.label}>Agent</Text>
-            <Text style={styles.value}>{item.agent}</Text>
-          </View>
+          {item.acCount !== null && (
+            <View>
+              <Text style={styles.label}>Number of AC</Text>
+              <Text style={styles.value}>{item.quantity}</Text>
+            </View>
+          )}
+          {item.agent && (
+            <View style={{ width: wp(25) }}>
+              <Text style={styles.label}>Agent Assigned</Text>
+              <Text style={styles.value}>
+                {'-'}||{item.agent}
+              </Text>
+            </View>
           )}
         </View>
-
-        
 
         {/* Final Offer & Payment (Completed) */}
         {item.finalOffer && (
           <>
             <View style={styles.row}>
               <View>
-              <Text style={styles.label}>Final Offer</Text>
-              <Text style={styles.value}>{item.finalOffer}</Text>
+                <Text style={styles.label}>Final Offer</Text>
+                <Text style={styles.value}>{item.finalOffer}</Text>
               </View>
-             <View style={{width:wp(25)}}>
-              <Text style={styles.label}>Payment Status</Text>
-              <Text style={styles.value}>{item.paymentStatus}</Text>
+              <View style={{ width: wp(25) }}>
+                <Text style={styles.label}>Payment Status</Text>
+                <Text style={styles.value}>{item.paymentStatus}</Text>
               </View>
             </View>
-            
           </>
         )}
 
@@ -185,12 +162,17 @@ const MyRequestsScreen = ({ navigation }) => {
               <Text style={styles.reinitiateText}>Reinitiate Request</Text>
             </TouchableOpacity>
           )}
-          {item.actionText && (
-            <TouchableOpacity>
-              <Text style={styles.reinitiateText}>{item.actionText}</Text>
-            </TouchableOpacity>
-          )}
-           {item.status === 'Completed'&& (<View style={styles.ratingRow}>
+
+          <TouchableOpacity>
+            <Text style={styles.reinitiateText}>
+              {item.status === 'Under Review'
+                ? 'Cancel Request'
+                : item.status === 'Review' && 'Reschedule Request'}
+            </Text>
+          </TouchableOpacity>
+
+          {item.status === 'Completed' && (
+            <View style={styles.ratingRow}>
               <Text style={styles.label}>Rate us</Text>
               <View style={styles.stars}>
                 {[...Array(5)].map((_, i) => (
@@ -206,7 +188,8 @@ const MyRequestsScreen = ({ navigation }) => {
                   </Text>
                 ))}
               </View>
-            </View>)}
+            </View>
+          )}
           <TouchableOpacity
             style={styles.viewDetailsBtn}
             onPress={() =>
@@ -224,8 +207,7 @@ const MyRequestsScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Header title="My Requests" onBack={() => navigation.goBack()} />
       {/* Tabs */}
-      <View
-        style={styles.tabContainer}>
+      <View style={styles.tabContainer}>
         {TABS.map(tab => (
           <TouchableOpacity
             key={tab}
@@ -247,7 +229,7 @@ const MyRequestsScreen = ({ navigation }) => {
       {/* List */}
       <FlatList
         data={filteredRequests}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
         renderItem={renderRequestCard}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.list}
@@ -273,9 +255,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
     marginVertical: hp(1),
     width: 'auto',
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between'  
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   tab: {
     paddingHorizontal: wp(4),
@@ -316,8 +298,9 @@ const styles = StyleSheet.create({
 
   // Card
   card: {
-    backgroundColor:COLORS.white,
-    padding: wp(4),
+    backgroundColor: COLORS.white,
+    paddingHorizontal: wp(4),
+    paddingBottom: wp(4),
     borderRadius: wp(3),
     marginBottom: hp(2),
     elevation: 2,
@@ -326,6 +309,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 3,
   },
+  skybluecard: {
+    width: isTablet ? wp(93) : wp(93),
+    backgroundColor: COLORS.lightSky,
+    paddingHorizontal: wp(4),
+    paddingTop: wp(1.8),
+    borderTopLeftRadius: wp(3),
+    borderTopRightRadius: wp(3),
+    marginBottom: hp(2),
+    elevation: 2,
+    alignSelf: 'center',
+  },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -333,15 +327,15 @@ const styles = StyleSheet.create({
     marginBottom: hp(1),
   },
   serviceBadge: {
-   flexDirection:'row',
-   alignItems:'center',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   serviceText: {
     fontSize: hp(1.6),
     color: '#666',
     fontWeight: '600',
   },
-   icon: {
+  icon: {
     width: wp(6),
     height: hp(1.5),
     resizeMode: 'cover',
@@ -357,29 +351,28 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.semiBold,
   },
   requestId: {
-    fontSize: hp(1.6),
+    fontSize: hp(1.3),
     fontFamily: Fonts.semiBold,
-    color: COLORS.textHeading || '#333',
+    color: COLORS.textColor,
     marginBottom: hp(1),
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: hp(1),
-    alignItems:'flex-start'
+    alignItems: 'flex-start',
   },
   label: {
     fontSize: hp(1.6),
     color: '#666',
-    flex: 1,
-    textAlign:'left',
-     marginBottom: hp(0.3),
+    textAlign: 'left',
+    marginBottom: hp(0.3),
   },
   value: {
     fontSize: hp(1.4),
     color: COLORS.black,
     fontWeight: '500',
-    textAlign:'left'
+    textAlign: 'left',
   },
   ratingRow: {
     alignItems: 'flex-start',
@@ -406,8 +399,8 @@ const styles = StyleSheet.create({
     color: COLORS.themeColor,
     fontSize: hp(1.7),
     fontFamily: Fonts.semiBold,
-    borderBottomColor:COLORS.themeColor,
-    borderBottomWidth:1,
+    borderBottomColor: COLORS.themeColor,
+    borderBottomWidth: 1,
   },
   viewDetailsBtn: {
     backgroundColor: COLORS.themeColor,
@@ -416,7 +409,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(10),
   },
   viewDetailsText: {
-    color:COLORS.white,
+    color: COLORS.white,
     fontSize: hp(1.6),
     fontWeight: '600',
   },

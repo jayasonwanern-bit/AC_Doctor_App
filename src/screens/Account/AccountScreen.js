@@ -66,7 +66,7 @@ const AccountScreenComponent = ({ navigation }) => {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
       console.log('User Profile Response:', res);
-      if (res?.success) {
+      if (res?.status) {
         const data = res.data;
         setStoreData(data);
       }
@@ -86,12 +86,13 @@ const AccountScreenComponent = ({ navigation }) => {
           onPress: async () => {
             try {
               const res = await logoutUser(userId?._id);
+              console.log('Logout Response:', userId);
               if (res?.status) {
                 try {
                   await AsyncStorage.removeItem('authToken');
                   Toast.show(res?.message);
                   dispatch(logout());
-                  // navigation.replace('Login');
+
                   navigation.reset({
                     index: 0,
                     routes: [{ name: 'Login' }],
@@ -168,8 +169,8 @@ const AccountScreenComponent = ({ navigation }) => {
             <View style={Homestyles.accountcontainer}>
               <FastImage
                 source={
-                  storeData.profilePhoto
-                    ? { uri: storeData?.profilePhoto }
+                  storeData?.profilePhoto
+                    ? { uri: storeData.profilePhoto }
                     : images.userProfile
                 }
                 style={Homestyles.accountbg}

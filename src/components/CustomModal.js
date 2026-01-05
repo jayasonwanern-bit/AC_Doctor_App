@@ -117,7 +117,7 @@ const CustomModal = ({
                 value={numberofAC}
                 onChangeText={setvalue}
                 keyboardType="number-pad"
-                placeholder="8"
+                placeholder="Enter number of AC"
                 placeholderTextColor={COLORS.TextColor}
                 style={styles.numberInput}
               />
@@ -246,6 +246,26 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.semiBold,
     color: COLORS.textHeading,
   },
+  inputGroup: {
+    marginBottom: hp(2),
+  },
+  label: {
+    fontSize: hp('1.6%'),
+    fontFamily: Fonts.semiBold,
+    marginBottom: hp(0.5),
+    color: COLORS.black,
+  },
+  numberInput: {
+    borderWidth: 1,
+    borderColor: COLORS.borderColor,
+    borderRadius: wp(2),
+    padding: hp(1),
+    fontSize: hp('1.6%'),
+    fontFamily: Fonts.regular,
+    color: COLORS.black,
+    backgroundColor: COLORS.white,
+  },
+
   addressContainer: {
     // width: wp('95%'),
     flexDirection: 'row',

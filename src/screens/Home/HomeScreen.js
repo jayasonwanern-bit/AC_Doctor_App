@@ -34,7 +34,6 @@ import { useDispatch } from 'react-redux';
 import { dispatch, store } from '../../redux/store';
 import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
-import { isTablet } from '../../components/TabletResponsiveSize';
 import CustomLoader from '../../components/CustomLoader';
 const HomeScreen = ({ navigation, route }) => {
   const {
@@ -68,16 +67,6 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   const { locationData } = route.params || {};
-
-  const screens = {
-    STERILIZATION: 'GasChargeScreen',
-    REPAIR: 'GasChargeScreen',
-    INSTALLATION: 'GasChargeScreen',
-    COMPRESSOR: 'GasChargeScreen',
-    COMMERCIAL_AC: 'CommericalAc',
-    GAS_CHARGING: 'GasChargeScreen',
-    OTHER: 'OtherScreen',
-  };
 
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
   const handleAMC = () => navigation.navigate('AMCFrom');
@@ -212,10 +201,23 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   //  booking navigation
+  const screens = {
+    STERILIZATION: 'GasChargeScreen',
+    REPAIR: 'GasChargeScreen',
+    INSTALLATION: 'GasChargeScreen',
+    COMPRESSOR: 'GasChargeScreen',
+    COMMERCIAL_AC: 'CommericalAc',
+    GAS_CHARGING: 'GasChargeScreen',
+    OTHER: 'OtherScreen',
+  };
   const handleServiceNavigation = service => {
     const screen = screens[service?.key];
     if (screen) {
-      navigation.navigate(screen, { screenName: service.name });
+      navigation.navigate(screen, {
+        screenName: service.name,
+        serviceId: service._id,
+        source: 'HOME',
+      });
     } else {
       console.log('Screen not found for:', service?.key);
     }

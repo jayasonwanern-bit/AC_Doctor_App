@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.themeColor,
     fontWeight: '600',
+    marginHorizontal: 8,
   },
   counterBorder: {
     alignItems: 'center',

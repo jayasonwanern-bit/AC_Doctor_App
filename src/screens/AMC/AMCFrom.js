@@ -26,16 +26,23 @@ import PlaceTypeSelector from '../../components/PlaceTypeSelector';
 import RequestConfirm from '../../customScreen/RequestConfirm';
 import CunstomInput from '../../components/CunstomInput';
 import { isTablet } from '../../components/TabletResponsiveSize';
+import { set } from 'react-hook-form';
+import { store } from '../../redux/store';
+import { postAMCRequest } from '../../api/homeApi';
+import Toast from 'react-native-simple-toast';
 
 const AMCFrom = ({ navigation }) => {
   const [editStatus, setEditStatus] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const userId = store?.getState()?.auth?.user;
 
   const [formData, setFormData] = useState({
-    name: '',
-    phoneNumber: '9876543210',
+    name: userId?.name || '',
+    phoneNumber: userId?.phoneNumber || '',
     address: '',
     addAc: '',
+    placeType: '',
   });
 
   const handleInputChange = (field, value) => {
@@ -43,6 +50,63 @@ const AMCFrom = ({ navigation }) => {
       ...prev,
       [field]: value,
     }));
+  };
+
+  const onSubmit = async () => {
+    // validation
+    if (!formData.name.trim()) {
+      Toast.show('Please enter your name');
+      return;
+    }
+    if (!formData.phoneNumber.trim()) {
+      Toast.show('Please enter your phone number');
+      return;
+    }
+
+    if (!/^\d{10}$/.test(formData.phoneNumber)) {
+      Toast.show('Please enter a valid 10-digit phone number');
+      return;
+    }
+    if (!formData.placeType.trim()) {
+      Toast.show('Please select place type');
+      return;
+    }
+    if (!formData.address.trim()) {
+      Toast.show('Please enter your address');
+      return;
+    }
+    // convert addAc object to array
+    const acDetails = Object.entries(formData.addAc || {}).map(
+      ([acType, quantity]) => ({
+        acType,
+        quantity,
+      }),
+    );
+
+    const bodyData = {
+      username: formData.name,
+      userId: userId?._id,
+      phoneNumber: formData.phoneNumber,
+      place: formData.placeType.toLowerCase(),
+      address: formData.address,
+      comment: formData.comment || '',
+      quantity: acDetails.reduce((sum, item) => sum + item.quantity, 0),
+      acDetails: acDetails,
+    };
+    try {
+      setLoading(true);
+      // API Call can be made here with formData
+      const response = await postAMCRequest(bodyData);
+      setLoading(false);
+      console.log('AMC Request Response:', response);
+      setSuccessVisible(true);
+    } catch (error) {
+      setLoading(false);
+      console.log('Error submitting AMC request:', error);
+      Toast.show('Failed to submit AMC request. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -161,7 +225,7 @@ const AMCFrom = ({ navigation }) => {
             buttonName="Submit"
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
-            onPress={() => setSuccessVisible(true)}
+            onPress={onSubmit}
           />
         </View>
 

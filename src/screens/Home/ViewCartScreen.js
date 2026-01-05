@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -24,9 +24,15 @@ import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
 import { isTablet } from '../../components/TabletResponsiveSize';
 import { store } from '../../redux/store';
+import { getServiceList, postBookingRequest } from '../../api/homeApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearCart, updateQuantity } from '../../redux/slices/cartSlice';
+import Toast from 'react-native-simple-toast';
 
-const ViewCartScreen = ({ route }) => {
-  const { screenName } = route.params || { screenName: 'Unknown' };
+const ViewCartScreen = ({}) => {
+  const serviceDetails = useSelector(state => state.cart.items);
+  const dispatch = useDispatch();
+
   const navigation = useNavigation();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -35,65 +41,142 @@ const ViewCartScreen = ({ route }) => {
   const [modalUserVisible, setModalUserVisible] = useState(false);
   const [proceed, setProceed] = useState(false);
   const [numberofAC, setNumberofAC] = useState('');
-  const [acTypes, setAcTypes] = useState([
-    { name: 'Split AC', count: 2, showButtons: false },
-
-    {
-      name: 'Cassette AC',
-      count: 1,
-      showButtons: false,
-    },
-  ]);
+  const [bookServices, setBookServices] = useState([]);
+  const [Loading, setLoading] = useState(true);
   const userDetails = store?.getState()?.auth?.user;
 
-  // BookingActions (replace alert with your action)
-  const handleSterilization = () => navigation.navigate('Sterilization');
-  const handleRepair = () => navigation.navigate('RepairScreen');
-  const handleInstallation = () => navigation.navigate('InstallationScreen');
-  const handleCommercialAC = () => navigation.navigate('CommericalAc');
-  const handleGasCharging = () => navigation.navigate('GasChargeScreen');
-  const handleOther = () => navigation.navigate('OtherScreen');
+  // get service list on mount
+  useEffect(() => {
+    getBookService();
+  }, []);
 
-  // 2️⃣ Then define the array
-  const bookServices = [
-    {
-      label: 'Sterilization',
-      icon: images.strerilization,
-      action: handleSterilization,
-    },
-    { label: 'Repair', icon: images.repairIcon, action: handleRepair },
-    {
-      label: 'Installation',
-      icon: images.installationIcon,
-      action: handleInstallation,
-    },
-    {
-      label: 'Commercial AC',
-      icon: images.commercialIcon,
-      action: handleCommercialAC,
-    },
-    {
-      label: 'Gas Charging',
-      icon: images.gaschargeIcon,
-      action: handleGasCharging,
-    },
-    { label: 'Other', icon: images.otherIcon, action: handleOther },
-  ];
-
-  // Handle Increment
-  const handleIncrement = index => {
-    const updatedAcTypes = [...acTypes];
-    updatedAcTypes[index].count += 1;
-    setAcTypes(updatedAcTypes);
+  const getBookService = async () => {
+    try {
+      setLoading(true);
+      const res = await getServiceList();
+      setBookServices(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Handle Decrement
-  const handleDecrement = index => {
-    const updatedAcTypes = [...acTypes];
-    if (updatedAcTypes[index].count > 0) {
-      updatedAcTypes[index].count -= 1;
+  // Define the goToService function for service navigation
+  const SERVICE_ROUTE_MAP = {
+    STERILIZATION: 'GasChargeScreen',
+    REPAIR: 'GasChargeScreen',
+    INSTALLATION: 'GasChargeScreen',
+    COMMERCIAL_AC: 'CommericalAc',
+    GAS_CHARGING: 'GasChargeScreen',
+    OTHER: 'OtherScreen',
+    COMPRESSOR: 'GasChargeScreen',
+  };
+
+  const BLOCKED_SERVICE_KEYS = [
+    'COPPER_PIPING',
+    'AMC',
+    'COMMERCIAL_AC',
+    'OTHER',
+  ];
+
+  const handleProceedToCart = service => {
+    if (BLOCKED_SERVICE_KEYS.includes(service.key)) {
+      Toast.show('This feature is on the way. Stay tuned!');
+      return;
     }
-    setAcTypes(updatedAcTypes);
+
+    const routeName = SERVICE_ROUTE_MAP[service.key];
+
+    if (!routeName) {
+      Toast.show('No route defined for this service');
+      return;
+    }
+
+    navigation.navigate(routeName, {
+      screenName: service.name,
+      serviceId: service._id,
+      source: 'VIEW_CART',
+    });
+  };
+
+  // Group services by serviceType listing their AC types
+  const groupedServices = useMemo(() => {
+    if (!Array.isArray(serviceDetails) || !serviceDetails.length) return [];
+
+    return serviceDetails.reduce((acc, item) => {
+      if (!item.serviceType || !item.acType) return acc;
+
+      let service = acc.find(s => s.serviceType === item.serviceType);
+
+      const acObj = {
+        name: item.acType,
+        quantity: item.quantity,
+        service_id: item.service_id,
+      };
+
+      if (!service) {
+        service = {
+          serviceType: item.serviceType,
+          acTypes: [],
+        };
+        acc.push(service);
+      }
+
+      service.acTypes.push(acObj);
+
+      return acc;
+    }, []);
+  }, [serviceDetails]);
+
+  const handleIncrement = (serviceType, acType) => {
+    dispatch(updateQuantity({ serviceType, acType, delta: 1 }));
+  };
+
+  const handleDecrement = (serviceType, acType) => {
+    dispatch(updateQuantity({ serviceType, acType, delta: -1 }));
+  };
+
+  // post data
+  const useSubmitBooking = async () => {
+    if (!userDetails || !serviceDetails?.length) {
+      Toast.show('Please select ACs before submitting.');
+      return;
+    }
+    const formattedDate = `${selectedSlot?.date}/${selectedSlot?.monthNumber}/${selectedSlot?.year}`;
+    const bodyData = {
+      user_id: userDetails._id,
+      addressId: selectedAddress._id,
+      name: userDetails.name,
+      date: formattedDate,
+      slot:
+        selectedSlot?.Timeslot === 'First Half'
+          ? 'FIRST_HALF'
+          : selectedSlot?.Timeslot === 'SECOND_HALF'
+          ? 'SECOND_HALF'
+          : 'SECOND_HALF',
+      amount: 0, // calculate if needed
+      serviceDetails: serviceDetails.map(item => ({
+        service_id: item.service_id,
+        acType: item.acType,
+        quantity: item.quantity,
+        serviceType: item.serviceType.toUpperCase(), // always uppercase
+      })),
+    };
+
+    try {
+      const response = await postBookingRequest(bodyData);
+      console.log('🚀 Booking Data:', response);
+      if (response?.status) {
+        Toast.show(response?.message || 'Booking submitted successfully!');
+        navigation.navigate('Tab', { screen: 'Home' });
+        dispatch(clearCart());
+      } else {
+        Toast.show('Failed to submit booking. Please try again.');
+      }
+    } catch (error) {
+      Toast.show('An error occurred. Please try again later.');
+    }
   };
 
   return (
@@ -109,92 +192,61 @@ const ViewCartScreen = ({ route }) => {
         </View>
 
         {/* Actype */}
-        <Text style={styles.headText}>{screenName}</Text>
-        <View style={{ marginVertical: wp('2%') }}>
-          {acTypes.map((ac, index) => (
-            <View key={index} style={styles.workItem}>
-              <View>
-                <Text style={styles.workText}>{ac.name}</Text>
-              </View>
+        {groupedServices.map((service, serviceIndex) => {
+          const showAddMore = service.acTypes.length > 5;
+          const visibleACs = showAddMore
+            ? service.acTypes.slice(0, 5)
+            : service.acTypes;
 
-              <View style={styles.workButtonContainer}>
+          return (
+            <View key={serviceIndex}>
+              <Text style={[styles.headText, { marginBottom: hp('1%') }]}>
+                {service.serviceType} Service
+              </Text>
+
+              {visibleACs.map((ac, acIndex) => (
+                <View key={acIndex} style={styles.workItem}>
+                  <Text style={styles.workText}>{ac.name}</Text>
+
+                  <View style={styles.workButtonContainer}>
+                    <TouchableOpacity
+                      style={styles.workButton}
+                      onPress={() =>
+                        handleDecrement(service.serviceType, ac.name)
+                      }
+                    >
+                      <Text style={styles.workButtonText}>-</Text>
+                    </TouchableOpacity>
+
+                    <Text style={styles.workCount}>{ac.quantity}</Text>
+
+                    <TouchableOpacity
+                      style={styles.workButton}
+                      onPress={() =>
+                        handleIncrement(service.serviceType, ac.name)
+                      }
+                    >
+                      <Text style={styles.workButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+
+              {showAddMore && (
                 <TouchableOpacity
-                  style={styles.workButton}
-                  onPress={() => handleDecrement(index)}
+                  onPress={() =>
+                    navigation.navigate('AddMoreACScreen', {
+                      serviceType: service.serviceType,
+                      acTypes: service.acTypes,
+                    })
+                  }
                 >
-                  <Text style={styles.workButtonText}>-</Text>
+                  <Text style={styles.addText}>Add More</Text>
                 </TouchableOpacity>
-                <Text style={styles.workCount}>{ac.count}</Text>
-                <TouchableOpacity
-                  style={styles.workButton}
-                  onPress={() => handleIncrement(index)}
-                >
-                  <Text style={styles.workButtonText}>+</Text>
-                </TouchableOpacity>
-              </View>
+              )}
             </View>
-          ))}
-        </View>
-
-        {/* Repair ServiceS */}
-        <Text style={styles.headText}>Repair Service</Text>
-
-        <View style={{ marginVertical: wp('2%') }}>
-          {acTypes.map((ac, index) => (
-            <View key={index} style={styles.workItem}>
-              <View>
-                <Text style={styles.workText}>{ac.name}</Text>
-              </View>
-
-              <View style={styles.workButtonContainer}>
-                <TouchableOpacity
-                  style={styles.workButton}
-                  onPress={() => handleDecrement(index)}
-                >
-                  <Text style={styles.workButtonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.workCount}>{ac.count}</Text>
-                <TouchableOpacity
-                  style={styles.workButton}
-                  onPress={() => handleIncrement(index)}
-                >
-                  <Text style={styles.workButtonText}>+</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-        </View>
-
-        {/* Installation */}
-        <Text style={styles.headText}>Installation Service</Text>
-        <View style={{ marginVertical: wp('2%') }}>
-          {acTypes.map((ac, index) => (
-            <View key={index} style={styles.workItem}>
-              <View>
-                <Text style={styles.workText}>{ac.name}</Text>
-              </View>
-
-              <View style={styles.workButtonContainer}>
-                <TouchableOpacity
-                  style={styles.workButton}
-                  onPress={() => handleDecrement(index)}
-                >
-                  <Text style={styles.workButtonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.workCount}>{ac.count}</Text>
-                <TouchableOpacity
-                  style={styles.workButton}
-                  onPress={() => handleIncrement(index)}
-                >
-                  <Text style={styles.workButtonText}>+</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-        </View>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.addText}>Add More</Text>
-        </TouchableOpacity>
+          );
+        })}
 
         {/* Frequently Added Together */}
         <Text style={styles.headText}>Frequently Added Together</Text>
@@ -208,16 +260,20 @@ const ViewCartScreen = ({ route }) => {
               key={index}
               activeOpacity={0.7}
               style={[styles.utioption, { width: wp('27%'), zIndex: 9999 }]}
-              onPress={item.action}
+              onPress={() => handleProceedToCart(item)}
             >
-              <FastImage source={item.icon} style={styles.utiicon} />
+              <FastImage source={{ uri: item.icon }} style={styles.utiicon} />
               <Text
                 style={[
                   styles.headText,
-                  { width: wp('20%'), textAlign: 'center', height: hp('4.5%') },
+                  {
+                    width: wp('20%'),
+                    textAlign: 'center',
+                    height: hp('4.5%'),
+                  },
                 ]}
               >
-                {item.label}
+                {item.name}
               </Text>
               <View style={styles.addBtn}>
                 <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
@@ -440,12 +496,12 @@ const ViewCartScreen = ({ route }) => {
               }}
             >
               <FastImage source={images.timeRed} style={styles.normalImag} />
-              <Text style={styles.textBottom}>
-                {selectedSlot.date}
+              <Text style={styles?.textBottom}>
+                {selectedSlot?.date}
                 {'/'}
-                {selectedSlot.monthNumber}
+                {selectedSlot?.monthNumber}
                 {'/'}
-                {selectedSlot.year}, {selectedSlot.Timeslot}
+                {selectedSlot?.year}, {selectedSlot?.Timeslot}
               </Text>
               {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
@@ -453,14 +509,13 @@ const ViewCartScreen = ({ route }) => {
         )}
 
         <CustomButton
-          buttonName={proceed ? 'Proceed to pay' : 'Add Address & Slot'}
+          // buttonName={proceed ? 'Proceed to pay' : 'Add Address & Slot'}
+          buttonName={proceed ? 'Proceed Booking' : 'Add Address & Slot'}
           margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
           onPress={() => {
-            proceed
-              ? navigation.navigate('PaymentScreen')
-              : setModalUserVisible(true);
+            proceed ? useSubmitBooking() : setModalUserVisible(true);
           }}
         />
         {proceed && (
@@ -490,7 +545,7 @@ const ViewCartScreen = ({ route }) => {
         }}
         numberofAC={numberofAC}
         setvalue={setNumberofAC}
-        addAcStatus={false}
+        addAcStatus={true}
         setSelectedAddress={setSelectedAddress}
       />
 
@@ -579,7 +634,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
-    width: isTablet ? wp(6) : wp(),
+    width: isTablet ? wp(6) : wp(7.5),
     height: isTablet ? wp(6) : wp(7.5),
     alignSelf: 'center',
     borderColor: '#ddd',

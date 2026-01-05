@@ -36,9 +36,46 @@ const AMCRequestFrom = ({ navigation }) => {
   const [rescheduleReqVisible, setRescheduleReqVisible] = useState(false);
   const [cancelReqVisible, setCancelReqVisible] = useState(false);
   const [cancelConfirmVisible, setCancelConfirmVisible] = useState(false);
-  const [selectPay, setSelectedPay] = useState('bank');
-  const [upiId, setupiId] = useState('');
+  const [expandedAC, setExpandedAC] = useState(null);
 
+  const acData = {
+    LG: {
+      brand: { title: 'Total No. of AC', value: '5' },
+      acType: { title: 'Condition', value: 'Good' },
+      tonnage: { title: 'Ac Technology', value: 'Inverter' },
+      age: { title: 'Age of AC', value: '2-4 Years' },
+      condition: { title: 'Condition', value: 'Excellent' },
+      technology: { title: 'AC Technology', value: 'Inverter' },
+      inspectionDate: {
+        title: 'Preferred Inspection Date',
+        value: '15/03/2025',
+      },
+      inspectionTime: {
+        title: 'Preferred Inspection Time',
+        value: 'Second Half',
+      },
+    },
+    Samsung: {
+      brand: { title: 'Total No. of AC', value: '5' },
+      acType: { title: 'Condition', value: 'Good' },
+      tonnage: { title: 'Ac Technology', value: 'Inverter' },
+      age: { title: 'Age of AC', value: '2-4 Years' },
+      condition: { title: 'Condition', value: 'Excellent' },
+      technology: { title: 'AC Technology', value: 'Inverter' },
+      inspectionDate: {
+        title: 'Preferred Inspection Date',
+        value: '15/03/2025',
+      },
+      inspectionTime: {
+        title: 'Preferred Inspection Time',
+        value: 'Second Half',
+      },
+    },
+  };
+
+  const toggleExpand = acName => {
+    setExpandedAC(expandedAC === acName ? null : acName);
+  };
   const handleSlotSelection = slot => {
     if (slot) {
       const { date, monthNumber, year, time, Timeslot } = slot;
@@ -51,29 +88,6 @@ const AMCRequestFrom = ({ navigation }) => {
       setSelectTime(formattedTime);
       setReqStatus('ReScheduled');
     }
-  };
-
-  const getTabStyle = status => {
-    // Step 1: Check current status
-    const isRequest = detailStatus === 'Request';
-    const isQuote = detailStatus === 'Quote';
-    // const isPayment = detailStatus === 'Payment';
-
-    // Step 2: Decide kaun-kaun tab active hoga (red background + white text)
-    const isTabActive =
-      (status === 'Request' && (isRequest || isQuote)) ||
-      (status === 'Quote' && isQuote);
-    // ||  (status === 'Payment' && isPayment); /
-
-    // Step 3: Return style based on active or not
-    return {
-      color: isTabActive ? COLORS.white : COLORS.textHeading,
-      backgroundColor: isTabActive ? COLORS.red : 'transparent',
-      borderColor: isTabActive ? COLORS.red : COLORS.textHeading,
-      borderWidth: isTabActive ? 0 : hp(0.1),
-      borderRadius: hp(4),
-      marginHorizontal: wp(1),
-    };
   };
 
   return (
@@ -193,6 +207,48 @@ const AMCRequestFrom = ({ navigation }) => {
               </View>
             </>
           )}
+
+          {/* AC Names List */}
+          {Object.keys(acData).map(acName => (
+            <>
+              <TouchableOpacity
+                key={'AC Names list'}
+                onPress={() => toggleExpand(acName)}
+                style={styles.acHeader}
+              >
+                <Text style={[styles.acTitle, { marginLeft: wp(1) }]}>
+                  {acName}
+                </Text>
+                <Text style={styles.arrow}>
+                  {expandedAC === acName ? '▲' : '▼'}
+                </Text>
+              </TouchableOpacity>
+
+              {expandedAC === acName ? (
+                <View key={acName} style={styles.acItem}>
+                  {Object.entries(acData[acName]).map(([key, detail]) => (
+                    <>
+                      <View key={key} style={styles.copperRow}>
+                        <Text style={styles.label}>
+                          {detail.title
+                            ? detail.title.charAt(0).toUpperCase() +
+                              detail.title.slice(1)
+                            : key}
+                        </Text>
+                        <Text
+                          style={[styles.value, { fontFamily: Fonts.semiBold }]}
+                        >
+                          {detail.value}
+                        </Text>
+                      </View>
+                    </>
+                  ))}
+                </View>
+              ) : (
+                <View></View>
+              )}
+            </>
+          ))}
         </View>
       </ScrollView>
 
@@ -361,6 +417,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(3),
     paddingHorizontal: hp(2),
     elevation: 2,
+    paddingBottom: hp(2),
   },
   statusBar: {
     backgroundColor: '#e9f4fb',
@@ -434,11 +491,6 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     paddingVertical: hp(0.5),
   },
-  photoGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: hp(1),
-  },
   photo: {
     width: wp(26),
     height: hp(12),
@@ -447,24 +499,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  playButton: {
-    position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: wp(6),
-    padding: hp(1),
+  acHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 8,
+    borderLeftWidth: wp(1.5),
+    borderLeftColor: COLORS.red,
+    backgroundColor: COLORS.white,
+    width: wp('90%'),
+    alignSelf: 'center',
+    marginTop: wp(3),
   },
-  playIconImage: {
-    width: wp(5),
-    height: hp(2),
-    tintColor: COLORS.white,
+  acItem: {
+    borderRadius: wp(2),
+    backgroundColor: COLORS.white,
+    alignSelf: 'center',
+    width: wp('90%'),
+    padding: wp(3),
+    marginTop: wp(2),
   },
-  noteText: {
-    fontSize: hp(1.5),
-    fontFamily: Fonts.regular,
-    color: COLORS.TextColor,
-    textAlign: 'left',
-    marginVertical: hp(1),
-  },
+
   agentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -554,10 +608,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: hp(1.6),
     fontWeight: '500',
-  },
-  IconImage: {
-    width: wp(4),
-    height: hp(1.5),
   },
 });
 

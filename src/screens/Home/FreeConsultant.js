@@ -128,7 +128,17 @@ const FreeConsultant = ({ navigation }) => {
 
     if (!selectdate) return Toast.show('Please select Date');
     if (!addressId?._id) {
-      Alert.alert('Please Add Address First');
+      Alert.alert('Please Add Address First', [
+        { text: 'Cancel' },
+        {
+          text: 'Add Address',
+          onPress: async () => {
+            navigation.navigate('AddAddress', {
+              from: 'FreeConsultant',
+            });
+          },
+        },
+      ]);
       return;
     }
 
@@ -172,7 +182,6 @@ const FreeConsultant = ({ navigation }) => {
 
       // 3️⃣ API call
       const res = await postConsultancy(payload);
-      console.log('response----->', res);
       if (res?.status) {
         Toast.show(res?.message);
         setSuccessPopupVisible(true);
