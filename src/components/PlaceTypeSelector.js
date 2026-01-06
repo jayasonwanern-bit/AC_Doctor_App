@@ -25,7 +25,7 @@ const PlaceTypeSelector = ({
   const [customType, setCustomType] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  const placeOptions = ['Residential', 'Commercial', 'Industrial'];
+  const placeOptions = ['Residential', 'Commercial'];
 
   const handleSelect = value => {
     setSelectedType(value);

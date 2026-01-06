@@ -80,7 +80,10 @@ const Header = ({
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity onPress={onBack} style={{ flex: 1 }}>
+        <TouchableOpacity
+          onPress={onBack}
+          style={[styles.backButton, { flex: 1 }]}
+        >
           <Text style={[styles.title, dynamicStyles.title]}>{title}</Text>
         </TouchableOpacity>
         {onHelp && (
@@ -129,7 +132,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: isTablet ? wp(3) : wp('4%'),
     fontFamily: Fonts.semiBold,
-    flex: 1,
     textAlign: 'left',
     marginLeft: wp('2'),
   },

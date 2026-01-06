@@ -54,7 +54,7 @@ const MyBookingScreen = ({ navigation }) => {
             // ✅ service-level data (FIXED)
             quantity: service.quantity,
             acType: service.acType,
-            serviceId: service.service_id,
+            serviceId: service.service_id || '',
             serviceType: service.serviceType,
 
             technicianName: booking?.technicianName || 'Not Assigned',

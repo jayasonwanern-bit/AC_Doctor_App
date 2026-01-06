@@ -195,8 +195,9 @@ const ShopScreen = ({ navigation }) => {
                 resizeMode={FastImage.resizeMode.contain}
               />
               <Text style={Commonstyles.locationText}>
-                {`${addressText.house}  ${addressText.road}, ${addressText.city}` ||
-                  'Select Location'}
+                {`${addressText.house || 'Select house'}  ${
+                  addressText.road || ''
+                }, ${addressText.city}` || 'Select Location'}
               </Text>
             </TouchableOpacity>
             <View style={[Commonstyles.reqgrid]}>
