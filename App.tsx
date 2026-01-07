@@ -29,9 +29,7 @@ export default function App() {
     await getFcmToken();
     await setupPushListeners();
   };
-  // useEffect(() => {
-  //   setup();
-  // }, []);
+
   const checkForceUpdate = async () => {
     const currentVersion = getAppVersion();
 
