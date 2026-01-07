@@ -22,8 +22,8 @@ import CustomButton from '../../components/CustomButton';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
 import { store } from '../../redux/store';
-import {addOrEditAddress} from '../../api/addressApi'
-import Toast from 'react-native-simple-toast'
+import { addOrEditAddress } from '../../api/addressApi';
+import Toast from 'react-native-simple-toast';
 
 const AddAddress = ({ navigation, route }) => {
   const addressData = route?.params?.addressData;
@@ -38,14 +38,14 @@ const AddAddress = ({ navigation, route }) => {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
-   const [loading, setLoading] = useState(true);
-    const userId = store?.getState()?.auth?.user;
+  const [loading, setLoading] = useState(true);
+  const userId = store?.getState()?.auth?.user;
 
   // validation
   const validateFields = () => {
     if (!address.trim()) return 'Address is required';
     if (!city.trim()) return 'City is required';
-     if (!stateName.trim()) return 'State is required';
+    if (!stateName.trim()) return 'State is required';
     if (!pincode.trim()) return 'Pincode is required';
     if (!/^\d{5,6}$/.test(pincode.trim()))
       return 'Pincode must be 5 or 6 digits';
@@ -53,74 +53,68 @@ const AddAddress = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-  if (addressData) {
-    // setHouse(addressData.house);
-    setAddress(addressData.street);
-    setCity(addressData.city);
-    setStateName(addressData.state);
-    setPincode(addressData.zipcode);
-    // setSaveAs(addressData.saveAs);
-    // setLandmark(addressData.landmark);
-  }
-}, [addressData]);
+    if (addressData) {
+      // setHouse(addressData.house);
+      setAddress(addressData.street);
+      setCity(addressData.city);
+      setStateName(addressData.state);
+      setPincode(addressData.zipcode);
+      // setSaveAs(addressData.saveAs);
+      // setLandmark(addressData.landmark);
+    }
+  }, [addressData]);
 
   // onSubmit button
-  const handleSubmit = async() => {
-    console.log('hello in add');
-    
-     try {
-    const validationError = validateFields();
-    if (validationError) {
-      Alert.alert('Validation Error', validationError);
-      return;
+  const handleSubmit = async () => {
+    try {
+      const validationError = validateFields();
+      if (validationError) {
+        Alert.alert('Validation Error', validationError);
+        return;
+      }
+      setLoading(true);
+      //  confirm notification structure start
+      const newAddress = {
+        name: 'Sachin Gupta',
+        phone: '+91 9999999999',
+        address: `${address}, ${city}, ${stateName} ${pincode}`, // Combine fields into one address
+        type: addressType,
+        isDefault,
+      };
+      setSelectedAddress(newAddress);
+      // end --
+
+      let body = {
+        addressId: addressData?._id || '',
+        userId: userId,
+        houseNumber: '1234567',
+        street: address,
+        state: stateName,
+        city: city,
+        zipCode: pincode,
+        saveAs: 'saveAs',
+        landmark: addressType,
+      };
+      const res = await addOrEditAddress(body);
+      //  console.log('add address response',res.data)
+      if (res?.status) {
+        Toast.show(res?.message);
+      }
+      const cameFrom = route?.params?.from;
+      if (cameFrom === 'ServiceScreen') {
+        navigation.navigate('Tab', { screen: 'Home' });
+      } else if (cameFrom === 'CustomModal') {
+        setModalSlotVisible(true);
+      } else if (cameFrom === 'UserInfoModel') {
+        setModalSlotVisible(true);
+      } else {
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.log('Update Error:', error);
+    } finally {
+      setLoading(false);
     }
-   setLoading(true);
-  //  confirm notification structure start
-    const newAddress = {
-      name: 'Sachin Gupta',
-      phone: '+91 9999999999',
-      address: `${address}, ${city}, ${stateName} ${pincode}`, // Combine fields into one address
-      type: addressType,
-      isDefault,
-    };
-    setSelectedAddress(newAddress);
-    // end --
-    
-    let body = {
-      addressId: addressData?._id || "",
-      userId: userId,
-      houseNumber:'1234567',
-      street:address,
-      state:stateName,
-      city:city,
-      zipCode:pincode,
-      saveAs:'saveAs',
-      landmark:addressType,
-    };
-   const res = await addOrEditAddress(body);
-  //  console.log('add address response',res.data)
-  if (res?.status) {
-      Toast.show(res?.message);
-    } 
-    const cameFrom = route?.params?.from; 
-  if (cameFrom === 'ServiceScreen') {
-   navigation.navigate('Tab', { screen: 'Home' });
-  } 
-  else if (cameFrom === 'CustomModal') {
-    setModalSlotVisible(true);
-  }
-  else if(cameFrom === 'UserInfoModel')
-  {
-    setModalSlotVisible(true);
-  }
-  else {
-    navigation.goBack()
-  }
-} catch (error) {
-    console.log("Update Error:", error);
-  } finally {
-    setLoading(false);
-  }
   };
 
   return (
@@ -134,7 +128,10 @@ const AddAddress = ({ navigation, route }) => {
         <View style={styles.searchInput}>
           <Image
             source={images.searchIcon}
-            style={[styles.checkBoxIcon, { height: hp(3), marginLeft:wp(Platform.OS === 'ios' ? 0:3)}]}
+            style={[
+              styles.checkBoxIcon,
+              { height: hp(3), marginLeft: wp(Platform.OS === 'ios' ? 0 : 3) },
+            ]}
           />
           <TextInput
             style={styles.searchInputText}
@@ -146,13 +143,17 @@ const AddAddress = ({ navigation, route }) => {
             onSubmitEditing={() => Keyboard.dismiss()}
           />
         </View>
-        <Text style={styles.orText}>{Platform.OS === 'ios' ?`──────────── Or ───────────`:`───────────  Or ───────────`}</Text>
+        <Text style={styles.orText}>
+          {Platform.OS === 'ios'
+            ? `──────────── Or ───────────`
+            : `───────────  Or ───────────`}
+        </Text>
         <Text style={styles.label}>Street Address</Text>
         <TextInput
           placeholder="Address"
           value={address}
           keyboardType="email-address"
-           placeholderTextColor={COLORS.textColor}
+          placeholderTextColor={COLORS.textColor}
           onChangeText={setAddress}
           style={styles.input}
           onSubmitEditing={() => Keyboard.dismiss()}
@@ -174,7 +175,7 @@ const AddAddress = ({ navigation, route }) => {
             <Text style={styles.label}>State</Text>
             <TextInput
               placeholder="State"
-               placeholderTextColor={COLORS.textColor}
+              placeholderTextColor={COLORS.textColor}
               value={stateName}
               keyboardType="default"
               onChangeText={setStateName}
@@ -186,7 +187,7 @@ const AddAddress = ({ navigation, route }) => {
         <Text style={styles.label}>Pincode</Text>
         <TextInput
           placeholder="Pincode"
-           placeholderTextColor={COLORS.textColor}
+          placeholderTextColor={COLORS.textColor}
           value={pincode}
           maxLength={6}
           onChangeText={setPincode}
@@ -198,10 +199,11 @@ const AddAddress = ({ navigation, route }) => {
         <View style={styles.buttonGroup}>
           <TouchableOpacity
             style={[
-              styles.typeButton, 
+              styles.typeButton,
               addressType === 'Home' && styles.selectedTypeButton,
             ]}
-            onPress={() => setAddressType('Home')} activeOpacity={1}
+            onPress={() => setAddressType('Home')}
+            activeOpacity={1}
           >
             <Text
               style={[
@@ -228,7 +230,8 @@ const AddAddress = ({ navigation, route }) => {
               Office
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1}
+          <TouchableOpacity
+            activeOpacity={1}
             style={[
               styles.typeButton,
               addressType === 'Other' && styles.selectedTypeButton,
@@ -247,7 +250,8 @@ const AddAddress = ({ navigation, route }) => {
         </View>
         <TouchableOpacity
           style={styles.checkboxContainer}
-          onPress={() => setIsDefault(!isDefault)} activeOpacity={1}
+          onPress={() => setIsDefault(!isDefault)}
+          activeOpacity={1}
         >
           <Image
             source={isDefault ? images.check : images.uncheck}
@@ -272,7 +276,12 @@ const AddAddress = ({ navigation, route }) => {
         onBookProcess={() => {
           setModalSlotVisible(false);
           setTimeout(() => {
-            setConfirmModalVisible(true);
+            console.log('🚀 Selected Slot:', selectedSlot),
+              navigation.navigate('ViewCart', {
+                proceed: true,
+                selectedSlot: selectedSlot,
+                selectedAddress: selectedAddress,
+              });
           }, 300);
         }}
       />
@@ -301,7 +310,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: hp(2),
     color: COLORS.black,
-     fontFamily:Fonts.semiBold,
+    fontFamily: Fonts.semiBold,
   },
 
   searchInput: {
@@ -309,9 +318,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: wp(10),
-    padding: wp(Platform.OS === 'ios' ? 2:1),
+    padding: wp(Platform.OS === 'ios' ? 2 : 1),
     marginBottom: hp(0.5),
-    alignItems:'center'
+    alignItems: 'center',
   },
   searchInputText: {
     fontSize: hp(1.5),
@@ -323,7 +332,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: hp(1),
     color: '#666',
-    fontFamily:Fonts.medium,
+    fontFamily: Fonts.medium,
     fontSize: hp(1.5),
   },
   label: {
@@ -331,7 +340,7 @@ const styles = StyleSheet.create({
     marginBottom: hp(1),
     marginTop: hp(1.3),
     color: '#000',
-     fontFamily:Fonts.semiBold,
+    fontFamily: Fonts.semiBold,
   },
   input: {
     borderWidth: 1,

@@ -1,5 +1,6 @@
 import api from './axoisInsance';
 import endPoint from './endPoint';
+import Toast from 'react-native-simple-toast';
 
 export const getAuthpatner = async userId => {
   try {
@@ -89,7 +90,9 @@ export const postBookingRequest = async payload => {
     const res = await api.post(endPoint.BOOKING_REQUEST, payload);
     return res.data;
   } catch (error) {
-    console.log('API Error:', error?.response?.data || error);
-    throw error;
+    Toast.show(
+      error?.response?.data?.message + ' ' + 'First complete your profile' ||
+        error,
+    );
   }
 };

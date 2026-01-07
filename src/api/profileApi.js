@@ -50,7 +50,7 @@ export const updateUserProfile = async payload => {
     });
     return res.data;
   } catch (error) {
-    throw error;
+    console.log('Update Profile API Error:', error?.response?.data || error);
   }
 };
 

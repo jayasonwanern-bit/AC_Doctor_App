@@ -1,5 +1,5 @@
 import React from 'react';
-import {LogBox} from 'react-native';
+import { LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -24,7 +24,7 @@ import RequestDetail from '../screens/Home/CopperScreen/RequestDetail';
 import SellOldAcScreen from '../screens/Home/OldAc/SellOldAcScreen';
 import BrandScreen from '../screens/Home/OldAc/BrandScreen';
 import OldACRequest from '../screens/Home/OldAc/OldACRequest';
-import ProfileDetail from '../screens/Account/ProfileDetail'; 
+import ProfileDetail from '../screens/Account/ProfileDetail';
 import ManageAddressScreen from '../screens/Account/ManageAddressScreen';
 import NotificationScreeen from '../screens/Account/NotificationScreeen';
 import MyRequestsScreen from '../screens/Account/MyRequestsScreen';
@@ -49,21 +49,14 @@ import ACUnderServiceList from '../screens/AMC/ACUnderServiceList';
 import ACServiceDetails from '../screens/AMC/ACServiceDetails';
 import BillViewScreen from '../screens/AMC/BillViewScreen';
 import ConfirmService from '../screens/AMC/ConfirmService'; // --- IGNORE ---
-import PaymentlistScreen from '../screens/AMC/PaymentlistScreen'; // --- IGNORE 
-import ServiceReportscreen from '../screens/AMC/ServiceReportscreen'; 
-import BookingDetailsScreen from '../screens/Account/BookingDetailsScreen'; 
-import CouponScreen from '../screens/Home/CouponScreen'; 
-
-
-
-
+import PaymentlistScreen from '../screens/AMC/PaymentlistScreen'; // --- IGNORE
+import ServiceReportscreen from '../screens/AMC/ServiceReportscreen';
+import BookingDetailsScreen from '../screens/Account/BookingDetailsScreen';
+import CouponScreen from '../screens/Home/CouponScreen';
+import AppUpdateScreen from '../screens/authscreen/AppUpdateScreen';
 
 import { COLORS } from '../utils/colors';
-import {
-  StatusBar,
-  useColorScheme,
-  Platform,
-} from 'react-native';
+import { StatusBar, useColorScheme, Platform } from 'react-native';
 import { CompareProvider } from '../hook/CompareContext';
 
 LogBox.ignoreAllLogs(true);
@@ -96,77 +89,123 @@ const AppNavigator = () => {
   return (
     <SafeAreaProvider style={dynamicStyles.safeArea}>
       <CompareProvider>
-      <StatusBar
-        barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={scheme === 'dark' ? '#000000' : '#ffffff'}
-        translucent={Platform.OS === 'android'}
-      />
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Splash"
-          screenOptions={{
-            headerStyle: dynamicStyles.headerStyle,
-            headerTitleStyle: dynamicStyles.headerTitleStyle,
-            headerBackTitleStyle: dynamicStyles.headerBackTitleStyle,
-            headerTintColor: dynamicStyles.headerTintColor.tintColor,
-            headerShown: false, 
-          }}
-        >
-          <Stack.Screen name="Splash" component={SplashScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Verification" component={VerificationScreen} />
-          <Stack.Screen name="MapScreen" component={MapScreen} />
-          <Stack.Screen name="ServiceScreen" component={ServiceScreen} />
-          <Stack.Screen name="AddAddress" component={AddAddress} />
-          <Stack.Screen name="NewAddressDemo" component={NewAddressDemo} />
-          <Stack.Screen name="Tab" component={CustomBottomTab} />
-          <Stack.Screen name="Sterilization" component={Sterilization} />
-          <Stack.Screen name="ViewCart" component={ViewCartScreen} />
-          <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-          <Stack.Screen name="CommericalAc" component={CommericalAc} />
-          <Stack.Screen name="RepairScreen" component={RepairScreen} />
-          <Stack.Screen
-            name="InstallationScreen"
-            component={InstallationScreen}
-          />
-          <Stack.Screen name="GasChargeScreen" component={GasChargeScreen} />
-          <Stack.Screen name="FreeConsultant" component={FreeConsultant} />
-          <Stack.Screen name="CopperPipeScreen" component={CopperPipeScreen} />
-          <Stack.Screen name="RequestDetail" component={RequestDetail} />
-          <Stack.Screen name="SellOldAcScreen" component={SellOldAcScreen} />
-          <Stack.Screen name="BrandScreen" component={BrandScreen} />
-          <Stack.Screen name="OldACRequest" component={OldACRequest} />
-          <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
-          <Stack.Screen name="ManageAddressScreen" component={ManageAddressScreen} />
-          <Stack.Screen name="NotificationScreeen" component={NotificationScreeen} />
-          <Stack.Screen name="MyRequestsScreen" component={MyRequestsScreen} />
-          <Stack.Screen name="MyBookingScreen" component={MyBookingScreen} />
-          <Stack.Screen name="OtherScreen" component={OtherScreen} />
-          <Stack.Screen name="OtherCartView" component={OtherCartView} />
-          <Stack.Screen name="TonnageCalculatorScreen" component={TonnageCalculatorScreen} />
-          <Stack.Screen name="ErrorCodeScreen" component={ErrorCodeScreen} />
-          <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
-          <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
-          <Stack.Screen name="OrderSummaryScreen" component={OrderSummaryScreen} />
-          <Stack.Screen name="CompareACScreen" component={CompareACScreen} />
-          <Stack.Screen name="SelectACmodel" component={SelectACmodel} />
-          <Stack.Screen name="CompareResultScreen" component={CompareResultScreen} />
-         <Stack.Screen name="BookingSuccessScreen" component={BookingSuccessScreen} />
-         <Stack.Screen name="AMCFrom" component={AMCFrom} />
-         <Stack.Screen name="AMCRequestFrom" component={AMCRequestFrom} />
-         <Stack.Screen name="AMCDashBoard" component={AMCDashBoard} />
-         <Stack.Screen name="ReqBookingAMC" component={ReqBookingAMC} />
-         <Stack.Screen name="ListOfBill" component={ListOfBill} />
-         <Stack.Screen name="ACUnderServiceList" component={ACUnderServiceList} />
-         <Stack.Screen name="ACServiceDetails" component={ACServiceDetails} />
-         <Stack.Screen name="BillViewScreen" component={BillViewScreen} />       
-         <Stack.Screen name="ConfirmService" component={ConfirmService} />       
-         <Stack.Screen name="PaymentlistScreen" component={PaymentlistScreen} />       
-         <Stack.Screen name="ServiceReportscreen" component={ServiceReportscreen} />       
-         <Stack.Screen name="BookingDetailsScreen" component={BookingDetailsScreen} />       
-         <Stack.Screen name="CouponScreen" component={CouponScreen} />       
-        </Stack.Navigator>
-      </NavigationContainer>
+        <StatusBar
+          barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
+          backgroundColor={scheme === 'dark' ? '#000000' : '#ffffff'}
+          translucent={Platform.OS === 'android'}
+        />
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Splash"
+            screenOptions={{
+              headerStyle: dynamicStyles.headerStyle,
+              headerTitleStyle: dynamicStyles.headerTitleStyle,
+              headerBackTitleStyle: dynamicStyles.headerBackTitleStyle,
+              headerTintColor: dynamicStyles.headerTintColor.tintColor,
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Stack.Screen name="AppUpdate" component={AppUpdateScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Verification" component={VerificationScreen} />
+            <Stack.Screen name="MapScreen" component={MapScreen} />
+            <Stack.Screen name="ServiceScreen" component={ServiceScreen} />
+            <Stack.Screen name="AddAddress" component={AddAddress} />
+            <Stack.Screen name="NewAddressDemo" component={NewAddressDemo} />
+            <Stack.Screen name="Tab" component={CustomBottomTab} />
+            <Stack.Screen name="Sterilization" component={Sterilization} />
+            <Stack.Screen name="ViewCart" component={ViewCartScreen} />
+            <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+            <Stack.Screen name="CommericalAc" component={CommericalAc} />
+            <Stack.Screen name="RepairScreen" component={RepairScreen} />
+            <Stack.Screen
+              name="InstallationScreen"
+              component={InstallationScreen}
+            />
+            <Stack.Screen name="GasChargeScreen" component={GasChargeScreen} />
+            <Stack.Screen name="FreeConsultant" component={FreeConsultant} />
+            <Stack.Screen
+              name="CopperPipeScreen"
+              component={CopperPipeScreen}
+            />
+            <Stack.Screen name="RequestDetail" component={RequestDetail} />
+            <Stack.Screen name="SellOldAcScreen" component={SellOldAcScreen} />
+            <Stack.Screen name="BrandScreen" component={BrandScreen} />
+            <Stack.Screen name="OldACRequest" component={OldACRequest} />
+            <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
+            <Stack.Screen
+              name="ManageAddressScreen"
+              component={ManageAddressScreen}
+            />
+            <Stack.Screen
+              name="NotificationScreeen"
+              component={NotificationScreeen}
+            />
+            <Stack.Screen
+              name="MyRequestsScreen"
+              component={MyRequestsScreen}
+            />
+            <Stack.Screen name="MyBookingScreen" component={MyBookingScreen} />
+            <Stack.Screen name="OtherScreen" component={OtherScreen} />
+            <Stack.Screen name="OtherCartView" component={OtherCartView} />
+            <Stack.Screen
+              name="TonnageCalculatorScreen"
+              component={TonnageCalculatorScreen}
+            />
+            <Stack.Screen name="ErrorCodeScreen" component={ErrorCodeScreen} />
+            <Stack.Screen
+              name="ProductListScreen"
+              component={ProductListScreen}
+            />
+            <Stack.Screen
+              name="ProductDetailScreen"
+              component={ProductDetailScreen}
+            />
+            <Stack.Screen
+              name="OrderSummaryScreen"
+              component={OrderSummaryScreen}
+            />
+            <Stack.Screen name="CompareACScreen" component={CompareACScreen} />
+            <Stack.Screen name="SelectACmodel" component={SelectACmodel} />
+            <Stack.Screen
+              name="CompareResultScreen"
+              component={CompareResultScreen}
+            />
+            <Stack.Screen
+              name="BookingSuccessScreen"
+              component={BookingSuccessScreen}
+            />
+            <Stack.Screen name="AMCFrom" component={AMCFrom} />
+            <Stack.Screen name="AMCRequestFrom" component={AMCRequestFrom} />
+            <Stack.Screen name="AMCDashBoard" component={AMCDashBoard} />
+            <Stack.Screen name="ReqBookingAMC" component={ReqBookingAMC} />
+            <Stack.Screen name="ListOfBill" component={ListOfBill} />
+            <Stack.Screen
+              name="ACUnderServiceList"
+              component={ACUnderServiceList}
+            />
+            <Stack.Screen
+              name="ACServiceDetails"
+              component={ACServiceDetails}
+            />
+            <Stack.Screen name="BillViewScreen" component={BillViewScreen} />
+            <Stack.Screen name="ConfirmService" component={ConfirmService} />
+            <Stack.Screen
+              name="PaymentlistScreen"
+              component={PaymentlistScreen}
+            />
+            <Stack.Screen
+              name="ServiceReportscreen"
+              component={ServiceReportscreen}
+            />
+            <Stack.Screen
+              name="BookingDetailsScreen"
+              component={BookingDetailsScreen}
+            />
+            <Stack.Screen name="CouponScreen" component={CouponScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </CompareProvider>
     </SafeAreaProvider>
   );

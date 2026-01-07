@@ -76,6 +76,7 @@ const ProfileDetail = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
+      console.log('User Profile Data:', res.data?.phoneNumber);
       if (res?.status) {
         const data = res.data;
         setCallingCode(data?.countryCode);
@@ -92,6 +93,7 @@ const ProfileDetail = ({ navigation }) => {
     }
   };
 
+  console.log('Update PuserId?._id:', userId?.phoneNumber);
   // update profile api
   const handleUpdateProfile = async () => {
     setLoading(true);
@@ -118,6 +120,7 @@ const ProfileDetail = ({ navigation }) => {
         // // 3️⃣ Clean S3 URL (remove ?)
         cleanImageUrl = presignedUrl.split('?')[0];
       }
+
       // 4️⃣ Update profile API body
       const body = {
         userId: String(userId?._id),
@@ -126,6 +129,7 @@ const ProfileDetail = ({ navigation }) => {
         email: String(email),
         profilePhotoUrl: cleanImageUrl || '',
       };
+      console.log('Update Profile Body:', body);
 
       // 5️⃣ Call update profile API
       const res = await updateUserProfile(body);

@@ -1,7 +1,8 @@
-import { Alert, Linking, Platform } from 'react-native';
+import { Alert, Linking, Platform, View } from 'react-native';
 import remoteConfig from '@react-native-firebase/remote-config';
 import { getAppVersion } from '../utils/appVersion';
 import { isUpdateRequired } from '../utils/versionCompare';
+import { useNavigation } from '@react-navigation/native';
 
 export const checkForceUpdate = async () => {
   const currentVersion = getAppVersion();

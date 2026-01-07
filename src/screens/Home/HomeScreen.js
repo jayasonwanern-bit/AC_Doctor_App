@@ -82,14 +82,26 @@ const HomeScreen = ({ navigation, route }) => {
 
   // Data arrays (unchanged)
   const requestQuote = [
-    { label: 'Sell Old AC', icon: images.sellAcIcon, action: handleSellOldAC },
-    { label: 'AMC', icon: images.AMCicon, action: handleAMC },
+    {
+      label: 'Sell Old AC',
+      icon: images.sellAcIcon,
+      // action: handleSellOldAC
+    },
+    {
+      label: 'AMC',
+      icon: images.AMCicon,
+      action: handleAMC,
+    },
     {
       label: 'Free Consultancy',
       icon: images.consultancyIcon,
       action: handleFreeConsult,
     },
-    { label: 'Copper Pipe', icon: images.copperIcon, action: handleCopperPipe },
+    {
+      label: 'Copper Pipe',
+      icon: images.copperIcon,
+      // action: handleCopperPipe
+    },
   ];
 
   const utilities = [
@@ -106,7 +118,7 @@ const HomeScreen = ({ navigation, route }) => {
     {
       label: 'Product Comparison',
       icon: images.productIcon,
-      action: handleProComparison,
+      // action: handleProComparison,
     },
   ];
   const [Authpartner, setAuthpartner] = useState([]);

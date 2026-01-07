@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   FlatList,
   Image,
@@ -26,9 +25,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLORS } from '../../utils/colors';
 import { store } from '../../redux/store';
 import OnTopScreen from '../../components/OnTopScreen';
+import CustomLoader from '../../components/CustomLoader';
 
 const ShopScreen = ({ navigation }) => {
-  const addressText = store?.getState()?.auth?.address;
+  // const addressText = store?.getState()?.auth?.address;
+  // console.log('addressText', addressText);
 
   const scheme = useColorScheme();
   // Dynamic styles based on scheme
@@ -194,10 +195,15 @@ const ShopScreen = ({ navigation }) => {
                 style={Commonstyles.locationIcon}
                 resizeMode={FastImage.resizeMode.contain}
               />
-              <Text style={Commonstyles.locationText}>
-                {`${addressText.house || 'Select house'}  ${
-                  addressText.road || ''
+
+              {/* <Text style={Commonstyles.locationText}>
+                   {`${addressText.house || 'Select house'}  ${
+                     addressText.road || ''
                 }, ${addressText.city}` || 'Select Location'}
+                 </Text> */}
+
+              <Text style={Commonstyles.locationText}>
+                Vijay nagar, 150 ft ring road,Bhopal
               </Text>
             </TouchableOpacity>
             <View style={[Commonstyles.reqgrid]}>

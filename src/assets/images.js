@@ -194,6 +194,8 @@ const images = {
   fcBIcon: require('./icons/fcBIcon.png'),
   amcBIcon: require('./icons/amcBIcon.png'),
   OCBicon: require('./icons/OCBicon.png'),
+  logoUpdate: require('./icons/logoUpdate.png'),
+
   // Add more images as needed
 };
 

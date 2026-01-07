@@ -77,9 +77,9 @@ const CustomBottomTab = () => {
       initialRouteName="Home"
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Shop" component={ShopScreen} />
-      <Tab.Screen name="AMC" component={AMCScreen} />
-      <Tab.Screen name="Smart Control" component={SmartControlScreen} />
+      {/* <Tab.Screen name="Shop" component={ShopScreen} /> */}
+      {/* <Tab.Screen name="AMC" component={AMCScreen} /> */}
+      {/* <Tab.Screen name="Smart Control" component={SmartControlScreen} /> */}
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
   );

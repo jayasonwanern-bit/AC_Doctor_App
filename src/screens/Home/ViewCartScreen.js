@@ -29,10 +29,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, updateQuantity } from '../../redux/slices/cartSlice';
 import Toast from 'react-native-simple-toast';
 
-const ViewCartScreen = ({}) => {
+const ViewCartScreen = ({ route }) => {
   const serviceDetails = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
-
   const navigation = useNavigation();
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -44,6 +43,16 @@ const ViewCartScreen = ({}) => {
   const [bookServices, setBookServices] = useState([]);
   const [Loading, setLoading] = useState(true);
   const userDetails = store?.getState()?.auth?.user;
+  const routeAddress = route.params?.selectedAddress;
+
+  useEffect(() => {
+    if (route?.params?.proceed) {
+      setProceed(true);
+    }
+    if (route?.params?.selectedSlot) {
+      setSelectedSlot(route.params.selectedSlot);
+    }
+  }, [route?.params]);
 
   // get service list on mount
   useEffect(() => {
@@ -144,10 +153,11 @@ const ViewCartScreen = ({}) => {
       return;
     }
     const formattedDate = `${selectedSlot?.date}/${selectedSlot?.monthNumber}/${selectedSlot?.year}`;
+
     const bodyData = {
       user_id: userDetails._id,
       addressId: selectedAddress._id,
-      name: userDetails.name,
+      name: userDetails?.name,
       date: formattedDate,
       slot:
         selectedSlot?.Timeslot === 'First Half'
@@ -155,27 +165,28 @@ const ViewCartScreen = ({}) => {
           : selectedSlot?.Timeslot === 'SECOND_HALF'
           ? 'SECOND_HALF'
           : 'SECOND_HALF',
-      amount: 0, // calculate if needed
+      amount: 0,
       serviceDetails: serviceDetails.map(item => ({
         service_id: item.service_id,
         acType: item.acType,
         quantity: item.quantity,
-        serviceType: item.serviceType.toUpperCase(), // always uppercase
+        serviceType: item.serviceType.toUpperCase(),
       })),
     };
 
     try {
       const response = await postBookingRequest(bodyData);
-      console.log('🚀 Booking Data:', response);
-      if (response?.status) {
+      if (response?.status === true) {
         Toast.show(response?.message || 'Booking submitted successfully!');
         navigation.navigate('Tab', { screen: 'Home' });
         dispatch(clearCart());
-      } else {
-        Toast.show('Failed to submit booking. Please try again.');
+      } else if (response?.status === false) {
+        Toast.show(
+          response?.message || 'Failed to submit booking. Please try again.',
+        );
       }
     } catch (error) {
-      Toast.show('An error occurred. Please try again later.');
+      Toast.show(error?.message || 'An error occurred. Please try again.');
     }
   };
 
@@ -465,12 +476,22 @@ const ViewCartScreen = ({}) => {
                 style={styles.normalImag}
               />
               <Text style={styles.textBottom}>
-                {userDetails?.name || ''},{selectedAddress?.street || ''},
-                {selectedAddress?.city || ''}, {selectedAddress?.state || ''},
-                {selectedAddress?.zipcode || ''}
+                {routeAddress ? (
+                  <>
+                    {routeAddress?.name || ''},{routeAddress?.address || ''},
+                  </>
+                ) : (
+                  <>
+                    {userDetails?.name || ''},{selectedAddress?.street || ''},
+                    {selectedAddress?.city || ''},{' '}
+                    {selectedAddress?.state || ''},
+                    {selectedAddress?.zipcode || ''}
+                  </>
+                )}
               </Text>
               {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
             </View>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -509,7 +530,6 @@ const ViewCartScreen = ({}) => {
         )}
 
         <CustomButton
-          // buttonName={proceed ? 'Proceed to pay' : 'Add Address & Slot'}
           buttonName={proceed ? 'Proceed Booking' : 'Add Address & Slot'}
           margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
