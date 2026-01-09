@@ -1,5 +1,5 @@
 // src/screens/LoginScreen.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -27,7 +27,10 @@ import { setToken } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-native-simple-toast';
 import CustomLoader from '../../components/CustomLoader';
-
+import messaging from '@react-native-firebase/messaging';
+import { getFcmToken } from '../../services/getFcmToken';
+import { Gettokenfrofcm } from '../../services/Gettokenforfcm';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const phoneSchema = yup.object().shape({
   phoneNumber: yup
     .string()
@@ -51,11 +54,12 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const onSubmit = async data => {
-    const postdata = {
-      countryCode: callingCode,
-      phoneNumber: data.phoneNumber,
-    };
     try {
+      const postdata = {
+        countryCode: callingCode,
+        phoneNumber: data.phoneNumber,
+        // deviceToken: token,
+      };
       setLoading(true);
       const res = await loginUser(postdata);
       console.log('Login screen Response:-->', res);

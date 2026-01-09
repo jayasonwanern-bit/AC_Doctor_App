@@ -104,7 +104,8 @@ const AddAddress = ({ navigation, route }) => {
       if (cameFrom === 'ServiceScreen') {
         navigation.navigate('Tab', { screen: 'Home' });
       } else if (cameFrom === 'CustomModal') {
-        setModalSlotVisible(true);
+        // setModalSlotVisible(true);
+        navigation.goBack();
       } else if (cameFrom === 'UserInfoModel') {
         setModalSlotVisible(true);
       } else {

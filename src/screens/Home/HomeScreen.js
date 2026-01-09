@@ -28,14 +28,15 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context'; // Use SafeAreaView instead of SafeAreaProvider
 import { getAuthpatner, getServiceList, getBanner } from '../../api/homeApi';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GetLoaction from '../../components/GetLoaction';
 import { useDispatch } from 'react-redux';
 import { dispatch, store } from '../../redux/store';
 import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
-const HomeScreen = ({ navigation, route }) => {
+const HomeScreen = ({ route }) => {
+  const navigation = useNavigation();
   const {
     latitude,
     longitude,
@@ -204,6 +205,7 @@ const HomeScreen = ({ navigation, route }) => {
     try {
       setLoading(true);
       const res = await getServiceList();
+      console.log('LIST OF  SERVICE---', res.data)
       setBookServices(res?.data || []);
     } catch (error) {
       console.log(error);
@@ -218,20 +220,20 @@ const HomeScreen = ({ navigation, route }) => {
     REPAIR: 'GasChargeScreen',
     INSTALLATION: 'GasChargeScreen',
     COMPRESSOR: 'GasChargeScreen',
-    COMMERCIAL_AC: 'CommericalAc',
     GAS_CHARGING: 'GasChargeScreen',
     OTHER: 'OtherScreen',
   };
   const handleServiceNavigation = service => {
     const screen = screens[service?.key];
-    if (screen) {
-      navigation.navigate(screen, {
+    if (service.name === 'Other') {
+      navigation.navigate('OtherScreen');
+    }
+    else {
+      navigation.navigate('GasChargeScreen', {
         screenName: service.name,
         serviceId: service._id,
         source: 'HOME',
       });
-    } else {
-      console.log('Screen not found for:', service?.key);
     }
   };
 
@@ -253,6 +255,7 @@ const HomeScreen = ({ navigation, route }) => {
         styles.safeArea,
         { backgroundColor: dynamicStyles.safeArea.backgroundColor },
       ]}
+      edges={['top', 'left', 'right']}
     >
       <StatusBar
         barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
@@ -281,7 +284,6 @@ const HomeScreen = ({ navigation, route }) => {
                 </Text>
               </View>
             )}
-
             <View style={styles.wheatherContainer}>
               <Image
                 source={images.wheatherIcon}
@@ -300,10 +302,8 @@ const HomeScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
-
         {/* Banner Image */}
         {loading ? <CustomLoader /> : <CustomSlider images={bannerImages} />}
-
         {/* Book a service */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Book a Services</Text>
@@ -327,7 +327,6 @@ const HomeScreen = ({ navigation, route }) => {
             </View>
           )}
         </View>
-
         {/* Request a Quote */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Request a Quote</Text>
@@ -344,7 +343,6 @@ const HomeScreen = ({ navigation, route }) => {
             ))}
           </View>
         </View>
-
         <LinearGradient
           colors={['#ecd5d0ff', '#ede3dbff', '#b9d4e7ff']}
           style={styles.uticontainer}
@@ -364,7 +362,7 @@ const HomeScreen = ({ navigation, route }) => {
           </View>
         </LinearGradient>
         <View style={styles.reqcontainer}>
-          <Text style={styles.reqtitle}>Authorized Service Partner</Text>
+          <Text style={styles.reqtitle}>OEM Partner</Text>
           {loading ? (
             <CustomLoader size={20} />
           ) : (
@@ -385,7 +383,7 @@ const HomeScreen = ({ navigation, route }) => {
                         marginVertical: 3,
                       }}
                     >
-                      {page.slice(row * 3, row * 3 + 3).map((item, idx) => (
+                      {page.slice(row * 1, row * 3 + 1).map((item, idx) => (
                         <View key={idx} style={styles.authoption}>
                           <FastImage
                             source={{ uri: item.logo }} // <-- FIX
@@ -401,7 +399,6 @@ const HomeScreen = ({ navigation, route }) => {
             />
           )}
         </View>
-
         <View style={[styles.uticontainer, { padding: wp('0%') }]}>
           <Text
             style={[
@@ -466,7 +463,6 @@ const HomeScreen = ({ navigation, route }) => {
             )}
           />
         </View>
-
         {/* who trust Us */}
         <View style={styles.uticontainer}>
           <Text style={[styles.utititle, dynamicStyles.title]}>
@@ -495,7 +491,6 @@ const HomeScreen = ({ navigation, route }) => {
             )}
           />
         </View>
-
         {/* Impact on Society */}
         <View style={styles.impcard}>
           <View style={[styles.impgrid, { alignItems: 'center' }]}>
@@ -534,9 +529,7 @@ const HomeScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </View>
-
         <FastImage source={images.homebanner} style={styles.bannerStyle} />
-
         <View style={styles.sercard}>
           <Text style={[styles.utititle, dynamicStyles.title]}>
             Service Guarantee
@@ -593,9 +586,8 @@ const HomeScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* </ScrollView>
-         */}
       </OnTopScreen>
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };

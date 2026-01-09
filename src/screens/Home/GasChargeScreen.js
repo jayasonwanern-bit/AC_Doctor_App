@@ -18,9 +18,9 @@ const GasChargeScreen = ({ navigation, route }) => {
     { id: 2, name: 'Window AC', icon: images.windowAc, count: 0 },
     { id: 3, name: 'Cassette AC', icon: images.casseteAc, count: 0 },
     { id: 4, name: 'VRV/VRF AC', icon: images.VRVac, count: 0 },
-    { id: 5, name: 'Ducted AC', icon: images.ductedAc, count: 0 },
-    { id: 6, name: 'Chiller AC', icon: images.chilarIcon, count: 0 },
-    { id: 7, name: 'Tower AC', icon: images.towerAc, count: 0 },
+    { id: 5, name: 'Tower AC', icon: images.towerAc, count: 0 },
+    { id: 6, name: 'Ducted AC', icon: images.ductedAc, count: 0 },
+    { id: 7, name: 'Chiller AC', icon: images.chilarIcon, count: 0 },
   ]);
 
   useEffect(() => {

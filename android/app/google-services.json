@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "713836416510",
-    "project_id": "ac-doctor-app",
-    "storage_bucket": "ac-doctor-app.firebasestorage.app"
+    "project_number": "1095019977668",
+    "project_id": "ac-doctor-non-prod",
+    "storage_bucket": "ac-doctor-non-prod.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:713836416510:android:f3c98349d007dc396144af",
+        "mobilesdk_app_id": "1:1095019977668:android:5712cd95901232dae96291",
         "android_client_info": {
           "package_name": "com.acdoctor"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCEkqTunf-2xMVohHHkNKwV1SmZeLDOPL4"
+          "current_key": "AIzaSyAmYLi1hX4bbMJgwqnjBy1BdNq_XzlvI3I"
         }
       ],
       "services": {

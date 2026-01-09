@@ -15,10 +15,10 @@ import images from '../../assets/images';
 import FastImage from 'react-native-fast-image';
 import CustomButton from '../../components/CustomButton';
 import { COLORS } from '../../utils/colors';
-import { useForm, Controller } from 'react-hook-form';
+// import { useForm, Controller } from 'react-hook-form';
 import CustomPhoneInput from '../../components/CustomPhoneInput';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+// import { yupResolver } from '@hookform/resolvers/yup';
+// import * as yup from 'yup';
 import CustomPicker from '../../components/CustomPicker';
 import ImagePickerModal from '../../components/ImagePickerModal';
 import {
@@ -49,22 +49,6 @@ const ProfileDetail = ({ navigation }) => {
 
   const [loading, setLoading] = useState(false);
 
-  const phoneSchema = yup.object().shape({
-    phoneNumber: yup
-      .string()
-      .required('Mobile number is required')
-      .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
-  });
-
-  // validation for mobile
-  const {
-    control,
-    formState: { errors, isValid },
-  } = useForm({
-    resolver: yupResolver(phoneSchema),
-    mode: 'onChange', // Real-time validation
-  });
-
   useEffect(() => {
     if (userId) {
       fetchProfile();
@@ -76,7 +60,7 @@ const ProfileDetail = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
-      console.log('User Profile Data:', res.data?.phoneNumber);
+      console.log('User Profile Data:', res.data);
       if (res?.status) {
         const data = res.data;
         setCallingCode(data?.countryCode);
@@ -93,52 +77,100 @@ const ProfileDetail = ({ navigation }) => {
     }
   };
 
-  console.log('Update PuserId?._id:', userId?.phoneNumber);
   // update profile api
+  // const handleUpdateProfile = async () => {
+  //   setLoading(true);
+  //   console.log('Update PuserId?._id:', userId?._id);
+  //   try {
+  //     let cleanImageUrl = '';
+  //     if (selectedImageUri) {
+  //       // 1️⃣ Get presigned URL
+  //       const presRes = await getPresignedUrl();
+  //       const presignedUrl = presRes?.data;
+  //       console.log('Presigned URL:', presignedUrl);
+
+  //       if (!presignedUrl) {
+  //         Toast.show('Presigned URL not received');
+  //       } else {
+  //         console.log('ßß');
+  //       }
+
+  //       // // 2️⃣ Upload image to S3
+  //       if (selectedImageUri) {
+  //         await uploadImageToS3(presignedUrl, selectedImageUri);
+  //       }
+
+  //       // // 3️⃣ Clean S3 URL (remove ?)
+  //       cleanImageUrl = presignedUrl.split('?')[0];
+  //     }
+
+  //     // 4️⃣ Update profile API body
+  //     const body = {
+  //       userId: String(userId?._id),
+  //       userName: String(userName),
+  //       gender: gender,
+  //       email: String(email),
+  //       profilePhotoUrl: cleanImageUrl || '',
+  //     };
+  //     console.log('Update Profile Body:', body);
+
+  //     // 5️⃣ Call update profile API
+  //     const res = await updateUserProfile(body);
+  //     console.log('Update Profile Body:', res);
+
+  //     if (res?.status) {
+  //       Toast.show('Profile updated successfully');
+  //     }
+  //   } catch (error) {
+  //     console.log('Profile Update Error:', error);
+  //     Toast.show('Something went wrong');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleUpdateProfile = async () => {
     setLoading(true);
-
     try {
+
       let cleanImageUrl = '';
+
       if (selectedImageUri) {
-        // 1️⃣ Get presigned URL
         const presRes = await getPresignedUrl();
         const presignedUrl = presRes?.data;
-        console.log('Presigned URL:', presignedUrl);
-
-        if (!presignedUrl) {
-          Toast.show('Presigned URL not received');
-        } else {
-          console.log('ßß');
-        }
-
-        // // 2️⃣ Upload image to S3
-        if (selectedImageUri) {
+        console.log(presignedUrl, ";l;")
+        if (presignedUrl) {
           await uploadImageToS3(presignedUrl, selectedImageUri);
+          cleanImageUrl = presignedUrl.split('?')[0];
         }
-
-        // // 3️⃣ Clean S3 URL (remove ?)
-        cleanImageUrl = presignedUrl.split('?')[0];
       }
 
-      // 4️⃣ Update profile API body
+      // 🔥 Only userId is mandatory
       const body = {
-        userId: String(userId?._id),
-        userName: String(userName),
-        gender: gender,
-        email: String(email),
-        profilePhotoUrl: cleanImageUrl || '',
+        userId: userId?._id,
+        userName: userName,
+        // gender: gender,
+        // email: email,
+        // profilePhotoUrl: cleanImageUrl || '',
       };
+
+      // ✅ add fields only if user filled them
+      // if (userName?.trim()) body.userName = userName.trim();
+      // if (phoneNumber?.trim()) body.phoneNumber = phoneNumber.trim();
+      // if (email?.trim()) body.email = email.trim();
+      // if (gender) body.gender = gender;
+      // if (cleanImageUrl) body.profilePhotoUrl = cleanImageUrl;
+
       console.log('Update Profile Body:', body);
 
-      // 5️⃣ Call update profile API
       const res = await updateUserProfile(body);
-      console.log('Update Profile Body:', res);
-
+      console.log(res, "upadet prfile api")
       if (res?.status) {
         Toast.show('Profile updated successfully');
+        navigation.goBack("")
       }
     } catch (error) {
+      Alert.alert(error)
       console.log('Profile Update Error:', error);
       Toast.show('Something went wrong');
     } finally {
@@ -194,24 +226,23 @@ const ProfileDetail = ({ navigation }) => {
             {/* Mobile Number */}
             <View style={Homestyles.profileDetailInfoContainer}>
               <Text style={Homestyles.profileDetailName}>Mobile Number</Text>
-              <Controller
+              {/* <Controller
                 control={control}
                 name="phoneNumber"
-                render={({ field: { onChange, value } }) => (
-                  <CustomPhoneInput
-                    countryCode={countryCode}
-                    callingCode={callingCode}
-                    setCountryCode={setCountryCode}
-                    setCallingCode={setCallingCode}
-                    phoneNumber={phoneNumber}
-                    setPhoneNumber={val => {
-                      onChange(val);
-                      setphoneNumber(val);
-                    }}
-                    error={errors.phoneNumber?.message}
-                  />
-                )}
+                render={({ field: { onChange, value } }) => ( */}
+              <CustomPhoneInput
+                countryCode={countryCode}
+                callingCode={callingCode}
+                setCountryCode={setCountryCode}
+                setCallingCode={setCallingCode}
+                phoneNumber={phoneNumber}
+                setPhoneNumber={val => {
+                  onChange(val);
+                  setphoneNumber(val);
+                }}
               />
+              {/* )} */}
+              {/* // /> */}
             </View>
             {/* Email Address */}
             <CunstomInput

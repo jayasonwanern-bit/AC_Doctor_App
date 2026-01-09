@@ -22,6 +22,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { setAddress } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import CustomLoader from '../../components/CustomLoader';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const ManageAddressScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -183,22 +184,28 @@ const ManageAddressScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Header title="Manage Address" onBack={() => navigation.goBack()} />
 
-      <View style={{ paddingHorizontal: wp(4) }}>
+      <ScrollView style={{ paddingHorizontal: wp(4) }}>
         <Text style={styles.title}>Saved Address</Text>
 
         {loading ? (
           <CustomLoader size={40} />
         ) : (
+          // <ScrollView style={{ flexGrow: 1, backgroundColor: "red" }}>
+
           <FlatList
+            scrollEnabled={false}
             data={addresses}
             keyExtractor={item => item._id}
             renderItem={renderAddressItem}
+            style={{ marginBottom: 10 }}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.list}
+          // contentContainerStyle={styles.list}
           />
-        )}
 
-        {/* Add New Address Button */}
+
+          // </ScrollView>
+        )
+        }
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => navigation.navigate('AddAddress')}
@@ -206,8 +213,10 @@ const ManageAddressScreen = ({ navigation }) => {
           <Image source={images.Plusicon} style={styles.plusIcon} />
           <Text style={styles.addText}>Add New Address</Text>
         </TouchableOpacity>
-      </View>
-    </View>
+        {/* Add New Address Button */}
+
+      </ScrollView >
+    </View >
   );
 };
 
@@ -215,6 +224,7 @@ const ManageAddressScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: '#f8f9fa',
   },
   title: {
@@ -224,7 +234,8 @@ const styles = StyleSheet.create({
     marginTop: hp(2),
   },
   list: {
-    paddingBottom: hp(5),
+    // paddingBottom: hp(5),
+
   },
   addressCard: {
     flexDirection: 'row',
@@ -339,6 +350,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.white,
+    marginBottom: 20,
     paddingVertical: hp(1.5),
     borderRadius: wp(10),
     borderWidth: wp(0.1),

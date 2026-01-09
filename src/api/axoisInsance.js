@@ -6,11 +6,11 @@ import { Alert } from 'react-native';
 
 // 🔥 Create axios instance
 const api = axios.create({
-  // baseURL: 'https://api.acdoctor.in/api/v1/',
+  baseURL: 'https://api.acdoctor.in/api/v1/',
   // baseURL: 'http://10.0.2.2:8080/api/v1',
   // baseURL: 'http://localhost:8080/api/v1'|| "https://devyn-unawaked-kaylin.ngrok-free.dev/api/v1"||"http://10.0.2.2:8080/api/v1",
   // baseURL: 'https://devyn-unawaked-kaylin.ngrok-free.dev/api/v1',
-  baseURL: 'https://hematoid-autohypnotic-rey.ngrok-free.dev/api/v1',
+  // baseURL: 'https://hematoid-autohypnotic-rey.ngrok-free.dev/api/v1',
   // emulator
   headers: {
     'Content-Type': 'application/json',

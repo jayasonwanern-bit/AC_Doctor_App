@@ -182,6 +182,7 @@ const FreeConsultant = ({ navigation }) => {
 
       // 3️⃣ API call
       const res = await postConsultancy(payload);
+      console.log('response of free  consultancy---', res)
       if (res?.status) {
         Toast.show(res?.message);
         setSuccessPopupVisible(true);

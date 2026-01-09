@@ -24,10 +24,10 @@ const AcList = forwardRef(({ data, onChange }, ref) => {
     const updated = acList.map(item =>
       item.id === id
         ? {
-            ...item,
-            count:
-              type === 'inc' ? item.count + 1 : Math.max(item.count - 1, 0),
-          }
+          ...item,
+          count:
+            type === 'inc' ? item.count + 1 : Math.max(item.count - 1, 0),
+        }
         : item,
     );
 
@@ -71,19 +71,13 @@ const AcList = forwardRef(({ data, onChange }, ref) => {
         </TouchableOpacity>
       ) : (
         <View style={styles.mainCounterView}>
-          <TouchableOpacity
-            onPress={() => updateCount(item.id, 'dec')}
-            style={styles.counterBorder}
-          >
+          <TouchableOpacity onPress={() => updateCount(item.id, 'dec')}>
             <Text style={styles.counterBtn}>-</Text>
           </TouchableOpacity>
 
           <Text style={styles.count}>{item.count}</Text>
 
-          <TouchableOpacity
-            onPress={() => updateCount(item.id, 'inc')}
-            style={styles.counterBorder}
-          >
+          <TouchableOpacity onPress={() => updateCount(item.id, 'inc')}>
             <Text style={styles.counterBtn}>+</Text>
           </TouchableOpacity>
         </View>
@@ -149,9 +143,12 @@ const styles = StyleSheet.create({
     height: 32.5,
   },
   mainCounterView: {
-    width: '23%',
+    width: '25%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 20,
   },
 });

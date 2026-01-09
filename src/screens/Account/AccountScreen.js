@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ import Toast from 'react-native-simple-toast';
 import { logout } from '../../redux/slices/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomLoader from '../../components/CustomLoader';
+import { useFocusEffect } from '@react-navigation/native';
 
 const AccountScreenComponent = ({ navigation }) => {
   const scheme = useColorScheme();
@@ -55,11 +56,14 @@ const AccountScreenComponent = ({ navigation }) => {
   const addressText = store?.getState()?.auth?.address;
   const weatherData = store?.getState()?.auth?.celcius;
 
-  useEffect(() => {
-    if (userId) {
+  useFocusEffect(
+    useCallback(() => {
       fetchProfile();
-    }
-  }, [userId]);
+      return () => {
+        fetchProfile();
+      };
+    }, [])
+  );
 
   const fetchProfile = async () => {
     try {
@@ -68,6 +72,7 @@ const AccountScreenComponent = ({ navigation }) => {
       console.log('User Profile Response:', res);
       if (res?.status) {
         const data = res.data;
+        // console.log(data,)
         setStoreData(data);
       }
     } catch (error) {
@@ -136,9 +141,8 @@ const AccountScreenComponent = ({ navigation }) => {
             />
             <Text style={Homestyles.locationText}>
               {addressText || addressText
-                ? `${addressText?.house || ''} ${addressText?.road || ''}, ${
-                    addressText?.city || ''
-                  }`
+                ? `${addressText?.house || ''} ${addressText?.road || ''}, ${addressText?.city || ''
+                }`
                 : 'Select Location'}
             </Text>
           </TouchableOpacity>

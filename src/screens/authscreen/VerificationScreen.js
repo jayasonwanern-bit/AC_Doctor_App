@@ -156,8 +156,8 @@ const VerificationScreen = ({ navigation, route }) => {
                 resizeMode={FastImage.resizeMode.contain}
               />
             </TouchableOpacity>
-            <Text style={styles.title}>Verification code</Text>
-            <Text style={styles.title}>{serverOtpState}</Text>
+            {/* <Text style={styles.title}>Verification code</Text>
+            <Text style={styles.title}>{serverOtpState}</Text> */}
             <FastImage
               source={images.otpIcon}
               style={styles.image}
@@ -170,11 +170,25 @@ const VerificationScreen = ({ navigation, route }) => {
             </Text>
             <OTPTextInput
               inputCount={4}
-              keyboardType="numeric"
+              keyboardType="number-pad"
               autoFocus={false}
+              // 👇 this handles COPY/PASTE (1234)
               handleTextChange={text => {
-                setOtp(text);
-                if (text.length === 4) {
+                if (/^\d{4}$/.test(text)) {
+                  setOtp(text);
+                  Keyboard.dismiss();
+                }
+              }}
+              handleCellTextChange={(text, index) => {
+                // allow only ONE digit per box
+                if (!/^\d?$/.test(text)) return;
+                let otpArray = otp.split('');
+                otpArray[index] = text;
+                const updatedOtp = otpArray.join('');
+
+                setOtp(updatedOtp);
+
+                if (updatedOtp.length === 4) {
                   Keyboard.dismiss();
                 }
               }}

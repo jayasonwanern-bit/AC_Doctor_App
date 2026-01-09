@@ -34,11 +34,10 @@ const handlePush = async remoteMessage => {
   }
 
   const title =
-    remoteConfig().getString('push_title') || remoteMessage.notification?.title;
+    remoteConfig().getString('title') || remoteMessage.notification?.title;
 
   const message =
-    remoteConfig().getString('push_message') ||
-    remoteMessage.notification?.body;
+    remoteConfig().getString('body') || remoteMessage.notification?.body;
 
   Alert.alert(title, message);
 };

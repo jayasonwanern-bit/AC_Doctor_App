@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -19,8 +19,7 @@ const ServiceScreen = () => {
     Geolocation.requestAuthorization();
   }, []);
 
-  const { latitude, longitude, addressText, loading, error, getLocation } =
-    GetLoaction();
+  const { latitude, longitude, addressText, loading, error, getLocation } = GetLoaction();
 
   const handleUseCurrentLocation = () => {
     getLocation(locationData => {
@@ -52,7 +51,7 @@ const ServiceScreen = () => {
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.backButton]}
-        // onPress={() => navigation.goBack()}
+      // onPress={() => navigation.goBack()}
       >
         {/* <FastImage
           source={images.backArrow}

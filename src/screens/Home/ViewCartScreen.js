@@ -28,6 +28,7 @@ import { getServiceList, postBookingRequest } from '../../api/homeApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, updateQuantity } from '../../redux/slices/cartSlice';
 import Toast from 'react-native-simple-toast';
+import OrderSummaryModel from '../../customScreen/OrderSummaryModel';
 
 const ViewCartScreen = ({ route }) => {
   const serviceDetails = useSelector(state => state.cart.items);
@@ -42,12 +43,14 @@ const ViewCartScreen = ({ route }) => {
   const [numberofAC, setNumberofAC] = useState('');
   const [bookServices, setBookServices] = useState([]);
   const [Loading, setLoading] = useState(true);
+  const [showSummary, setShowSummary] = useState(false);
   const userDetails = store?.getState()?.auth?.user;
   const routeAddress = route.params?.selectedAddress;
 
   useEffect(() => {
     if (route?.params?.proceed) {
       setProceed(true);
+      setShowSummary(true)
     }
     if (route?.params?.selectedSlot) {
       setSelectedSlot(route.params.selectedSlot);
@@ -58,6 +61,17 @@ const ViewCartScreen = ({ route }) => {
   useEffect(() => {
     getBookService();
   }, []);
+
+  const locationText = routeAddress
+    ? `${routeAddress?.name || ''}, ${routeAddress?.address || ''}`
+    : `${userDetails?.name || ''}, ${selectedAddress?.street || ''},
+     ${selectedAddress?.city || ''}, ${selectedAddress?.state || ''},
+     ${selectedAddress?.zipcode || ''}`;
+
+  const phoneText = `${userDetails?.countryCode}-${userDetails?.phoneNumber}`;
+
+  const slotText = `${selectedSlot?.date}/${selectedSlot?.monthNumber}/${selectedSlot?.year}, ${selectedSlot?.Timeslot}`;
+
 
   const getBookService = async () => {
     try {
@@ -163,8 +177,8 @@ const ViewCartScreen = ({ route }) => {
         selectedSlot?.Timeslot === 'First Half'
           ? 'FIRST_HALF'
           : selectedSlot?.Timeslot === 'SECOND_HALF'
-          ? 'SECOND_HALF'
-          : 'SECOND_HALF',
+            ? 'SECOND_HALF'
+            : 'SECOND_HALF',
       amount: 0,
       serviceDetails: serviceDetails.map(item => ({
         service_id: item.service_id,
@@ -197,10 +211,10 @@ const ViewCartScreen = ({ route }) => {
         style={styles.scrollstyle}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.ordercontainer]}>
+        {/* <View style={[styles.ordercontainer]}>
           <Image source={images.tag} style={styles.carticon} />
           <Text style={styles.viewCartText}>Saving ₹150 on this order</Text>
-        </View>
+        </View> */}
 
         {/* Actype */}
         {groupedServices.map((service, serviceIndex) => {
@@ -212,7 +226,7 @@ const ViewCartScreen = ({ route }) => {
           return (
             <View key={serviceIndex}>
               <Text style={[styles.headText, { marginBottom: hp('1%') }]}>
-                {service.serviceType} Service
+                {service.serviceType}
               </Text>
 
               {visibleACs.map((ac, acIndex) => (
@@ -221,7 +235,6 @@ const ViewCartScreen = ({ route }) => {
 
                   <View style={styles.workButtonContainer}>
                     <TouchableOpacity
-                      style={styles.workButton}
                       onPress={() =>
                         handleDecrement(service.serviceType, ac.name)
                       }
@@ -232,7 +245,6 @@ const ViewCartScreen = ({ route }) => {
                     <Text style={styles.workCount}>{ac.quantity}</Text>
 
                     <TouchableOpacity
-                      style={styles.workButton}
                       onPress={() =>
                         handleIncrement(service.serviceType, ac.name)
                       }
@@ -243,7 +255,7 @@ const ViewCartScreen = ({ route }) => {
                 </View>
               ))}
 
-              {showAddMore && (
+              {/* {showAddMore && (
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate('AddMoreACScreen', {
@@ -254,7 +266,7 @@ const ViewCartScreen = ({ route }) => {
                 >
                   <Text style={styles.addText}>Add More</Text>
                 </TouchableOpacity>
-              )}
+              )} */}
             </View>
           );
         })}
@@ -324,7 +336,7 @@ const ViewCartScreen = ({ route }) => {
         </TouchableOpacity>
 
         {/* Payment Summary */}
-        <View
+        {/* <View
           style={[
             styles.utioption,
             {
@@ -418,7 +430,7 @@ const ViewCartScreen = ({ route }) => {
               Yay! you have saved ₹ 150 on final bill
             </Text>
           </View>
-        </View>
+        </View> */}
 
         {/* CANCELLATION */}
         <View
@@ -464,68 +476,17 @@ const ViewCartScreen = ({ route }) => {
       >
         {proceed && (
           <>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginVertical: hp('0.5%'),
-                alignItems: 'center',
-              }}
-            >
-              <FastImage
-                source={images.locationRed}
-                style={styles.normalImag}
-              />
-              <Text style={styles.textBottom}>
-                {routeAddress ? (
-                  <>
-                    {routeAddress?.name || ''},{routeAddress?.address || ''},
-                  </>
-                ) : (
-                  <>
-                    {userDetails?.name || ''},{selectedAddress?.street || ''},
-                    {selectedAddress?.city || ''},{' '}
-                    {selectedAddress?.state || ''},
-                    {selectedAddress?.zipcode || ''}
-                  </>
-                )}
-              </Text>
-              {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
-            </View>
+            <OrderSummaryModel
+              visible={showSummary}
+              onClose={() => setShowSummary(false)}
+              locationText={locationText}
+              phoneText={phoneText}
+              slotText={slotText}
+              images={images}
+              hp={hp}
+              styles={styles}
+            />
 
-            <View
-              style={{
-                flexDirection: 'row',
-                marginVertical: hp('1.5%'),
-                alignItems: 'center',
-              }}
-            >
-              <FastImage
-                source={images.callRed}
-                style={styles.normalImag}
-                resizeMode="contain"
-              />
-              <Text style={styles.textBottom}>
-                {userDetails?.countryCode}-{userDetails?.phoneNumber}
-              </Text>
-              {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginBottom: hp('2%'),
-                alignItems: 'center',
-              }}
-            >
-              <FastImage source={images.timeRed} style={styles.normalImag} />
-              <Text style={styles?.textBottom}>
-                {selectedSlot?.date}
-                {'/'}
-                {selectedSlot?.monthNumber}
-                {'/'}
-                {selectedSlot?.year}, {selectedSlot?.Timeslot}
-              </Text>
-              {/* <FastImage source={images.editLight} style={styles.normalImag} /> */}
-            </View>
           </>
         )}
 
@@ -577,6 +538,9 @@ const ViewCartScreen = ({ route }) => {
           setModalSlotVisible(false);
           setTimeout(() => {
             setProceed(true);
+            setTimeout(() => {
+              setShowSummary(true)
+            }, 200);
           }, 300);
         }}
       />
@@ -586,6 +550,9 @@ const ViewCartScreen = ({ route }) => {
         onClose={() => {
           setConfirmModalVisible(false);
           setProceed(true);
+          setTimeout(() => {
+            setShowSummary(true)
+          }, 200);
         }}
         selectedAddress={selectedAddress}
         selectedSlot={selectedSlot}
@@ -632,8 +599,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: hp('1.2%'),
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#E0E0E0',
     backgroundColor: COLORS.white,
     borderRadius: wp('1%'),
   },
@@ -643,10 +610,16 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.medium,
   },
   workButtonContainer: {
-    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: hp('5%'),
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'center',
-    // paddingVertical: hp('2.5%'),
+    flexDirection: 'row',
+    // marginHorizontal: 5,
+    width: isTablet ? wp(25) : wp(20),
+    height: isTablet ? wp(6) : wp(7),
+    alignSelf: 'center',
+    borderColor: '#ddd',
   },
   workButton: {
     borderWidth: 1,
@@ -662,10 +635,10 @@ const styles = StyleSheet.create({
   workButtonText: {
     fontSize: isTablet ? wp(3) : wp(3),
     color: COLORS.black,
-    textAlignVertical: 'top',
+    // textAlignVertical: 'top',
     fontFamily: Fonts.medium,
-    marginBottom: Platform.OS === 'ios' ? hp('0.5%') : wp('2%'),
-    position: 'absolute',
+    // marginBottom: Platform.OS === 'ios' ? hp('0.5%') : wp('2%'),
+    // position: 'absolute',
   },
   workCount: {
     fontSize: hp('1.6%'),

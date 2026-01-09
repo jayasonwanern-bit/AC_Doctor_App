@@ -11,16 +11,67 @@ import { requestNotificationPermission } from './src/services/notificationPermis
 import { getFcmToken } from './src/services/getFcmToken';
 import { setupPushListeners } from './src/services/pushHandler';
 import messaging from '@react-native-firebase/messaging';
-import notifee from '@notifee/react-native';
+// import notifee from '@notifee/react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAppVersion } from './src/utils/appVersion';
 import remoteConfig from '@react-native-firebase/remote-config';
 // import { getAppVersion } from '../utils/appVersion';
 import { isUpdateRequired } from './src/utils/versionCompare';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 export default function App() {
+  const requestPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    console.log('Permission enabled:', enabled);
+  };
+
+  // 🔹 Get FCM token
+  const getFcmToken = async () => {
+    const token = await messaging().getToken();
+    console.log('FCM TOKEN:', token);
+  };
+
+  // 🔹 Create notification channel (Android)
+  const createChannel = async () => {
+    if (Platform.OS === 'android') {
+      await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+        importance: AndroidImportance.HIGH,
+      });
+    }
+  };
   useEffect(() => {
     init();
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      await notifee.displayNotification({
+        title: remoteMessage.notification?.title,
+        body: remoteMessage.notification?.body,
+        android: {
+          channelId: 'default',
+        },
+      });
+    });
+
+    // 🔔 Background → app opened by notification
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log('Opened from background:', remoteMessage);
+    });
+
+    // 🔔 Killed → app opened by notification
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log('Opened from quit state:', remoteMessage);
+        }
+      });
+
+    return unsubscribe;
   }, []);
   const init = async () => {
     await initRemoteConfig();
@@ -28,6 +79,9 @@ export default function App() {
     await requestNotificationPermission();
     await getFcmToken();
     await setupPushListeners();
+    requestPermission();
+    getFcmToken();
+    createChannel();
   };
 
   const checkForceUpdate = async () => {
@@ -58,38 +112,6 @@ export default function App() {
         { cancelable: false },
       );
     }
-  };
-  const setup = async () => {
-    // 🔹 Permission
-    await notifee.requestPermission();
-    await messaging().requestPermission();
-
-    // 🔹 Token
-    const token = await messaging().getToken();
-    console.log('🔥 FCM TOKEN:', token);
-
-    // 🔹 Foreground notification
-    messaging().onMessage(async remoteMessage => {
-      showNotification(
-        remoteMessage.notification?.title,
-        remoteMessage.notification?.body,
-      );
-    });
-  };
-
-  const showNotification = async (title, body) => {
-    const channelId = await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
-    });
-
-    await notifee.displayNotification({
-      title,
-      body,
-      android: {
-        channelId,
-      },
-    });
   };
 
   return (
