@@ -27,16 +27,20 @@ import {
 } from 'react-native-responsive-screen';
 import CunstomInput from '../../components/CunstomInput';
 import Toast from 'react-native-simple-toast';
-import { store } from '../../redux/store';
 import {
   getPresignedUrl,
+  getUserDeatil,
   getUserProfile,
   updateUserProfile,
   uploadImageToS3,
 } from '../../api/profileApi';
 import { isTablet } from '../../components/TabletResponsiveSize';
+import { setUser } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { store } from '../../redux/store';
 
 const ProfileDetail = ({ navigation }) => {
+  const dispatch = useDispatch();
   const userId = store?.getState()?.auth?.user;
   const [countryCode, setCountryCode] = useState('IN');
   const [callingCode, setCallingCode] = useState('+91');
@@ -78,56 +82,9 @@ const ProfileDetail = ({ navigation }) => {
   };
 
   // update profile api
-  // const handleUpdateProfile = async () => {
-  //   setLoading(true);
-  //   console.log('Update PuserId?._id:', userId?._id);
-  //   try {
-  //     let cleanImageUrl = '';
-  //     if (selectedImageUri) {
-  //       // 1️⃣ Get presigned URL
-  //       const presRes = await getPresignedUrl();
-  //       const presignedUrl = presRes?.data;
-  //       console.log('Presigned URL:', presignedUrl);
 
-  //       if (!presignedUrl) {
-  //         Toast.show('Presigned URL not received');
-  //       } else {
-  //         console.log('ßß');
-  //       }
 
-  //       // // 2️⃣ Upload image to S3
-  //       if (selectedImageUri) {
-  //         await uploadImageToS3(presignedUrl, selectedImageUri);
-  //       }
 
-  //       // // 3️⃣ Clean S3 URL (remove ?)
-  //       cleanImageUrl = presignedUrl.split('?')[0];
-  //     }
-
-  //     // 4️⃣ Update profile API body
-  //     const body = {
-  //       userId: String(userId?._id),
-  //       userName: String(userName),
-  //       gender: gender,
-  //       email: String(email),
-  //       profilePhotoUrl: cleanImageUrl || '',
-  //     };
-  //     console.log('Update Profile Body:', body);
-
-  //     // 5️⃣ Call update profile API
-  //     const res = await updateUserProfile(body);
-  //     console.log('Update Profile Body:', res);
-
-  //     if (res?.status) {
-  //       Toast.show('Profile updated successfully');
-  //     }
-  //   } catch (error) {
-  //     console.log('Profile Update Error:', error);
-  //     Toast.show('Something went wrong');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleUpdateProfile = async () => {
     setLoading(true);
@@ -161,12 +118,10 @@ const ProfileDetail = ({ navigation }) => {
       // if (gender) body.gender = gender;
       // if (cleanImageUrl) body.profilePhotoUrl = cleanImageUrl;
 
-      console.log('Update Profile Body:', body);
-
       const res = await updateUserProfile(body);
-      console.log(res, "upadet prfile api")
       if (res?.status) {
         Toast.show('Profile updated successfully');
+        await refreshUserDetails();
         navigation.goBack("")
       }
     } catch (error) {
@@ -177,6 +132,19 @@ const ProfileDetail = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+  const refreshUserDetails = async () => {
+    try {
+      setLoading(true);
+      const response = await getUserDeatil(userId?._id)
+      if (response?.status) {
+        dispatch(setUser({ user: response?.data }));
+      }
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
 
   return (
     <View style={Homestyles.workcontainer}>

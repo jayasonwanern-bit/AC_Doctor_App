@@ -16,6 +16,7 @@ const CustomButton = ({
   onPress,
   disabled = false,
   Loader,
+  marginBottom
 }) => {
   return (
     <TouchableOpacity
@@ -25,6 +26,7 @@ const CustomButton = ({
           backgroundColor: btnColor,
           opacity: disabled ? 0.6 : 1,
           marginTop: margingTOP,
+          marginBottom: marginBottom,
           borderColor: btnColor === COLORS.white ? COLORS.black : 'transparent',
           borderWidth: btnColor === COLORS.white ? 1 : 0,
         },
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: hp('1.8%'),
+    fontSize: hp('2%'),
     fontWeight: '600',
   },
 });

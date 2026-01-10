@@ -90,8 +90,8 @@ export default StyleSheet.create({
     marginHorizontal: hp('1.5%'),
   },
   reqtitle: {
-    fontSize: isTablet ? wp(2.5) : wp(3.5),
-    fontFamily: Fonts.semiBold,
+    fontSize: isTablet ? wp(2.9) : wp(3.5),
+    fontFamily: Fonts.bold,
     color: COLORS.black,
     marginBottom: hp('1%'),
   },
@@ -112,11 +112,11 @@ export default StyleSheet.create({
     resizeMode: 'contain',
   },
   reqlabel: {
-    fontSize: isTablet ? wp(1.8) : wp(3),
+    fontSize: isTablet ? wp(2) : wp(3),
     color: COLORS.black,
     textAlign: 'center',
     marginTop: hp('1%'),
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
   },
   uticontainer: {
     margin: hp('1%'),
@@ -173,8 +173,11 @@ export default StyleSheet.create({
     paddingVertical: wp('1.5%'),
   },
   authicon: {
-    width: wp('25%'),
-    height: wp('9%'),
+    width: wp('35%'),
+    height: wp('20%'),
+    marginRight: 25,
+    // borderWidth: 1,
+    // paddingHorizontal: 20
   },
   arrowIcon: { width: wp('4.5%'), height: hp('2.5%') },
   serviceButton: {

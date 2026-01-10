@@ -7,7 +7,7 @@ export const getUserProfile = async userId => {
     const res = await api.get(`${endPoint.USER_PROFILE}${userId}`);
     return res.data;
   } catch (error) {
-    console.log('Profile API Error:', error?.response?.data || error);
+    console.log('Profile API Error:', error?.res?.data || error);
     throw error;
   }
 };
@@ -19,7 +19,7 @@ export const getPresignedUrl = async () => {
     );
     return res.data;
   } catch (error) {
-    console.log('Presigned URL Error:', error?.response?.data || error);
+    console.log('Presigned URL Error:', error?.res?.data || error);
     throw error;
   }
 };
@@ -59,6 +59,18 @@ export const logoutUser = async userId => {
     const res = await api.post(`${endPoint.LOG_OUT}${userId}`);
     return res.data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserDeatil = async (userId) => {
+  try {
+    const res = await api.get(
+      `${endPoint.UPDATE_USERDETAIL}${userId}`,
+    );
+    return res.data;
+  } catch (error) {
+    console.log('uerdetail api:', error?.res?.data || error);
     throw error;
   }
 };

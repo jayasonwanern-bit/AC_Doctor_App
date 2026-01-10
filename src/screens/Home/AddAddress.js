@@ -277,12 +277,10 @@ const AddAddress = ({ navigation, route }) => {
         onBookProcess={() => {
           setModalSlotVisible(false);
           setTimeout(() => {
-            console.log('🚀 Selected Slot:', selectedSlot),
-              navigation.navigate('ViewCart', {
-                proceed: true,
-                selectedSlot: selectedSlot,
-                selectedAddress: selectedAddress,
-              });
+            navigation.navigate('ViewCart', {
+              proceed: true,
+              selectedAddress: selectedAddress,
+            });
           }, 300);
         }}
       />

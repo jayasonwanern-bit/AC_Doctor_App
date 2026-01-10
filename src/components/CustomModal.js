@@ -143,7 +143,7 @@ const CustomModal = ({
             {loading ? (
               <CustomLoader size={40} />
             ) : savedAddresses.length === 0 ? (
-              <Text style={styles.emptyText}>No address found</Text>
+              <Text style={styles.emptyText}>Please Add Your Address</Text>
             ) : (
               <FlatList
                 data={savedAddresses}
@@ -223,7 +223,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    height: 'auto',
+    minHeight: hp(15),
+    maxHeight: hp(60),
     alignSelf: 'center',
     width: wp('100%'),
     paddingBottom: hp(Platform.OS === 'android' ? 4 : 4), // add this line for android
@@ -242,9 +243,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   addButtonText: {
-    fontSize: hp('1.6%'),
-    fontFamily: Fonts.semiBold,
-    color: COLORS.textHeading,
+    fontSize: hp('1.8%'),
+    fontFamily: Fonts.bold,
+    color: COLORS.themeColor,
   },
   inputGroup: {
     marginBottom: hp(2),
@@ -306,11 +307,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     color: COLORS.textHeading,
   },
-  phoneIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+
   addressPhone: {
     fontSize: hp('1.5%'),
     fontFamily: Fonts.medium,
@@ -335,8 +332,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: wp(2.5),
   },
-  icon: {
-    fontSize: hp(2.2),
+  emptyText: {
+    fontSize: hp(2),
+    textAlign: 'center',
+    marginTop: hp(2)
   },
   darkIcon: {
     color: '#333',

@@ -19,7 +19,7 @@ import Header from '../../components/Header';
 import images from '../../assets/images';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { store } from '../../redux/store';
-import { getConsultancy } from '../../api/homeApi';
+import { getAMC, getConsultancy } from '../../api/homeApi';
 import { isTablet } from '../../components/TabletResponsiveSize';
 
 const TABS = ['All', 'Scheduled', 'Completed', 'Cancelled'];
@@ -31,12 +31,12 @@ const MyRequestsScreen = ({ navigation }) => {
 
   useEffect(() => {
     getFreeConsultancy();
+    getAMCDetail()
   }, []);
 
   const getFreeConsultancy = async userId => {
     try {
       const res = await getConsultancy(user?._id);
-
       //  add serviceName to each item
       const updatedData =
         res?.data?.map(item => ({
@@ -47,7 +47,26 @@ const MyRequestsScreen = ({ navigation }) => {
 
       // ✅ set state here
       setData(updatedData);
-      return updatedData;
+    } catch (error) {
+      console.log('API Error:', error?.response?.data || error);
+      throw error;
+    }
+  };
+  const getAMCDetail = async () => {
+    try {
+      const res = await getAMC(user?._id);
+
+      if (res?.status) {
+        const updatedData =
+          res?.data?.map(item => ({
+            ...item,
+            serviceName: 'AMC',
+            status: 'Under Review',
+          })) || [];
+
+        // ✅ set state here
+        setData(updatedData);
+      }
     } catch (error) {
       console.log('API Error:', error?.response?.data || error);
       throw error;
@@ -78,7 +97,7 @@ const MyRequestsScreen = ({ navigation }) => {
         <View style={styles.skybluecard}>
           <View style={styles.cardHeader}>
             <View style={styles.serviceBadge}>
-              <Image source={images.icon} style={styles.icon} />
+              {/* <Image source={images.icon} style={styles.icon} /> */}
               <Text style={styles.serviceText}>{item.serviceName}</Text>
             </View>
             <View style={[styles.statusBadge, { backgroundColor: bg }]}>
@@ -88,7 +107,7 @@ const MyRequestsScreen = ({ navigation }) => {
             </View>
           </View>
           {/* Request ID */}
-          <Text style={styles.requestId}>Request ID {item.requestId}</Text>
+          <Text style={styles.requestId}>Request ID :{item?.leadId}</Text>
         </View>
 
         {/* Date & Time */}
@@ -98,18 +117,18 @@ const MyRequestsScreen = ({ navigation }) => {
               {item.status === 'Cancelled'
                 ? 'Cancellation Reason'
                 : item.status === 'Completed'
-                ? 'Completion Date'
-                : item.status === 'Under Review'
-                ? 'Reviewed on'
-                : 'Inspection Date & Time'}
+                  ? 'Completion Date'
+                  : item.status === 'Under Review'
+                    ? 'Reviewed on'
+                    : 'Inspection Date & Time'}
             </Text>
             <Text style={styles.value}>
-              {item.date.split('T')[0]}, {item.slot}
+              {item?.createdAt.split('T')[0]}, {item.slot}
             </Text>
           </View>
           <View style={{ width: wp(25) }}>
-            <Text style={styles.label}>AC Type</Text>
-            <Text style={styles.value}>{item.brandData}</Text>
+            <Text style={styles.label}>Place Type</Text>
+            <Text style={styles.value}>{item?.place}</Text>
           </View>
         </View>
 
@@ -118,7 +137,7 @@ const MyRequestsScreen = ({ navigation }) => {
           {item.acCount !== null && (
             <View>
               <Text style={styles.label}>Number of AC</Text>
-              <Text style={styles.value}>{item.quantity}</Text>
+              <Text style={styles.value}>{item?.quantity}</Text>
             </View>
           )}
           {item.agent && (
@@ -158,18 +177,18 @@ const MyRequestsScreen = ({ navigation }) => {
         {/* Action Buttons */}
         <View style={styles.actionRow}>
           {item.showReinitiate && (
-            <TouchableOpacity>
+            <View>
               <Text style={styles.reinitiateText}>Reinitiate Request</Text>
-            </TouchableOpacity>
+            </View>
           )}
 
-          <TouchableOpacity>
+          <View>
             <Text style={styles.reinitiateText}>
               {item.status === 'Under Review'
                 ? 'Cancel Request'
                 : item.status === 'Review' && 'Reschedule Request'}
             </Text>
-          </TouchableOpacity>
+          </View>
 
           {item.status === 'Completed' && (
             <View style={styles.ratingRow}>
@@ -190,14 +209,14 @@ const MyRequestsScreen = ({ navigation }) => {
               </View>
             </View>
           )}
-          <TouchableOpacity
+          <View
             style={styles.viewDetailsBtn}
             onPress={() =>
               navigation.navigate('RequestDetails', { request: item })
             }
           >
             <Text style={styles.viewDetailsText}>View details</Text>
-          </TouchableOpacity>
+          </View>
         </View>
       </View>
     );

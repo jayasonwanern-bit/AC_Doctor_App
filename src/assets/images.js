@@ -195,6 +195,8 @@ const images = {
   amcBIcon: require('./icons/amcBIcon.png'),
   OCBicon: require('./icons/OCBicon.png'),
   logoUpdate: require('./icons/logoUpdate.png'),
+  plusicon: require('./icons/plus.png'),
+  minusicon: require('../assets/icons/Minus.png')
 
   // Add more images as needed
 };

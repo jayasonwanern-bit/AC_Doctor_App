@@ -29,6 +29,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, updateQuantity } from '../../redux/slices/cartSlice';
 import Toast from 'react-native-simple-toast';
 import OrderSummaryModel from '../../customScreen/OrderSummaryModel';
+import { rf } from '../../components/Resposive';
 
 const ViewCartScreen = ({ route }) => {
   const serviceDetails = useSelector(state => state.cart.items);
@@ -44,8 +45,9 @@ const ViewCartScreen = ({ route }) => {
   const [bookServices, setBookServices] = useState([]);
   const [Loading, setLoading] = useState(true);
   const [showSummary, setShowSummary] = useState(false);
-  const userDetails = store?.getState()?.auth?.user;
   const routeAddress = route.params?.selectedAddress;
+  const userDetails = store?.getState()?.auth?.user;
+  console.log('userDetails--->', userDetails)
 
   useEffect(() => {
     if (route?.params?.proceed) {
@@ -63,7 +65,7 @@ const ViewCartScreen = ({ route }) => {
   }, []);
 
   const locationText = routeAddress
-    ? `${routeAddress?.name || ''}, ${routeAddress?.address || ''}`
+    ? `${routeAddress?.name || ''} ${routeAddress?.address || ''}`
     : `${userDetails?.name || ''}, ${selectedAddress?.street || ''},
      ${selectedAddress?.city || ''}, ${selectedAddress?.state || ''},
      ${selectedAddress?.zipcode || ''}`;
@@ -87,7 +89,7 @@ const ViewCartScreen = ({ route }) => {
 
   // Define the goToService function for service navigation
   const SERVICE_ROUTE_MAP = {
-    STERILIZATION: 'GasChargeScreen',
+    SERVICE: 'GasChargeScreen',
     REPAIR: 'GasChargeScreen',
     INSTALLATION: 'GasChargeScreen',
     COMMERCIAL_AC: 'CommericalAc',
@@ -108,15 +110,12 @@ const ViewCartScreen = ({ route }) => {
       Toast.show('This feature is on the way. Stay tuned!');
       return;
     }
-
     const routeName = SERVICE_ROUTE_MAP[service.key];
-
     if (!routeName) {
       Toast.show('No route defined for this service');
       return;
     }
-
-    navigation.navigate(routeName, {
+    navigation.replace(routeName, {
       screenName: service.name,
       serviceId: service._id,
       source: 'VIEW_CART',
@@ -192,7 +191,8 @@ const ViewCartScreen = ({ route }) => {
       const response = await postBookingRequest(bodyData);
       if (response?.status === true) {
         Toast.show(response?.message || 'Booking submitted successfully!');
-        navigation.navigate('Tab', { screen: 'Home' });
+        setShowSummary(false)
+        navigation.replace('Tab', { screen: 'Home' });
         dispatch(clearCart());
       } else if (response?.status === false) {
         Toast.show(
@@ -225,7 +225,7 @@ const ViewCartScreen = ({ route }) => {
 
           return (
             <View key={serviceIndex}>
-              <Text style={[styles.headText, { marginBottom: hp('1%') }]}>
+              <Text style={[styles.headText, { marginBottom: hp('1%'), marginTop: 8 }]}>
                 {service.serviceType}
               </Text>
 
@@ -239,7 +239,8 @@ const ViewCartScreen = ({ route }) => {
                         handleDecrement(service.serviceType, ac.name)
                       }
                     >
-                      <Text style={styles.workButtonText}>-</Text>
+                      {/* <Text style={styles.workButtonText}>-</Text> */}
+                      <Image source={images.minusicon} style={styles.decreaIcon} resizeMode='contain' />
                     </TouchableOpacity>
 
                     <Text style={styles.workCount}>{ac.quantity}</Text>
@@ -249,7 +250,8 @@ const ViewCartScreen = ({ route }) => {
                         handleIncrement(service.serviceType, ac.name)
                       }
                     >
-                      <Text style={styles.workButtonText}>+</Text>
+                      <Image source={images.plusicon} style={styles.inscreIcon} resizeMode='contain' />
+                      {/* <Text style={styles.workButtonText}>+</Text> */}
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -471,7 +473,7 @@ const ViewCartScreen = ({ route }) => {
       <View
         style={[
           styles.servicesSection,
-          { height: proceed ? hp('33%') : hp('10%') },
+          { height: hp('10%') },
         ]}
       >
         {proceed && (
@@ -485,33 +487,22 @@ const ViewCartScreen = ({ route }) => {
               images={images}
               hp={hp}
               styles={styles}
+              OnPressBtn={() => useSubmitBooking()}
             />
 
           </>
         )}
 
         <CustomButton
-          buttonName={proceed ? 'Proceed Booking' : 'Add Address & Slot'}
+          buttonName={'Add Address & Slot'}
           margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
           onPress={() => {
-            proceed ? useSubmitBooking() : setModalUserVisible(true);
+            setModalUserVisible(true);
           }}
         />
-        {proceed && (
-          <TouchableOpacity
-            style={{
-              marginVertical: hp('2%'),
-              marginBottom: hp('3%'),
-            }}
-          >
-            <Text style={styles.textBottom}>
-              By proceeding, you agree to our T&C, Privacy & Cancellation
-              Policy.
-            </Text>
-          </TouchableOpacity>
-        )}
+
       </View>
 
       {/* Present address */}
@@ -606,19 +597,22 @@ const styles = StyleSheet.create({
   },
   workText: {
     fontSize: hp('1.6%'),
-    color: COLORS.textHeading,
-    fontFamily: Fonts.medium,
+    color: "#5A5E68",
+    fontFamily: Fonts.extraBold,
+    // marginTop: 100
   },
   workButtonContainer: {
     borderWidth: 1,
     borderRadius: hp('5%'),
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     // marginHorizontal: 5,
-    width: isTablet ? wp(25) : wp(20),
-    height: isTablet ? wp(6) : wp(7),
-    alignSelf: 'center',
+    // width: isTablet ? wp(25) : wp(20),
+    // height: isTablet ? wp(6) : wp(7),
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    // alignSelf: 'center',
     borderColor: '#ddd',
   },
   workButton: {
@@ -632,6 +626,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderColor: '#ddd',
   },
+  decreaIcon: { width: wp(3), height: wp(3), marginRight: 4 },
+  inscreIcon: { width: wp(2.5), height: wp(2.5), marginLeft: 4 },
   workButtonText: {
     fontSize: isTablet ? wp(3) : wp(3),
     color: COLORS.black,
@@ -641,9 +637,9 @@ const styles = StyleSheet.create({
     // position: 'absolute',
   },
   workCount: {
-    fontSize: hp('1.6%'),
+    fontSize: rf(15),
     color: COLORS.themeColor,
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
     marginHorizontal: wp('2%'),
   },
   addText: {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import {
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
 import { getSelectedAddress } from '../../utils/ServiceApi';
-import { COLORS } from '../../utils/colors';
+import { COLORS, Fonts } from '../../utils/colors';
 import CustomSlider from '../../components/CustomSlider';
 import LinearGradient from 'react-native-linear-gradient';
 import styles, { productData, testimonialData } from './HomeScreenStyles';
@@ -30,13 +30,16 @@ import {
 import { getAuthpatner, getServiceList, getBanner } from '../../api/homeApi';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GetLoaction from '../../components/GetLoaction';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { dispatch, store } from '../../redux/store';
 import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
+import { rf } from '../../components/Resposive';
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
+  const serviceDetails = useSelector(state => state.cart.items);
+
   const {
     latitude,
     longitude,
@@ -248,6 +251,29 @@ const HomeScreen = ({ route }) => {
       setLoading(true);
     }
   };
+  const flatListRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!pages?.[0]?.length) return;
+
+    const interval = setInterval(() => {
+      let nextIndex = currentIndex + 1;
+
+      if (nextIndex >= pages[0].length) {
+        nextIndex = 0; // 다시 처음으로
+      }
+
+      flatListRef.current?.scrollToIndex({
+        index: nextIndex,
+        animated: true,
+      });
+
+      setCurrentIndex(nextIndex);
+    }, 1000); // ⏱ scroll time (ms)
+
+    return () => clearInterval(interval);
+  }, [currentIndex]);
 
   return (
     <SafeAreaView
@@ -262,6 +288,18 @@ const HomeScreen = ({ route }) => {
         backgroundColor={'#F4F8FE'}
         translucent={true}
       />
+      {serviceDetails.length === 0 ? (
+        <></>
+      ) : (
+        <TouchableOpacity onPress={() => navigation.navigate("ViewCart")} style={{ backgroundColor: COLORS.themeColor, paddingVertical: 4, paddingHorizontal: 6, position: 'absolute', zIndex: 1, bottom: 30, right: 12, borderRadius: 7 }}>
+
+          <Text style={{ backgroundColor: COLORS.white, paddingHorizontal: 7, borderRadius: 15, position: 'absolute', right: 1, top: -15, color: "black", fontFamily: Fonts.bold, fontSize: rf(14) }}>{serviceDetails.length}</Text>
+          <Image source={images.cart} style={{ width: wp(7), height: wp(7) }} resizeMode='contain' />
+        </TouchableOpacity>
+      )
+
+      }
+
       <OnTopScreen>
         {/* Header with Location Icon and Add Location Text */}
         <View style={styles.header}>
@@ -311,19 +349,21 @@ const HomeScreen = ({ route }) => {
             <CustomLoader size={40} />
           ) : (
             <View style={styles.reqgrid}>
-              {bookServices.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.bookcard}
-                  onPress={() => handleServiceNavigation(item)}
-                >
-                  <FastImage
-                    source={{ uri: item.icon }}
-                    style={styles.reqicon}
-                  />
-                  <Text style={styles.reqlabel}>{item.name}</Text>
-                </TouchableOpacity>
-              ))}
+              {bookServices
+                .filter(item => !['COPPER_PIPING', 'AMC', 'COMMERCIAL_AC'].includes(item.key))
+                .map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.bookcard}
+                    onPress={() => handleServiceNavigation(item)}
+                  >
+                    <FastImage
+                      source={{ uri: item.icon }}
+                      style={styles.reqicon}
+                    />
+                    <Text style={styles.reqlabel}>{item.name}</Text>
+                  </TouchableOpacity>
+                ))}
             </View>
           )}
         </View>
@@ -366,36 +406,37 @@ const HomeScreen = ({ route }) => {
           {loading ? (
             <CustomLoader size={20} />
           ) : (
+            // <FlatList
+            //   data={pages?.[0]}
+            //   horizontal={true}
+            //   // pagingEnabled
+            //   showsHorizontalScrollIndicator={false}
+            //   keyExtractor={(_, index) => `page-${index}`}
+            //   renderItem={(item) => (
+
+            //     <Image source={{ uri: item?.item?.logo }} style={styles.authicon} resizeMode='contain' />
+            //   )
+            //   }
+
+            // />
             <FlatList
-              data={pages}
+              ref={flatListRef}
+              data={pages?.[0]}
               horizontal
-              pagingEnabled
               showsHorizontalScrollIndicator={false}
               keyExtractor={(_, index) => `page-${index}`}
-              renderItem={({ item: page }) => (
-                <View style={styles.authgrid}>
-                  {[0, 1, 2].map(row => (
-                    <View
-                      key={row}
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        marginVertical: 3,
-                      }}
-                    >
-                      {page.slice(row * 1, row * 3 + 1).map((item, idx) => (
-                        <View key={idx} style={styles.authoption}>
-                          <FastImage
-                            source={{ uri: item.logo }} // <-- FIX
-                            style={styles.authicon}
-                            resizeMode={FastImage.resizeMode.contain}
-                          />
-                        </View>
-                      ))}
-                    </View>
-                  ))}
-                </View>
+              renderItem={({ item }) => (
+                <Image
+                  source={{ uri: item?.logo }}
+                  style={styles.authicon}
+                  resizeMode="contain"
+                />
               )}
+              getItemLayout={(data, index) => ({
+                length: 100, // ⚠️ image width
+                offset: 100 * index,
+                index,
+              })}
             />
           )}
         </View>

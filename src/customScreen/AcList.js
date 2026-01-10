@@ -10,11 +10,13 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { COLORS, Fonts } from '../utils/colors';
-import { rf } from '../components/Resposive';
+import { hp, rf } from '../components/Resposive';
 import { isTablet } from '../components/TabletResponsiveSize';
+import images from '../assets/images';
 
 const AcList = forwardRef(({ data, onChange }, ref) => {
   const [acList, setAcList] = useState(data);
@@ -72,13 +74,17 @@ const AcList = forwardRef(({ data, onChange }, ref) => {
       ) : (
         <View style={styles.mainCounterView}>
           <TouchableOpacity onPress={() => updateCount(item.id, 'dec')}>
-            <Text style={styles.counterBtn}>-</Text>
+            {/* <Text style={styles.counterBtn}>-</Text>
+             */}
+            <Image source={images.minusicon} style={{ width: 15, height: 15, marginRight: 4 }} resizeMode='contain' />
           </TouchableOpacity>
 
           <Text style={styles.count}>{item.count}</Text>
 
           <TouchableOpacity onPress={() => updateCount(item.id, 'inc')}>
-            <Text style={styles.counterBtn}>+</Text>
+            <Image source={images.plusicon} style={{ width: 13, height: 13, marginLeft: 4 }} resizeMode='contain' />
+
+            {/* <Text style={styles.counterBtn}>+</Text> */}
           </TouchableOpacity>
         </View>
       )}
@@ -143,12 +149,24 @@ const styles = StyleSheet.create({
     height: 32.5,
   },
   mainCounterView: {
-    width: '25%',
-    flexDirection: 'row',
+    // width: '25%',
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: 'gray',
+    // borderRadius: 20,
+    borderWidth: 1,
+    borderRadius: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 20,
+    flexDirection: 'row',
+    // marginHorizontal: 5,
+    // width: isTablet ? wp(25) : wp(20),
+    // height: isTablet ? wp(6) : wp(7),
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    // alignSelf: 'center',
+    borderColor: '#ddd',
   },
 });

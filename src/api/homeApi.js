@@ -52,9 +52,18 @@ export const postConsultancy = async payload => {
     throw error;
   }
 };
-export const getConsultancy = async userId => {
+export const getConsultancy = async (userId) => {
   try {
     const res = await api.get(`${endPoint.GET_ALLCONSULT}${userId}`);
+    return res.data;
+  } catch (error) {
+    console.log('API Error:', error?.response?.data || error);
+    throw error;
+  }
+};
+export const getAMC = async (userId) => {
+  try {
+    const res = await api.get(`${endPoint.GET_AMC}${userId}`);
     return res.data;
   } catch (error) {
     console.log('API Error:', error?.response?.data || error);
@@ -92,7 +101,7 @@ export const postBookingRequest = async payload => {
   } catch (error) {
     Toast.show(
       error?.response?.data?.message + ' ' + 'First complete your profile' ||
-        error,
+      error,
     );
   }
 };

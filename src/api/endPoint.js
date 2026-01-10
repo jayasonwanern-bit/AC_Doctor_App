@@ -7,6 +7,7 @@ const endPoint = {
   USER_PROFILE: '/user/get-profile/',
   PRE_ASSIGNURL: 'user/profile-update/image-url',
   UPDATE_PROFILE: '/user/profile-update',
+  UPDATE_USERDETAIL: 'user/get-profile/',
   LOG_OUT: '/user/logout/',
 
   // Address service
@@ -28,6 +29,7 @@ const endPoint = {
   // free CONSULTANCY
   CREATE_CONSULT: 'user/consultancy/create',
   GET_ALLCONSULT: 'user/consultancy-list/', //GET
+  GET_AMC: 'user/lead/list/', //GET
 
   // Error code
   ERROR_POST: 'user/error-code/list',

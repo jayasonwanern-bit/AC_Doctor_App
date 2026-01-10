@@ -7,8 +7,10 @@ import WorkInfo from '../../customScreen/WorkInfo';
 import AcList from '../../customScreen/AcList';
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrMergeItems } from '../../redux/slices/cartSlice';
+import { useNavigation } from '@react-navigation/native';
 
-const GasChargeScreen = ({ navigation, route }) => {
+const GasChargeScreen = ({ route }) => {
+  const navigation = useNavigation()
   const { screenName, serviceId } = route?.params;
   const { source = 'HOME' } = route.params || {};
   const dispatch = useDispatch();
@@ -38,8 +40,8 @@ const GasChargeScreen = ({ navigation, route }) => {
         items,
       }),
     );
-
-    navigation.navigate('ViewCart');
+    console.log('ites----', items)
+    navigation.replace('ViewCart');
   };
 
   const buildPayloadFromACData = () => {
@@ -56,11 +58,12 @@ const GasChargeScreen = ({ navigation, route }) => {
   const totalSelected = acData.reduce((sum, ac) => sum + (ac.count || 0), 0);
 
   const handleBack = () => {
-    if (source === 'HOME') {
-      navigation.navigate('Tab', { screen: 'Home' }); // back to home
-    } else {
-      navigation.navigate('ViewCart'); // back to cart
-    }
+    navigation.goBack()
+    // if (source === 'HOME') {
+    //   navigation.navigate('Tab', { screen: 'Home' }); // back to home
+    // } else {
+    //   navigation.navigate('ViewCart'); // back to cart
+    // }
   };
 
   return (

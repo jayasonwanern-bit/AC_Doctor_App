@@ -1,16 +1,18 @@
 import React from 'react';
-import { Modal, View, Text, StyleSheet } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import CustomButton from '../components/CustomButton';
+import { COLORS } from '../utils/colors';
 
 const OrderSummaryModal = ({
     visible,
     onClose,
-    routeAddress,
-    userDetails,
-    selectedAddress,
-    selectedSlot,
+    locationText,
+    phoneText,
+    slotText,
     images,
     hp,
+    OnPressBtn
 }) => {
     return (
         <Modal
@@ -25,13 +27,7 @@ const OrderSummaryModal = ({
                     {/* LOCATION */}
                     <View style={styles.row}>
                         <FastImage source={images.locationRed} style={styles.icon} />
-                        <Text style={styles.text}>
-                            {routeAddress
-                                ? `${routeAddress?.name || ''}, ${routeAddress?.address || ''}`
-                                : `${userDetails?.name || ''}, ${selectedAddress?.street || ''},
-                   ${selectedAddress?.city || ''}, ${selectedAddress?.state || ''},
-                   ${selectedAddress?.zipcode || ''}`}
-                        </Text>
+                        <Text style={styles.text}>{locationText}</Text>
                     </View>
 
                     {/* PHONE */}
@@ -42,7 +38,7 @@ const OrderSummaryModal = ({
                             resizeMode="contain"
                         />
                         <Text style={styles.text}>
-                            {userDetails?.countryCode}-{userDetails?.phoneNumber}
+                            {phoneText}
                         </Text>
                     </View>
 
@@ -50,10 +46,31 @@ const OrderSummaryModal = ({
                     <View style={[styles.row, { marginBottom: hp('2%') }]}>
                         <FastImage source={images.timeRed} style={styles.icon} />
                         <Text style={styles.text}>
-                            {selectedSlot?.date}/{selectedSlot?.monthNumber}/
-                            {selectedSlot?.year}, {selectedSlot?.Timeslot}
+                            {slotText}
                         </Text>
                     </View>
+
+                    <CustomButton
+                        buttonName={'Proceed Booking'}
+                        btnTextColor={COLORS.white}
+                        btnColor={COLORS.themeColor}
+                        onPress={() => {
+                            OnPressBtn()
+                        }}
+                        marginBottom={10}
+                    />
+
+                    <TouchableOpacity
+                        style={{
+                            marginVertical: 4,
+                            marginBottom: 5, alignSelf: 'center'
+                        }}
+                    >
+                        <Text style={styles.text}>
+                            By proceeding, you agree to our <Text style={styles.textHeighlight}>T&C ,Privacy & Cancellation
+                                Policy</Text>
+                        </Text>
+                    </TouchableOpacity>
 
                 </View>
             </View>
@@ -86,8 +103,14 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     text: {
-        flex: 1,
         fontSize: 14,
         color: '#222',
+        fontWeight: '500'
+    },
+    textHeighlight: {
+        fontSize: 14,
+        color: '#2a80e9',
+        fontWeight: '500',
+        textDecorationLine: 'underline', textDecorationColor: '#2a80e9',
     },
 });

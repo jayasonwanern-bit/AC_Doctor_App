@@ -1,4 +1,3 @@
-// screens/MyRequestsScreen.js
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -19,53 +18,63 @@ import { getBookingList } from '../../api/settingApi';
 import { store } from '../../redux/store';
 import CustomLoader from '../../components/CustomLoader';
 
-const TABS = ['All', 'Booked', 'Completed', 'Cancelled'];
+
 
 const MyBookingScreen = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState('All');
+  const [activeTab, setActiveTab] = useState('ALL');
   const [loading, setLoading] = useState(false);
-  const [allRequests, setaAllRequests] = useState([]);
   const userId = store?.getState()?.auth?.user;
+  const [allRequests, setAllRequests] = useState([]);
+
+  const TABS = [
+    { label: 'All', value: 'ALL' },
+    { label: 'Booked', value: 'BOOKED' },
+    { label: 'Completed', value: 'COMPLETED' },
+    { label: 'Cancelled', value: 'CANCELLED' },
+  ];
+
 
   useEffect(() => {
     getBrandList();
   }, []);
+  useEffect(() => {
+    console.log('ACTIVE TAB:', activeTab);
+    console.log('ALL REQUESTS:', allRequests);
+  }, [activeTab, allRequests]);
+
 
   const getBrandList = async () => {
     try {
       setLoading(true);
+
       const res = await getBookingList(userId._id);
+      // ✅ FIX HERE
+      if (res?.success) {
+        const formattedData = res?.data.map(booking => ({
+          id: booking?._id,
+          bookingId: booking?.bookingId || '',
+          status: booking?.status || '',
+          slot: booking?.slot || '',
+          date: booking?.date,
 
-      if (res?.success && Array.isArray(res?.data)) {
-        const flattenedData = res.data.flatMap(booking =>
-          (booking.serviceDetails || []).map(service => ({
-            id: booking?._id,
-            bookingId: booking?.bookingId,
-            order_id: booking?.order_id,
-            status: booking?.status,
-            slot: booking?.slot,
-            date: booking?.date,
-            createdAt: booking?.createdAt,
+          amount: booking?.amount?.$numberDecimal
+            ? Number(booking.amount.$numberDecimal)
+            : 0,
 
-            amount: booking.amount?.$numberDecimal
-              ? Number(booking.amount.$numberDecimal)
-              : 0,
+          acTypes: booking?.acTypes || [],
+          serviceType: booking?.serviceType || [],
 
-            // ✅ service-level data (FIXED)
-            quantity: service.quantity,
-            acType: service.acType,
-            serviceId: service.service_id || '',
-            serviceType: service.serviceType,
+          orderId: booking?.order_id || '',
+          payment_status: booking?.payment_status || 'Pending',
+          order_amount: booking?.order_amount || 0,
 
-            technicianName: booking?.technicianName || 'Not Assigned',
-            technicianPhone: booking?.technicianPhone || '',
-            orderId: booking?.order_id || '',
-            payment_status: booking?.payment_status || 'Pending',
-            order_amount: booking?.order_amount || 0,
-          })),
-        );
+          technicianName: booking?.assigned_to?.name || 'Not Assigned',
+          technicianPhone: booking?.assigned_to?.phone || '',
+        }));
 
-        setaAllRequests(flattenedData);
+        setAllRequests(formattedData);
+      } else {
+        console.log('API SUCCESS FALSE --->', res);
       }
     } catch (error) {
       console.log('Booking Error:', error);
@@ -74,16 +83,14 @@ const MyBookingScreen = ({ navigation }) => {
     }
   };
 
+
+
   // Filter by Tab
-  const filteredRequests = allRequests.filter(item => {
-    if (activeTab === 'All') return true;
-    if (activeTab === 'Booked')
-      return ['BOOKED', 'BOOKED', 'Upcoming'].includes(item.status);
-    if (activeTab === 'Completed') return item.status === 'COMPLETED';
-    if (activeTab === 'Cancelled') return item.status === 'CANCELLED';
-    return false;
-  });
-  console.log('Filtered Requests:', allRequests);
+  const filteredRequests =
+    activeTab === 'ALL'
+      ? allRequests
+      : allRequests.filter(item => item.status === activeTab);
+
 
   const getStatusStyle = status => {
     return STATUS_CONFIG[status] || { bg: '#f8eccaff', text: '#f0980aff' };
@@ -97,7 +104,7 @@ const MyBookingScreen = ({ navigation }) => {
         <View style={styles.cardHeader}>
           <View style={styles.serviceBadge}>
             <Image source={images.splitAC} style={styles.icon} />
-            <Text style={styles.serviceText}>{item?.serviceType}</Text>
+            <Text style={styles.serviceText} numberOfLines={1}>{item?.acTypes?.join(', ')}</Text>
           </View>
           <View style={[styles.statusBadge, { backgroundColor: bg }]}>
             <Text style={[styles.statusText, { color: text }]}>
@@ -109,11 +116,11 @@ const MyBookingScreen = ({ navigation }) => {
         <View style={styles.row}>
           <View style={{ width: wp(25) }}>
             <Text style={styles.label}>Category</Text>
-            <Text style={styles.value}>Repair</Text>
+            <Text style={styles.value} numberOfLines={1}>{item?.acTypes?.join(', ')}</Text>
           </View>
           <View style={{ width: wp(35) }}>
             <Text style={styles.label}>Service Types</Text>
-            <Text style={styles.value}>{item?.serviceType}</Text>
+            <Text style={styles.value}>{item?.serviceType?.join(', ')}</Text>
           </View>
         </View>
 
@@ -223,9 +230,9 @@ const MyBookingScreen = ({ navigation }) => {
       <View style={styles.tabContainer}>
         {TABS.map(tab => (
           <TouchableOpacity
-            key={tab}
+            key={tab.value}
+            onPress={() => setActiveTab(tab.value)}
             style={[styles.tab, activeTab === tab && styles.activeTab]}
-            onPress={() => setActiveTab(tab)}
           >
             <Text
               style={[
@@ -233,7 +240,7 @@ const MyBookingScreen = ({ navigation }) => {
                 activeTab === tab && styles.activeTabText,
               ]}
             >
-              {tab}
+              {tab.label}
             </Text>
           </TouchableOpacity>
         ))}
@@ -342,6 +349,7 @@ const styles = StyleSheet.create({
     fontSize: hp(1.6),
     color: '#666',
     fontWeight: '600',
+    width: wp(25)
   },
   icon: {
     width: wp(6),
@@ -367,19 +375,19 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: hp(1),
+    marginBottom: hp(1.5),
     alignItems: 'flex-start',
     paddingHorizontal: wp(4),
   },
   label: {
-    fontSize: hp(1.6),
+    fontSize: hp(1.8),
     color: '#666',
     flex: 1,
     textAlign: 'left',
     marginBottom: hp(0.3),
   },
   value: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.6),
     color: COLORS.black,
     fontWeight: '500',
     textAlign: 'left',
@@ -410,7 +418,7 @@ const styles = StyleSheet.create({
   },
   reinitiateText: {
     color: COLORS.themeColor,
-    fontSize: hp(1.5),
+    fontSize: hp(1.6),
     fontFamily: Fonts.semiBold,
     borderBottomColor: COLORS.themeColor,
     borderBottomWidth: 1,
