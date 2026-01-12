@@ -117,6 +117,7 @@ const AMCFrom = ({ navigation }) => {
       {/* Only TextInputs move with keyboard */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
+        extraScrollHeight={hp(10)}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView

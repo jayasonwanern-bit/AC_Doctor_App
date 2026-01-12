@@ -213,7 +213,7 @@ const ProfileDetail = ({ navigation }) => {
               {/* // /> */}
             </View>
             {/* Email Address */}
-            <CunstomInput
+            {/* <CunstomInput
               label="Email Address"
               placeholder="Enter Email"
               keyboardType="email-address"
@@ -223,9 +223,9 @@ const ProfileDetail = ({ navigation }) => {
               MarginBottom={hp('1%')}
               MarginTop={isTablet ? hp(7) : hp(2)}
               onSubmitEditing={() => Keyboard.dismiss()}
-            />
+            /> */}
             {/* Gender */}
-            <CustomPicker
+            {/* <CustomPicker
               label="Gender"
               value={gender}
               onChange={value => setGender(value)}
@@ -234,10 +234,10 @@ const ProfileDetail = ({ navigation }) => {
                 { label: 'FEMALE', value: 'FEMALE' },
                 { label: 'OTHER', value: 'OTHER' },
               ]}
-              width={wp(90)}
+              width={wp(95)}
               height={hp('5%')}
               borderRadius={hp('4%')}
-            />
+            /> */}
           </ScrollView>
         </>
       )}

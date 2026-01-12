@@ -1088,17 +1088,22 @@ export const faqData = [
   {
     question: 'Why is my AC not cooling properly?',
     answer:
-      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      "This can happen due to dirty filters, low gas, blocked coils, thermostat issues, poor outdoor ventilation, or internal faults. Regular servicing helps fix these issues.",
   },
   {
     question: 'How often should I service my AC?',
     answer:
-      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      "Home ACs need servicing every 3–6 months. Commercial ACs every 2–3 months. Always service before summer.",
   },
   {
-    question: 'How often should I service my AC?',
+    question: 'Does regular AC servicing reduce \n electricity bills?',
     answer:
-      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      "Yes. A well-maintained AC uses less power and cools faster, helping reduce electricity costs.",
+  },
+  {
+    question: 'When should I book AC servicing?',
+    answer:
+      "Book servicing before peak summer or whenever cooling performance drops.",
   },
 ];
 

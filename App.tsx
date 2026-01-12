@@ -101,7 +101,7 @@ export default function App() {
 
     if (forceUpdate && isUpdateRequired(currentVersion, latestVersion)) {
       Alert.alert(
-        'Update Required',
+        'Update Available',
         updateMessage,
         [
           {
