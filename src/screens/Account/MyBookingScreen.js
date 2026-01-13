@@ -42,6 +42,7 @@ const MyBookingScreen = ({ navigation }) => {
     console.log('ALL REQUESTS:', allRequests);
   }, [activeTab, allRequests]);
 
+  console.log('gfdfgdhggh---', userId)
 
   const getBrandList = async () => {
     try {
@@ -212,7 +213,7 @@ const MyBookingScreen = ({ navigation }) => {
             style={styles.viewDetailsBtn}
             onPress={() =>
               navigation.navigate('BookingDetailsScreen', {
-                bookingId: item._id,
+                bookingId: item,
               })
             }
           >

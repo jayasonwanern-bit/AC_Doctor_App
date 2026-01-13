@@ -8,30 +8,16 @@ import { getBookingDetail } from '../../api/settingApi';
 import Header from '../../components/Header';
 import { COLORS, Fonts } from '../../utils/colors';
 import CustomLoader from '../../components/CustomLoader';
+import { useNavigation } from '@react-navigation/native';
 
-const BookingDetailsScreen = ({ navigation, route }) => {
-  const { bookingId } = route.params;
-  console.log('bookingId--->', bookingId);
+const BookingDetailsScreen = ({ route }) => {
+  const navigation = useNavigation();
+  const bookingData = route?.params?.bookingId;
+  console.log('bookingId---', bookingData)
   const [loading, setLoading] = useState(false);
-  const [bookingData, setBookingData] = useState(null);
 
-  useEffect(() => {
-    getBrandList();
-  }, []);
 
-  const getBrandList = async () => {
-    try {
-      setLoading(true);
-      console.log('bookingId--->', bookingId);
-      const res = await getBookingDetail(bookingId);
-      console.log('res get--->', res.data);
-      setBookingData(res?.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   if (loading) {
     return (
@@ -53,54 +39,43 @@ const BookingDetailsScreen = ({ navigation, route }) => {
 
           <View style={styles.section}>
             <Text style={styles.label}>Booking ID:</Text>
-            <Text style={styles.value}>{bookingData.bookingId}</Text>
+            <Text style={styles.value}>{bookingData?.bookingId}</Text>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>Status:</Text>
-            <Text style={styles.value}>{bookingData.status}</Text>
+            <Text style={styles.value}>{bookingData?.status}</Text>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>Service Date:</Text>
             <Text style={styles.value}>
-              {new Date(bookingData.date).toDateString()}
+              {bookingData?.date?.split('T')[0]},{bookingData?.slot}
             </Text>
           </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>Amount:</Text>
-            <Text style={styles.value}>₹{bookingData.amount}</Text>
+            <Text style={styles.value}>₹{bookingData?.amount}</Text>
           </View>
 
           <Text style={styles.subHeading}>Service Details</Text>
-          {bookingData.serviceDetails?.map((item, index) => (
-            <View key={index} style={styles.card}>
-              {item.as_details?.map((detail, i) => (
-                <View key={i}>
-                  <Text style={styles.label}>Service Type:</Text>
-                  <Text style={styles.value}>{detail.serviceType}</Text>
+          <View style={styles.section}>
+            <Text style={styles.label}>Service Type:</Text>
+            <Text style={styles.value}>{bookingData?.serviceType?.join(', ')}</Text>
+          </View>
 
-                  <Text style={styles.label}>Quantity:</Text>
-                  <Text style={styles.value}>{detail.quantity}</Text>
 
-                  <Text style={styles.label}>Comment:</Text>
-                  <Text style={styles.value}>{detail.comment || 'N/A'}</Text>
-                </View>
-              ))}
-            </View>
-          ))}
 
-          <Text style={styles.subHeading}>Address Details</Text>
-          {bookingData.addressDetails?.map((addr, index) => (
-            <View key={index} style={styles.card}>
-              <Text style={styles.value}>
-                {addr.house}, {addr.street} {addr.city}, {addr.state} -{' '}
-                {addr.zipcode}
-              </Text>
-              <Text style={styles.value}>Landmark: {addr.landmark}</Text>
-            </View>
-          ))}
+
+
+          <Text style={styles.subHeading}>Payment Details</Text>
+
+          <View style={styles.section}>
+            <Text style={styles.label}>Payment status</Text>
+            <Text style={styles.value}>{bookingData?.payment_status}</Text>
+          </View>
+
         </ScrollView>
       )}
     </View>

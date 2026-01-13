@@ -13,7 +13,7 @@ export const getBookingList = async userId => {
 };
 
 // booking Detail
-export const getBookingDetail = async bookId => {
+export const getBookingDetail = async (bookId) => {
   try {
     const res = await api.get(`${endPoint.BOOKING_DETAIL}${bookId}`);
     return res.data;

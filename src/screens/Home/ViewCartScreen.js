@@ -719,6 +719,7 @@ const styles = StyleSheet.create({
     width: wp('23%'),
     alignItems: 'center',
     padding: hp('0.2%'),
+    paddingVertical: hp('0.6%'),
     borderWidth: wp('0.4%'),
     borderColor: '#E0E0E0',
     borderRadius: wp('4%'),

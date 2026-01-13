@@ -182,12 +182,12 @@ const BookingSlotModal = ({
                   onPress={() => setSelectedDay(index)}
                 >
                   <Text
-                    style={[styles.dateNumber, disabled && styles.disabledText]}
+                    style={[selectedDay === index && styles.dateNumber, disabled && styles.disabledText]}
                   >
                     {day.date}
                   </Text>
                   <Text
-                    style={[styles.dayName, disabled && styles.disabledText]}
+                    style={[selectedDay === index && styles.dayName, disabled && styles.disabledText]}
                   >
                     {day.day}
                   </Text>
@@ -208,8 +208,8 @@ const BookingSlotModal = ({
                 ]}
                 onPress={() => setSelectedTime(index)}
               >
-                <Text style={styles.timeLabel}>{slot.label}</Text>
-                <Text style={styles.timeText}>{slot.time}</Text>
+                <Text style={selectedTime === index ? styles.selectedtimeLabel : styles.timeLabel}>{slot.label}</Text>
+                <Text style={selectedTime === index ? styles.selectedtimeLabel : styles.timeText}>{slot.time}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -305,15 +305,17 @@ const styles = StyleSheet.create({
     marginRight: wp(2.5),
   },
   selectedDay: {
-    borderColor: '#1DA1F2',
+    backgroundColor: COLORS.themeColor,
   },
   dateNumber: {
     fontSize: hp(1.6),
     fontWeight: '500',
+    color: 'white'
   },
   dayName: {
     fontSize: hp(1.5),
     color: '#151414ff',
+    color: 'white'
   },
   reasonInput: {
     borderWidth: 1,
@@ -342,7 +344,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   selectedTime: {
-    borderColor: '#1DA1F2',
+    backgroundColor: COLORS.themeColor,
     borderWidth: 1,
     borderRadius: wp(3),
   },
@@ -351,6 +353,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'left',
     color: '#666',
+    marginBottom: wp(1),
+  },
+  selectedtimeLabel: {
+    fontSize: hp(1.5),
+    fontWeight: '500',
+    textAlign: 'left',
+    color: '#f7f4f4',
     marginBottom: wp(1),
   },
   timeText: {
@@ -377,9 +386,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
     borderColor: 'grey',
   },
-
   disabledText: {
-    color: '#b5b5b5',
+    color: '#757272',
+    fontSize: hp(1.6),
+    fontWeight: '500',
   },
 });
 
