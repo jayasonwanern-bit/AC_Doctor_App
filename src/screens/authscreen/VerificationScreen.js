@@ -41,6 +41,7 @@ const VerificationScreen = ({ navigation, route }) => {
     startCountdown(30);
   }, [startCountdown]);
 
+
   const handleVerify = async () => {
     setLoader(true);
     if (otp.length !== 4) {
@@ -134,6 +135,22 @@ const VerificationScreen = ({ navigation, route }) => {
     }
   };
 
+  const onOtpChange = text => {
+    // sirf numbers allow
+    const cleaned = text.replace(/\D/g, '');
+
+    // max 4 digit hi rakho
+    const otpValue = cleaned.slice(0, 4);
+
+    setOtp(otpValue);
+
+    // 4 digit complete hote hi keyboard band
+    if (otpValue.length === 4) {
+      Keyboard.dismiss();
+    }
+  };
+
+
   return (
     <SafeAreaView style={styles.SafeAreaViewContainer}>
       <StatusBar barStyle="dark-content" />
@@ -168,36 +185,19 @@ const VerificationScreen = ({ navigation, route }) => {
               We've sent a 4-digit code to {callingCode}{' '}
               {phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1XXXX$3')}
             </Text>
+
             <OTPTextInput
               inputCount={4}
               keyboardType="number-pad"
               autoFocus={false}
-              // 👇 this handles COPY/PASTE (1234)
-              handleTextChange={text => {
-                if (/^\d{4}$/.test(text)) {
-                  setOtp(text);
-                  Keyboard.dismiss();
-                }
-              }}
-              handleCellTextChange={(text, index) => {
-                // allow only ONE digit per box
-                if (!/^\d?$/.test(text)) return;
-                let otpArray = otp.split('');
-                otpArray[index] = text;
-                const updatedOtp = otpArray.join('');
-
-                setOtp(updatedOtp);
-
-                if (updatedOtp.length === 4) {
-                  Keyboard.dismiss();
-                }
-              }}
+              handleTextChange={onOtpChange}
               defaultValue={otp}
               containerStyle={styles.otpContainer}
               textInputStyle={styles.otpInput}
-              tintColor={COLORS.themeColor} // Active box color
-              offTintColor={COLORS.borderColor} // Inactive box color
+              tintColor={COLORS.themeColor}
+              offTintColor={COLORS.borderColor}
             />
+
             {error && <Text style={styles.errorText}>{error}</Text>}
             <TouchableOpacity
               onPress={() => {
