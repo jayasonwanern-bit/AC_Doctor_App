@@ -35,7 +35,7 @@ import { dispatch, store } from '../../redux/store';
 import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
-import { rf } from '../../components/Resposive';
+
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
   const serviceDetails = useSelector(state => state.cart.items);
@@ -291,9 +291,9 @@ const HomeScreen = ({ route }) => {
       {serviceDetails.length === 0 ? (
         <></>
       ) : (
-        <TouchableOpacity onPress={() => navigation.navigate("ViewCart")} style={{ backgroundColor: COLORS.themeColor, paddingVertical: 4, paddingHorizontal: 6, position: 'absolute', zIndex: 1, bottom: 30, right: 12, borderRadius: 7 }}>
+        <TouchableOpacity onPress={() => navigation.navigate("ViewCart")} style={styles.cartViewIcon}>
 
-          <Text style={{ backgroundColor: COLORS.white, paddingHorizontal: 7, borderRadius: 15, position: 'absolute', right: 1, top: -15, color: "black", fontFamily: Fonts.bold, fontSize: rf(14) }}>{serviceDetails.length}</Text>
+          <Text style={styles.TotalcoutnCart}>{serviceDetails.length}</Text>
           <Image source={images.cart} style={{ width: wp(7), height: wp(7) }} resizeMode='contain' />
         </TouchableOpacity>
       )

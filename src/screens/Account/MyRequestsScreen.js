@@ -28,55 +28,60 @@ const MyRequestsScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('All');
   const user = store?.getState()?.auth?.user;
   const [data, setData] = useState([]);
+  const [freeConsultancyList, setFreeConsultancyList] = useState([]);
+  const [amcList, setAmcList] = useState([]);
+
 
   useEffect(() => {
     getFreeConsultancy();
     getAMCDetail()
   }, []);
 
-  const getFreeConsultancy = async userId => {
+  const getFreeConsultancy = async () => {
     try {
       const res = await getConsultancy(user?._id);
-      //  add serviceName to each item
+
       const updatedData =
         res?.data?.map(item => ({
           ...item,
           serviceName: 'Free Consultancy',
           status: 'Under Review',
+          requestType: 'FREE_CONSULTANCY', // ✅ IMPORTANT
         })) || [];
 
-      // ✅ set state here
-      setData(updatedData);
+      setFreeConsultancyList(updatedData);
     } catch (error) {
-      console.log('API Error:', error?.response?.data || error);
-      throw error;
+      console.log(error);
     }
   };
+
   const getAMCDetail = async () => {
     try {
       const res = await getAMC(user?._id);
 
-      if (res?.status) {
-        const updatedData =
-          res?.data?.map(item => ({
-            ...item,
-            serviceName: 'AMC',
-            status: 'Under Review',
-          })) || [];
+      const updatedData =
+        res?.data?.map(item => ({
+          ...item,
+          serviceName: 'AMC',
+          status: 'Under Review',
+          requestType: 'AMC', // ✅ IMPORTANT
+        })) || [];
 
-        // ✅ set state here
-        setData(updatedData);
-      }
+      setAmcList(updatedData);
     } catch (error) {
-      console.log('API Error:', error?.response?.data || error);
-      throw error;
+      console.log(error);
     }
   };
 
-  // console.log('Consultancy Requests ===>', data);
+
+  const combinedList = [
+    ...freeConsultancyList,
+    ...amcList,
+  ];
+
 
   // Filter by Tab
-  const filteredRequests = data.filter(item => {
+  const filteredRequests = combinedList.filter(item => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Scheduled')
       return ['Scheduled', 'Re-scheduled'].includes(item.status);
@@ -329,7 +334,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   skybluecard: {
-    width: isTablet ? wp(93) : wp(93),
+    width: isTablet ? wp(93) : wp(92),
     backgroundColor: COLORS.lightSky,
     paddingHorizontal: wp(4),
     paddingTop: wp(1.8),

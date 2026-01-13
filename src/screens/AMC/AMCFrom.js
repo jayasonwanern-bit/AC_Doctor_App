@@ -88,7 +88,7 @@ const AMCFrom = ({ navigation }) => {
       userId: userId?._id,
       phoneNumber: formData.phoneNumber,
       place: formData.placeType.toLowerCase(),
-      address: formData.address,
+      address: formData.address.trim(),
       comment: formData.comment || '',
       quantity: acDetails.reduce((sum, item) => sum + item.quantity, 0),
       acDetails: acDetails,
@@ -103,8 +103,10 @@ const AMCFrom = ({ navigation }) => {
     } catch (error) {
       setLoading(false);
       console.log('Error submitting AMC request:', error);
-      Toast.show('Failed to submit AMC request. Please try again.');
-    } finally {
+
+      Toast.show(getErrorMessage(error));
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -117,7 +119,6 @@ const AMCFrom = ({ navigation }) => {
       {/* Only TextInputs move with keyboard */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        extraScrollHeight={hp(10)}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
@@ -197,7 +198,7 @@ const AMCFrom = ({ navigation }) => {
             <CunstomInput
               label="Address"
               placeholder="Type here..."
-              value={formData.modalName}
+              value={formData.address}
               onChangeText={val => handleInputChange('address', val)}
               borderRadius={hp('1%')}
               MarginTop={hp('1%')}

@@ -142,7 +142,7 @@ const ManageAddressScreen = ({ navigation }) => {
         <View style={styles.details}>
           <View style={styles.headerRow}>
             <Text style={styles.name}>{userDetail.name}</Text>
-            <Text style={styles.type}>{item.landmark}</Text>
+            <Text style={[styles.type, { backgroundColor: item.landmark !== '' ? COLORS.lightSky : '' }]}>{item.landmark}</Text>
             {item._id === selectedId && (
               <View style={styles.defaultBadge}>
                 <Text style={styles.defaultText}>Default</Text>
@@ -190,8 +190,6 @@ const ManageAddressScreen = ({ navigation }) => {
         {loading ? (
           <CustomLoader size={40} />
         ) : (
-          // <ScrollView style={{ flexGrow: 1, backgroundColor: "red" }}>
-
           <FlatList
             scrollEnabled={false}
             data={addresses}
@@ -201,9 +199,6 @@ const ManageAddressScreen = ({ navigation }) => {
             showsVerticalScrollIndicator={false}
           // contentContainerStyle={styles.list}
           />
-
-
-          // </ScrollView>
         )
         }
         <TouchableOpacity
@@ -224,7 +219,6 @@ const ManageAddressScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: '#f8f9fa',
   },
   title: {
@@ -235,7 +229,6 @@ const styles = StyleSheet.create({
   },
   list: {
     // paddingBottom: hp(5),
-
   },
   addressCard: {
     flexDirection: 'row',
@@ -292,7 +285,6 @@ const styles = StyleSheet.create({
   type: {
     fontSize: hp(1.4),
     color: COLORS.textColor,
-    backgroundColor: COLORS.lightSky,
     paddingHorizontal: wp(2),
     paddingVertical: hp(0.2),
     borderRadius: wp(1),

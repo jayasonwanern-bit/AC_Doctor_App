@@ -100,7 +100,7 @@ export const postBookingRequest = async payload => {
     return res.data;
   } catch (error) {
     Toast.show(
-      error?.response?.data?.message + ' ' + 'First complete your profile' ||
+      error?.response?.data?.message ||
       error,
     );
   }

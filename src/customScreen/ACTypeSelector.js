@@ -185,21 +185,17 @@ const ACTypeSelector = ({
                         <Text style={styles.addButtonText}> + Add</Text>
                       </TouchableOpacity>
                     ) : (
-                      <>
+                      <View style={styles.minusButton}>
                         <TouchableOpacity
-                          style={styles.minusButton}
                           onPress={() => handleMinusItem(item.name)}
                         >
                           <Text style={styles.minusButtonText}>-</Text>
                         </TouchableOpacity>
                         <Text style={styles.countText}>{count}</Text>
-                        <TouchableOpacity
-                          style={styles.addButton}
-                          onPress={() => handleAddItem(item.name)}
-                        >
+                        <TouchableOpacity onPress={() => handleAddItem(item.name)}>
                           <Text style={styles.addButtonText}>+</Text>
                         </TouchableOpacity>
-                      </>
+                      </View>
                     )}
                   </TouchableOpacity>
                 );
@@ -351,8 +347,10 @@ const styles = StyleSheet.create({
     padding: 6,
     borderWidth: 1,
     borderColor: COLORS.textHeading,
-    borderRadius: 15,
+    borderRadius: 20,
     paddingHorizontal: 12.5,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   minusButtonText: {
     fontSize: 13,

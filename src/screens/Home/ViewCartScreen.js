@@ -65,10 +65,19 @@ const ViewCartScreen = ({ route }) => {
   }, []);
 
   const locationText = routeAddress
-    ? `${routeAddress?.name || ''} ${routeAddress?.address || ''}`
-    : `${userDetails?.name || ''}, ${selectedAddress?.street || ''},
-     ${selectedAddress?.city || ''}, ${selectedAddress?.state || ''},
-     ${selectedAddress?.zipcode || ''}`;
+    ? [routeAddress?.name, routeAddress?.address]
+      .filter(Boolean)
+      .join(', ')
+    : [
+      userDetails?.name,
+      selectedAddress?.street,
+      selectedAddress?.city,
+      selectedAddress?.state,
+      selectedAddress?.zipcode,
+    ]
+      .filter(Boolean)
+      .join(', ');
+
 
   const phoneText = `${userDetails?.countryCode}-${userDetails?.phoneNumber}`;
 
@@ -165,7 +174,7 @@ const ViewCartScreen = ({ route }) => {
       Toast.show('Please select ACs before submitting.');
       return;
     }
-    const formattedDate = `${selectedSlot?.date}/${selectedSlot?.monthNumber}/${selectedSlot?.year}`;
+    const formattedDate = `${selectedSlot?.year}-${selectedSlot?.monthNumber}-${selectedSlot?.date}`;
 
     const bodyData = {
       user_id: userDetails._id,
@@ -187,8 +196,11 @@ const ViewCartScreen = ({ route }) => {
       })),
     };
 
+    console.log('bodyData----->', bodyData);
     try {
       const response = await postBookingRequest(bodyData);
+      console.log('response----->', response);
+
       if (response?.status === true) {
         Toast.show(response?.message || 'Booking submitted successfully!');
         setShowSummary(false)
@@ -229,33 +241,47 @@ const ViewCartScreen = ({ route }) => {
                 {service.serviceType}
               </Text>
 
-              {visibleACs.map((ac, acIndex) => (
-                <View key={acIndex} style={styles.workItem}>
-                  <Text style={styles.workText}>{ac.name}</Text>
+              {visibleACs.length > 0 && (
+                <View style={[
+                  styles.workItem,
+                  visibleACs.length <= 2 && styles.fixedCart,
+                ]}>
+                  {visibleACs.map((ac, acIndex) => (
+                    <View key={acIndex} style={styles.serviceView}>
+                      <Text style={styles.workText}>{ac.name}</Text>
 
-                  <View style={styles.workButtonContainer}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleDecrement(service.serviceType, ac.name)
-                      }
-                    >
-                      {/* <Text style={styles.workButtonText}>-</Text> */}
-                      <Image source={images.minusicon} style={styles.decreaIcon} resizeMode='contain' />
-                    </TouchableOpacity>
+                      <View style={styles.workButtonContainer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            handleDecrement(service.serviceType, ac.name)
+                          }
+                        >
+                          <Image
+                            source={images.minusicon}
+                            style={styles.decreaIcon}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacity>
 
-                    <Text style={styles.workCount}>{ac.quantity}</Text>
+                        <Text style={styles.workCount}>{ac.quantity}</Text>
 
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleIncrement(service.serviceType, ac.name)
-                      }
-                    >
-                      <Image source={images.plusicon} style={styles.inscreIcon} resizeMode='contain' />
-                      {/* <Text style={styles.workButtonText}>+</Text> */}
-                    </TouchableOpacity>
-                  </View>
+                        <TouchableOpacity
+                          onPress={() =>
+                            handleIncrement(service.serviceType, ac.name)
+                          }
+                        >
+                          <Image
+                            source={images.plusicon}
+                            style={styles.inscreIcon}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
                 </View>
-              ))}
+              )}
+
 
               {/* {showAddMore && (
                 <TouchableOpacity
@@ -273,41 +299,7 @@ const ViewCartScreen = ({ route }) => {
           );
         })}
 
-        {/* Frequently Added Together */}
-        <Text style={styles.headText}>Frequently Added Together</Text>
-        <FlatList
-          data={bookServices}
-          keyExtractor={(_, index) => `work-${index}`}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.7}
-              style={[styles.utioption, { width: wp('27%'), zIndex: 9999 }]}
-              onPress={() => handleProceedToCart(item)}
-            >
-              <FastImage source={{ uri: item.icon }} style={styles.utiicon} />
-              <Text
-                style={[
-                  styles.headText,
-                  {
-                    width: wp('20%'),
-                    textAlign: 'center',
-                    height: hp('4.5%'),
-                  },
-                ]}
-              >
-                {item.name}
-              </Text>
-              <View style={styles.addBtn}>
-                <Text style={[styles.workText, { fontSize: hp('1.2%') }]}>
-                  Add
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+
 
         <TouchableOpacity
           onPress={() => navigation.navigate('CouponScreen')}
@@ -336,6 +328,8 @@ const ViewCartScreen = ({ route }) => {
             {'2 Offers >'}
           </Text>
         </TouchableOpacity>
+
+
 
         {/* Payment Summary */}
         {/* <View
@@ -436,22 +430,14 @@ const ViewCartScreen = ({ route }) => {
 
         {/* CANCELLATION */}
         <View
-          style={[
-            styles.utioption,
-            {
-              width: wp('93%'),
-              alignItems: 'flex-start',
-              padding: wp('3%'),
-              marginBottom: hp('35%'),
-            },
-          ]}
-        >
+          style={styles.cancelView}>
           <Text style={styles.headText}>Cancellation policy</Text>
           <View
             style={{
               flexDirection: 'row',
               marginVertical: hp('1%'),
               alignItems: 'center',
+              alignSelf: 'flex-start'
             }}
           >
             <FastImage source={images.timeLight} style={styles.smallImag} />
@@ -462,12 +448,50 @@ const ViewCartScreen = ({ route }) => {
           </View>
 
           <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
-              ₹ {'   '} In case of unexpected delays or issues, a refund will be
+            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}> ₹</Text>
+            <Text style={[styles.workText, { fontSize: hp('1.5%'), marginLeft: hp(1.5) }]}>
+              In case of unexpected delays or issues, a refund will be
               provided.
             </Text>
           </View>
         </View>
+
+        {/* Frequently Added Together */}
+        <Text style={[styles.headText, { marginVertical: hp(1) }]}>Add Together</Text>
+        <FlatList
+          data={bookServices}
+          keyExtractor={(_, index) => `work-${index}`}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={0.7}
+              style={[styles.utioption, { width: wp('27%'), zIndex: 9999 }]}
+              onPress={() => handleProceedToCart(item)}
+            >
+              <FastImage source={{ uri: item.icon }} style={styles.utiicon} />
+              <Text
+                style={[
+                  styles.headText,
+                  {
+                    fontSize: wp(3.2),
+                    textAlign: 'center',
+                    // height: hp('4.5%'),
+                  },
+                ]}
+              >
+                {item.name}
+              </Text>
+              <View style={styles.addBtn}>
+                <Text style={[styles.workText, { fontSize: hp('1.3%') }]}>
+                  Add
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
       </ScrollView>
 
       <View
@@ -489,7 +513,6 @@ const ViewCartScreen = ({ route }) => {
               styles={styles}
               OnPressBtn={() => useSubmitBooking()}
             />
-
           </>
         )}
 
@@ -583,23 +606,36 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     fontFamily: Fonts.semiBold,
     color: COLORS.black,
+    // marginTop: hp(2)
   },
 
   workItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: hp('1.2%'),
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#E0E0E0',
+    paddingHorizontal: hp('1%'),
+    paddingTop: wp(2.5),
     backgroundColor: COLORS.white,
-    borderRadius: wp('1%'),
+    borderRadius: wp('2%'),
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    alignItems: 'center'
+  },
+  fixedCart: {
+    minHeight: hp('10%'),
+    justifyContent: 'center',
+  },
+  serviceView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: wp(3),
+    width: '100%',
+    alignItems: 'center',
   },
   workText: {
     fontSize: hp('1.6%'),
     color: "#5A5E68",
-    fontFamily: Fonts.extraBold,
-    // marginTop: 100
+    fontFamily: Fonts.bold,
   },
   workButtonContainer: {
     borderWidth: 1,
@@ -607,10 +643,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    // marginHorizontal: 5,
-    // width: isTablet ? wp(25) : wp(20),
-    // height: isTablet ? wp(6) : wp(7),
-    paddingVertical: 5,
+    paddingVertical: 2,
     paddingHorizontal: 10,
     // alignSelf: 'center',
     borderColor: '#ddd',
@@ -652,7 +685,7 @@ const styles = StyleSheet.create({
   },
 
   utioption: {
-    marginVertical: wp('3%'),
+    marginVertical: wp('1%'),
     borderRadius: wp('3%'),
     backgroundColor: COLORS.white,
     elevation: 2,
@@ -663,16 +696,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: hp('1%'),
   },
-  utiicon: {
-    width: wp('14%'),
-    height: wp('14%'),
-    resizeMode: 'contain',
+  cancelView: {
+    paddingHorizontal: wp('4%'),
+    paddingVertical: wp('3%'),
     marginVertical: wp('2%'),
+    borderRadius: wp('3%'),
+    backgroundColor: COLORS.white,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  utiicon: {
+    width: wp('11%'),
+    height: wp('11%'),
+    resizeMode: 'contain',
+    marginTop: wp(4),
+    marginBottom: wp(1)
   },
   addBtn: {
     width: wp('23%'),
     alignItems: 'center',
-    padding: hp('0.7%'),
+    padding: hp('0.2%'),
     borderWidth: wp('0.4%'),
     borderColor: '#E0E0E0',
     borderRadius: wp('4%'),

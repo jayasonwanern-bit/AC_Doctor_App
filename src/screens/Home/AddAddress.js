@@ -24,6 +24,9 @@ import ConfirmationModal from '../../customScreen/ConfirmationModal';
 import { store } from '../../redux/store';
 import { addOrEditAddress } from '../../api/addressApi';
 import Toast from 'react-native-simple-toast';
+import StateCityPicker from '../../components/StateCityPicker';
+import CustomLoader from '../../components/CustomLoader';
+
 
 const AddAddress = ({ navigation, route }) => {
   const addressData = route?.params?.addressData;
@@ -38,7 +41,9 @@ const AddAddress = ({ navigation, route }) => {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const userId = store?.getState()?.auth?.user;
 
   // validation
@@ -66,25 +71,28 @@ const AddAddress = ({ navigation, route }) => {
 
   // onSubmit button
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+
     try {
       const validationError = validateFields();
       if (validationError) {
         Alert.alert('Validation Error', validationError);
         return;
       }
+      setIsSubmitting(true);
       setLoading(true);
-      //  confirm notification structure start
+
       const newAddress = {
-        name: 'Sachin Gupta',
-        phone: '+91 9999999999',
-        address: `${address}, ${city}, ${stateName} ${pincode}`, // Combine fields into one address
+        name: '',
+        phone: '',
+        address: `${address}, ${city}, ${stateName} ${pincode}`,
         type: addressType,
         isDefault,
       };
-      setSelectedAddress(newAddress);
-      // end --
 
-      let body = {
+      setSelectedAddress(newAddress);
+
+      const body = {
         addressId: addressData?._id || '',
         userId: userId,
         houseNumber: '1234567',
@@ -95,38 +103,42 @@ const AddAddress = ({ navigation, route }) => {
         saveAs: 'saveAs',
         landmark: addressType,
       };
+
       const res = await addOrEditAddress(body);
-      //  console.log('add address response',res.data)
+
       if (res?.status) {
         Toast.show(res?.message);
-      }
-      const cameFrom = route?.params?.from;
-      if (cameFrom === 'ServiceScreen') {
-        navigation.navigate('Tab', { screen: 'Home' });
-      } else if (cameFrom === 'CustomModal') {
-        // setModalSlotVisible(true);
-        navigation.goBack();
-      } else if (cameFrom === 'UserInfoModel') {
-        setModalSlotVisible(true);
-      } else {
-        navigation.goBack();
+
+        const cameFrom = route?.params?.from;
+
+        if (cameFrom === 'ServiceScreen') {
+          navigation.navigate('Tab', { screen: 'Home' });
+        } else if (cameFrom === 'CustomModal') {
+          navigation.goBack();
+        } else if (cameFrom === 'UserInfoModel') {
+          setModalSlotVisible(true);
+        } else {
+          navigation.goBack();
+        }
       }
     } catch (error) {
       console.log('Update Error:', error);
     } finally {
       setLoading(false);
+      setIsSubmitting(false);
     }
   };
+
 
   return (
     <View style={styles.container}>
       <Header title="Add Address" onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.headerText}>
+        {/* <Text style={styles.headerText}>
           Type your location to get tailored service options!
-        </Text>
+        </Text> */}
 
-        <View style={styles.searchInput}>
+        {/* <View style={styles.searchInput}>
           <Image
             source={images.searchIcon}
             style={[
@@ -143,12 +155,8 @@ const AddAddress = ({ navigation, route }) => {
             onChangeText={setSearchBar}
             onSubmitEditing={() => Keyboard.dismiss()}
           />
-        </View>
-        <Text style={styles.orText}>
-          {Platform.OS === 'ios'
-            ? `──────────── Or ───────────`
-            : `───────────  Or ───────────`}
-        </Text>
+        </View> */}
+
         <Text style={styles.label}>Street Address</Text>
         <TextInput
           placeholder="Address"
@@ -159,32 +167,15 @@ const AddAddress = ({ navigation, route }) => {
           style={styles.input}
           onSubmitEditing={() => Keyboard.dismiss()}
         />
-        <View style={styles.row}>
-          <View style={styles.halfWidth}>
-            <Text style={styles.label}>City</Text>
-            <TextInput
-              placeholder="City"
-              placeholderTextColor={COLORS.textColor}
-              value={city}
-              keyboardType="default"
-              onChangeText={setCity}
-              style={styles.input}
-              onSubmitEditing={() => Keyboard.dismiss()}
-            />
-          </View>
-          <View style={styles.halfWidth}>
-            <Text style={styles.label}>State</Text>
-            <TextInput
-              placeholder="State"
-              placeholderTextColor={COLORS.textColor}
-              value={stateName}
-              keyboardType="default"
-              onChangeText={setStateName}
-              style={styles.input}
-              onSubmitEditing={() => Keyboard.dismiss()}
-            />
-          </View>
-        </View>
+
+
+        <StateCityPicker
+          selectedState={stateName}
+          selectedCity={city}
+          onStateSelect={setStateName}
+          onCitySelect={setCity}
+        />
+
         <Text style={styles.label}>Pincode</Text>
         <TextInput
           placeholder="Pincode"
@@ -261,14 +252,16 @@ const AddAddress = ({ navigation, route }) => {
           <Text style={styles.checkboxLabel}>Make this my default address</Text>
         </TouchableOpacity>
 
-        <CustomButton
+        {loading ? (
+          <CustomLoader size={15} />
+        ) : (<CustomButton
           buttonName="Continue"
           margingTOP={hp('6%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
           onPress={() => handleSubmit()}
-        />
-      </ScrollView>
+        />)}
+      </ScrollView >
 
       <BookingSlotModal
         visible={modalSlotVisible}
@@ -291,7 +284,7 @@ const AddAddress = ({ navigation, route }) => {
         selectedAddress={selectedAddress}
         selectedSlot={selectedSlot}
       />
-    </View>
+    </View >
   );
 };
 

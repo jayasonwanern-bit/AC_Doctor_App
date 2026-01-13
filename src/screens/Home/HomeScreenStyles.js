@@ -7,6 +7,7 @@ import {
 import { COLORS, Fonts } from '../../utils/colors';
 import images from '../../assets/images';
 import { isTablet } from '../../components/TabletResponsiveSize';
+import { rf } from '../../components/Resposive';
 
 export default StyleSheet.create({
   safeArea: { flex: 1 },
@@ -208,6 +209,18 @@ export default StyleSheet.create({
     borderBottomColor: COLORS.borderColor,
     marginVertical: hp(1),
   },
+
+  cartViewIcon: {
+    backgroundColor: COLORS.themeColor,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    position: 'absolute',
+    zIndex: 1,
+    bottom: 30,
+    right: 12,
+    borderRadius: 7
+  },
+  TotalcoutnCart: { backgroundColor: COLORS.white, paddingHorizontal: 7, borderRadius: 15, position: 'absolute', right: 1, top: -15, color: "black", fontFamily: Fonts.bold, fontSize: rf(14) },
   productCard: {
     backgroundColor: COLORS.white,
     borderRadius: 12,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import CustomButton from '../components/CustomButton';
 import { COLORS } from '../utils/colors';
@@ -21,13 +21,13 @@ const OrderSummaryModal = ({
             animationType="slide"
             onRequestClose={onClose}
         >
-            <View style={styles.overlay}>
+            <Pressable style={styles.overlay} onPress={onClose}>
                 <View style={styles.container}>
 
                     {/* LOCATION */}
                     <View style={styles.row}>
                         <FastImage source={images.locationRed} style={styles.icon} />
-                        <Text style={styles.text}>{locationText}</Text>
+                        <Text style={styles.text}>{locationText?.trim()}</Text>
                     </View>
 
                     {/* PHONE */}
@@ -38,7 +38,7 @@ const OrderSummaryModal = ({
                             resizeMode="contain"
                         />
                         <Text style={styles.text}>
-                            {phoneText}
+                            {phoneText?.trim()}
                         </Text>
                     </View>
 
@@ -46,7 +46,7 @@ const OrderSummaryModal = ({
                     <View style={[styles.row, { marginBottom: hp('2%') }]}>
                         <FastImage source={images.timeRed} style={styles.icon} />
                         <Text style={styles.text}>
-                            {slotText}
+                            {slotText?.trim()}
                         </Text>
                     </View>
 
@@ -73,7 +73,7 @@ const OrderSummaryModal = ({
                     </TouchableOpacity>
 
                 </View>
-            </View>
+            </Pressable>
         </Modal>
     );
 };

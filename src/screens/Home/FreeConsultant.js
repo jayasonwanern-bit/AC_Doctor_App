@@ -128,17 +128,22 @@ const FreeConsultant = ({ navigation }) => {
 
     if (!selectdate) return Toast.show('Please select Date');
     if (!addressId?._id) {
-      Alert.alert('Please Add Address First', [
-        { text: 'Cancel' },
-        {
-          text: 'Add Address',
-          onPress: async () => {
-            navigation.navigate('AddAddress', {
-              from: 'FreeConsultant',
-            });
+      Alert.alert(
+        'Please Add Address First',          // title
+        'You need to add an address to continue', // message (string)
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Add Address',
+            onPress: () => {
+              navigation.navigate('AddAddress', {
+                from: 'FreeConsultant',
+              });
+            },
           },
-        },
-      ]);
+        ]
+      );
+
       return;
     }
 
