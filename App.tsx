@@ -26,13 +26,13 @@ export default function App() {
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    console.log('Permission enabled:', enabled);
+    // console.log('Permission enabled:', enabled);
   };
 
   // 🔹 Get FCM token
   const getFcmToken = async () => {
     const token = await messaging().getToken();
-    console.log('FCM TOKEN:', token);
+    // console.log('FCM TOKEN:', token);
   };
 
   // 🔹 Create notification channel (Android)
@@ -59,7 +59,7 @@ export default function App() {
 
     // 🔔 Background → app opened by notification
     messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log('Opened from background:', remoteMessage);
+      // console.log('Opened from background:', remoteMessage);
     });
 
     // 🔔 Killed → app opened by notification
@@ -67,7 +67,7 @@ export default function App() {
       .getInitialNotification()
       .then(remoteMessage => {
         if (remoteMessage) {
-          console.log('Opened from quit state:', remoteMessage);
+          // console.log('Opened from quit state:', remoteMessage);
         }
       });
 

@@ -115,10 +115,12 @@ const VerificationScreen = ({ navigation, route }) => {
   const handleResendOTP = async () => {
     try {
       let data = {
-        phoneNumber: phoneNumber,
-        countryCode: callingCode,
+        // phoneNumber: phoneNumber,
+        // countryCode: callingCode,
+        userId: userId,
       };
       const result = await resendOTP(data);
+      console.log(result, 'resend opt---')
       if (result?.status) {
         Toast.show('OTP Resend');
         setServerOtpState(result?.otp);
@@ -201,7 +203,7 @@ const VerificationScreen = ({ navigation, route }) => {
             {error && <Text style={styles.errorText}>{error}</Text>}
             <TouchableOpacity
               onPress={() => {
-                status !== 'running' && handleResendOTP();
+                status !== 'running' && handleVerify();
               }}
             >
               {/* <View style={{flexDirection:'row',alignItems:'center'}}> */}

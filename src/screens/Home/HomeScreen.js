@@ -316,8 +316,8 @@ const HomeScreen = ({ route }) => {
                   style={styles.locationIcon}
                   resizeMode="contain"
                 />
-                <Text style={styles.locationText}>
-                  {`${addresslocation.house}  ${addresslocation.road}, ${addresslocation.city}` ||
+                <Text style={styles.locationText} numberOfLines={1}>
+                  {`${addresslocation.house}  ${addresslocation.road} ${addresslocation.city}` ||
                     'Select Location'}
                 </Text>
               </View>
@@ -406,19 +406,6 @@ const HomeScreen = ({ route }) => {
           {loading ? (
             <CustomLoader size={20} />
           ) : (
-            // <FlatList
-            //   data={pages?.[0]}
-            //   horizontal={true}
-            //   // pagingEnabled
-            //   showsHorizontalScrollIndicator={false}
-            //   keyExtractor={(_, index) => `page-${index}`}
-            //   renderItem={(item) => (
-
-            //     <Image source={{ uri: item?.item?.logo }} style={styles.authicon} resizeMode='contain' />
-            //   )
-            //   }
-
-            // />
             <FlatList
               ref={flatListRef}
               data={pages?.[0]}

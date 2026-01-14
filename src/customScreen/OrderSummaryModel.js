@@ -62,12 +62,12 @@ const OrderSummaryModal = ({
 
                     <TouchableOpacity
                         style={{
-                            marginVertical: 4,
+                            marginTop: 10,
                             marginBottom: 5, alignSelf: 'center'
                         }}
                     >
-                        <Text style={styles.text}>
-                            By proceeding, you agree to our <Text style={styles.textHeighlight}>T&C ,Privacy & Cancellation
+                        <Text style={[styles.text, { color: 'black' }]}>
+                            By proceeding, you agree to our <Text style={styles.textHeighlight}>Terms & Conditions and Privacy Policy
                                 Policy</Text>
                         </Text>
                     </TouchableOpacity>
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
         padding: 16,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+        minHeight: '36%'
     },
     row: {
         flexDirection: 'row',
@@ -98,19 +99,20 @@ const styles = StyleSheet.create({
         marginVertical: 6,
     },
     icon: {
-        width: 22,
-        height: 22,
+        width: 28,
+        height: 28,
         marginRight: 10,
     },
     text: {
-        fontSize: 14,
-        color: '#222',
+        fontSize: 16.3,
+        color: '#414040',
         fontWeight: '500'
     },
     textHeighlight: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#2a80e9',
         fontWeight: '500',
+        lineHeight: 22,
         textDecorationLine: 'underline', textDecorationColor: '#2a80e9',
     },
 });

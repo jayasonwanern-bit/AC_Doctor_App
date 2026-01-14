@@ -109,7 +109,7 @@ const GeneratePDFButton = ({ data, onSuccess }) => {
       if (Platform.OS === 'android') {
         const downloadDir = `${RNFS.ExternalStorageDirectoryPath}/Download`;
         const destPath = `${downloadDir}/${fileName}`;
-        await RNFS.mkdir(downloadDir).catch(() => {});
+        await RNFS.mkdir(downloadDir).catch(() => { });
         await RNFS.moveFile(path, destPath);
         Alert.alert('Success', `PDF saved in Downloads: ${fileName}`);
       } else {
@@ -118,7 +118,7 @@ const GeneratePDFButton = ({ data, onSuccess }) => {
 
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.log('PDF Error:', error);
+      // console.log('PDF Error:', error);
       Alert.alert('Error', 'Failed to generate PDF');
     }
   };

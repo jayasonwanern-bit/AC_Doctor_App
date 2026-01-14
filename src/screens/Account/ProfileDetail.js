@@ -95,12 +95,13 @@ const ProfileDetail = ({ navigation }) => {
       if (selectedImageUri) {
         const presRes = await getPresignedUrl();
         const presignedUrl = presRes?.data;
-        console.log(presignedUrl, ";l;")
         if (presignedUrl) {
           await uploadImageToS3(presignedUrl, selectedImageUri);
           cleanImageUrl = presignedUrl.split('?')[0];
         }
       }
+      if (!userName?.trim()) return Toast.show('Select your name. Name not be empty');
+
 
       // 🔥 Only userId is mandatory
       const body = {

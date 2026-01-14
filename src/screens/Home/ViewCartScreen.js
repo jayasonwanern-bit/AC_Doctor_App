@@ -47,7 +47,6 @@ const ViewCartScreen = ({ route }) => {
   const [showSummary, setShowSummary] = useState(false);
   const routeAddress = route.params?.selectedAddress;
   const userDetails = store?.getState()?.auth?.user;
-  console.log('userDetails--->', userDetails)
 
   useEffect(() => {
     if (route?.params?.proceed) {
@@ -57,6 +56,7 @@ const ViewCartScreen = ({ route }) => {
     if (route?.params?.selectedSlot) {
       setSelectedSlot(route.params.selectedSlot);
     }
+    console.log('selected slot on book-->', selectedSlot)
   }, [route?.params]);
 
   // get service list on mount
@@ -79,9 +79,10 @@ const ViewCartScreen = ({ route }) => {
       .join(', ');
 
 
-  const phoneText = `${userDetails?.countryCode}-${userDetails?.phoneNumber}`;
+  const phoneText = `${userDetails?.countryCode} ${userDetails?.phoneNumber}`;
 
-  const slotText = `${selectedSlot?.date}/${selectedSlot?.monthNumber}/${selectedSlot?.year}, ${selectedSlot?.Timeslot}`;
+  const slotText = `${selectedSlot?.day}_${selectedSlot?.month}_${selectedSlot?.date}, (${selectedSlot?.Timeslot ==
+    "First Half" ? '1st Half' : '2nd Half'})`;
 
 
   const getBookService = async () => {
@@ -440,8 +441,8 @@ const ViewCartScreen = ({ route }) => {
               alignSelf: 'flex-start'
             }}
           >
-            <FastImage source={images.timeLight} style={styles.smallImag} />
-            <Text style={[styles.workText, { fontSize: hp('1.5%') }]}>
+            <Image source={images.timeLight} style={styles.smallImag} />
+            <Text style={styles.cancelTextStyle}>
               Orders cannot be cancelled within 2 hours of the scheduled service
               time.
             </Text>
@@ -449,7 +450,7 @@ const ViewCartScreen = ({ route }) => {
 
           <View style={{ flexDirection: 'row' }}>
             <Text style={[styles.workText, { fontSize: hp('1.5%') }]}> ₹</Text>
-            <Text style={[styles.workText, { fontSize: hp('1.5%'), marginLeft: hp(1.5) }]}>
+            <Text style={[styles.cancelTextStyle, { marginLeft: hp(1.5) }]}>
               In case of unexpected delays or issues, a refund will be
               provided.
             </Text>
@@ -635,7 +636,12 @@ const styles = StyleSheet.create({
   workText: {
     fontSize: hp('1.6%'),
     color: "#5A5E68",
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.semiBold,
+  },
+  cancelTextStyle: {
+    fontSize: hp('1.5%'),
+    color: COLORS.black,
+    fontFamily: Fonts.medium,
   },
   workButtonContainer: {
     borderWidth: 1,
@@ -762,6 +768,7 @@ const styles = StyleSheet.create({
     height: isTablet ? hp(1.9) : hp(1.9),
     resizeMode: 'contain',
     marginRight: hp('1%'),
+    tintColor: COLORS.black
   },
   normalImag: {
     width: isTablet ? wp(4) : wp(5),

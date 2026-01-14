@@ -20,7 +20,7 @@ const SplashScreen = ({ navigation }) => {
           index: 0,
           routes: [{ name: token ? 'Tab' : 'Login' }],
         });
-      }, 1500);
+      }, 2000);
       return () => clearTimeout(timer);
     } catch (error) {
       console.log('Error getting token', error);
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   logo: {
-    width: 260,
-    height: 260,
+    width: 500,
+    height: 500,
   },
 });
 

@@ -158,7 +158,9 @@ const CustomModal = ({
                         styles.addressContainer,
                         isSelected && styles.selectedAddress,
                       ]}
-                      onPress={() => handleAddressSelect(item)}
+                      onPress={() => {
+                        handleAddressSelect(item)
+                      }}
                     >
                       <Image
                         source={isSelected ? images.onbutton : images.offbutton}
@@ -195,7 +197,16 @@ const CustomModal = ({
           {savedAddresses.length > 0 && (
             <TouchableOpacity
               style={styles.proceedButton}
-              onPress={handleProceedPress}
+              onPress={() => {
+                const isNameEmpty =
+                  !userDetail?.name || userDetail?.name.trim() === '';
+                if (isNameEmpty) {
+                  navigation.navigate('ProfileDetail');
+                } else {
+                  handleProceedPress()
+                }
+              }
+              }
             >
               <Text style={styles.proceedButtonText}>Proceed</Text>
             </TouchableOpacity>
@@ -223,11 +234,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    minHeight: hp(15),
+    minHeight: hp(20),
     maxHeight: hp(60),
     alignSelf: 'center',
     width: wp('100%'),
-    paddingBottom: hp(Platform.OS === 'android' ? 4 : 4), // add this line for android
+    paddingBottom: hp(Platform.OS === 'android' ? 4 : 4),
     marginBottom: hp(0),
   },
   headerText: {

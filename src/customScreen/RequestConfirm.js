@@ -27,7 +27,7 @@ const RequestConfirm = ({
     >
       {/* Dark Background */}
       <View style={styles.overlay}>
-        
+
         {/* Center Card */}
         <View style={styles.card}>
 
@@ -121,14 +121,14 @@ const styles = StyleSheet.create({
     marginTop: hp("1%"),
     fontSize: hp("1.7%"),
     color: "#161515ff",
-     fontWeight: "600",
+    fontWeight: "600",
     // width: "90%",
   },
   smallText: {
     marginTop: hp("0.8%"),
     color: "#777",
     fontSize: hp("1.6%"),
-     fontWeight: "400",
+    fontWeight: "400",
   },
 
   line: {

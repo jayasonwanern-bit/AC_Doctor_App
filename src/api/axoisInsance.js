@@ -24,8 +24,6 @@ api.interceptors.request.use(
     const reduxToken = store?.getState()?.auth?.accessToken;
     const storageToken = await AsyncStorage.getItem('authToken');
     const token = reduxToken || storageToken;
-    console.log('AXIOS TOKEN ===>', token);
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
@@ -50,7 +48,6 @@ api.interceptors.response.use(
     const token = reduxToken || storageToken;
 
     if (status === 401 && token) {
-      console.log('🔥 Token expired. Logging out.');
 
       await AsyncStorage.removeItem('accessToken');
 
