@@ -344,7 +344,7 @@ const HomeScreen = ({ route }) => {
         {loading ? <CustomLoader /> : <CustomSlider images={bannerImages} />}
         {/* Book a service */}
         <View style={styles.reqcontainer}>
-          <Text style={styles.reqtitle}>Book a Services</Text>
+          <Text style={styles.reqtitle}>Book AC Services</Text>
           {loading ? (
             <CustomLoader size={40} />
           ) : (
@@ -401,6 +401,8 @@ const HomeScreen = ({ route }) => {
             ))}
           </View>
         </LinearGradient>
+
+        {/* OEM Partner */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>OEM Partner</Text>
           {loading ? (
@@ -449,40 +451,37 @@ const HomeScreen = ({ route }) => {
                     <View style={styles.discountBadge}>
                       <Text style={styles.discountText}>{item.discount}</Text>
                     </View>
-                    <FastImage
+
+                    <Image
                       source={images.dislike}
                       style={styles.likeButton}
                     />
                   </View>
-                  <Image
-                    source={item.image}
-                    style={styles.image}
-                    // resizeMode="contain"
-                    resizeMode="contain"
-                  />
+
+                  <Image source={item.image} style={styles.image} resizeMode='contain' />
                 </View>
+
                 <View style={styles.dealRow}>
                   <View style={styles.dealTag}>
                     <Text style={styles.dealText}>Limited time deal</Text>
                   </View>
                   <Text style={styles.rating}>⭐ {item.rating}</Text>
                 </View>
+
                 <Text style={styles.name} numberOfLines={1}>
                   {item.name}
                 </Text>
-                <Text style={styles.price}>{item.price}</Text>
+
+                <Text style={styles.price}>Coming Soon</Text>
+
                 <View style={styles.bottomRow}>
                   <Text style={styles.mrp}>
                     MRP{' '}
-                    <Text
-                      style={[
-                        styles.mrp,
-                        { textDecorationLine: 'line-through' },
-                      ]}
-                    >
+                    <Text style={[styles.mrp, { textDecorationLine: 'line-through' }]}>
                       {item.mrp}
                     </Text>
                   </Text>
+
                   <TouchableOpacity style={styles.addButton}>
                     <Text style={styles.addButtonText}>Add</Text>
                   </TouchableOpacity>
@@ -490,6 +489,7 @@ const HomeScreen = ({ route }) => {
               </View>
             )}
           />
+
         </View>
         {/* who trust Us */}
         <View style={styles.uticontainer}>

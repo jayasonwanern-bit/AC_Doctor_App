@@ -121,7 +121,7 @@ export default StateCityPicker;
 const styles = StyleSheet.create({
     label: {
         fontFamily: Fonts.semiBold,
-        fontSize: hp(1.5),
+        fontSize: hp(1.8),
         color: COLORS.black,
         marginBottom: hp(0.5),
         marginTop: hp(1),
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
 
     valueText: {
         fontFamily: Fonts.medium,
-        fontSize: hp(1.5),
+        fontSize: hp(1.6),
         color: COLORS.black,
     },
 

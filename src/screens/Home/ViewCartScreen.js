@@ -81,7 +81,7 @@ const ViewCartScreen = ({ route }) => {
 
   const phoneText = `${userDetails?.countryCode} ${userDetails?.phoneNumber}`;
 
-  const slotText = `${selectedSlot?.day}_${selectedSlot?.month}_${selectedSlot?.date}, (${selectedSlot?.Timeslot ==
+  const slotText = `${selectedSlot?.date}-${selectedSlot?.month}-${selectedSlot?.day}, (${selectedSlot?.Timeslot ==
     "First Half" ? '1st Half' : '2nd Half'})`;
 
 
@@ -196,16 +196,14 @@ const ViewCartScreen = ({ route }) => {
         serviceType: item.serviceType.toUpperCase(),
       })),
     };
-
-    console.log('bodyData----->', bodyData);
     try {
       const response = await postBookingRequest(bodyData);
-      console.log('response----->', response);
-
       if (response?.status === true) {
         Toast.show(response?.message || 'Booking submitted successfully!');
         setShowSummary(false)
-        navigation.replace('Tab', { screen: 'Home' });
+
+        // navigation.replace('Tab', { screen: 'Home' });
+        navigation.replace('BookingSuccessScreen');
         dispatch(clearCart());
       } else if (response?.status === false) {
         Toast.show(
@@ -238,7 +236,7 @@ const ViewCartScreen = ({ route }) => {
 
           return (
             <View key={serviceIndex}>
-              <Text style={[styles.headText, { marginBottom: hp('1%'), marginTop: 8 }]}>
+              <Text style={[styles.headText, { marginBottom: hp('1%'), marginTop: 18 }]}>
                 {service.serviceType}
               </Text>
 
@@ -301,7 +299,7 @@ const ViewCartScreen = ({ route }) => {
         })}
 
 
-
+        {/* CouponScreen */}
         <TouchableOpacity
           onPress={() => navigation.navigate('CouponScreen')}
           style={[
@@ -588,7 +586,8 @@ const styles = StyleSheet.create({
     borderRadius: wp('2%'),
     borderWidth: wp('0.2%'),
     backgroundColor: COLORS.white,
-    marginVertical: hp('1.5%'),
+    marginVertical: hp('1%'),
+    marginTop: hp('2%'),
     alignSelf: 'center',
     alignItems: 'center',
   },
@@ -620,7 +619,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: hp(0.6)
   },
   fixedCart: {
     minHeight: hp('10%'),
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   serviceView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: wp(3),
+    paddingBottom: wp(3.6),
     width: '100%',
     alignItems: 'center',
   },

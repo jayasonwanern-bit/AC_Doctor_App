@@ -19,7 +19,7 @@ const BookingSuccessScreen = ({ navigation }) => {
         index: 0,
         routes: [{ name: 'Tab', params: { screen: 'Home' } }],
       });
-    }, 2000);
+    }, 3000);
   }, []);
 
   return (
@@ -34,14 +34,13 @@ const BookingSuccessScreen = ({ navigation }) => {
       </View>
 
       {/* Title */}
-      <Text style={styles.title}>Booking Successful</Text>
+      <Text style={styles.title}>Booking Successful! 🎉</Text>
 
       {/* Card */}
       <View style={styles.card}>
-        <Text style={styles.orderId}>Order ID : 2001</Text>
+        {/* <Text style={styles.orderId}>Order ID : 2001</Text> */}
         <Text style={styles.message}>
-          Dear customer, Thankyou so much for your order. very soon our
-          professional will contact you
+          Thank you for choosing us. Your booking has been confirmed, and our professional will get in touch with you very soon.
         </Text>
       </View>
     </View>
@@ -73,8 +72,8 @@ const styles = StyleSheet.create({
     tintColor: COLORS.white, // White checkmark
   },
   title: {
-    fontSize: hp(2),
-    fontFamily: Fonts.semiBold,
+    fontSize: hp(2.5),
+    fontFamily: Fonts.bold,
     color: COLORS.black,
     marginBottom: 24,
     textAlign: 'center',
@@ -102,6 +101,7 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
     lineHeight: 22,
+    fontFamily: Fonts.semiBold,
   },
 });
 

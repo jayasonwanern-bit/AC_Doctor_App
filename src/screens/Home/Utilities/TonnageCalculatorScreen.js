@@ -34,7 +34,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
   ];
 
 
-//   on Calulate button press
+  //   on Calulate button press
   const handleSubmit = () => {
     const width = parseFloat(withValue) || 0;
     const height = parseFloat(heightValue) || 0;
@@ -97,7 +97,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
         <View
           style={[styles.card, { padding: hp('2%'), paddingBottom: hp('2%') }]}
         >
-           <CustomPicker
+          <CustomPicker
             value={isPlace}
             onChange={value => setIsPlace(value)}
             items={PlaceOptions}
@@ -121,16 +121,16 @@ const TonnageCalculatorScreen = ({ navigation }) => {
               placeholderTextColor="#aaa"
               value={withValue}
               onChangeText={setWithValue}
-              textAlignVertical="top"
+              // textAlignVertical="top"
               style={styles.normalInput}
-               onSubmitEditing={() => Keyboard.dismiss()}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
             <TextInput
               placeholder="Height in feet"
               placeholderTextColor="#aaa"
               value={heightValue}
               onChangeText={setHeightValue}
-              textAlignVertical="top"
+              // textAlignVertical="top"
               style={styles.normalInput}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
@@ -147,7 +147,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
           )}
 
           <CustomButton
-            buttonName="Calulate"
+            buttonName="Calculate "
             margingTOP={hp('1%')}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}

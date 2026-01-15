@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    minHeight: hp(20),
+    minHeight: hp(38),
     maxHeight: hp(60),
     alignSelf: 'center',
     width: wp('100%'),
@@ -359,9 +359,10 @@ const styles = StyleSheet.create({
     padding: hp(1),
     borderRadius: wp(6),
     alignItems: 'center',
-    marginTop: hp(2.5),
     width: wp('90%'),
     alignSelf: 'center',
+    position: 'absolute',
+    bottom: hp(5.5)
   },
   proceedButtonText: {
     color: '#fff',

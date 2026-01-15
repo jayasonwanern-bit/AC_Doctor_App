@@ -30,9 +30,9 @@ const ErrorCodeScreen = ({ navigation }) => {
   const [errorValue, setErrorValue] = useState('');
 
   const [loading, setLoading] = useState(true);
-  
 
-   const PlaceOptions = [
+
+  const PlaceOptions = [
     { label: 'Split AC', value: 'Split AC' },
     { label: 'Window AC', value: 'Window AC' },
     { label: 'Ducted AC', value: 'Ducted AC' },
@@ -40,51 +40,51 @@ const ErrorCodeScreen = ({ navigation }) => {
     { label: 'Concealed AC', value: 'Concealed AC' },
     { label: 'Tower AC', value: 'Tower AC' },
   ];
-  
-    useEffect(() => {
-      getBrandList();
-    }, []);
-  
-   const getBrandList = async () => {
-  try {
-    setLoading(true);
-    const res = await getBrandlist();
 
-    const formatted = res?.data?.map(item => ({
-      label: item.name,
-      value: item._id,
-    }));
+  useEffect(() => {
+    getBrandList();
+  }, []);
 
-    setBrandArray(formatted);   // <-- dropdown list
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoading(false);
-  }
-};
+  const getBrandList = async () => {
+    try {
+      setLoading(true);
+      const res = await getBrandlist();
 
-  //   on Calulate button press
- const handleSubmit = async () => {
-  console.log('gwkkookkjk')
-  if (!brandValue) return Toast.show("Please select brand");
-  if (!errorValue) return Toast.show("Please enter error code");
-  if (!isPlace) return Toast.show("Please select AC type");
+      const formatted = res?.data?.map(item => ({
+        label: item.name,
+        value: item._id,
+      }));
 
-  const payload = {
-    brandId: brandValue,
-    errorCode: "E05",
-    acType: isPlace,
+      setBrandArray(formatted);   // <-- dropdown list
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  console.log("Payload:", payload);
+  //   on Calulate button press
+  const handleSubmit = async () => {
 
-  try {
-    const res = await postErrorCode(payload);
-    console.log("API Response:", res.data);
-  } catch (e) {
-    console.log("Error:", e);
-  }
-};
+    if (!brandValue) return Toast.show("Please select brand");
+    if (!errorValue) return Toast.show("Please enter error code");
+    if (!isPlace) return Toast.show("Please select AC type");
+
+    const payload = {
+      brandId: brandValue,
+      errorCode: "E05",
+      acType: isPlace,
+    };
+
+    console.log("Payload:", payload);
+
+    try {
+      const res = await postErrorCode(payload);
+      console.log("API Response:", res.data);
+    } catch (e) {
+      console.log("Error:", e);
+    }
+  };
 
 
   return (
@@ -101,17 +101,22 @@ const ErrorCodeScreen = ({ navigation }) => {
 
         {/* Problem of ac */}
         <View
-          style={[styles.card, {  paddingVertical: hp('1.5%'),alignItems:'center' }]}
+          style={[styles.card, { paddingVertical: hp('1.5%'), alignItems: 'center' }]}
         >
-          <CustomPicker
+          {!loading && brandArray.length !== 0 ? (<CustomPicker
             label="Select Brand"
-             value={brandValue}
-             items={brandArray}
-            onChange={value => setBrandValue(value)} 
+            value={brandValue}
+            items={brandArray}
+            onChange={value => setBrandValue(value)}
             width={wp('85%')} // any width
             height={hp('5%')} // any height
             borderRadius={hp('4%')} // custom radius
-          />
+          />)
+            : (
+              <Text style={{ color: 'red', marginTop: hp(1) }}>
+                No brands available
+              </Text>
+            )}
 
           <CustomPicker
             label="Select AC Type"
@@ -123,24 +128,30 @@ const ErrorCodeScreen = ({ navigation }) => {
             borderRadius={hp('4%')} // custom radius
           />
 
-          <View style={{ marginVertical: wp('3%'),  alignSelf:'center',
-             justifyContent:'center'}}>
+          <View style={{
+            width: '100%',
+            paddingHorizontal: wp('5%'),
+          }}>
+            <Text style={styles.label}>Enter your code</Text>
             <TextInput
               placeholder="Error Code"
               placeholderTextColor="#aaa"
               value={errorValue}
               onChangeText={setErrorValue}
-              textAlignVertical="top"
-              style={styles.normalInput}
+              style={[styles.normalInput]}
               onSubmitEditing={() => Keyboard.dismiss()}
+              underlineColorAndroid="transparent"
+
             />
           </View>
 
+
           <CustomButton
-            buttonName="Submit Error Codes"
+            buttonName="Submit Error Code"
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
             onPress={handleSubmit}
+            margingTOP={hp('3%')}
           />
         </View>
 
@@ -221,16 +232,19 @@ const styles = StyleSheet.create({
   },
 
   normalInput: {
-    borderWidth: hp(0.1),
+    borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: wp(6),
     paddingHorizontal: hp(2),
     backgroundColor: COLORS.lightWhite,
     fontSize: 14,
-    color: COLORS.textHeading,
-    width: hp('38%'),
-    height:hp(5),
-    alignItems: 'flex-start',
+    height: hp(5),
+  },
+  label: {
+    fontSize: hp('1.6%'),
+    marginBottom: hp('1%'),
+    color: COLORS.black,
+    fontFamily: Fonts.medium
   },
 });
 

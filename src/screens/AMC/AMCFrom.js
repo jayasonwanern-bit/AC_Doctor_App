@@ -234,12 +234,12 @@ const AMCFrom = ({ navigation }) => {
         <RequestConfirm
           visible={successVisible}
           onClose={() => setSuccessVisible(false)}
-        // onViewRequest={() => {
-        //   setSuccessVisible(false);
-        //   setTimeout(() => {
-        //     navigation.navigate('AMCRequestFrom');
-        //   }, 150);
-        // }}
+          onViewRequest={() => {
+            setSuccessVisible(false);
+            setTimeout(() => {
+              navigation.navigate('AMCRequestFrom');
+            }, 150);
+          }}
         />
       </KeyboardAvoidingView>
     </View>

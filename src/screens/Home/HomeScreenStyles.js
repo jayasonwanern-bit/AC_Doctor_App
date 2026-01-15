@@ -84,11 +84,16 @@ export default StyleSheet.create({
     padding: isTablet ? hp('0.8%') : hp('0.5%'),
   },
   reqcontainer: {
-    marginVertical: hp('1%'),
+    marginVertical: hp('1.5%'),
     backgroundColor: COLORS.white,
     padding: wp('2%'),
     borderRadius: wp('3%'),
     marginHorizontal: hp('1.5%'),
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   reqtitle: {
     fontSize: isTablet ? wp(2.9) : wp(3.5),
@@ -927,7 +932,7 @@ export const productData = [
     discount: '36% off',
     rating: '4.3',
     reviews: 'Limited time deal',
-    image: images.AC_indoor, // Adjust path
+    image: images.ACimage, // Adjust path
   },
   {
     id: '2',
@@ -947,7 +952,7 @@ export const productData = [
     discount: '34% off',
     rating: '4.2',
     reviews: 'Limited time deal',
-    image: images.AC_indoor, // Adjust path
+    image: images.ACimage, // Adjust path
   },
   {
     id: '4',

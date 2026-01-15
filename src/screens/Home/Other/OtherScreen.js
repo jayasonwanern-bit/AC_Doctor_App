@@ -121,13 +121,13 @@ const OtherScreen = ({ navigation }) => {
             ShapeRADIUS={hp(3)}
           />
 
-          <View>
+          <View style={{ marginTop: hp(1) }}>
             <CustomPicker
               value={isProblem}
               onChange={value => handleInputChange('isProblem', value)}
               items={ProblemOptions}
               width={isTablet ? wp(90) : wp(88)} // any width
-              height={hp('5%')} // any height
+              height={hp('5.5%')} // any height
               borderRadius={hp('4%')} // custom radius
             />
           </View>
@@ -139,7 +139,8 @@ const OtherScreen = ({ navigation }) => {
             value={ProblemReason}
             onChangeText={val => handleInputChange('reason', val)}
             borderRadius={hp('1.5%')}
-            MarginBottom={hp('1%')}
+            MarginTop={hp(2)}
+            MarginBottom={hp(2)}
             onSubmitEditing={() => Keyboard.dismiss()}
             containerStyle={{ width: isTablet ? wp(90) : wp(88) }}
           />

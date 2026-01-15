@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     right: 0,
-    bottom: hp(1),
+    bottom: hp(0),
   },
   iconBtn: {
     marginLeft: wp(3),

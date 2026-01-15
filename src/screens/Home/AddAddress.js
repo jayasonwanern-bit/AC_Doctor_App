@@ -249,7 +249,7 @@ const AddAddress = ({ navigation, route }) => {
             source={isDefault ? images.check : images.uncheck}
             style={styles.checkBoxIcon}
           />
-          <Text style={styles.checkboxLabel}>Make this my default address</Text>
+          <Text style={styles.checkboxLabel}>Make this default address</Text>
         </TouchableOpacity>
 
         {loading ? (
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContainer: {
-    padding: wp(5),
+    paddingHorizontal: wp(4),
     backgroundColor: '#fff',
     flexGrow: 1,
   },
@@ -328,10 +328,10 @@ const styles = StyleSheet.create({
     fontSize: hp(1.5),
   },
   label: {
-    fontSize: hp(1.5),
+    fontSize: hp(1.8),
     marginBottom: hp(1),
     marginTop: hp(1.3),
-    color: '#000',
+    color: COLORS.black,
     fontFamily: Fonts.semiBold,
   },
   input: {
@@ -364,21 +364,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: wp(1),
-    padding: wp(1.5),
+    padding: wp(2),
   },
   selectedTypeButton: {
     borderWidth: 1,
     borderColor: COLORS.themeColor,
+    backgroundColor: COLORS.themeColor,
   },
   typeButtonText: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.6),
     fontFamily: Fonts.medium,
     color: COLORS.textHeading,
   },
   selectedTypeButtonText: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.6),
     fontFamily: Fonts.medium,
-    color: COLORS.black,
+    color: COLORS.white,
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -387,8 +388,8 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     marginLeft: wp(2),
-    fontSize: hp(1.4),
-    fontFamily: Fonts.regular,
+    fontSize: hp(1.6),
+    fontFamily: Fonts.medium,
     color: COLORS.black,
   },
   checkBoxIcon: {

@@ -16,7 +16,7 @@ const CustomPicker = ({
   width = wp('90%'),
   height = hp('5%'),
   borderRadius = hp('3%'),
-  placeholder = { label: 'Select Problem', value: null },
+  placeholder = { label: 'Select an option', value: null },
   icon = null,
   backgroundColor = '#fff',
   borderColor = '#d9d9d9',
@@ -53,16 +53,16 @@ const CustomPicker = ({
           }}
           style={{
             inputIOS: {
-              width: width * 0.88,
+              width: width * 0.99,
               height,
               fontSize: hp('1.6%'),
-              color: '#323232ff',
+              color: value ? '#333' : '#5d5d5d', // 👈 selected vs placeholder
             },
             inputAndroid: {
               width: width * 0.88,
               height,
               fontSize: hp('1.6%'),
-              color: '#333',
+              color: value ? '#333' : '#5d5d5d',
             },
             iconContainer: {
               top: height * 0.25,

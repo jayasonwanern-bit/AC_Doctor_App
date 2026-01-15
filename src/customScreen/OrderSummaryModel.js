@@ -91,22 +91,24 @@ const styles = StyleSheet.create({
         padding: 16,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        minHeight: '36%'
+        minHeight: '36%',
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 6,
+        width: '90%',
     },
     icon: {
         width: 28,
         height: 28,
-        marginRight: 10,
+        resizeMode: 'contain'
     },
     text: {
-        fontSize: 16.3,
+        fontSize: 16,
         color: '#414040',
-        fontWeight: '500'
+        fontWeight: '500',
+        marginLeft: 10
     },
     textHeighlight: {
         fontSize: 16,
