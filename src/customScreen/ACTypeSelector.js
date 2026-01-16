@@ -146,6 +146,7 @@ const ACTypeSelector = ({
         transparent={true}
         animationType="slide"
         visible={isModalVisible}
+        // style={{ backgroundColor: "red" }}
         onRequestClose={() => setModalVisible(false)}
       >
         <TouchableOpacity
@@ -265,11 +266,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 20,
+    // marginBottom: 10,
+    padding: 17,
     width: '100%',
     maxHeight: '70%',
     alignSelf: 'center',
-    paddingBottom: hp(Platform.OS === 'android' ? 3 : 4),
+
+    // paddingBottom: hp(Platform.OS === 'android' ? 0 : 4),
   },
   item: {
     flexDirection: 'row',
