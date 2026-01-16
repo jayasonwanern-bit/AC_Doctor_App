@@ -53,7 +53,7 @@ const CustomPicker = ({
           }}
           style={{
             inputIOS: {
-              width: width * 0.99,
+              width: width * 0.93,
               height,
               fontSize: hp('1.6%'),
               color: value ? '#333' : '#5d5d5d', // 👈 selected vs placeholder

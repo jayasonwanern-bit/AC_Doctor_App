@@ -108,7 +108,7 @@ const images = {
   wallMid: require('./icons/wallMid.png'),
   wallDown: require('./icons/wallDown.png'),
   bluestar: require('./icons/bluestar.png'),
-  Haier: require('./icons/Haier.png'),
+  Haier: require('./icons/haier.png'),
   lgLogo: require('./icons/lgLogo.png'),
   samsungicon: require('./icons/samsungicon.png'),
   windowG: require('./icons/windowG.png'),
