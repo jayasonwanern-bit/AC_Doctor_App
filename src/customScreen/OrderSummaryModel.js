@@ -27,7 +27,9 @@ const OrderSummaryModal = ({
                     {/* LOCATION */}
                     <View style={styles.row}>
                         <FastImage source={images.locationRed} style={styles.icon} />
-                        <Text style={styles.text}>{locationText?.trim()}</Text>
+                        <Text style={styles.text} numberOfLines={2}
+                            ellipsizeMode="tail"
+                        >{locationText?.trim()}</Text>
                     </View>
 
                     {/* PHONE */}
@@ -105,6 +107,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain'
     },
     text: {
+        flex: 1,
         fontSize: 16,
         color: '#414040',
         fontWeight: '500',

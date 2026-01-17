@@ -54,16 +54,17 @@ const OtherScreen = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    if (isProblem === null || ProblemReason.trim() === '') {
-      Toast.show('Please select a problem and describe the issue.');
-      return;
-    } else {
-      navigation.navigate('OtherCartView', {
-        problem: isProblem,
-        reason: ProblemReason,
-        acType: formData.acType,
-      });
-    }
+    Toast.show('This feature is in progress. Thank you for your patience.');
+    // if (isProblem === null || ProblemReason.trim() === '') {
+    //   Toast.show('Please select a problem and describe the issue.');
+    //   return;
+    // } else {
+    //   navigation.navigate('OtherCartView', {
+    //     problem: isProblem,
+    //     reason: ProblemReason,
+    //     acType: formData.acType,
+    //   });
+    // }
     // Reset form
     setIsProblem('Select Problem');
     setProblemReason('');

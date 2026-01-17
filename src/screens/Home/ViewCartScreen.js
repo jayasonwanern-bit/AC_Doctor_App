@@ -301,7 +301,7 @@ const ViewCartScreen = ({ route }) => {
 
         {/* CouponScreen */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('CouponScreen')}
+          // onPress={() => navigation.navigate('CouponScreen')}
           style={[
             styles.ordercontainer,
             { justifyContent: 'space-between', borderColor: COLORS.themeColor },
