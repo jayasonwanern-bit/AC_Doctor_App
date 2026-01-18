@@ -166,7 +166,7 @@ const AccountScreenComponent = ({ navigation }) => {
       >
         {loading ? (
           <>
-            <CustomLoader size={20} />
+            <CustomLoader size="small" />
           </>
         ) : (
           <>

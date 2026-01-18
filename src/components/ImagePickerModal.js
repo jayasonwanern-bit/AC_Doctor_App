@@ -94,7 +94,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
             disabled={!!loading}
           >
             <Text style={styles.btnText}>Camera</Text>
-            {loading === 'camera' && <CustomLoader size={40} />}
+            {loading === 'camera' && <CustomLoader size="large" />}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -103,7 +103,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
             disabled={!!loading}
           >
             <Text style={styles.btnText}>Gallery</Text>
-            {loading === 'gallery' && <CustomLoader size={40} />}
+            {loading === 'gallery' && <CustomLoader size="large" />}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.cancel} onPress={onClose}>

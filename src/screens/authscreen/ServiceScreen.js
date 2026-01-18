@@ -82,7 +82,7 @@ const ServiceScreen = () => {
             resizeMode={FastImage.resizeMode.contain}
           />
           <Text style={styles.locationText}>Use Current Location</Text>
-          {loading ? <CustomLoader size={15} /> : null}
+          {loading ? <CustomLoader size="small" /> : null}
         </View>
       </TouchableOpacity>
 

@@ -188,7 +188,7 @@ const ManageAddressScreen = ({ navigation }) => {
         <Text style={styles.title}>Saved Address</Text>
 
         {loading ? (
-          <CustomLoader size={40} />
+          <CustomLoader size="large" />
         ) : (
           <FlatList
             scrollEnabled={false}

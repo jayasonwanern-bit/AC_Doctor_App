@@ -249,7 +249,7 @@ const MyBookingScreen = ({ navigation }) => {
 
       {/* List */}
       {loading ? (
-        <CustomLoader size={40} />
+        <CustomLoader size="large" />
       ) : (
         <FlatList
           data={filteredRequests}

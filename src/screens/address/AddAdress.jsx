@@ -117,7 +117,7 @@ const AddAdress = () => {
       />
 
       {locationLoading ? (
-        <CustomLoader size={20} />
+        <CustomLoader size="small" />
       ) : (
         <>
           <TextInput

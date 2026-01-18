@@ -307,7 +307,7 @@ const HomeScreen = ({ route }) => {
           <View style={styles.addressRow}>
             {Loader ? (
               <>
-                <CustomLoader size={20} />
+                <CustomLoader size="small" />
               </>
             ) : (
               <View style={styles.locationContainer}>
@@ -330,7 +330,7 @@ const HomeScreen = ({ route }) => {
               />
               {WeatherLoader ? (
                 <>
-                  <CustomLoader size={20} />
+                  <CustomLoader size="small" />
                 </>
               ) : (
                 <Text
@@ -341,12 +341,12 @@ const HomeScreen = ({ route }) => {
           </View>
         </View>
         {/* Banner Image */}
-        {loading ? <CustomLoader /> : <CustomSlider images={bannerImages} />}
+        {loading ? <CustomLoader size="small" /> : <CustomSlider images={bannerImages} />}
         {/* Book a service */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Book AC Services</Text>
           {loading ? (
-            <CustomLoader size={40} />
+            <CustomLoader size="large" />
           ) : (
             <View style={styles.reqgrid}>
               {bookServices
@@ -406,7 +406,7 @@ const HomeScreen = ({ route }) => {
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>OEM Partner</Text>
           {loading ? (
-            <CustomLoader size={20} />
+            <CustomLoader size="large" />
           ) : (
             <FlatList
               ref={flatListRef}

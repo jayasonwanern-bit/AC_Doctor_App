@@ -22,7 +22,7 @@ const BookingDetailsScreen = ({ route }) => {
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
-        <CustomLoader size={40} />
+        <CustomLoader size="large" />
       </View>
     );
   }
@@ -32,7 +32,7 @@ const BookingDetailsScreen = ({ route }) => {
     <View style={styles.container}>
       <Header title="Booking Details" onBack={() => navigation.goBack()} />
       {loading ? (
-        <CustomLoader size={40} />
+        <CustomLoader size="large" />
       ) : (
         <ScrollView contentContainerStyle={styles.scrollcontain}>
           <Text style={styles.heading}>Booking Details</Text>

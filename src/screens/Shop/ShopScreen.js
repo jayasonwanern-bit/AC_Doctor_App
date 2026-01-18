@@ -25,7 +25,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLORS } from '../../utils/colors';
 import { store } from '../../redux/store';
 import OnTopScreen from '../../components/OnTopScreen';
-import CustomLoader from '../../components/CustomLoader';
+
 
 const ShopScreen = ({ navigation }) => {
   // const addressText = store?.getState()?.auth?.address;

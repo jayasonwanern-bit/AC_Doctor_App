@@ -126,38 +126,38 @@ const CustomSearchWithFilter = ({ initialData, onProductPress }) => {
         selectedRating ||
         freeDelivery ||
         priceRange[1] < 100000) && (
-        <View style={styles.activeFilters}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {searchText && (
-              <FilterTag
-                label={`"${searchText}"`}
-                onRemove={() => setSearchText('')}
-              />
-            )}
-            {selectedRating && (
-              <FilterTag
-                label={`${selectedRating} Star`}
-                onRemove={() => setSelectedRating(null)}
-              />
-            )}
-            {freeDelivery && (
-              <FilterTag
-                label="Free Delivery"
-                onRemove={() => setFreeDelivery(false)}
-              />
-            )}
-            {priceRange[1] < 100000 && (
-              <FilterTag
-                label={`₹${priceRange[0]} - ₹${priceRange[1]}`}
-                onRemove={() => setPriceRange([0, 100000])}
-              />
-            )}
-            <TouchableOpacity onPress={clearFilters}>
-              <Text style={styles.clearAll}>Clear All</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      )}
+          <View style={styles.activeFilters}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {searchText && (
+                <FilterTag
+                  label={`"${searchText}"`}
+                  onRemove={() => setSearchText('')}
+                />
+              )}
+              {selectedRating && (
+                <FilterTag
+                  label={`${selectedRating} Star`}
+                  onRemove={() => setSelectedRating(null)}
+                />
+              )}
+              {freeDelivery && (
+                <FilterTag
+                  label="Free Delivery"
+                  onRemove={() => setFreeDelivery(false)}
+                />
+              )}
+              {priceRange[1] < 100000 && (
+                <FilterTag
+                  label={`₹${priceRange[0]} - ₹${priceRange[1]}`}
+                  onRemove={() => setPriceRange([0, 100000])}
+                />
+              )}
+              <TouchableOpacity onPress={clearFilters}>
+                <Text style={styles.clearAll}>Clear All</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        )}
 
       {/* Filter Modal */}
       {showFilters && (
@@ -238,7 +238,7 @@ const CustomSearchWithFilter = ({ initialData, onProductPress }) => {
       {/* Product List */}
       {loading ? (
         <View style={styles.loaderContainer}>
-          <CustomLoader size={60} />
+          <CustomLoader size="large" />
         </View>
       ) : (
         <FlatList

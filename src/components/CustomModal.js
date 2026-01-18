@@ -141,7 +141,7 @@ const CustomModal = ({
           {/* 🔹 Address List */}
           <View style={{ maxHeight: hp(40) }}>
             {loading ? (
-              <CustomLoader size={40} />
+              <CustomLoader size="large" />
             ) : savedAddresses.length === 0 ? (
               <Text style={styles.emptyText}>Please Add Your Address</Text>
             ) : (

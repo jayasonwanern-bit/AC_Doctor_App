@@ -103,7 +103,7 @@ const BrandScreen = ({ route }) => {
         <View style={styles.borderContainer}>
           <Text style={styles.headerText}>Which is your favorite BRAND ?</Text>
           {loading ? (
-            <CustomLoader size={40} />
+            <CustomLoader size="large" />
           ) : (
             <FlatList
               data={filteredBrands}

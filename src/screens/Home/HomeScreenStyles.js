@@ -97,7 +97,7 @@ export default StyleSheet.create({
   },
   reqtitle: {
     fontSize: isTablet ? wp(2.9) : wp(3.5),
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.semiBold,
     color: COLORS.black,
     marginBottom: hp('1%'),
   },
@@ -122,7 +122,7 @@ export default StyleSheet.create({
     color: COLORS.black,
     textAlign: 'center',
     marginTop: hp('1%'),
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.medium,
   },
   uticontainer: {
     margin: hp('1%'),

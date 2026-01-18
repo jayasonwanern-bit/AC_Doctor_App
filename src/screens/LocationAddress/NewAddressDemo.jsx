@@ -117,7 +117,7 @@ const NewAddressDemo = () => {
       />
 
       {locationLoading ? (
-        <CustomLoader size={40} />
+        <CustomLoader size="large" />
       ) : (
         <>
           <TextInput

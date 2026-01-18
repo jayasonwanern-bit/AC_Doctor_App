@@ -95,7 +95,7 @@ const CouponScreen = ({ navigation }) => {
 
       <View style={styles.screnContainer}>
         {loading ? (
-          <CustomLoader size={40} />
+          <CustomLoader size="large" />
         ) : (
           <FlatList
             data={coupons}

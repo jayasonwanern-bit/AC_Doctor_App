@@ -253,7 +253,7 @@ const AddAddress = ({ navigation, route }) => {
         </TouchableOpacity>
 
         {loading ? (
-          <CustomLoader size={15} />
+          <CustomLoader size="small" />
         ) : (<CustomButton
           buttonName="Continue"
           margingTOP={hp('6%')}

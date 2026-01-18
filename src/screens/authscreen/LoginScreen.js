@@ -61,9 +61,8 @@ const LoginScreen = ({ navigation }) => {
         // deviceToken: token,
       };
       setLoading(true);
-      const res = await loginUser(postdata);
-      console.log('Login screen Response:-->', res);
       // ==== Save Token ====
+      const res = await loginUser(postdata);
       dispatch(setToken({ accessToken: res?.data?.assessToken }));
       navigation.navigate('Verification', {
         phoneNumber: data.phoneNumber,
@@ -75,8 +74,7 @@ const LoginScreen = ({ navigation }) => {
       Toast.show('Login Success', Toast.LONG);
       Keyboard.dismiss();
     } catch (error) {
-      Toast.show('500', error, Toast.LONG);
-
+      console.log('Login Error:', error);
       setLoading(false);
       console.log('Login Error:', error);
     } finally {
@@ -143,7 +141,7 @@ const LoginScreen = ({ navigation }) => {
             >
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.buttonText}>Get Verification Code</Text>
-                {loading ? <CustomLoader size={14} /> : null}
+                {loading ? <CustomLoader size="small" /> : null}
               </View>
             </TouchableOpacity>
           </View>
