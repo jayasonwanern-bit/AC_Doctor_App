@@ -127,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
               Securing your personal information is our priority.
             </Text>
 
-            <TouchableOpacity
+            <TouchableOpacity activeOpacity={1}
               style={[
                 styles.button,
                 {
