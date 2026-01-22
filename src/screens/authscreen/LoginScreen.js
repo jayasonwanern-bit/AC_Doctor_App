@@ -74,9 +74,22 @@ const LoginScreen = ({ navigation }) => {
       Toast.show('Login Success', Toast.LONG);
       Keyboard.dismiss();
     } catch (error) {
-      console.log('Login Error:', error);
-      setLoading(false);
-      console.log('Login Error:', error);
+      console.log('Login Error Full:', error);
+      console.log('Login Error Response:', error?.res);
+      console.log('Login Error Data:', error?.res?.data);
+
+      let message = 'Something went wrong';
+      // ⛔ Server not responding / no internet
+      if (!error.res) {
+        message = 'Server not responding. Please try again later.';
+      }
+      // ❌ API sent error message
+      else if (error.res?.data?.message) {
+        message = error.res.data.message;
+      }
+      // 🔴 Show error message from API
+      Toast.show(message, Toast.LONG);
+
     } finally {
       setLoading(false);
     }

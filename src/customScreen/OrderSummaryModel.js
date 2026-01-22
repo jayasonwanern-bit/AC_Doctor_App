@@ -3,6 +3,10 @@ import { Modal, View, Text, StyleSheet, TouchableOpacity, Pressable } from 'reac
 import FastImage from 'react-native-fast-image';
 import CustomButton from '../components/CustomButton';
 import { COLORS } from '../utils/colors';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const OrderSummaryModal = ({
     visible,
@@ -20,6 +24,7 @@ const OrderSummaryModal = ({
             transparent
             animationType="slide"
             onRequestClose={onClose}
+            statusBarTranslucent
         >
             <Pressable style={styles.overlay} onPress={onClose}>
                 <View style={styles.container}>
@@ -59,12 +64,12 @@ const OrderSummaryModal = ({
                         onPress={() => {
                             OnPressBtn()
                         }}
-                        marginBottom={10}
+                        margingTOP={20}
                     />
 
                     <TouchableOpacity
                         style={{
-                            marginTop: 10,
+                            marginTop: 15,
                             marginBottom: 5, alignSelf: 'center'
                         }}
                     >
@@ -89,17 +94,29 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     container: {
-        backgroundColor: '#fff',
-        padding: 16,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        minHeight: '36%',
+        backgroundColor: 'rgb(253, 253, 253)',
+        paddingHorizontal: hp('2%'),
+        paddingVertical: hp('2%'),
+        borderTopLeftRadius: wp('6.5%'),
+        borderTopRightRadius: wp('6.5%'),
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        minHeight: hp(38),
+        maxHeight: hp(60),
+        alignSelf: 'center',
+        width: wp('100%'),
+        paddingBottom: hp(Platform.OS === 'android' ? 4 : 4),
+        marginBottom: hp(0),
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 6,
         width: '90%',
+        marginTop: hp('1.5%')
     },
     icon: {
         width: 28,

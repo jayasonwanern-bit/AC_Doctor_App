@@ -18,8 +18,18 @@ import remoteConfig from '@react-native-firebase/remote-config';
 // import { getAppVersion } from '../utils/appVersion';
 import { isUpdateRequired } from './src/utils/versionCompare';
 import notifee, { AndroidImportance } from '@notifee/react-native';
-
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 export default function App() {
+  useEffect(() => {
+    // 🔹 Set navigation bar color
+    SystemNavigationBar.setNavigationColor('black');
+
+    // 🔹 Optional: light or dark icons
+    // SystemNavigationBar.setNavigationColor('light');
+    // 'light' = white icons
+    // 'dark'  = black icons
+  }, []);
+
   const requestPermission = async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =

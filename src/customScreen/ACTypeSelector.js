@@ -271,8 +271,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxHeight: '70%',
     alignSelf: 'center',
-
-    // paddingBottom: hp(Platform.OS === 'android' ? 0 : 4),
+    paddingBottom: hp(Platform.OS === 'android' ? 2 : 4),
   },
   item: {
     flexDirection: 'row',

@@ -22,11 +22,17 @@ import CunstomInput from '../../../components/CunstomInput';
 import { isTablet } from '../../../components/TabletResponsiveSize';
 import ACTypeSelector from '../../../customScreen/ACTypeSelector';
 import Toast from 'react-native-simple-toast';
+import { useDispatch } from 'react-redux';
+import { setOtherCartMeta } from '../../../redux/slices/cartSlice';
 
-const OtherScreen = ({ navigation }) => {
+
+const OtherScreen = ({ navigation, route }) => {
+  const { serviceKey, serviceId } = route?.params;
   const [isProblem, setIsProblem] = useState('Select Problem');
   const [ProblemReason, setProblemReason] = useState('');
-
+  console.log('bothe data---.', serviceKey, serviceId)
+  const dispatch = useDispatch();
+  // list of prolbem
   const ProblemOptions = [
     { label: 'Water Leakage', value: 'Water Leakage' },
     { label: 'Noice Problem', value: 'Noice Problem' },
@@ -40,10 +46,11 @@ const OtherScreen = ({ navigation }) => {
     { label: 'Outdoor fan motor fault', value: 'Outdoor fan motor fault' },
     { label: 'Others', value: 'Others' },
   ];
+
   const [formData, setFormData] = useState({
     isProblem: isProblem,
     reason: ProblemReason,
-    acType: '',
+    // acType: '',
   });
 
   const handleInputChange = (field, value) => {
@@ -54,17 +61,18 @@ const OtherScreen = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    Toast.show('This feature is in progress. Thank you for your patience.');
-    // if (isProblem === null || ProblemReason.trim() === '') {
-    //   Toast.show('Please select a problem and describe the issue.');
-    //   return;
-    // } else {
-    //   navigation.navigate('OtherCartView', {
-    //     problem: isProblem,
-    //     reason: ProblemReason,
-    //     acType: formData.acType,
-    //   });
-    // }
+    if (formData.isProblem === null || formData.reason.trim() === '') {
+      Toast.show('Please select a problem and describe the issue.');
+      return;
+    } else {
+      dispatch(
+        setOtherCartMeta({
+          problem: formData.isProblem,
+          reason: formData.reason,
+        }),
+      );
+      navigation.navigate('OtherCartView', { serviceId: serviceId, serviceKey: serviceKey });
+    }
     // Reset form
     setIsProblem('Select Problem');
     setProblemReason('');
@@ -116,18 +124,18 @@ const OtherScreen = ({ navigation }) => {
 
         {/* Problem of ac */}
         <View style={styles.cardAdditional}>
-          <ACTypeSelector
+          {/* <ACTypeSelector
             onChange={v => handleInputChange('acType', v)}
             headingText={'Add AC'}
             ShapeRADIUS={hp(3)}
-          />
+          /> */}
 
           <View style={{ marginTop: hp(1) }}>
             <CustomPicker
-              value={isProblem}
+              value={formData.isProblem}
               onChange={value => handleInputChange('isProblem', value)}
               items={ProblemOptions}
-              width={isTablet ? wp(90) : wp(88)} // any width
+              width={isTablet ? wp(90) : wp(85)} // any width
               height={hp('5.5%')} // any height
               borderRadius={hp('4%')} // custom radius
             />
@@ -137,14 +145,16 @@ const OtherScreen = ({ navigation }) => {
             placeholder="Describe your problem"
             multiline
             numberOfLines={5}
-            value={ProblemReason}
+            value={formData.reason}
             onChangeText={val => handleInputChange('reason', val)}
             borderRadius={hp('1.5%')}
             MarginTop={hp(2)}
             MarginBottom={hp(2)}
             onSubmitEditing={() => Keyboard.dismiss()}
-            containerStyle={{ width: isTablet ? wp(90) : wp(88) }}
+            containerStyle={{ width: isTablet ? wp(90) : wp('85%') }}
           />
+
+
           <CustomButton
             buttonName="Submit"
             margingTOP={hp('0%')}

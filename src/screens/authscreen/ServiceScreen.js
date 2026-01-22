@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -15,32 +15,59 @@ import CustomLoader from '../../components/CustomLoader';
 
 const ServiceScreen = () => {
   const navigation = useNavigation();
+  const retryIntervalRef = useRef(null);
+
   useEffect(() => {
     Geolocation.requestAuthorization();
   }, []);
 
   const { latitude, longitude, addressText, loading, error, getLocation } = GetLoaction();
 
-  const handleUseCurrentLocation = () => {
-    getLocation(locationData => {
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'Tab',
-            state: {
-              index: 0,
-              routes: [
-                {
-                  name: 'Home',
-                  params: { locationData },
+
+
+  const startFetchingLocation = () => {
+    // ⛔ Prevent multiple intervals
+    if (retryIntervalRef.current) return;
+
+    retryIntervalRef.current = setInterval(() => {
+      console.log('📍 Trying to fetch location again...');
+
+      getLocation(locationData => {
+        // ✅ Check if address exists (adjust key as per your data)
+        if (locationData?.address || locationData?.formattedAddress) {
+          console.log('✅ Location found, stopping fetch');
+
+          stopFetchingLocation();
+
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Tab',
+                state: {
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'Home',
+                      params: { locationData },
+                    },
+                  ],
                 },
-              ],
-            },
-          },
-        ],
+              },
+            ],
+          });
+        } else {
+          console.log('❌ Address not found yet, retrying...');
+        }
       });
-    });
+    }, 3000); // 🔁 retry every 3 seconds
+  };
+
+  const stopFetchingLocation = () => {
+    if (retryIntervalRef.current) {
+      clearInterval(retryIntervalRef.current);
+      retryIntervalRef.current = null;
+    }
   };
 
   const handleManuallyLocation = () => {
@@ -73,7 +100,7 @@ const ServiceScreen = () => {
 
       <TouchableOpacity
         style={styles.locationButton}
-        onPress={() => handleUseCurrentLocation()}
+        onPress={() => startFetchingLocation()}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <FastImage
@@ -82,7 +109,7 @@ const ServiceScreen = () => {
             resizeMode={FastImage.resizeMode.contain}
           />
           <Text style={styles.locationText}>Use Current Location</Text>
-          {loading ? <CustomLoader size="small" /> : null}
+          {loading ? <CustomLoader size="small" color='white' /> : null}
         </View>
       </TouchableOpacity>
 

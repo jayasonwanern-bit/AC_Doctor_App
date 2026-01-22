@@ -197,6 +197,7 @@ const images = {
   logoUpdate: require('./icons/logoUpdate.png'),
   plusicon: require('./icons/plus.png'),
   minusicon: require('../assets/icons/Minus.png'),
+  brand_icon: require('../assets/icons/brand_icon.png'),
 
 
   // Add more images as needed

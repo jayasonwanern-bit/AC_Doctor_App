@@ -49,7 +49,6 @@ const ManageAddressScreen = ({ navigation }) => {
     try {
       setLoading(true);
       const res = await getAddress(userDetail?._id);
-      console.log('response of manage', res);
       if (res?.status) {
         const data = res.data;
         setAddresses(data);

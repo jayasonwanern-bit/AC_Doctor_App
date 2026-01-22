@@ -35,6 +35,7 @@ import { dispatch, store } from '../../redux/store';
 import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
+import InterestSuccessModal from '../../components/InterestSuccessModal'
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -71,7 +72,7 @@ const HomeScreen = ({ route }) => {
   };
 
   const { locationData } = route.params || {};
-
+  const [showSuccess, setShowSuccess] = useState(false);
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
   const handleAMC = () => navigation.navigate('AMCFrom');
   const handleCopperPipe = () => navigation.navigate('CopperPipeScreen');
@@ -110,7 +111,7 @@ const HomeScreen = ({ route }) => {
 
   const utilities = [
     {
-      label: 'Tonage Calculator',
+      label: 'Tonnage Calculator',
       icon: images.calculateIcon,
       action: handleCalulator,
     },
@@ -208,7 +209,6 @@ const HomeScreen = ({ route }) => {
     try {
       setLoading(true);
       const res = await getServiceList();
-      console.log('LIST OF  SERVICE---', res.data)
       setBookServices(res?.data || []);
     } catch (error) {
       console.log(error);
@@ -229,12 +229,15 @@ const HomeScreen = ({ route }) => {
   const handleServiceNavigation = service => {
     const screen = screens[service?.key];
     if (service.name === 'Other') {
-      navigation.navigate('OtherScreen');
+      navigation.navigate('OtherScreen', {
+        serviceId: service._id,
+        serviceKey: service.key,
+      });
     }
     else {
       navigation.navigate('GasChargeScreen', {
         screenName: service.name,
-        serviceId: service._id,
+        serviceId: service?._id,
         source: 'HOME',
       });
     }
@@ -342,6 +345,8 @@ const HomeScreen = ({ route }) => {
         </View>
         {/* Banner Image */}
         {loading ? <CustomLoader size="small" /> : <CustomSlider images={bannerImages} />}
+
+
         {/* Book a service */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Book AC Services</Text>
@@ -367,6 +372,8 @@ const HomeScreen = ({ route }) => {
             </View>
           )}
         </View>
+
+
         {/* Request a Quote */}
         <View style={styles.reqcontainer}>
           <Text style={styles.reqtitle}>Request a Quote</Text>
@@ -383,6 +390,7 @@ const HomeScreen = ({ route }) => {
             ))}
           </View>
         </View>
+
         <LinearGradient
           colors={['#ecd5d0ff', '#ede3dbff', '#b9d4e7ff']}
           style={styles.uticontainer}
@@ -429,6 +437,7 @@ const HomeScreen = ({ route }) => {
             />
           )}
         </View>
+
         <View style={[styles.uticontainer, { padding: wp('0%') }]}>
           <Text
             style={[
@@ -465,27 +474,34 @@ const HomeScreen = ({ route }) => {
                   <View style={styles.dealTag}>
                     <Text style={styles.dealText}>Limited time deal</Text>
                   </View>
-                  <Text style={styles.rating}>⭐ {item.rating}</Text>
+                  {/* <Text style={styles.rating}>⭐ {item.rating}</Text> */}
                 </View>
 
                 <Text style={styles.name} numberOfLines={1}>
                   {item.name}
                 </Text>
 
-                <Text style={styles.price}>Coming Soon</Text>
+
 
                 <View style={styles.bottomRow}>
-                  <Text style={styles.mrp}>
-                    MRP{' '}
-                    <Text style={[styles.mrp, { textDecorationLine: 'line-through' }]}>
-                      {item.mrp}
-                    </Text>
+                  <Text style={styles.price}>{item.price} {'   '}</Text>
+
+                  <Text style={[styles.mrp, { textDecorationLine: 'line-through' }]}>
+                    MRP{' '} {item.mrp}
                   </Text>
 
-                  <TouchableOpacity style={styles.addButton}>
-                    <Text style={styles.addButtonText}>Add</Text>
-                  </TouchableOpacity>
                 </View>
+                <TouchableOpacity
+                  style={styles.productView}
+                  onPress={() => setShowSuccess(true)}
+                >
+                  <Text
+                    style={styles.interestText}
+                  >
+                    Show Interest
+                  </Text>
+                </TouchableOpacity>
+
               </View>
             )}
           />
@@ -616,6 +632,11 @@ const HomeScreen = ({ route }) => {
         </View>
       </OnTopScreen>
       {/* </ScrollView> */}
+      <InterestSuccessModal
+        visible={showSuccess}
+        onClose={() => setShowSuccess(false)}
+      />
+
     </SafeAreaView>
   );
 };

@@ -36,12 +36,16 @@ const GasChargeScreen = ({ route }) => {
 
     dispatch(
       addOrMergeItems({
-        source, // HOME or VIEW_CART
+        source, // HOME or VIEW_CART OR OTHER_CART
         items,
       }),
     );
-    console.log('ites----', items)
-    navigation.replace('ViewCart');
+    console.log('souce from --', source)
+    if (source === 'OTHER_CART') {
+      navigation.replace('OtherCartView');
+    } else {
+      navigation.replace('ViewCart');
+    }
   };
 
   const buildPayloadFromACData = () => {

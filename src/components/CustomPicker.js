@@ -48,7 +48,6 @@ const CustomPicker = ({
             itemStyle: {
               color: 'black',
               fontSize: hp('1.6%'),
-              // alignSelf: 'flex-end',
             },
           }}
           style={{

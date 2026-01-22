@@ -54,18 +54,18 @@ const ProfileDetail = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (userId) {
+    if (userId?._id) {
       fetchProfile();
     }
-  }, [userId]);
+  }, [userId?._id]);
+
 
   // get profile data
   const fetchProfile = async () => {
     try {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
-      console.log('User Profile Data:', res.data);
-      if (res?.status) {
+      if (res?.status || res?.success) {
         const data = res.data;
         setCallingCode(data?.countryCode);
         setuserName(data?.name);
@@ -82,10 +82,6 @@ const ProfileDetail = ({ navigation }) => {
   };
 
   // update profile api
-
-
-
-
   const handleUpdateProfile = async () => {
     setLoading(true);
     try {
@@ -112,15 +108,8 @@ const ProfileDetail = ({ navigation }) => {
         // profilePhotoUrl: cleanImageUrl || '',
       };
 
-      // ✅ add fields only if user filled them
-      // if (userName?.trim()) body.userName = userName.trim();
-      // if (phoneNumber?.trim()) body.phoneNumber = phoneNumber.trim();
-      // if (email?.trim()) body.email = email.trim();
-      // if (gender) body.gender = gender;
-      // if (cleanImageUrl) body.profilePhotoUrl = cleanImageUrl;
-
       const res = await updateUserProfile(body);
-      if (res?.status) {
+      if (res?.status || res?.success) {
         Toast.show('Profile updated successfully');
         await refreshUserDetails();
         navigation.goBack("")
@@ -195,10 +184,6 @@ const ProfileDetail = ({ navigation }) => {
             {/* Mobile Number */}
             <View style={Homestyles.profileDetailInfoContainer}>
               <Text style={Homestyles.profileDetailName}>Mobile Number</Text>
-              {/* <Controller
-                control={control}
-                name="phoneNumber"
-                render={({ field: { onChange, value } }) => ( */}
               <CustomPhoneInput
                 countryCode={countryCode}
                 callingCode={callingCode}
@@ -210,9 +195,8 @@ const ProfileDetail = ({ navigation }) => {
                   setphoneNumber(val);
                 }}
               />
-              {/* )} */}
-              {/* // /> */}
             </View>
+
             {/* Email Address */}
             {/* <CunstomInput
               label="Email Address"

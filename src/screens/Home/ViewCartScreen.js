@@ -1,4 +1,4 @@
-import React, { use, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -63,7 +63,24 @@ const ViewCartScreen = ({ route }) => {
   useEffect(() => {
     getBookService();
   }, []);
+  const getBookService = async () => {
+    try {
+      setLoading(true);
+      const res = await getServiceList();
+      const list = res?.data || [];
+      //  remove unwanted items
+      const filteredList = list.filter(item =>
+        !['AMC', 'Copper Piping', 'Commercial AC'].includes(item.name)
+      );
+      setBookServices(filteredList);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // get selected location and other details
   const locationText = routeAddress
     ? [routeAddress?.name, routeAddress?.address]
       .filter(Boolean)
@@ -77,25 +94,10 @@ const ViewCartScreen = ({ route }) => {
     ]
       .filter(Boolean)
       .join(', ');
-
-
   const phoneText = `${userDetails?.countryCode} ${userDetails?.phoneNumber}`;
 
   const slotText = `${selectedSlot?.date}-${selectedSlot?.month}-${selectedSlot?.day}, (${selectedSlot?.Timeslot ==
     "First Half" ? '1st Half' : '2nd Half'})`;
-
-
-  const getBookService = async () => {
-    try {
-      setLoading(true);
-      const res = await getServiceList();
-      setBookServices(res?.data || []);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Define the goToService function for service navigation
   const SERVICE_ROUTE_MAP = {
@@ -540,6 +542,7 @@ const ViewCartScreen = ({ route }) => {
         numberofAC={numberofAC}
         setvalue={setNumberofAC}
         addAcStatus={true}
+        fromScreen={'ViewCart'}
         setSelectedAddress={setSelectedAddress}
       />
 
@@ -558,7 +561,7 @@ const ViewCartScreen = ({ route }) => {
         }}
       />
 
-      <ConfirmationModal
+      {/* <ConfirmationModal
         visible={confirmModalVisible}
         onClose={() => {
           setConfirmModalVisible(false);
@@ -569,7 +572,7 @@ const ViewCartScreen = ({ route }) => {
         }}
         selectedAddress={selectedAddress}
         selectedSlot={selectedSlot}
-      />
+      /> */}
     </View>
   );
 };

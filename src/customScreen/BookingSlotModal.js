@@ -121,7 +121,7 @@ const BookingSlotModal = ({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType="slide" statusBarTranslucent>
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
 
@@ -243,20 +243,29 @@ const BookingSlotModal = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: COLORS.transparent,
     justifyContent: 'flex-end',
+    backgroundColor: COLORS.transparent,
   },
   backdrop: {
     flex: 1,
   },
   modalContent: {
-    width: '100%',
-    paddingHorizontal: wp(5),
-    paddingVertical: hp(2),
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: wp(6),
-    borderTopRightRadius: wp(6),
-    paddingBottom: Platform.OS === 'ios' ? hp(3) : hp(3),
+    backgroundColor: 'rgb(253, 253, 253)',
+    paddingHorizontal: hp('2%'),
+    paddingVertical: hp('2%'),
+    borderTopLeftRadius: wp('6.5%'),
+    borderTopRightRadius: wp('6.5%'),
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    minHeight: hp(38),
+    maxHeight: hp(60),
+    alignSelf: 'center',
+    width: wp('100%'),
+    paddingBottom: hp(Platform.OS === 'android' ? 4 : 4),
+    marginBottom: hp(0),
   },
   title: {
     fontSize: hp(2),

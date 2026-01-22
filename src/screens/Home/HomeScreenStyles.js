@@ -223,9 +223,19 @@ export default StyleSheet.create({
     zIndex: 1,
     bottom: 30,
     right: 12,
-    borderRadius: 7
+    borderRadius: 7,
   },
-  TotalcoutnCart: { backgroundColor: COLORS.white, paddingHorizontal: 7, borderRadius: 15, position: 'absolute', right: 1, top: -15, color: "black", fontFamily: Fonts.bold, fontSize: rf(14) },
+  TotalcoutnCart: {
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 7,
+    borderRadius: 15,
+    position: 'absolute',
+    right: 1,
+    top: -15,
+    color: 'black',
+    fontFamily: Fonts.bold,
+    fontSize: rf(14),
+  },
   productCard: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
@@ -286,9 +296,9 @@ export default StyleSheet.create({
     borderRadius: 6,
   },
   dealText: {
-    fontSize: wp('2.5%'),
+    fontSize: wp('3%'),
     color: '#6ca6d6ff',
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.medium,
   },
   rating: {
     fontSize: hp('1.3%'),
@@ -296,10 +306,10 @@ export default StyleSheet.create({
     color: COLORS.black,
   },
   name: {
-    fontSize: hp('1.3%'),
+    fontSize: hp('1.6%'),
     fontFamily: Fonts.semiBold,
     color: '#222',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   bottomRow: {
     flexDirection: 'row',
@@ -314,19 +324,22 @@ export default StyleSheet.create({
   mrp: {
     fontSize: hp('1.2%'),
     color: '#888',
+    fontFamily: Fonts.medium,
   },
   addButton: {
     backgroundColor: COLORS.themeColor,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    // paddingHorizontal: 12,
+    padding: 6,
     borderRadius: 20,
-    width: wp('15%'),
+    marginVertical: hp(1),
+    width: wp('35%'),
+    alignSelf: 'center',
   },
   addButtonText: {
     color: '#fff',
-    fontFamily: Fonts.medium,
+    fontFamily: Fonts.semiBold,
     textAlign: 'center',
-    fontSize: hp('1.3%'),
+    fontSize: hp('1.6%'),
   },
   likeButton: {
     width: wp('5.5%'),
@@ -337,10 +350,27 @@ export default StyleSheet.create({
   bottomRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: hp('1%'),
-    justifyContent: 'space-between',
+    marginVertical: hp('0.5%'),
+    // justifyContent: 'center',
   },
 
+  interestText: {
+    color: '#fff',
+    fontFamily: Fonts.semiBold,
+    textAlign: 'center',
+    fontSize: hp('1.6%'),
+    includeFontPadding: false, // 👈 Android text vertical fix
+  },
+  productView: {
+    backgroundColor: COLORS.themeColor,
+    borderRadius: 20,
+    marginVertical: hp(1),
+    width: wp('35%'),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: hp('4%'),
+  },
   testacard: {
     backgroundColor: COLORS.white,
     borderRadius: 12,
@@ -548,7 +578,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   workimage: {
-    width: isTablet ? wp(93) : wp(93),
+    width: isTablet ? wp(95) : wp(95),
     height: isTablet ? wp(40) : wp(40),
     resizeMode: 'contain',
   },
@@ -870,7 +900,6 @@ export default StyleSheet.create({
     height: isTablet ? wp(18) : wp(25),
     resizeMode: 'contain',
     borderRadius: hp('2%'),
-    backgroundColor: 'red',
   },
   profileDetailBg: {
     width: isTablet ? wp(18) : wp(25),
@@ -927,8 +956,8 @@ export const productData = [
   {
     id: '1',
     name: 'Godrej 1.5 Ton 3 Star Inverter Split AC',
-    price: '₹41,990',
-    mrp: '₹65,990',
+    price: '₹ 41,990',
+    mrp: '₹ 65,990',
     discount: '36% off',
     rating: '4.3',
     reviews: 'Limited time deal',
@@ -937,8 +966,8 @@ export const productData = [
   {
     id: '2',
     name: 'LG 1.5 Ton 5 Star AI Dual Inverter Split AC',
-    price: '₹47,490',
-    mrp: '₹72,990',
+    price: '₹ 47,490',
+    mrp: '₹ 72,990',
     discount: '35% off',
     rating: '4.5',
     reviews: 'Limited time deal',
@@ -947,8 +976,8 @@ export const productData = [
   {
     id: '3',
     name: 'Daikin 1 Ton 3 Star Inverter Split AC',
-    price: '₹32,999',
-    mrp: '₹50,000',
+    price: '₹ 32,999',
+    mrp: '₹ 50,000',
     discount: '34% off',
     rating: '4.2',
     reviews: 'Limited time deal',
@@ -957,8 +986,8 @@ export const productData = [
   {
     id: '4',
     name: 'Hitachi 1.5 Ton 5 Star Inverter Split AC',
-    price: '₹48,499',
-    mrp: '₹75,000',
+    price: '₹ 48,499',
+    mrp: '₹ 75,000',
     discount: '35% off',
     rating: '4.4',
     reviews: 'Limited time deal',
@@ -967,8 +996,8 @@ export const productData = [
   {
     id: '5',
     name: 'Samsung 1 Ton 3 Star Inverter Split AC',
-    price: '₹30,990',
-    mrp: '₹46,990',
+    price: '₹ 30,990',
+    mrp: '₹ 46,990',
     discount: '34% off',
     rating: '4.1',
     reviews: 'Limited time deal',
@@ -1106,22 +1135,22 @@ export const faqData = [
   {
     question: 'Why is my AC not cooling properly?',
     answer:
-      "This can happen due to dirty filters, low gas, blocked coils, thermostat issues, poor outdoor ventilation, or internal faults. Regular servicing helps fix these issues.",
+      'This can happen due to dirty filters, low gas, blocked coils, thermostat issues, poor outdoor ventilation, or internal faults. Regular servicing helps fix these issues.',
   },
   {
     question: 'How often should I service my AC?',
     answer:
-      "Home ACs need servicing every 3–6 months. Commercial ACs every 2–3 months. Always service before summer.",
+      'Home ACs need servicing every 3–6 months. Commercial ACs every 2–3 months. Always service before summer.',
   },
   {
     question: 'Does regular AC servicing reduce \n electricity bills?',
     answer:
-      "Yes. A well-maintained AC uses less power and cools faster, helping reduce electricity costs.",
+      'Yes. A well-maintained AC uses less power and cools faster, helping reduce electricity costs.',
   },
   {
     question: 'When should I book AC servicing?',
     answer:
-      "Book servicing before peak summer or whenever cooling performance drops.",
+      'Book servicing before peak summer or whenever cooling performance drops.',
   },
 ];
 

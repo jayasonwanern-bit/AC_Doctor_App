@@ -39,7 +39,7 @@ const CustomButton = ({
         <Text style={[styles.buttonText, { color: btnTextColor }]}>
           {buttonName}
         </Text>
-        {Loader ? <CustomLoader size={15} style={{ marginLeft: 5 }} /> : null}
+        {Loader ? <CustomLoader size='small' style={{ marginLeft: 5 }} /> : null}
       </View>
     </TouchableOpacity>
   );

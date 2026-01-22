@@ -22,7 +22,7 @@ import CustomButton from '../../../components/CustomButton';
 import CustomPicker from '../../../components/CustomPicker';
 
 const TonnageCalculatorScreen = ({ navigation }) => {
-  const [isPlace, setIsPlace] = useState('Select Problem');
+  const [isPlace, setIsPlace] = useState('Select Place first');
   const [withValue, setWithValue] = useState('');
   const [heightValue, setHeightValue] = useState('');
   const [totalTon, setTotalTon] = useState('');
@@ -43,7 +43,6 @@ const TonnageCalculatorScreen = ({ navigation }) => {
       Alert.alert('Missing Selection', 'Please select a place.');
       return;
     }
-
     if (width <= 0 || height <= 0) {
       Alert.alert(
         'Invalid input',
@@ -51,11 +50,19 @@ const TonnageCalculatorScreen = ({ navigation }) => {
       );
       return;
     }
-
     // 2. Area in square feet
     const areaSqFt = width * height;
-    // 3. Convert to tonnage (1 ton ≈ 400 sq.ft – you can change the factor)
-    const tonnage = areaSqFt / 400;
+    let tonnage = 0;
+
+    if (isPlace === 'Residential') {
+
+      // Residential formula
+      tonnage = areaSqFt / 100;   // 1 ton per 120 sq.ft
+    } else if (isPlace === 'Commercial') {
+      // Commercial formula
+      tonnage = areaSqFt / 83.33;   // 1 ton per 100 sq.ft
+    }
+
     setTotalTon(tonnage.toFixed(2));
     setShowTon(true);
   };
@@ -72,26 +79,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
           <Image source={images.calculatorImg} style={HomeScreenStyles.workimage} />
         </View>
 
-        {/* Details card */}
-        <View style={styles.card}>
-          <Text
-            style={[
-              HomeScreenStyles.workheadText,
-              { paddingHorizontal: wp('3%'), marginTop: hp('2%') },
-            ]}
-          >
-            Details
-          </Text>
-          <View style={styles.boderLine} />
-          <View style={[styles.flexView]}>
-            <FastImage source={images.roundRightarrow} style={styles.icon} />
-            <Text style={styles.title}>
-              Tonnage calculator helps you determine the appropriate cooling
-              capacity required for your space based on its size and other
-              factors.
-            </Text>
-          </View>
-        </View>
+
 
         {/* Problem of ac */}
         <View
@@ -117,7 +105,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
             ]}
           >
             <TextInput
-              placeholder="Width in feet"
+              placeholder="20 (ft)"
               placeholderTextColor="#aaa"
               value={withValue}
               onChangeText={setWithValue}
@@ -126,7 +114,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
               onSubmitEditing={() => Keyboard.dismiss()}
             />
             <TextInput
-              placeholder="Height in feet"
+              placeholder="20 (ft)"
               placeholderTextColor="#aaa"
               value={heightValue}
               onChangeText={setHeightValue}
@@ -157,6 +145,27 @@ const TonnageCalculatorScreen = ({ navigation }) => {
 
         <View style={HomeScreenStyles.worksliderview}>
           <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
+        </View>
+
+        {/* Details card */}
+        <View style={styles.card}>
+          <Text
+            style={[
+              HomeScreenStyles.workheadText,
+              { paddingHorizontal: wp('3%'), marginTop: hp('2%') },
+            ]}
+          >
+            Details
+          </Text>
+          <View style={styles.boderLine} />
+          <View style={[styles.flexView]}>
+            <FastImage source={images.roundRightarrow} style={styles.icon} />
+            <Text style={styles.title}>
+              Tonnage calculator helps you determine the appropriate cooling
+              capacity required for your space based on its size and other
+              factors.
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>

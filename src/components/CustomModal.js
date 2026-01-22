@@ -32,6 +32,7 @@ const CustomModal = ({
   addAcStatus,
   setvalue, // ✅ setter from parent
   numberofAC, // ✅ value from parent
+  fromScreen
 }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -131,7 +132,7 @@ const CustomModal = ({
             <TouchableOpacity
               onPress={() => {
                 onClose();
-                navigation.navigate('AddAddress', { from: 'CustomModal' });
+                navigation.navigate('AddAddress', { from: fromScreen });
               }}
             >
               <Text style={styles.addButtonText}>+ Add new</Text>
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#ebf6f6ff',
+    backgroundColor: 'rgb(249, 252, 252)',
     paddingHorizontal: hp('2%'),
     paddingVertical: hp('2%'),
     borderTopLeftRadius: wp('6.5%'),

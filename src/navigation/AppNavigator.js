@@ -33,6 +33,7 @@ import OtherScreen from '../screens/Home/Other/OtherScreen';
 import OtherCartView from '../screens/Home/Other/OtherCartView';
 import TonnageCalculatorScreen from '../screens/Home/Utilities/TonnageCalculatorScreen';
 import ErrorCodeScreen from '../screens/Home/Utilities/ErrorCodeScreen';
+import ErrorDetails from '../screens/Home/Utilities/ErrorDetails';
 import ProductListScreen from '../screens/Shop/ProductListScreen';
 import ProductDetailScreen from '../screens/Shop/ProductDetailScreen';
 import OrderSummaryScreen from '../screens/Shop/OrderSummaryScreen';
@@ -154,6 +155,7 @@ const AppNavigator = () => {
               component={TonnageCalculatorScreen}
             />
             <Stack.Screen name="ErrorCodeScreen" component={ErrorCodeScreen} />
+            <Stack.Screen name="ErrorDetails" component={ErrorDetails} />
             <Stack.Screen
               name="ProductListScreen"
               component={ProductListScreen}

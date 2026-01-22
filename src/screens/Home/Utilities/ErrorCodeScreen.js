@@ -21,6 +21,10 @@ import HomeScreenStyles from '../HomeScreenStyles';
 import CustomButton from '../../../components/CustomButton';
 import CustomPicker from '../../../components/CustomPicker';
 import { getBrandlist, postErrorCode } from '../../../api/homeApi';
+import Toast from 'react-native-simple-toast';
+import { handleApiError } from "../../../utils/apiErrorHandler";
+import DetailsCard from "../../../customScreen/DetailsCard";
+import CustomLoader from '../../../components/CustomLoader';
 
 
 const ErrorCodeScreen = ({ navigation }) => {
@@ -28,17 +32,16 @@ const ErrorCodeScreen = ({ navigation }) => {
   const [brandValue, setBrandValue] = useState('');
   const [isPlace, setIsPlace] = useState('');
   const [errorValue, setErrorValue] = useState('');
-
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
 
   const PlaceOptions = [
-    { label: 'Split AC', value: 'Split AC' },
-    { label: 'Window AC', value: 'Window AC' },
-    { label: 'Ducted AC', value: 'Ducted AC' },
+    { label: 'Split', value: 'Split' },
+    { label: 'Window', value: 'Window' },
+    { label: 'Ducted', value: 'Ducted' },
     { label: 'VRV/VRF', value: 'VRV/VRF' },
-    { label: 'Concealed AC', value: 'Concealed AC' },
-    { label: 'Tower AC', value: 'Tower AC' },
+    { label: 'Concealed', value: 'Concealed' },
+    { label: 'Tower', value: 'Tower' },
   ];
 
   useEffect(() => {
@@ -65,26 +68,29 @@ const ErrorCodeScreen = ({ navigation }) => {
 
   //   on Calulate button press
   const handleSubmit = async () => {
-
-    if (!brandValue) return Toast.show("Please select brand");
-    if (!errorValue) return Toast.show("Please enter error code");
-    if (!isPlace) return Toast.show("Please select AC type");
-
-    const payload = {
-      brandId: brandValue,
-      errorCode: "E05",
-      acType: isPlace,
-    };
-
-    console.log("Payload:", payload);
-
     try {
+      if (!brandValue) return Toast.show("Please select brand");
+      if (!errorValue) return Toast.show("Please enter error code");
+      if (!isPlace) return Toast.show("Please select AC type");
+
+      const payload = {
+        brandId: brandValue,   // ✅ string only
+        errorCode: errorValue || "E101",
+        acType: isPlace,
+      };
+
       const res = await postErrorCode(payload);
+      setLoading(true);
       console.log("API Response:", res.data);
-    } catch (e) {
-      console.log("Error:", e);
+      navigation.navigate('ErrorDetails', { ErrorData: res.data });
+    } catch (error) {
+      handleApiError(error);
+    }
+    finally {
+      setLoading(false);
     }
   };
+
 
 
   return (
@@ -92,7 +98,7 @@ const ErrorCodeScreen = ({ navigation }) => {
       <Header title="Error Code" onBack={() => navigation.goBack()} />
 
       <ScrollView
-        style={HomeScreenStyles.workscrollstyle}
+        style={[HomeScreenStyles.workscrollstyle, { marginBottom: hp(4) }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={HomeScreenStyles.worksliderview}>
@@ -103,20 +109,15 @@ const ErrorCodeScreen = ({ navigation }) => {
         <View
           style={[styles.card, { paddingVertical: hp('1.5%'), alignItems: 'center' }]}
         >
-          {!loading && brandArray.length !== 0 ? (<CustomPicker
-            label="Select Brand"
+          <CustomPicker
+            label={!loading && brandArray.length !== 0 ? "Select Brand" : "No brands available"}
             value={brandValue}
             items={brandArray}
             onChange={value => setBrandValue(value)}
             width={wp('85%')} // any width
             height={hp('5%')} // any height
             borderRadius={hp('4%')} // custom radius
-          />)
-            : (
-              <Text style={{ color: 'red', marginTop: hp(1) }}>
-                No brands available
-              </Text>
-            )}
+          />
 
           <CustomPicker
             label="Select AC Type"
@@ -147,7 +148,7 @@ const ErrorCodeScreen = ({ navigation }) => {
 
 
           <CustomButton
-            buttonName="Submit Error Code"
+            buttonName={loading ? <CustomLoader size='small' /> : "Submit Error Code"}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
             onPress={handleSubmit}
@@ -160,38 +161,9 @@ const ErrorCodeScreen = ({ navigation }) => {
         </View>
 
         {/* Details card */}
-        <View
-          style={[
-            styles.card,
-            { marginBottom: hp('7%'), paddingHorizontal: wp('3%') },
-          ]}
-        >
-          <Text
-            style={[
-              HomeScreenStyles.workheadText,
-              { paddingHorizontal: wp('3%'), marginTop: hp('2%') },
-            ]}
-          >
-            Details
-          </Text>
-          <View style={styles.boderLine} />
-          <View style={[styles.flexView]}>
-            <FastImage source={images.roundRightarrow} style={styles.icon} />
-            <Text style={styles.title}>
-              Error Code is a specific alphanumeric code displayed on an
-              appliance or device to indicate a malfunction or issue that needs
-              attention.
-            </Text>
-          </View>
-          <View style={[styles.flexView]}>
-            <FastImage source={images.roundRightarrow} style={styles.icon} />
-            <Text style={styles.title}>
-              Error Codes help users and technicians diagnose problems quickly
-              and accurately, facilitating efficient troubleshooting and
-              repairs.
-            </Text>
-          </View>
-        </View>
+        <DetailsCard
+          title="Details"
+          icon={images.roundRightarrow} />
       </ScrollView>
     </View>
   );

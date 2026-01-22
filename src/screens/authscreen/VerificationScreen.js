@@ -7,6 +7,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   StatusBar,
+  Alert,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -123,6 +124,7 @@ const VerificationScreen = ({ navigation, route }) => {
       console.log(result, 'resend opt---')
       if (result?.status) {
         Toast.show('OTP Resend');
+        Alert.alert('This is your Resend OTP', result?.otpπ)
         setServerOtpState(result?.otp);
         // Timer
         resetCountdown();
@@ -175,8 +177,8 @@ const VerificationScreen = ({ navigation, route }) => {
                 resizeMode={FastImage.resizeMode.contain}
               />
             </TouchableOpacity>
-            {/* <Text style={styles.title}>Verification code</Text>
-            <Text style={styles.title}>{serverOtpState}</Text> */}
+            <Text style={styles.title}>Verification code</Text>
+            {/* <Text style={styles.title}>{serverOtpState}</Text> */}
             <FastImage
               source={images.otpIcon}
               style={styles.image}
@@ -206,7 +208,6 @@ const VerificationScreen = ({ navigation, route }) => {
                 status !== 'running' && handleVerify();
               }}
             >
-              {/* <View style={{flexDirection:'row',alignItems:'center'}}> */}
 
               <Text style={[styles.resendTitle, { color: COLORS.black }]}>
                 {status === 'running' ? formatTime(time) : 'Resend OTP'}

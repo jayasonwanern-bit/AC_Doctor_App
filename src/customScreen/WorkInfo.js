@@ -114,7 +114,7 @@ const WorkInfo = ({
           <Image source={images.chatIcon} style={Homstyles.chaticon} />
         </View>
       )}
-      
+
     </View>
   );
 };

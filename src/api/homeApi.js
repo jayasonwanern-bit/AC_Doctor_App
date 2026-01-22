@@ -72,7 +72,7 @@ export const getAMC = async (userId) => {
 };
 
 // Error code
-export const postErrorCode = async payload => {
+export const postErrorCode = async (payload) => {
   try {
     const res = await api.post(endPoint.ERROR_POST, payload);
     return res.data;
@@ -83,7 +83,7 @@ export const postErrorCode = async payload => {
 };
 
 // AMC Request
-export const postAMCRequest = async payload => {
+export const postAMCRequest = async (payload) => {
   try {
     const res = await api.post(endPoint.AMC_REQUEST, payload);
     return res.data;
@@ -94,7 +94,7 @@ export const postAMCRequest = async payload => {
 };
 
 // Booking Request
-export const postBookingRequest = async payload => {
+export const postBookingRequest = async (payload) => {
   try {
     const res = await api.post(endPoint.BOOKING_REQUEST, payload);
     return res.data;

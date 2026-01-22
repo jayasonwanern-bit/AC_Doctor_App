@@ -30,6 +30,7 @@ import CustomLoader from '../../components/CustomLoader';
 
 const AddAddress = ({ navigation, route }) => {
   const addressData = route?.params?.addressData;
+  const { fromScreen, openModal } = route.params || {};
   const [searchBar, setSearchBar] = useState('');
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
@@ -103,13 +104,13 @@ const AddAddress = ({ navigation, route }) => {
         saveAs: 'saveAs',
         landmark: addressType,
       };
-
+      console.log('address body---', body)
       const res = await addOrEditAddress(body);
-
       if (res?.status) {
         Toast.show(res?.message);
 
         const cameFrom = route?.params?.from;
+        const { fromScreen } = route.params || {};
 
         if (cameFrom === 'ServiceScreen') {
           navigation.navigate('Tab', { screen: 'Home' });
@@ -117,6 +118,17 @@ const AddAddress = ({ navigation, route }) => {
           navigation.goBack();
         } else if (cameFrom === 'UserInfoModel') {
           setModalSlotVisible(true);
+        }
+        if (fromScreen === 'ViewCart') {
+          navigation.navigate('ViewCart', {
+            proceed: true,
+            selectedAddress: selectedAddress,
+          });
+        } else if (fromScreen === 'OtherCart') {
+          navigation.navigate('OtherCartView', {
+            proceed: true,
+            selectedAddress: selectedAddress,
+          })
         } else {
           navigation.goBack();
         }

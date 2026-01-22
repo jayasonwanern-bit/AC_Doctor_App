@@ -2,14 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   items: [], // 👈 yahi pura cart rahega
+  meta: {
+    problem: null,
+    reason: '',
+  },
 };
 
 const cartSlice = createSlice({
   name: 'cart',
-  initialState: {
-    items: [],
-  },
+  initialState,
   reducers: {
+    // 🔹 NEW: store problem + reason once
+    setOtherCartMeta: (state, action) => {
+      state.meta.problem = action.payload.problem;
+      state.meta.reason = action.payload.reason;
+    },
+
     replaceCart: (state, action) => {
       state.items = action.payload;
     },
@@ -74,7 +82,10 @@ const cartSlice = createSlice({
   },
 });
 
+
+
 export const {
+  setOtherCartMeta,
   replaceCart,
   mergeCart,
   clearCart,

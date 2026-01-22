@@ -27,10 +27,11 @@ import Toast from 'react-native-simple-toast';
 import { logout } from '../../redux/slices/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomLoader from '../../components/CustomLoader';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-const AccountScreenComponent = ({ navigation }) => {
+const AccountScreenComponent = () => {
   const scheme = useColorScheme();
+  const navigation = useNavigation()
   // Dynamic styles based on scheme
   const dynamicStyles = {
     safeArea: {
@@ -55,25 +56,23 @@ const AccountScreenComponent = ({ navigation }) => {
   const userId = store?.getState()?.auth?.user;
   const addressText = store?.getState()?.auth?.address;
   const weatherData = store?.getState()?.auth?.celcius;
+  console.log('userId?._id----->', userId?._id);
 
-  useFocusEffect(
-    useCallback(() => {
+
+  useEffect(() => {
+    if (userId?._id) {
       fetchProfile();
-      return () => {
-        fetchProfile();
-      };
-    }, [])
-  );
+    }
+  }, [userId?._id]);
 
   const fetchProfile = async () => {
     try {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
-      console.log('User Profile Response:', res);
-      if (res?.status) {
+      console.log('hello----', res)
+      if (res?.status || res?.success) {
         const data = res.data;
-        // console.log(data,)
-        setStoreData(data);
+        setStoreData(data || []);
       }
     } catch (error) {
       console.log('Error fetching profile:', error);
@@ -81,6 +80,7 @@ const AccountScreenComponent = ({ navigation }) => {
       setLoading(false);
     }
   };
+
 
   const handleMenuPress = async screen => {
     if (screen === 'Logout') {
@@ -171,6 +171,7 @@ const AccountScreenComponent = ({ navigation }) => {
         ) : (
           <>
             <View style={Homestyles.accountcontainer}>
+
               <FastImage
                 source={
                   storeData?.profilePhoto
