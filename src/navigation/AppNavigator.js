@@ -11,12 +11,8 @@ import MapScreen from '../screens/authscreen/MapScreen';
 import ServiceScreen from '../screens/authscreen/ServiceScreen';
 import NewAddressDemo from '../screens/LocationAddress/NewAddressDemo';
 import AddAddress from '../screens/Home/AddAddress';
-import Sterilization from '../screens/Home/Sterilization';
 import ViewCartScreen from '../screens/Home/ViewCartScreen';
 import PaymentScreen from '../screens/Account/PaymentScreen';
-import CommericalAc from '../screens/Home/CommericalAc';
-import RepairScreen from '../screens/Home/RepairScreen';
-import InstallationScreen from '../screens/Home/InstallationScreen';
 import GasChargeScreen from '../screens/Home/GasChargeScreen';
 import FreeConsultant from '../screens/Home/FreeConsultant';
 import CopperPipeScreen from '../screens/Home/CopperScreen/CopperPipeScreen';
@@ -55,6 +51,8 @@ import ServiceReportscreen from '../screens/AMC/ServiceReportscreen';
 import BookingDetailsScreen from '../screens/Account/BookingDetailsScreen';
 import CouponScreen from '../screens/Home/CouponScreen';
 import AppUpdateScreen from '../screens/authscreen/AppUpdateScreen';
+import ProductDetails from '../screens/Home/ProductDetails';
+import FeaturedProductsScreen from '../screens/Home/FeaturedProductsScreen';
 
 import { COLORS } from '../utils/colors';
 import { StatusBar, useColorScheme, Platform } from 'react-native';
@@ -115,15 +113,8 @@ const AppNavigator = () => {
             <Stack.Screen name="AddAddress" component={AddAddress} />
             <Stack.Screen name="NewAddressDemo" component={NewAddressDemo} />
             <Stack.Screen name="Tab" component={CustomBottomTab} />
-            <Stack.Screen name="Sterilization" component={Sterilization} />
             <Stack.Screen name="ViewCart" component={ViewCartScreen} />
             <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-            <Stack.Screen name="CommericalAc" component={CommericalAc} />
-            <Stack.Screen name="RepairScreen" component={RepairScreen} />
-            <Stack.Screen
-              name="InstallationScreen"
-              component={InstallationScreen}
-            />
             <Stack.Screen name="GasChargeScreen" component={GasChargeScreen} />
             <Stack.Screen name="FreeConsultant" component={FreeConsultant} />
             <Stack.Screen
@@ -206,6 +197,8 @@ const AppNavigator = () => {
               component={BookingDetailsScreen}
             />
             <Stack.Screen name="CouponScreen" component={CouponScreen} />
+            <Stack.Screen name="ProductDetails" component={ProductDetails} />
+            <Stack.Screen name="FeaturedProductsScreen" component={FeaturedProductsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </CompareProvider>

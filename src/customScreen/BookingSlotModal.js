@@ -182,12 +182,12 @@ const BookingSlotModal = ({
                   onPress={() => setSelectedDay(index)}
                 >
                   <Text
-                    style={[selectedDay === index && styles.dateNumber, disabled && styles.disabledText]}
+                    style={[selectedDay === index ? styles.dateNumber : styles.disabledText, disabled && styles.disabledText,]}
                   >
                     {day.date}
                   </Text>
                   <Text
-                    style={[selectedDay === index && styles.dayName, disabled && styles.disabledText]}
+                    style={[selectedDay === index ? styles.dayName : styles.disabledText, disabled && styles.disabledText,]}
                   >
                     {day.day}
                   </Text>
@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: hp(2),
+    color: COLORS.black
   },
   sectionLabel: {
     fontSize: hp(1.8),

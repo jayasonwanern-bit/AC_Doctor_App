@@ -24,6 +24,7 @@ api.interceptors.request.use(
     const reduxToken = store?.getState()?.auth?.accessToken;
     const storageToken = await AsyncStorage.getItem('authToken');
     const token = reduxToken || storageToken;
+    console.log('user Token--->', token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else {

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import Header from '../../../components/Header';
 import HomeScreenStyles from '../HomeScreenStyles';
@@ -27,6 +28,7 @@ import { updateQuantity } from '../../../redux/slices/cartSlice';
 import OrderSummaryModel from '../../../customScreen/OrderSummaryModel';
 import { store } from '../../../redux/store';
 import Toast from 'react-native-simple-toast';
+import CustomLoader from '../../../components/CustomLoader';
 
 const OtherCartView = ({ route }) => {
   const navigation = useNavigation()
@@ -168,8 +170,8 @@ const OtherCartView = ({ route }) => {
 
     const { serviceKey, serviceId } = route?.params;
     const bodyData = {
-      user_id: userDetails._id,
-      addressId: selectedAddress._id,
+      user_id: userDetails?._id,
+      addressId: selectedAddress?._id,
       name: userDetails?.name,
       date: formattedDate,
       slot:
@@ -194,9 +196,8 @@ const OtherCartView = ({ route }) => {
     };
     try {
       const response = await postBookingRequest(bodyData);
-      console.log('response----?', response)
       if (response?.status === true) {
-        Toast.show(response?.message || 'Booking submitted successfully!');
+        // Toast.show(response?.message || 'Booking submitted successfully!');
         setShowSummary(false)
         navigation.replace('BookingSuccessScreen');
         dispatch(clearCart());
@@ -209,9 +210,6 @@ const OtherCartView = ({ route }) => {
       Toast.show(error?.message || 'An error occurred. Please try again.');
     }
   };
-
-
-
 
   // render
   return (
@@ -301,11 +299,11 @@ const OtherCartView = ({ route }) => {
           </Text>
         </View>
 
-        {/* Frequently Added Together */}
+        {/*  Added Together */}
         <View style={{ marginBottom: hp('20%') }}>
           <Text style={styles.title}>Add Together</Text>
-          <View style={styles.card}>
-            <FlatList
+          <View style={[styles.card, { maxHeight: hp(20) }]}>
+            {!Loading ? (<FlatList
               data={bookServices}
               keyExtractor={(_, index) => `work-${index}`}
               horizontal
@@ -328,7 +326,7 @@ const OtherCartView = ({ route }) => {
                   </View>
                 </TouchableOpacity>
               )}
-            />
+            />) : (<CustomLoader size='large' />)}
           </View>
         </View>
 
@@ -356,7 +354,7 @@ const OtherCartView = ({ route }) => {
         setSelectedAddress={setSelectedAddress}
       />
 
-      <BookingSlotModal
+      {/* <BookingSlotModal
         visible={modalSlotVisible}
         onClose={() => setModalSlotVisible(false)}
         setSelectedSlot={setSelectedSlot}
@@ -367,37 +365,42 @@ const OtherCartView = ({ route }) => {
           }, 300);
         }}
 
-      />
+      /> */}
 
       <BookingSlotModal
         visible={modalSlotVisible}
         onClose={() => setModalSlotVisible(false)}
         setSelectedSlot={setSelectedSlot}
         onBookProcess={() => {
+
+          setProceed(true);
           setModalSlotVisible(false);
+          setShowSummary(true)
           setTimeout(() => {
-            setProceed(true);
             setTimeout(() => {
-              setShowSummary(true)
             }, 200);
           }, 300);
         }}
       />
-      {proceed && (
-        <>
-          <OrderSummaryModel
-            visible={showSummary}
-            onClose={() => setShowSummary(false)}
-            locationText={locationText}
-            phoneText={phoneText}
-            slotText={slotText}
-            images={images}
-            hp={hp}
-            styles={styles}
-            OnPressBtn={() => useSubmitBooking()}
-          />
-        </>
-      )}
+      {proceed === true ? (
+
+
+        <OrderSummaryModel
+          visible={showSummary}
+          onClose={() => setShowSummary(false)}
+          locationText={locationText}
+          phoneText={phoneText}
+          slotText={slotText}
+          images={images}
+          hp={hp}
+          styles={styles}
+          // OnPressBtn={Alert.alert("090")}
+          OnPressBtn={() => {
+            useSubmitBooking()
+          }}
+        />
+
+      ) : null}
 
     </View>
   );

@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: hp('1.7%'),
     fontFamily: Fonts.semiBold,
+    color: COLORS.TextColor,
     marginBottom: hp(0),
   },
   inFlexrow: {
@@ -347,6 +348,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: hp(2),
     textAlign: 'center',
+    color: COLORS.TextColor,
     marginTop: hp(2)
   },
   darkIcon: {

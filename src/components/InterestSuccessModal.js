@@ -28,11 +28,12 @@ const InterestSuccessModal = ({ visible, onClose }) => {
                     </View>
 
                     {/* Title */}
-                    <Text style={styles.title}>Interest Noted</Text>
+                    <Text style={styles.title}>Done!</Text>
 
                     {/* Subtitle */}
                     <Text style={styles.subtitle}>
-                        Our team will connect with you shortly.
+                        Your interest has been recorded {'\n'}
+                        Our team will contact you shortly to guide you with the next steps.
                     </Text>
 
                     {/* Divider */}

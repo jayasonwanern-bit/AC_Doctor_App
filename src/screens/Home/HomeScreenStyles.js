@@ -101,6 +101,12 @@ export default StyleSheet.create({
     color: COLORS.black,
     marginBottom: hp('1%'),
   },
+  emptyCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    backgroundColor: 'white',
+  },
   reqgrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -118,7 +124,7 @@ export default StyleSheet.create({
     resizeMode: 'contain',
   },
   reqlabel: {
-    fontSize: isTablet ? wp(2) : wp(3),
+    fontSize: isTablet ? wp(2) : wp(3.2),
     color: COLORS.black,
     textAlign: 'center',
     marginTop: hp('1%'),
@@ -156,14 +162,29 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginRight: hp('0.8%'),
   },
+  utilityView: {
+    paddingVertical: wp('2%'),
+    maxHeight: isTablet ? hp(30) : hp(25),
+    width: wp('27%'),
+    borderRadius: wp('2%'),
+    backgroundColor: COLORS.white,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    alignItems: 'center',
+    marginRight: hp('0.8%'),
+  },
   utiicon: {
-    width: wp('10%'),
-    height: wp('10%'),
+    width: wp('13%'),
+    height: wp('13%'),
     resizeMode: 'contain',
   },
   utilabel: {
-    fontSize: wp('2.8%'),
+    fontSize: wp('3%'),
     color: COLORS.black,
+    fontFamily: Fonts.semiBold,
     textAlign: 'center',
     marginTop: hp('1%'),
   },
@@ -270,7 +291,7 @@ export default StyleSheet.create({
     paddingVertical: 2,
     borderTopLeftRadius: hp('1%'),
     borderBottomRightRadius: hp('1%'),
-    marginTop: hp('-2%'),
+    // marginTop: hp('-2%'),
     marginRight: wp('0.8%'),
   },
   discountText: {
@@ -280,7 +301,7 @@ export default StyleSheet.create({
   },
   image: {
     width: '80%',
-
+    height: '100%',
     alignSelf: 'center',
   },
   dealRow: {
@@ -322,7 +343,7 @@ export default StyleSheet.create({
     color: COLORS.black,
   },
   mrp: {
-    fontSize: hp('1.2%'),
+    fontSize: hp('1.4%'),
     color: '#888',
     fontFamily: Fonts.medium,
   },
@@ -342,9 +363,9 @@ export default StyleSheet.create({
     fontSize: hp('1.6%'),
   },
   likeButton: {
-    width: wp('5.5%'),
-    height: hp('2.5%'),
-    resizeMode: 'center',
+    width: wp(3),
+    height: wp(3),
+    resizeMode: 'contain',
     margin: wp('1.5%'),
   },
   bottomRow: {
@@ -569,7 +590,7 @@ export default StyleSheet.create({
     borderTopLeftRadius: wp('2%'),
     borderTopRightRadius: wp('2%'),
   },
-  workcontainer: { flex: 1, backgroundColor: '#fafafaff' },
+  workcontainer: { flex: 1, backgroundColor: COLORS.white },
   worksliderview: {
     marginVertical: hp('0.5%'),
     width: wp('100%'),
@@ -587,6 +608,7 @@ export default StyleSheet.create({
     fontSize: isTablet ? wp(2.8) : wp(4),
     fontFamily: Fonts.semiBold,
     marginBottom: hp('1%'),
+    color: COLORS.black,
   },
   workitem: {
     justifyContent: 'space-between',
@@ -627,13 +649,10 @@ export default StyleSheet.create({
     position: 'absolute',
   },
   workcount: {
-    // fontSize: wp('3.5%'),
     marginHorizontal: 4,
     color: COLORS.themeColor,
     textAlign: 'center',
-    // color: '#fff',
     fontFamily: Fonts.medium,
-    // textAlign: 'center',
     fontSize: isTablet ? hp(1.5) : hp('1.3%'),
   },
   workaddButton: {

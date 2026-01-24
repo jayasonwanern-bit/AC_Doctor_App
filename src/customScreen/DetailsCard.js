@@ -5,6 +5,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { COLORS } from "../utils/colors";
 
 const DetailsCard = ({
     title = "Details",
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         paddingHorizontal: wp("4%"),
         marginBottom: hp("1%"),
+        color: COLORS.black,
     },
     borderLine: {
         height: 1,

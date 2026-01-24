@@ -85,37 +85,46 @@ const ProfileDetail = ({ navigation }) => {
   const handleUpdateProfile = async () => {
     setLoading(true);
     try {
+      if (!userName?.trim()) {
+        Toast.show('Please enter your name');
+        setLoading(false);
+        return;
+      }
 
       let cleanImageUrl = '';
 
       if (selectedImageUri) {
         const presRes = await getPresignedUrl();
         const presignedUrl = presRes?.data;
+
         if (presignedUrl) {
           await uploadImageToS3(presignedUrl, selectedImageUri);
           cleanImageUrl = presignedUrl.split('?')[0];
         }
       }
-      if (!userName?.trim()) return Toast.show('Select your name. Name not be empty');
 
-
-      // 🔥 Only userId is mandatory
       const body = {
-        userId: userId?._id,
-        userName: userName,
-        // gender: gender,
-        // email: email,
-        // profilePhotoUrl: cleanImageUrl || '',
+        userId: String(userId?._id),
+        userName: String(userName),
+        gender: String(gender || ''),
+        email: String(email || ''),
+        profilePhotoUrl: cleanImageUrl || '',
       };
 
       const res = await updateUserProfile(body);
+
       if (res?.status || res?.success) {
         Toast.show('Profile updated successfully');
         await refreshUserDetails();
-        navigation.goBack("")
+        navigation.goBack();
       }
     } catch (error) {
-      Alert.alert(error)
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Something went wrong';
+
+      Alert.alert('Error', String(errorMessage)); // ✅ FIXED
       console.log('Profile Update Error:', error);
       Toast.show('Something went wrong');
     } finally {
@@ -123,10 +132,12 @@ const ProfileDetail = ({ navigation }) => {
     }
   };
 
+
   const refreshUserDetails = async () => {
     try {
       setLoading(true);
       const response = await getUserDeatil(userId?._id)
+      console.log('response---->', response?.data)
       if (response?.status) {
         dispatch(setUser({ user: response?.data }));
       }
@@ -198,7 +209,7 @@ const ProfileDetail = ({ navigation }) => {
             </View>
 
             {/* Email Address */}
-            {/* <CunstomInput
+            <CunstomInput
               label="Email Address"
               placeholder="Enter Email"
               keyboardType="email-address"
@@ -208,9 +219,9 @@ const ProfileDetail = ({ navigation }) => {
               MarginBottom={hp('1%')}
               MarginTop={isTablet ? hp(7) : hp(2)}
               onSubmitEditing={() => Keyboard.dismiss()}
-            /> */}
+            />
             {/* Gender */}
-            {/* <CustomPicker
+            <CustomPicker
               label="Gender"
               value={gender}
               onChange={value => setGender(value)}
@@ -222,7 +233,7 @@ const ProfileDetail = ({ navigation }) => {
               width={wp(95)}
               height={hp('5%')}
               borderRadius={hp('4%')}
-            /> */}
+            />
           </ScrollView>
         </>
       )}

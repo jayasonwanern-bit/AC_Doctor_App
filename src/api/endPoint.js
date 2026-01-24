@@ -30,6 +30,11 @@ const endPoint = {
   CREATE_CONSULT: 'user/consultancy/create',
   GET_ALLCONSULT: 'user/consultancy-list/', //GET
   GET_AMC: 'user/lead/list/', //GET
+  POST_INTEREST: 'user/featured/product/interested',
+
+  // feature Product
+  FEATURED_PRODUCTS: 'user/featured/product-list',
+  FEATURED_PRODUCT_DETAILS: 'user/featured/product',
 
   // Error code
   ERROR_POST: 'user/error-code/list',

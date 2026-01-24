@@ -32,7 +32,7 @@ const CustomButton = ({
         },
       ]}
       onPress={onPress}
-      activeOpacity={2}
+      // activeOpacity={2}
       disabled={disabled}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>

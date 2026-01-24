@@ -56,7 +56,6 @@ const AccountScreenComponent = () => {
   const userId = store?.getState()?.auth?.user;
   const addressText = store?.getState()?.auth?.address;
   const weatherData = store?.getState()?.auth?.celcius;
-  console.log('userId?._id----->', userId?._id);
 
 
   useEffect(() => {
@@ -69,7 +68,6 @@ const AccountScreenComponent = () => {
     try {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
-      console.log('hello----', res)
       if (res?.status || res?.success) {
         const data = res.data;
         setStoreData(data || []);
@@ -141,7 +139,7 @@ const AccountScreenComponent = () => {
             />
             <Text style={Homestyles.locationText}>
               {addressText || addressText
-                ? `${addressText?.house || ''} ${addressText?.road || ''}, ${addressText?.city || ''
+                ? `${addressText?.house || ''} ${addressText?.road || ''} ${addressText?.city || ''
                 }`
                 : 'Select Location'}
             </Text>

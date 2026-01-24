@@ -43,7 +43,7 @@ const CustomSlider = ({ images }) => {
         source={
           item?.logo
             ? { uri: item.logo }
-            : require('../assets/icons/banner.png')
+            : { item }
         }
         style={styles.image}
         resizeMode="cover"
@@ -63,6 +63,7 @@ const CustomSlider = ({ images }) => {
           style={{
             marginRight: isTablet ? wp(2.4) : wp(3),
             marginLeft: isTablet ? wp(0.6) : wp(1),
+            maxHeight: isTablet ? hp(30) : hp(18),
           }}
           data={images}
           renderItem={renderItem}
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
   sliderview: {
     marginTop: hp(1),
     marginHorizontal: isTablet ? wp(1.6) : wp(2),
+    maxHeight: isTablet ? hp(30) : hp(18),
   },
   image: {
     width: isTablet ? wp(95) : wp(93),

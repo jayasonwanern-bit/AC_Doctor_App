@@ -27,7 +27,7 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context'; // Use SafeAreaView instead of SafeAreaProvider
-import { getAuthpatner, getServiceList, getBanner } from '../../api/homeApi';
+import { getAuthpatner, getServiceList, getBanner, getFeaturedProducts } from '../../api/homeApi';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GetLoaction from '../../components/GetLoaction';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,17 +36,18 @@ import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
 import InterestSuccessModal from '../../components/InterestSuccessModal'
+import { isTablet } from '../../components/TabletResponsiveSize';
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
   const serviceDetails = useSelector(state => state.cart.items);
+  const [productData, setProductData] = useState([]);   // ✅
+  const [allProducts, setAllProducts] = useState([]);
 
   const {
     latitude,
     longitude,
     addressText,
-    // loading,
-
     getLocation,
   } = GetLoaction();
   const insets = useSafeAreaInsets();
@@ -72,7 +73,6 @@ const HomeScreen = ({ route }) => {
   };
 
   const { locationData } = route.params || {};
-  const [showSuccess, setShowSuccess] = useState(false);
   const handleSellOldAC = () => navigation.navigate('SellOldAcScreen');
   const handleAMC = () => navigation.navigate('AMCFrom');
   const handleCopperPipe = () => navigation.navigate('CopperPipeScreen');
@@ -191,6 +191,7 @@ const HomeScreen = ({ route }) => {
       getauthservice();
       getBookService();
       getBannerImg();
+      fetchFeaturedProducts();
     }, []),
   );
   const getauthservice = async () => {
@@ -216,6 +217,39 @@ const HomeScreen = ({ route }) => {
       setLoading(false);
     }
   };
+
+
+  const fetchFeaturedProducts = async () => {
+    try {
+      const res = await getFeaturedProducts(1, 20);
+
+      const mapped = res.data.map(item => ({
+        id: item._id,              // 👈 REAL BACKEND ID
+        name: item.name,
+        image: { uri: item.image },
+        mrp: `₹ ${item.mrp}`,
+        price: `₹ ${item.customerPrice}`,
+        discount: item.discountedPercentage
+          ? `${item.discountedPercentage}% off`
+          : 'Hot Deal',
+        rating: item.rating || '4.0',
+        reviews: item.offerLabel || 'Limited time deal',
+      }));
+      setAllProducts(mapped);
+      setProductData(mapped.slice(0, 10));
+    } catch (e) {
+      console.log('fetchFeaturedProducts error', e);
+    }
+  };
+
+
+  // show view all text after 10 item list of product
+  const listData =
+    allProducts.length > 10
+      ? [...productData, { id: 'VIEW_ALL' }]
+      : productData;
+
+
 
   //  booking navigation
   const screens = {
@@ -243,6 +277,7 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  // getBanner list
   const getBannerImg = async () => {
     try {
       // setLoading(true);
@@ -273,10 +308,12 @@ const HomeScreen = ({ route }) => {
       });
 
       setCurrentIndex(nextIndex);
-    }, 1000); // ⏱ scroll time (ms)
+    }, 2500); // ⏱ scroll time (ms)
 
     return () => clearInterval(interval);
   }, [currentIndex]);
+
+
 
   return (
     <SafeAreaView
@@ -344,34 +381,49 @@ const HomeScreen = ({ route }) => {
           </View>
         </View>
         {/* Banner Image */}
-        {loading ? <CustomLoader size="small" /> : <CustomSlider images={bannerImages} />}
+        <View style={{ height: isTablet ? hp(30) : hp(18) }}>
+          {loading ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <CustomLoader size="large" />
+            </View>
+          ) : (
+            <CustomSlider images={bannerImages} />
+          )}
+        </View>
+
 
 
         {/* Book a service */}
-        <View style={styles.reqcontainer}>
+        <View style={[styles.reqcontainer, { height: isTablet ? hp(30) : hp(28) }]}>
           <Text style={styles.reqtitle}>Book AC Services</Text>
-          {loading ? (
-            <CustomLoader size="large" />
-          ) : (
-            <View style={styles.reqgrid}>
-              {bookServices
-                .filter(item => !['COPPER_PIPING', 'AMC', 'COMMERCIAL_AC'].includes(item.key))
-                .map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.bookcard}
-                    onPress={() => handleServiceNavigation(item)}
-                  >
-                    <FastImage
-                      source={{ uri: item.icon }}
-                      style={styles.reqicon}
-                    />
-                    <Text style={styles.reqlabel}>{item.name}</Text>
-                  </TouchableOpacity>
-                ))}
-            </View>
-          )}
+
+          <View style={{ flex: 1 }}>
+            {loading ? (
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <CustomLoader size="large" />
+              </View>
+            ) : (
+              <View style={styles.reqgrid}>
+                {bookServices
+                  .filter(item => !['COPPER_PIPING', 'AMC', 'COMMERCIAL_AC'].includes(item.key))
+                  .map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.bookcard}
+                      onPress={() => handleServiceNavigation(item)}
+                    >
+                      <FastImage
+                        source={{ uri: item.icon }}
+                        style={styles.reqicon}
+                      />
+                      <Text style={styles.reqlabel}>{item.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            )}
+          </View>
         </View>
+
 
 
         {/* Request a Quote */}
@@ -400,7 +452,7 @@ const HomeScreen = ({ route }) => {
             {utilities.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={styles.utioption}
+                style={[styles.utilityView]}
                 onPress={item.action}
               >
                 <FastImage source={item.icon} style={styles.utiicon} />
@@ -411,7 +463,7 @@ const HomeScreen = ({ route }) => {
         </LinearGradient>
 
         {/* OEM Partner */}
-        <View style={styles.reqcontainer}>
+        <View style={[styles.reqcontainer, { height: isTablet ? hp(30) : hp(13) }]}>
           <Text style={styles.reqtitle}>OEM Partner</Text>
           {loading ? (
             <CustomLoader size="large" />
@@ -438,41 +490,70 @@ const HomeScreen = ({ route }) => {
           )}
         </View>
 
+        {/* Feature Product */}
         <View style={[styles.uticontainer, { padding: wp('0%') }]}>
-          <Text
-            style={[
-              styles.reqtitle,
-              { marginLeft: hp('1.5%') },
-              dynamicStyles.title,
-            ]}
-          >
-            Feature Product
-          </Text>
-          <FlatList
-            data={productData}
+          <View style={styles.topRow}>
+            <Text
+              style={[
+                styles.reqtitle,
+                { marginLeft: hp('1.5%') },
+                dynamicStyles.title,
+              ]}
+            >
+              Feature Product
+            </Text>
+
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('FeaturedProductsScreen')}
+            >
+              <Text
+                style={[
+                  styles.accountBlueText,
+                  { marginRight: hp('1.5%'), fontSize: hp('1.6%'), },
+                ]}
+              >
+                View All
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {listData && listData.length > 0 ? (<FlatList
+            data={listData}
             horizontal
             keyExtractor={item => item.id}
             showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <View style={styles.productCard}>
-                <View style={styles.boderinercard}>
+            renderItem={({ item }) => {
+              if (item.id === 'VIEW_ALL') {
+                return (
+                  <TouchableOpacity
+                    style={{ alignSelf: 'center' }}
+                    onPress={() =>
+                      navigation.navigate('FeaturedProductsScreen')
+                    }
+                  >
+                    <Text style={[styles.accountBlueText, { textDecorationLine: 'underline', textDecorationStyle: 'solid', textDecorationColor: COLORS.themeColor }]}>View All</Text>
+                  </TouchableOpacity>
+                );
+              }
+              return (<View style={styles.productCard}>
+                <View style={[styles.boderinercard, { height: hp('15%') }]}>
                   <View style={styles.topRow}>
                     <View style={styles.discountBadge}>
                       <Text style={styles.discountText}>{item.discount}</Text>
                     </View>
 
-                    <Image
+                    {/* <Image
                       source={images.dislike}
                       style={styles.likeButton}
-                    />
+                    /> */}
                   </View>
 
-                  <Image source={item.image} style={styles.image} resizeMode='contain' />
+                  <Image source={item?.image} style={[styles.image, { height: '80%' }]} resizeMode='contain' />
                 </View>
 
                 <View style={styles.dealRow}>
                   <View style={styles.dealTag}>
-                    <Text style={styles.dealText}>Limited time deal</Text>
+                    <Text style={styles.dealText}>{item?.reviews}</Text>
                   </View>
                   {/* <Text style={styles.rating}>⭐ {item.rating}</Text> */}
                 </View>
@@ -484,27 +565,46 @@ const HomeScreen = ({ route }) => {
 
 
                 <View style={styles.bottomRow}>
-                  <Text style={styles.price}>{item.price} {'   '}</Text>
+                  <Text style={styles.price}>{item.price} {'  '}</Text>
 
                   <Text style={[styles.mrp, { textDecorationLine: 'line-through' }]}>
-                    MRP{' '} {item.mrp}
+                    {item.mrp}
                   </Text>
 
                 </View>
                 <TouchableOpacity
                   style={styles.productView}
-                  onPress={() => setShowSuccess(true)}
+                  onPress={() =>
+                    navigation.navigate('ProductDetails', {
+                      productId: item.id,
+                    })
+                  }
                 >
                   <Text
                     style={styles.interestText}
                   >
-                    Show Interest
+                    View Details
                   </Text>
                 </TouchableOpacity>
 
-              </View>
-            )}
-          />
+              </View>)
+            }}
+          />) : (
+            // 👇 Empty cart / no data UI
+            <View
+              style={styles.emptyCard}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#888',
+                  fontFamily: Fonts.medium,
+                }}
+              >
+                No featured ACs right now 😕 {'\n'}
+                Cool deals coming soon! ❄️
+              </Text>
+            </View>)}
 
         </View>
         {/* who trust Us */}
@@ -632,13 +732,12 @@ const HomeScreen = ({ route }) => {
         </View>
       </OnTopScreen>
       {/* </ScrollView> */}
-      <InterestSuccessModal
-        visible={showSuccess}
-        onClose={() => setShowSuccess(false)}
-      />
+
 
     </SafeAreaView>
   );
 };
 
 export default HomeScreen;
+
+

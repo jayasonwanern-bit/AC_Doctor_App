@@ -17,7 +17,10 @@ import HomeScreenStyles from '../HomeScreenStyles';
 import { useNavigation } from '@react-navigation/native';
 import DetailsCard from "../../../customScreen/DetailsCard";
 
-const ErrorDetails = () => {
+const ErrorDetails = ({ route }) => {
+    const { errorData, brandName } = route?.params || {};
+    const detailError = JSON.parse(errorData || '{}');
+    console.log('Parsed errorData:', detailError.code);
     const navigation = useNavigation();
     const [loading, setLoading] = useState(true);
 
@@ -30,8 +33,7 @@ const ErrorDetails = () => {
         { label: 'Tower AC', value: 'Tower AC' },
     ];
 
-    //   on Calulate button press
-    const handleSubmit = async () => { };
+
 
     return (
         <View style={HomeScreenStyles.workcontainer}>
@@ -48,21 +50,21 @@ const ErrorDetails = () => {
                             <Image source={images.brand_icon} style={styles.iconstyle} />
                             <View>
                                 <Text style={styles.labelTitle}>Brand</Text>
-                                <Text style={styles.valuestyle}>Blue Star</Text>
+                                <Text style={styles.valuestyle}>{brandName}</Text>
                             </View>
                         </View>
                         <View style={styles.rowStyle}>
                             <Image source={images.ac_cassette} style={styles.iconstyle} />
                             <View>
                                 <Text style={styles.labelTitle}>AC Type</Text>
-                                <Text style={styles.valuestyle}>Cassette</Text>
+                                <Text style={styles.valuestyle}>{detailError?.acType}</Text>
                             </View>
                         </View>
                         <View style={styles.rowStyle}>
                             <Image source={images.errorCodeIcon} style={styles.iconstyle} />
                             <View>
                                 <Text style={styles.labelTitle}>Error Code</Text>
-                                <Text style={styles.valuestyle}>E1</Text>
+                                <Text style={styles.valuestyle}>{detailError?.code}</Text>
                             </View>
                         </View>
                     </View>
@@ -70,21 +72,25 @@ const ErrorDetails = () => {
                     <View style={{ marginVertical: wp(2) }}>
                         <Text style={styles.labelTitle}>Heading:</Text>
                         <Text style={styles.valuestyle}>
-                            Indoor Unit Sensor Fault Inverter AC error Codes
+                            {detailError?.models}
                         </Text>
                     </View>
-                    <View >
+                    <View style={{ marginVertical: wp(1) }}>
+                        <Text style={styles.labelTitle}>Category</Text>
+                        <Text style={styles.valuestyle}>{detailError?.category}</Text>
+                    </View>
+
+                    {/* <View >
                         <Text style={styles.labelTitle}>Meaning:</Text>
                         <Text style={styles.valuestyle}>
                             Tempreature Sensor malfunction
                         </Text>
-                    </View>
+                    </View> */}
                     <View style={{ marginVertical: wp(3) }}>
-                        <Text style={styles.labelTitle}>Solution:</Text>
-                        <Text style={styles.valuestyle}>
-                            1: Check The Sensor wiring for Loose connections.
-                            {'\n'} 2: Replace the sensor If necessary{' '}
-                        </Text>
+                        <Text style={styles.labelTitle}>Troubleshooting Steps:</Text>
+                        {detailError?.solution?.map((step, index) => (<Text style={styles.valuestyle}>
+                            {step}
+                        </Text>))}
                     </View>
                 </View>
 
@@ -152,7 +158,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     labelTitle: {
-        fontSize: hp('1.3%'),
+        fontSize: hp('1.5%'),
         color: COLORS.textColor,
         fontFamily: Fonts.medium,
     },

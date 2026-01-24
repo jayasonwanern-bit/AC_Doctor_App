@@ -71,11 +71,10 @@ const LoginScreen = ({ navigation }) => {
         userId: res.data.userId,
         isAutoTesting: false, //// only for development notification
       });
+      console.log('Login OTP Data:', res.data.otp);
       Toast.show('Login Success', Toast.LONG);
       Keyboard.dismiss();
     } catch (error) {
-      console.log('Login Error Full:', error);
-      console.log('Login Error Response:', error?.res);
       console.log('Login Error Data:', error?.res?.data);
 
       let message = 'Something went wrong';

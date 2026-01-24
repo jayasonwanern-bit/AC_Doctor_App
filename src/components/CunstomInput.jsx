@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: hp(1.7),
+    color: COLORS.black,
     paddingVertical: Platform.OS === 'ios' ? 10 : 0,
   },
 

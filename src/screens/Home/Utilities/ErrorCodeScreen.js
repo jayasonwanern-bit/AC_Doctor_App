@@ -73,24 +73,32 @@ const ErrorCodeScreen = ({ navigation }) => {
       if (!errorValue) return Toast.show("Please enter error code");
       if (!isPlace) return Toast.show("Please select AC type");
 
-      const payload = {
-        brandId: brandValue,   // ✅ string only
-        errorCode: errorValue || "E101",
-        acType: isPlace,
-      };
-
-      const res = await postErrorCode(payload);
       setLoading(true);
-      console.log("API Response:", res.data);
-      navigation.navigate('ErrorDetails', { ErrorData: res.data });
+
+      const payload = {
+        brandId: String(brandValue),
+        errorCode: String(errorValue || "E101"),
+        acType: String(isPlace),
+      };
+      const res = await postErrorCode(payload);
+      console.log("API Response:", res?.data);
+
+      const selectedBrand = brandArray.find(
+        item => item.value === brandValue
+      );
+
+      navigation.navigate('ErrorDetails', {
+        errorData: JSON.stringify(res?.data || {}),
+        brandName: selectedBrand?.label || '',
+      });
+
     } catch (error) {
-      handleApiError(error);
-    }
-    finally {
+      Toast.show(error?.message || 'Something went wrong');
+      Alert.alert('Error', error?.message || 'Something went wrong');
+    } finally {
       setLoading(false);
     }
   };
-
 
 
   return (
@@ -114,9 +122,9 @@ const ErrorCodeScreen = ({ navigation }) => {
             value={brandValue}
             items={brandArray}
             onChange={value => setBrandValue(value)}
-            width={wp('85%')} // any width
-            height={hp('5%')} // any height
-            borderRadius={hp('4%')} // custom radius
+            width={wp('85%')}
+            height={hp('5%')}
+            borderRadius={hp('4%')}
           />
 
           <CustomPicker
@@ -124,9 +132,9 @@ const ErrorCodeScreen = ({ navigation }) => {
             value={isPlace}
             onChange={value => setIsPlace(value)}
             items={PlaceOptions}
-            width={wp('85%')} // any width
-            height={hp('5%')} // any height
-            borderRadius={hp('4%')} // custom radius
+            width={wp('85%')}
+            height={hp('5%')}
+            borderRadius={hp('4%')}
           />
 
           <View style={{
@@ -211,6 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightWhite,
     fontSize: 14,
     height: hp(5),
+    color: COLORS.textHeading
   },
   label: {
     fontSize: hp('1.6%'),

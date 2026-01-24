@@ -105,3 +105,55 @@ export const postBookingRequest = async (payload) => {
     );
   }
 };
+
+// FEATURED_PRODUCTS
+export const getFeaturedProducts = async (page = 1, limit = 20) => {
+  try {
+    const res = await api.get(endPoint.FEATURED_PRODUCTS, {
+      params: {
+        page,
+        limit,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(
+      'API Error (FEATURED_PRODUCTS):',
+      error?.response?.data || error
+    );
+    throw error;
+  }
+};
+
+// FEATURED_PRODUCT_DETAILS
+export const getFeaturedProductById = async (productId) => {
+  try {
+    const res = await api.get(
+      `${endPoint.FEATURED_PRODUCT_DETAILS}/${productId}`
+    );
+
+    return res.data;
+  } catch (error) {
+    console.log(
+      'API Error (FEATURED_PRODUCT_DETAILS):',
+      error?.response?.data || error
+    );
+    throw error;
+  }
+};
+
+// post Intereest
+export const postInterestRequest = async (payload) => {
+  try {
+    const res = await api.post(endPoint.POST_INTEREST, payload);
+    return res.data;
+  } catch (error) {
+    Toast.show(
+      error?.response?.data?.message ||
+      error,
+    );
+  }
+};
+
+

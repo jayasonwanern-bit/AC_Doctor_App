@@ -58,6 +58,7 @@ const OrderSummaryModal = ({
                     </View>
 
                     <CustomButton
+
                         buttonName={'Proceed Booking'}
                         btnTextColor={COLORS.white}
                         btnColor={COLORS.themeColor}
