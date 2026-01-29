@@ -35,6 +35,7 @@ const FeaturedProductsScreen = ({ navigation }) => {
         try {
             setLoading(true);
             const res = await getFeaturedProducts(1, 20); // load more for filtering
+            console.log('Featured Products res--->', res)
             const mapped = res?.data?.map(item => ({
                 id: item._id,
                 name: item.name,
@@ -89,6 +90,7 @@ const FeaturedProductsScreen = ({ navigation }) => {
                 <View style={styles.viewRow}>
                     <Text style={styles.price}>{item.price}{' '}</Text>
                     <Text style={styles.mrp}>{item.mrp}</Text>
+                    <Text style={styles.mrp}>{item.discountedPercentage}</Text>
                 </View>
 
                 <StarRating
@@ -96,7 +98,6 @@ const FeaturedProductsScreen = ({ navigation }) => {
                     starSize={18}
                     rating={item.rating}
                 />
-
 
                 <View style={styles.badge}>
                     <Text style={styles.badgeText}>{item.discount}</Text>
@@ -124,6 +125,7 @@ const FeaturedProductsScreen = ({ navigation }) => {
                 <Image source={images.searchIcon} style={styles.searchIcon} />
                 <TextInput
                     placeholder="Search AC (Daikin, Godrej, 1.5 Ton...)"
+                    placeholderTextColor={COLORS.textColor}
                     value={search}
                     onChangeText={setSearch}
                     style={styles.searchInput}
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     searchInput: {
         fontSize: hp('1.5%'),
         fontFamily: Fonts.semiBold,
-        paddingHorizontal: 12,
+        paddingHorizontal: 4,
     },
 
     card: {

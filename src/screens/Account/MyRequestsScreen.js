@@ -77,7 +77,7 @@ const MyRequestsScreen = ({ navigation }) => {
   const combinedList = [
     ...freeConsultancyList,
     ...amcList,
-  ];
+  ].sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt)); // 🔥 latest first
 
 
   // Filter by Tab
@@ -128,7 +128,7 @@ const MyRequestsScreen = ({ navigation }) => {
                     : 'Inspection Date & Time'}
             </Text>
             <Text style={styles.value}>
-              {item?.createdAt.split('T')[0]}, {item.slot}
+              {item?.createdAt.split('T')[0]} {'\n'}{item.slot}
             </Text>
           </View>
           <View style={{ width: wp(25) }}>
@@ -172,15 +172,15 @@ const MyRequestsScreen = ({ navigation }) => {
         )}
 
         {/* Cancellation Reason */}
-        {item.cancellationReason && (
+        {/* {item.cancellationReason && (
           <View style={styles.row}>
             <Text style={styles.label}>Cancellation Reason</Text>
             <Text style={styles.value}>{item.cancellationReason}</Text>
           </View>
-        )}
+        )} */}
 
         {/* Action Buttons */}
-        <View style={styles.actionRow}>
+        {/* <View style={styles.actionRow}>
           {item.showReinitiate && (
             <View>
               <Text style={styles.reinitiateText}>Reinitiate Request</Text>
@@ -222,7 +222,7 @@ const MyRequestsScreen = ({ navigation }) => {
           >
             <Text style={styles.viewDetailsText}>View details</Text>
           </View>
-        </View>
+        </View> */}
       </View>
     );
   };

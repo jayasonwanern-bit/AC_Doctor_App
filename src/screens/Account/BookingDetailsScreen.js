@@ -13,12 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 const BookingDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
   const bookingData = route?.params?.bookingId;
-  console.log('bookingId---', bookingData)
+  console.log('bookingId---', bookingData.bookingId)
   const [loading, setLoading] = useState(false);
-
-
-
-
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -120,7 +116,9 @@ const styles = StyleSheet.create({
   },
 
   value: {
-    fontSize: hp('1.8%'),
+    fontSize: hp('1.5%'),
+    fontFamily: Fonts.medium,
+    color: COLORS.TextColor
   },
 
   card: {

@@ -37,6 +37,7 @@ import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
 import InterestSuccessModal from '../../components/InterestSuccessModal'
 import { isTablet } from '../../components/TabletResponsiveSize';
+import StarRating from '../../customScreen/StarRating';
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -325,7 +326,6 @@ const HomeScreen = ({ route }) => {
     >
       <StatusBar
         barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={'#F4F8FE'}
         translucent={true}
       />
       {serviceDetails.length === 0 ? (
@@ -357,8 +357,9 @@ const HomeScreen = ({ route }) => {
                   resizeMode="contain"
                 />
                 <Text style={styles.locationText} numberOfLines={1}>
-                  {`${addresslocation.house}  ${addresslocation.road} ${addresslocation.city}` ||
-                    'Select Location'}
+                  {addresslocation ? `${addresslocation.house}  ${addresslocation.road} ${addresslocation.city}` :
+                    'Select Location'
+                  }
                 </Text>
               </View>
             )}
@@ -375,7 +376,8 @@ const HomeScreen = ({ route }) => {
               ) : (
                 <Text
                   style={styles.locationText}
-                >{`${WeatherData?.current_weather?.temperature} ${WeatherData?.current_weather_units?.temperature}`}</Text>
+                >{WeatherData ? `${WeatherData?.current_weather?.temperature} ${WeatherData?.current_weather_units?.temperature}` :
+                  'Loading...'}</Text>
               )}
             </View>
           </View>
@@ -555,7 +557,11 @@ const HomeScreen = ({ route }) => {
                   <View style={styles.dealTag}>
                     <Text style={styles.dealText}>{item?.reviews}</Text>
                   </View>
-                  {/* <Text style={styles.rating}>⭐ {item.rating}</Text> */}
+                  {/* <StarRating
+                    maxStars={5}
+                    starSize={18}
+                    rating={item.rating}
+                  /> */}
                 </View>
 
                 <Text style={styles.name} numberOfLines={1}>
@@ -596,7 +602,7 @@ const HomeScreen = ({ route }) => {
             >
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 14,
                   color: '#888',
                   fontFamily: Fonts.medium,
                 }}

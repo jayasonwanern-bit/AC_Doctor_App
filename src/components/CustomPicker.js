@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, Text, Platform } from 'react-native';
+import React, { useRef } from 'react';
+import { View, StyleSheet, Text, Platform, TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import FastImage from 'react-native-fast-image';
 import {
@@ -21,11 +21,16 @@ const CustomPicker = ({
   backgroundColor = '#fff',
   borderColor = '#d9d9d9',
 }) => {
+  const pickerRef = useRef(null);
+
+
   return (
     <View style={[styles.inputGroup, { mainViewwidth, zIndex: 100 }]}>
       {label && <Text style={styles.label}>{label}</Text>}
 
-      <View
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => pickerRef?.current?.togglePicker?.()}
         style={[
           styles.wrapper,
           {
@@ -39,6 +44,7 @@ const CustomPicker = ({
       >
         <RNPickerSelect
           // useNativeAndroidPickerStyle={false}
+          ref={pickerRef}
           onValueChange={onChange}
           items={items}
           value={value}
@@ -81,7 +87,7 @@ const CustomPicker = ({
             )
           }
         />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

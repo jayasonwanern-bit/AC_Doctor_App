@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   leftRow: { flexDirection: 'row', alignItems: 'center' },
   icon: { width: 42, height: 42, marginRight: 12 },
-  name: { fontSize: isTablet ? rf(9) : rf(13), fontFamily: Fonts.semiBold },
+  name: { fontSize: isTablet ? rf(9) : rf(13), fontFamily: Fonts.semiBold, color: COLORS.black },
   addBtn: {
     borderWidth: 0.5,
     borderRadius: 20,

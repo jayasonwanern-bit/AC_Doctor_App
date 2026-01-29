@@ -194,8 +194,10 @@ const OtherCartView = ({ route }) => {
         serviceType: item.serviceType.toUpperCase(),
       })),
     };
+    console.log('bodyData Response:', bodyData);
     try {
       const response = await postBookingRequest(bodyData);
+      console.log('Booking Response:', response);
       if (response?.status === true) {
         // Toast.show(response?.message || 'Booking submitted successfully!');
         setShowSummary(false)
@@ -354,19 +356,6 @@ const OtherCartView = ({ route }) => {
         setSelectedAddress={setSelectedAddress}
       />
 
-      {/* <BookingSlotModal
-        visible={modalSlotVisible}
-        onClose={() => setModalSlotVisible(false)}
-        setSelectedSlot={setSelectedSlot}
-        onBookProcess={() => {
-          setModalSlotVisible(false);
-          setTimeout(() => {
-            navigation.goBack();
-          }, 300);
-        }}
-
-      /> */}
-
       <BookingSlotModal
         visible={modalSlotVisible}
         onClose={() => setModalSlotVisible(false)}
@@ -383,8 +372,6 @@ const OtherCartView = ({ route }) => {
         }}
       />
       {proceed === true ? (
-
-
         <OrderSummaryModel
           visible={showSummary}
           onClose={() => setShowSummary(false)}
@@ -394,7 +381,6 @@ const OtherCartView = ({ route }) => {
           images={images}
           hp={hp}
           styles={styles}
-          // OnPressBtn={Alert.alert("090")}
           OnPressBtn={() => {
             useSubmitBooking()
           }}

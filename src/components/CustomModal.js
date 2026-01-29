@@ -43,6 +43,8 @@ const CustomModal = ({
   const [loading, setLoading] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  console.log('6userDetail---->', userDetail?._id);
+
 
   // 🔹 Fetch address on focus
   useFocusEffect(

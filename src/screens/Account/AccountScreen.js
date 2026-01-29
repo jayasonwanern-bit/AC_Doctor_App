@@ -58,16 +58,20 @@ const AccountScreenComponent = () => {
   const weatherData = store?.getState()?.auth?.celcius;
 
 
-  useEffect(() => {
-    if (userId?._id) {
-      fetchProfile();
-    }
-  }, [userId?._id]);
+  useFocusEffect(
+    useCallback(() => {
+      if (userId?._id) {
+        fetchProfile();
+      }
+    }, [userId?._id])
+  );
+
 
   const fetchProfile = async () => {
     try {
       setLoading(true);
       const res = await getUserProfile(userId?._id);
+
       if (res?.status || res?.success) {
         const data = res.data;
         setStoreData(data || []);
@@ -78,7 +82,6 @@ const AccountScreenComponent = () => {
       setLoading(false);
     }
   };
-
 
   const handleMenuPress = async screen => {
     if (screen === 'Logout') {
@@ -152,7 +155,10 @@ const AccountScreenComponent = () => {
             />
             <Text
               style={Homestyles.locationText}
-            >{`${weatherData?.current_weather?.temperature} ${weatherData?.current_weather_units?.temperature}`}</Text>
+            >{weatherData ?
+              `${weatherData?.current_weather?.temperature} ${weatherData?.current_weather_units?.temperature}`
+              : 'Loading…'
+              }</Text>
           </View>
         </View>
       </View>
@@ -173,7 +179,9 @@ const AccountScreenComponent = () => {
               <FastImage
                 source={
                   storeData?.profilePhoto
-                    ? { uri: storeData.profilePhoto }
+                    ? {
+                      uri: storeData?.profilePhoto
+                    }
                     : images.userProfile
                 }
                 style={Homestyles.accountbg}

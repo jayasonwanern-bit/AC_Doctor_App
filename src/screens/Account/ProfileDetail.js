@@ -72,7 +72,8 @@ const ProfileDetail = ({ navigation }) => {
         setphoneNumber(data?.phoneNumber);
         setEmail(data?.email);
         setGender(data?.gender);
-        setSelectedImageUri(data?.profilePhoto);
+        setSelectedImageUri(data?.
+          profilePhoto);
       }
     } catch (error) {
       console.log('Error fetching profile:', error);
@@ -110,9 +111,7 @@ const ProfileDetail = ({ navigation }) => {
         email: String(email || ''),
         profilePhotoUrl: cleanImageUrl || '',
       };
-
       const res = await updateUserProfile(body);
-
       if (res?.status || res?.success) {
         Toast.show('Profile updated successfully');
         await refreshUserDetails();
@@ -137,7 +136,6 @@ const ProfileDetail = ({ navigation }) => {
     try {
       setLoading(true);
       const response = await getUserDeatil(userId?._id)
-      console.log('response---->', response?.data)
       if (response?.status) {
         dispatch(setUser({ user: response?.data }));
       }

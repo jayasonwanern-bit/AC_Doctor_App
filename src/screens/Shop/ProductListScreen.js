@@ -82,7 +82,7 @@ const ProductListScreen = ({ navigation, route }) => {
         onProductPress={item =>
           navigation.navigate('ProductDetailScreen', {
             productId: item.id,
-            productScreenName: Sname, 
+            productScreenName: Sname,
           })
         }
       />

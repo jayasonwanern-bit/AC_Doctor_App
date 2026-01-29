@@ -338,12 +338,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: COLORS.textHeading,
-    borderRadius: 15,
-    // paddingHorizontal: 10,
+    borderRadius: 17,
   },
   addButtonText: {
-    fontSize: 13,
+    fontSize: 13.5,
     color: '#333',
+    fontWeight: '500'
   },
   minusButton: {
     padding: 6,
@@ -355,12 +355,14 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   minusButtonText: {
-    fontSize: 13,
+    fontSize: 18,
     color: '#333',
+    fontWeight: '500'
   },
   countText: {
     fontSize: 16,
     marginHorizontal: 10,
+    color: COLORS.themeColor,
   },
 });
 

@@ -38,6 +38,7 @@ const ProductDetails = ({ route }) => {
         try {
             setLoading(true);
             const res = await getFeaturedProductById(productId);
+            console.log('Product Details res--->', res?.data);
             setProduct(res.data); // 👈 full object from API
         } catch (e) {
             console.log('fetchProductDetails error', e);
@@ -153,6 +154,30 @@ const ProductDetails = ({ route }) => {
                                     Brand
                                 </Text>
                                 <Text style={Commonstyles.locationText}>{product?.brand}</Text>
+                            </View>
+                            <View style={Commonstyles.bottomLine} />
+                            <View style={Commonstyles.sergrid}>
+                                <Text
+                                    style={[
+                                        Commonstyles.locationText,
+                                        { color: COLORS.textHeading },
+                                    ]}
+                                >
+                                    AC Type
+                                </Text>
+                                <Text style={Commonstyles.locationText}>{product?.specifications?.acType}</Text>
+                            </View>
+                            <View style={Commonstyles.bottomLine} />
+                            <View style={Commonstyles.sergrid}>
+                                <Text
+                                    style={[
+                                        Commonstyles.locationText,
+                                        { color: COLORS.textHeading },
+                                    ]}
+                                >
+                                    Model
+                                </Text>
+                                <Text style={Commonstyles.locationText}>{product?.model}</Text>
                             </View>
                             <View style={Commonstyles.bottomLine} />
                             <View style={Commonstyles.sergrid}>

@@ -106,6 +106,9 @@ export default StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 20,
     backgroundColor: 'white',
+    borderRadius: 10,
+    height: hp('20%'),
+    marginTop: hp('1%'),
   },
   reqgrid: {
     flexDirection: 'row',
@@ -716,7 +719,7 @@ export default StyleSheet.create({
   faqarrow: {
     alignSelf: 'center',
     fontSize: 18,
-    color: COLORS.darkText,
+    color: COLORS.black,
   },
   faqanswerText: {
     fontSize: isTablet ? hp(1.5) : hp(1.5),

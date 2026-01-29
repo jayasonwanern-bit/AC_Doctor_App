@@ -109,7 +109,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
               placeholderTextColor="#aaa"
               value={withValue}
               onChangeText={setWithValue}
-              // textAlignVertical="top"
+              keyboardType='number-pad'
               style={styles.normalInput}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
@@ -118,7 +118,7 @@ const TonnageCalculatorScreen = ({ navigation }) => {
               placeholderTextColor="#aaa"
               value={heightValue}
               onChangeText={setHeightValue}
-              // textAlignVertical="top"
+              keyboardType='number-pad'
               style={styles.normalInput}
               onSubmitEditing={() => Keyboard.dismiss()}
             />

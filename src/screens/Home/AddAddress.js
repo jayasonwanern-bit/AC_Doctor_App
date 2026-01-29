@@ -47,6 +47,17 @@ const AddAddress = ({ navigation, route }) => {
 
   const userId = store?.getState()?.auth?.user;
 
+  const ALLOWED_PINCODES = [
+    '453115', '453551', '453111', '453441', '452006', '453001', '453220', '452016',
+    '453771', '452005', '452020', '453236', '453112', '453661', '452001', '452013',
+    '452002', '452007', '452010', '452015', '452003', '452008', '452018', '453331',
+    '453446', '453332', '452009', '452012', '452014', '452011'
+  ];
+
+  const isServiceablePincode = () => {
+    return ALLOWED_PINCODES.includes(pincode.trim());
+  };
+
   // validation
   const validateFields = () => {
     if (!address.trim()) return 'Address is required';
@@ -55,18 +66,19 @@ const AddAddress = ({ navigation, route }) => {
     if (!pincode.trim()) return 'Pincode is required';
     if (!/^\d{5,6}$/.test(pincode.trim()))
       return 'Pincode must be 5 or 6 digits';
+    // 🔴 SERVICE AREA CHECK
+    if (!isServiceablePincode()) {
+      return 'Service not available for this pincode';
+    }
     return null;
   };
 
   useEffect(() => {
     if (addressData) {
-      // setHouse(addressData.house);
       setAddress(addressData.street);
       setCity(addressData.city);
       setStateName(addressData.state);
       setPincode(addressData.zipcode);
-      // setSaveAs(addressData.saveAs);
-      // setLandmark(addressData.landmark);
     }
   }, [addressData]);
 
@@ -101,10 +113,9 @@ const AddAddress = ({ navigation, route }) => {
         state: stateName,
         city: city,
         zipCode: pincode,
-        saveAs: 'saveAs',
+        saveAs: addressType,
         landmark: addressType,
       };
-      console.log('address body---', body)
       const res = await addOrEditAddress(body);
       if (res?.status) {
         Toast.show(res?.message);

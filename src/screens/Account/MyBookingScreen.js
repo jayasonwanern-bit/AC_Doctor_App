@@ -17,6 +17,7 @@ import images from '../../assets/images';
 import { getBookingList } from '../../api/settingApi';
 import { store } from '../../redux/store';
 import CustomLoader from '../../components/CustomLoader';
+import Toast from 'react-native-simple-toast'
 
 
 
@@ -33,16 +34,15 @@ const MyBookingScreen = ({ navigation }) => {
     { label: 'Cancelled', value: 'CANCELLED' },
   ];
 
-
   useEffect(() => {
     getBrandList();
   }, []);
+
   useEffect(() => {
     console.log('ACTIVE TAB:', activeTab);
     console.log('ALL REQUESTS:', allRequests);
   }, [activeTab, allRequests]);
 
-  console.log('gfdfgdhggh---', userId)
 
   const getBrandList = async () => {
     try {
@@ -87,10 +87,10 @@ const MyBookingScreen = ({ navigation }) => {
 
 
   // Filter by Tab
-  const filteredRequests =
-    activeTab === 'ALL'
-      ? allRequests
-      : allRequests.filter(item => item.status === activeTab);
+  const filteredRequests = (
+    activeTab === 'ALL' ? allRequests : allRequests.filter(item => item.status === activeTab)
+  ).sort((a, b) => new Date(b?.date) - new Date(a?.date)); // 🔥 latest first
+
 
 
   const getStatusStyle = status => {
@@ -131,7 +131,7 @@ const MyBookingScreen = ({ navigation }) => {
             <View>
               <Text style={styles.label}>Scheduled Date & Time</Text>
               <Text style={styles.value}>
-                {item?.date?.split('T')[0]},{item?.slot}
+                {item?.date?.split('T')[0]}, {'\n'}{item?.slot}
               </Text>
             </View>
             <View style={{ width: wp(35) }}>
@@ -181,16 +181,16 @@ const MyBookingScreen = ({ navigation }) => {
         <View style={styles.actionRow}>
           {item.status === 'UPCOMING' ||
             (item.status === 'BOOKED' && (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => { Toast.show('This feature is coming soon 🚀 Stay tuned!') }}>
                 <Text style={styles.reinitiateText}>Cancel Request</Text>
               </TouchableOpacity>
             ))}
-          {item.status === 'CANCELLED' && (
+          {/* {item.status === 'CANCELLED' && (
             <TouchableOpacity>
               <Text style={styles.reinitiateText}>Reinitiate Request</Text>
             </TouchableOpacity>
-          )}
-          {item.status === 'COMPLETED' && (
+          )} */}
+          {/* {item.status === 'COMPLETED' && (
             <View style={styles.ratingRow}>
               <Text style={styles.label}>Rate us</Text>
               <View style={styles.stars}>
@@ -208,7 +208,7 @@ const MyBookingScreen = ({ navigation }) => {
                 ))}
               </View>
             </View>
-          )}
+          )} */}
           <TouchableOpacity
             style={styles.viewDetailsBtn}
             onPress={() =>
@@ -411,6 +411,7 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    // alignSelf: 'center',
     marginTop: hp(1),
     flexWrap: 'wrap',
     gap: wp(2),
@@ -427,12 +428,16 @@ const styles = StyleSheet.create({
   viewDetailsBtn: {
     backgroundColor: COLORS.themeColor,
     paddingHorizontal: wp(4),
-    paddingVertical: hp(0.5),
+    paddingVertical: hp(0.3),
     borderRadius: wp(10),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: hp('4%'),
   },
   viewDetailsText: {
     color: COLORS.white,
-    fontSize: hp(1.4),
+    fontSize: hp(1.5),
     fontFamily: Fonts.medium,
   },
 });

@@ -95,7 +95,7 @@ const AMCRequestFrom = ({ navigation }) => {
       <Header
         title="View Request"
         onBack={() => navigation.goBack()}
-        // onHelp={true}
+      // onHelp={true}
       />
       <ScrollView
         style={styles.scrollView}
@@ -118,10 +118,10 @@ const AMCRequestFrom = ({ navigation }) => {
                       reqStatus === 'Scheduled'
                         ? '#FFE7CF'
                         : reqStatus === 'ReScheduled'
-                        ? COLORS.lightSky
-                        : reqStatus === 'complete'
-                        ? '#ECFFE9'
-                        : '#fff4c5ff',
+                          ? COLORS.lightSky
+                          : reqStatus === 'complete'
+                            ? '#ECFFE9'
+                            : '#fff4c5ff',
                   },
                 ]}
               >
@@ -133,20 +133,20 @@ const AMCRequestFrom = ({ navigation }) => {
                         reqStatus === 'Scheduled'
                           ? '#D26900'
                           : reqStatus === 'ReScheduled'
-                          ? COLORS.themeColor
-                          : reqStatus === 'complete'
-                          ? '#128807'
-                          : '#ee9937ff',
+                            ? COLORS.themeColor
+                            : reqStatus === 'complete'
+                              ? '#128807'
+                              : '#ee9937ff',
                     },
                   ]}
                 >
                   {reqStatus === 'Scheduled'
                     ? 'Scheduled'
                     : reqStatus === 'ReScheduled'
-                    ? 'Re Scheduled'
-                    : reqStatus === 'complete'
-                    ? 'Completed'
-                    : 'Under Review'}
+                      ? 'Re Scheduled'
+                      : reqStatus === 'complete'
+                        ? 'Completed'
+                        : 'Under Review'}
                 </Text>
               </View>
             </View>
@@ -216,10 +216,10 @@ const AMCRequestFrom = ({ navigation }) => {
                 onPress={() => toggleExpand(acName)}
                 style={styles.acHeader}
               >
-                <Text style={[styles.acTitle, { marginLeft: wp(1) }]}>
+                <Text style={[styles.label, { marginLeft: wp(1) }]}>
                   {acName}
                 </Text>
-                <Text style={styles.arrow}>
+                <Text style={styles.label}>
                   {expandedAC === acName ? '▲' : '▼'}
                 </Text>
               </TouchableOpacity>
@@ -232,7 +232,7 @@ const AMCRequestFrom = ({ navigation }) => {
                         <Text style={styles.label}>
                           {detail.title
                             ? detail.title.charAt(0).toUpperCase() +
-                              detail.title.slice(1)
+                            detail.title.slice(1)
                             : key}
                         </Text>
                         <Text

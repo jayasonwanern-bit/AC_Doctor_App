@@ -36,6 +36,7 @@ import { useDispatch } from 'react-redux';
 import { isTablet } from '../../components/TabletResponsiveSize';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getPresignedUrl, uploadImageToS3 } from '../../api/profileApi';
+import CustomModal from '../../components/CustomModal';
 
 const FreeConsultant = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -48,6 +49,7 @@ const FreeConsultant = ({ navigation }) => {
   const [brandArray, setBrandArray] = useState([]);
   const user = store?.getState()?.auth?.user;
   const addressId = store?.getState()?.auth?.address;
+  const [modalUserVisible, setModalUserVisible] = useState(false)
 
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
@@ -128,21 +130,22 @@ const FreeConsultant = ({ navigation }) => {
 
     if (!selectdate) return Toast.show('Please select Date');
     if (!addressId?._id) {
-      Alert.alert(
-        'Please Add Address First',          // title
-        'You need to add an address to continue', // message (string)
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Add Address',
-            onPress: () => {
-              navigation.navigate('AddAddress', {
-                from: 'FreeConsultant',
-              });
-            },
-          },
-        ]
-      );
+      // Alert.alert(
+      //   'Please Add Address First',
+      //   'You need to add an address to continue', // message (string)
+      //   [
+      //     { text: 'Cancel', style: 'cancel' },
+      //     {
+      //       text: 'Add Address',
+      //       onPress: () => {
+      //         navigation.navigate('AddAddress', {
+      //           from: 'FreeConsultant',
+      //         });
+      //       },
+      //     },
+      //   ]
+      // );
+      setModalUserVisible(true)
 
       return;
     }
@@ -255,8 +258,9 @@ const FreeConsultant = ({ navigation }) => {
             <CunstomInput
               label="Quantity (Number of AC)"
               placeholder="Enter number"
-              keyboardType="numeric"
+              keyboardType="phone-pad"
               value={formData.numberOfAC}
+              maxLength={2}
               onChangeText={value => handleInputChange('numberOfAC', value)}
               borderRadius={hp('14%')}
               MarginBottom={hp('0.5%')}
@@ -290,7 +294,8 @@ const FreeConsultant = ({ navigation }) => {
               items={[
                 { label: 'Installation', value: 'Installation' },
                 { label: 'Repair', value: 'Repair' },
-                { label: 'Maintenance', value: 'Maintenance' },
+                { label: 'Copper Piping', value: 'Copper Piping' },
+                { label: 'New AC', value: 'New AC' },
               ]}
               mainViewwidth={isTablet ? wp(60) : wp('95%')} // any width
               height={hp('5%')} // any height
@@ -399,6 +404,22 @@ const FreeConsultant = ({ navigation }) => {
           onPress={handleRequestConsultation}
         />
       </View>
+      {/* Present address */}
+      <CustomModal
+        visible={modalUserVisible}
+        onClose={() => setModalUserVisible(false)}
+        onProceed={() => {
+          setModalUserVisible(false);
+          // setTimeout(() => {
+          //   setModalSlotVisible(true);
+          // }, 300);
+        }}
+        // numberofAC={numberofAC}
+        // setvalue={setNumberofAC}
+        addAcStatus={true}
+        fromScreen={'ViewCart'}
+      // setSelectedAddress={setSelectedAddress}
+      />
 
       {/* Booking Slot Modal */}
       <BookingSlotModal

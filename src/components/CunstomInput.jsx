@@ -37,6 +37,7 @@ const CunstomInput = ({
   onSubmitEditing = () => {},
   returnKeyType = 'done',
   lablestyle,
+  maxLength,
   secureTextToggleLabel = { show: 'Show', hide: 'Hide' },
 }) => {
   const [secure, setSecure] = useState(secureTextEntry);
@@ -72,6 +73,7 @@ const CunstomInput = ({
           numberOfLines={multiline ? numberOfLines : 1}
           textAlignVertical={multiline ? 'top' : 'center'} // ✅ Android fix
           onSubmitEditing={onSubmitEditing}
+          maxLength={maxLength ?? undefined}
           returnKeyType={returnKeyType}
           style={[styles.input, multiline && styles.multilineInput, style]}
         />

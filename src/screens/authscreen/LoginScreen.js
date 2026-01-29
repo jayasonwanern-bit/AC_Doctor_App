@@ -78,7 +78,6 @@ const LoginScreen = ({ navigation }) => {
       console.log('Login Error Data:', error?.res?.data);
 
       let message = 'Something went wrong';
-      // ⛔ Server not responding / no internet
       if (!error.res) {
         message = 'Server not responding. Please try again later.';
       }
