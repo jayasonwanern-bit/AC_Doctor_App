@@ -142,7 +142,7 @@ const CustomModal = ({
           </View>
 
           {/* 🔹 Address List */}
-          <View style={{ maxHeight: hp(40) }}>
+          <View style={{ maxHeight: hp(30) }}>
             {loading ? (
               <CustomLoader size="large" />
             ) : savedAddresses.length === 0 ? (
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    minHeight: hp(38),
+    minHeight: hp(50),
     maxHeight: hp(60),
     alignSelf: 'center',
     width: wp('100%'),
@@ -318,8 +318,8 @@ const styles = StyleSheet.create({
     marginTop: hp(-1),
   },
   addressDetails: {
-    fontSize: hp('1.4%'),
-    fontFamily: Fonts.regular,
+    fontSize: hp('1.5%'),
+    fontFamily: Fonts.semiBold,
     color: COLORS.textHeading,
   },
 

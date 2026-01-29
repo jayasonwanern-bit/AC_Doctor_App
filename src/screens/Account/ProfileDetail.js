@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   Keyboard,
+  Image,
 } from 'react-native';
 import Header from '../../components/Header';
 import Homestyles from '../Home/HomeScreenStyles';
@@ -122,8 +123,7 @@ const ProfileDetail = ({ navigation }) => {
         error?.response?.data?.message ||
         error?.message ||
         'Something went wrong';
-
-      Alert.alert('Error', String(errorMessage)); // ✅ FIXED
+      Toast.show(String(errorMessage));
       console.log('Profile Update Error:', error);
       Toast.show('Something went wrong');
     } finally {
@@ -170,7 +170,7 @@ const ProfileDetail = ({ navigation }) => {
                 imageStyle={Homestyles.profilestyle}
                 style={Homestyles.profileDetailBg}
               >
-                <FastImage
+                <Image
                   source={images.profileCamera}
                   style={Homestyles.cameraStyle}
                 />

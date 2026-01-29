@@ -121,26 +121,44 @@ const AddAddress = ({ navigation, route }) => {
         Toast.show(res?.message);
 
         const cameFrom = route?.params?.from;
-        const { fromScreen } = route.params || {};
+        const fromScreen = route?.params?.fromScreen;
 
+        // -------- FLOW 1 --------
         if (cameFrom === 'ServiceScreen') {
-          navigation.navigate('Tab', { screen: 'Home' });
-        } else if (cameFrom === 'CustomModal') {
-          navigation.goBack();
-        } else if (cameFrom === 'UserInfoModel') {
-          setModalSlotVisible(true);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Tab', params: { screen: 'Home' } }],
+          });
+          return;
         }
+
+        if (cameFrom === 'CustomModal') {
+          navigation.goBack();
+          return;
+        }
+
+        if (cameFrom === 'UserInfoModel') {
+          setModalSlotVisible(true);
+          return;
+        }
+
+        // -------- FLOW 2 --------
         if (fromScreen === 'ViewCart') {
           navigation.navigate('ViewCart', {
             proceed: true,
-            selectedAddress: selectedAddress,
+            selectedAddress: newAddress,
           });
-        } else if (fromScreen === 'OtherCart') {
+          return;
+        }
+
+        if (fromScreen === 'OtherCart') {
           navigation.navigate('OtherCartView', {
             proceed: true,
-            selectedAddress: selectedAddress,
-          })
-        } else {
+            selectedAddress: newAddress,
+          });
+          return;
+        }
+        else {
           navigation.goBack();
         }
       }

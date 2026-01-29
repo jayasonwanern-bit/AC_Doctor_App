@@ -16,8 +16,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Homestyles, { menuData } from '../Home/HomeScreenStyles';
-import { SafeAreaView } from 'react-native-safe-area-context'; // Use SafeAreaView instead of SafeAreaProvider
-import FastImage from 'react-native-fast-image';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import images from '../../assets/images';
 import { COLORS } from '../../utils/colors';
 import { useDispatch } from 'react-redux';
@@ -74,7 +73,12 @@ const AccountScreenComponent = () => {
 
       if (res?.status || res?.success) {
         const data = res.data;
-        setStoreData(data || []);
+        setStoreData({
+          ...data,
+          profilePhoto: data?.profilePhoto
+            ? `${data.profilePhoto}?v=${Date.now()}`
+            : null,
+        });
       }
     } catch (error) {
       console.log('Error fetching profile:', error);
@@ -135,10 +139,10 @@ const AccountScreenComponent = () => {
         <Text style={Homestyles.locationtitle}>Location</Text>
         <View style={Homestyles.addressRow}>
           <TouchableOpacity style={Homestyles.locationContainer}>
-            <FastImage
+            <Image
               source={images.homeLocation}
               style={Homestyles.locationIcon}
-              resizeMode={FastImage.resizeMode.contain}
+              resizeMode='contain'
             />
             <Text style={Homestyles.locationText}>
               {addressText || addressText
@@ -148,10 +152,10 @@ const AccountScreenComponent = () => {
             </Text>
           </TouchableOpacity>
           <View style={Homestyles.wheatherContainer}>
-            <FastImage
+            <Image
               source={images.wheatherIcon}
               style={Homestyles.locationIcon}
-              resizeMode={FastImage.resizeMode.contain}
+              resizeMode='contain'
             />
             <Text
               style={Homestyles.locationText}
@@ -175,22 +179,20 @@ const AccountScreenComponent = () => {
         ) : (
           <>
             <View style={Homestyles.accountcontainer}>
-
-              <FastImage
+              <Image
                 source={
                   storeData?.profilePhoto
-                    ? {
-                      uri: storeData?.profilePhoto
-                    }
+                    ? { uri: storeData.profilePhoto }
                     : images.userProfile
                 }
                 style={Homestyles.accountbg}
-                resizeMode={FastImage.resizeMode.cover}
+                resizeMode="contain"
               />
+
             </View>
             <View style={Homestyles.accountcontainer}>
               <Text style={Homestyles.accounttitle}>
-                {storeData?.name || 'Add Name'}
+                {storeData?.name || 'No user Name'}
               </Text>
               <View style={Homestyles.accountline}>
                 <Image
@@ -199,7 +201,7 @@ const AccountScreenComponent = () => {
                   resizeMode="contain"
                 />
                 <Text style={Homestyles.accountNumber}>
-                  {storeData?.countryCode} {storeData?.phoneNumber}
+                  {storeData?.countryCode || 'Not Available'} {storeData?.phoneNumber || ''}
                 </Text>
               </View>
               <Text

@@ -35,7 +35,6 @@ const FeaturedProductsScreen = ({ navigation }) => {
         try {
             setLoading(true);
             const res = await getFeaturedProducts(1, 20); // load more for filtering
-            console.log('Featured Products res--->', res)
             const mapped = res?.data?.map(item => ({
                 id: item._id,
                 name: item.name,
@@ -175,6 +174,7 @@ const styles = StyleSheet.create({
         fontSize: hp('1.5%'),
         fontFamily: Fonts.semiBold,
         paddingHorizontal: 4,
+        color: COLORS.textColor
     },
 
     card: {

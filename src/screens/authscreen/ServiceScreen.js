@@ -71,22 +71,11 @@ const ServiceScreen = () => {
   };
 
   const handleManuallyLocation = () => {
-    navigation.navigate('AddAddress');
+    navigation.navigate('AddAddress', { from: 'ServiceScreen' });
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.backButton]}
-      // onPress={() => navigation.goBack()}
-      >
-        {/* <FastImage
-          source={images.backArrow}
-          style={[styles.backImg,{marginTop:hp('1.5%')}]}
-          resizeMode={FastImage.resizeMode.contain}
-        /> */}
-      </TouchableOpacity>
-
       <Text style={styles.title}>Find Services Near You</Text>
 
       <FastImage
