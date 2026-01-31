@@ -67,15 +67,11 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
       onImageSelect(uri);
       onClose();
     } finally {
-      // catch (err) {
-      //   if (err.code !== 'E_PICKER_CANCELLED') {
-      //     Alert.alert('Error', 'Gallery se photo nahi aaya.');
-      //   }
-      // }
       onClose();
       setLoading(null);
     }
   };
+
 
   return (
     <Modal

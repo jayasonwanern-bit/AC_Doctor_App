@@ -49,8 +49,8 @@ export default StyleSheet.create({
     marginLeft: wp(0.5),
   },
   locationIcon: {
-    width: isTablet ? wp('2%') : wp(6),
-    height: isTablet ? wp('2%') : wp(6),
+    width: isTablet ? wp(3) : wp(6),
+    height: isTablet ? wp(3) : wp(6),
     alignSelf: 'flex-start',
   },
   locationText: {
@@ -231,7 +231,7 @@ export default StyleSheet.create({
   bookcard: {
     width: isTablet ? wp('20%') : wp('25%'),
     alignItems: 'center',
-    marginVertical: hp('1%'),
+    marginVertical: hp('1.5%'),
   },
   bottomLine: {
     borderBottomWidth: hp('0.1%'),

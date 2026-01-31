@@ -35,7 +35,6 @@ import HomeScreenStyles, {
   serviceInclusionsData,
   termsConditionsData,
 } from '../HomeScreenStyles';
-import { MMKVLoader } from 'react-native-mmkv-storage';
 import PickerLabelUi from '../../../components/PickerLabelUi';
 import CunstomInput from '../../../components/CunstomInput';
 import WorkInfo from '../../../customScreen/WorkInfo';
@@ -64,7 +63,6 @@ const SellOldAcScreen = ({ navigation }) => {
   // const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedBrands, setSelectedBrands] = useState('');
 
-  const storage = new MMKVLoader().initialize();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectNumberAC, setSelectNumberAC] = useState('');

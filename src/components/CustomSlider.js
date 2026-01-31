@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: isTablet ? wp(95) : wp(93),
-    height: isTablet ? hp(30) : hp(18),
+    height: isTablet ? hp(28) : hp(18),
     borderRadius: 12,
   },
   dots: {

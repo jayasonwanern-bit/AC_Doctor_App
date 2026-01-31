@@ -1,5 +1,3 @@
-import { create } from 'react-native-mmkv-storage';
-
 const endPoint = {
   LOGIN: '/user/login',
   VERIFY_OTP: '/user/verify-otp',

@@ -17,7 +17,7 @@ import Header from '../../components/Header';
 import { COLORS, Fonts } from '../../utils/colors';
 import Commonstyles, { CompareData, WindoData } from '../Home/HomeScreenStyles';
 import images from '../../assets/images';
-import RNFetchBlob from 'rn-fetch-blob';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const CompareResultScreen = ({ route, navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -33,28 +33,33 @@ const CompareResultScreen = ({ route, navigation }) => {
 
   //   downloadBrochure
   const downloadBrochure = (pdfUrl, fileName = 'AC_Brochure.pdf') => {
-    // Android Download Folder
-    const { dirs } = RNFetchBlob.fs;
-    const dirToSave = dirs.DownloadDir; // Ya dirs.DocumentDir bhi use kar sakta hai
-    const configfb = {
-      useDownloadManager: true,
-      notification: true,
-      mediaScannable: true,
-      title: fileName,
-      path: `${dirToSave}/${fileName}`,
+    const { fs, config } = ReactNativeBlobUtil;
+    const dirToSave = fs.dirs.DownloadDir;
+
+    const options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        mediaScannable: true,
+        title: fileName,
+        path: `${dirToSave}/${fileName}`,
+        description: 'Downloading brochure',
+      },
     };
 
-    RNFetchBlob.config(configfb)
-      .fetch('GET', pdfUrl, {})
+    config(options)
+      .fetch('GET', pdfUrl)
       .then(res => {
-        console.log('PDF Downloaded Successfully:', res.path());
-        alert('Brochure Downloaded Successfully! Check your Downloads folder');
+        console.log('PDF Downloaded:', res.path());
+        alert('Brochure downloaded! Check Downloads folder');
       })
-      .catch(error => {
-        console.log('Download Error:', error);
+      .catch(err => {
+        console.log('Download error:', err);
         alert('Download failed. Please try again.');
       });
   };
+
 
   return (
     <View style={styles.container}>
@@ -97,33 +102,33 @@ const CompareResultScreen = ({ route, navigation }) => {
 
         {/* ADD AC BUTTON - Sirf jab 2 AC ho */}
         {totalACs === 2 && (
-          <TouchableOpacity style={styles.addAcBtn} onPress={()=> navigation.navigate('BrandScreen', { from: 'CompareACScreen' })}>
+          <TouchableOpacity style={styles.addAcBtn} onPress={() => navigation.navigate('BrandScreen', { from: 'CompareACScreen' })}>
             <Text style={styles.addAcText}>Add AC</Text>
           </TouchableOpacity>
         )}
 
         {/* COMPARISON TABLE */}
-        <View style={styles.table}>  
+        <View style={styles.table}>
           <View style={styles.conditionView}>
             <Text style={styles.categoryTitle}>Air Conditioner Category</Text>
           </View>
 
-           <View style={styles.tableRow}>
+          <View style={styles.tableRow}>
             <Text style={[styles.label, { color: COLORS.darkgreen }]}>
               Window Name
             </Text>
             {acs.map((ac, index) => (
               // <View style={{ width: wp('20%') }}>
-                <Text
-                  key={ac.id}
-                  style={[
-                    styles.value,
-                    { fontFamily: Fonts.semiBold},
-                  ]}
-                  numberOfLines={3}
-                >
-                  {ac.title}
-                </Text>
+              <Text
+                key={ac.id}
+                style={[
+                  styles.value,
+                  { fontFamily: Fonts.semiBold },
+                ]}
+                numberOfLines={3}
+              >
+                {ac.title}
+              </Text>
               // </View>
             ))}
           </View>

@@ -124,14 +124,30 @@ const AddAddress = ({ navigation, route }) => {
         const fromScreen = route?.params?.fromScreen;
 
         // -------- FLOW 1 --------
+        // if (cameFrom === 'ServiceScreen') {
+        //   navigation.reset({
+        //     index: 0,
+        //     routes: [{ name: 'Tab', params: { screen: 'Home' } }],
+        //   });
+        //   return;
+        // }
         if (cameFrom === 'ServiceScreen') {
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Tab', params: { screen: 'Home' } }],
+            routes: [
+              {
+                name: 'Tab',
+                params: {
+                  screen: 'Home',
+                  params: {
+                    selectedAddress: newAddress,
+                  },
+                },
+              },
+            ],
           });
           return;
         }
-
         if (cameFrom === 'CustomModal') {
           navigation.goBack();
           return;

@@ -12,7 +12,6 @@ import {
   Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import Header from '../../../components/Header';
 import {
   widthPercentageToDP as wp,
@@ -28,7 +27,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const BrandScreen = ({ route }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
-  const storage = new MMKVLoader().initialize();
   const cameFrom = route?.params?.from;
   const [brandsArry, setBrandsArry] = useState([]);
   const [loading, setLoading] = useState(true);

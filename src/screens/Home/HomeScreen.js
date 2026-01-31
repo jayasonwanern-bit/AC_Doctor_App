@@ -18,7 +18,6 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import images from '../../assets/images';
-import { getSelectedAddress } from '../../utils/ServiceApi';
 import { COLORS, Fonts } from '../../utils/colors';
 import CustomSlider from '../../components/CustomSlider';
 import LinearGradient from 'react-native-linear-gradient';
@@ -28,23 +27,22 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context'; // Use SafeAreaView instead of SafeAreaProvider
 import { getAuthpatner, getServiceList, getBanner, getFeaturedProducts } from '../../api/homeApi';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import GetLoaction from '../../components/GetLoaction';
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatch, store } from '../../redux/store';
 import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
-import InterestSuccessModal from '../../components/InterestSuccessModal'
 import { isTablet } from '../../components/TabletResponsiveSize';
-import StarRating from '../../customScreen/StarRating';
 
-const HomeScreen = ({ route }) => {
+
+const HomeScreen = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const serviceDetails = useSelector(state => state.cart.items);
   const [productData, setProductData] = useState([]);   // ✅
   const [allProducts, setAllProducts] = useState([]);
-
   const {
     latitude,
     longitude,
@@ -146,13 +144,25 @@ const HomeScreen = ({ route }) => {
     // ✅ CASE 1: Address coming from previous screen
     if (locationData?.address?.fullAddress) {
       setLoader(false);
-      setAddressTextLocation(locationData.address);
+      setAddressTextLocation(locationData.address.fullAddress);
       dispatch(setAddress({ address: locationData.address }));
       getWeather(locationData.latitude, locationData.longitude);
       return;
     }
 
-    // ✅ CASE 2: No address → fetch current location
+    // ✅ CASE 2: Address coming from navigation params
+    if (route?.params?.selectedAddress) {
+      const addr = route.params.selectedAddress;
+
+      console.log('Address', JSON.stringify(addr));
+      setLoader(false);
+      setAddressTextLocation(addr.address); // string
+      dispatch(setAddress({ address: addr.address }));
+      // getWeather(addr.latitude, addr.longitude);
+      return;
+    }
+
+    // ✅ CASE 3: No address → fetch current location
     setLoader(true);
     getLocation(data => {
       getWeather(data.latitude, data.longitude);
@@ -161,6 +171,7 @@ const HomeScreen = ({ route }) => {
       setLoader(false);
     });
   }, []);
+
 
   const [WeatherLoader, setWeatherLoader] = useState(true);
   const [WeatherData, setWeatherData] = useState();
@@ -250,8 +261,6 @@ const HomeScreen = ({ route }) => {
       ? [...productData, { id: 'VIEW_ALL' }]
       : productData;
 
-
-
   //  booking navigation
   const screens = {
     STERILIZATION: 'GasChargeScreen',
@@ -314,8 +323,6 @@ const HomeScreen = ({ route }) => {
     return () => clearInterval(interval);
   }, [currentIndex]);
 
-
-
   return (
     <SafeAreaView
       style={[
@@ -357,7 +364,7 @@ const HomeScreen = ({ route }) => {
                   resizeMode="contain"
                 />
                 <Text style={styles.locationText} numberOfLines={1}>
-                  {addresslocation ? `${addresslocation.house}  ${addresslocation.road} ${addresslocation.city}` :
+                  {addresslocation ? `${addresslocation?.house}  ${addresslocation?.road} ${addresslocation?.city}` :
                     'Select Location'
                   }
                 </Text>
@@ -372,6 +379,9 @@ const HomeScreen = ({ route }) => {
               {WeatherLoader ? (
                 <>
                   <CustomLoader size="small" />
+                  <Text
+                    style={styles.locationText}
+                  >Loading...</Text>
                 </>
               ) : (
                 <Text
@@ -396,7 +406,7 @@ const HomeScreen = ({ route }) => {
 
 
         {/* Book a service */}
-        <View style={[styles.reqcontainer, { height: isTablet ? hp(30) : hp(28) }]}>
+        <View style={[styles.reqcontainer, { height: isTablet ? hp(33) : hp(28) }]}>
           <Text style={styles.reqtitle}>Book AC Services</Text>
 
           <View style={{ flex: 1 }}>

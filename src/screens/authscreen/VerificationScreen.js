@@ -121,7 +121,6 @@ const VerificationScreen = ({ navigation, route }) => {
         userId: userId,
       };
       const result = await resendOTP(data);
-      console.log(result, 'resend opt---')
       if (result?.status) {
         Toast.show('OTP Resend');
         Alert.alert('This is your Resend OTP', result?.otpπ)

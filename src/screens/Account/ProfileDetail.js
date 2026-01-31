@@ -187,7 +187,7 @@ const ProfileDetail = ({ navigation }) => {
               onChangeText={txt => setuserName(txt)}
               borderRadius={hp('14%')}
               MarginBottom={hp('0.5%')}
-              MarginTop={isTablet ? hp(10) : hp(5)}
+              MarginTop={isTablet ? hp(8) : hp(5)}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
             {/* Mobile Number */}
@@ -215,7 +215,7 @@ const ProfileDetail = ({ navigation }) => {
               onChangeText={txt => setEmail(txt)}
               borderRadius={hp('14%')}
               MarginBottom={hp('1%')}
-              MarginTop={isTablet ? hp(7) : hp(2)}
+              MarginTop={isTablet ? hp(3) : hp(2)}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
             {/* Gender */}
