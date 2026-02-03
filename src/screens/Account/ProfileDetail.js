@@ -200,7 +200,7 @@ const ProfileDetail = ({ navigation }) => {
                 setCallingCode={setCallingCode}
                 phoneNumber={phoneNumber}
                 setPhoneNumber={val => {
-                  onChange(val);
+                  // onChange(val);
                   setphoneNumber(val);
                 }}
               />
