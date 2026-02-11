@@ -160,7 +160,7 @@ const ACTypeSelector = ({
               renderItem={({ item }) => {
                 const count = selectedItems[item.name] || 0;
                 return (
-                  <TouchableOpacity
+                  <View
                     style={styles.item}
                     onPress={() => handleAddItem(item)}
                   >
@@ -198,7 +198,7 @@ const ACTypeSelector = ({
                         </TouchableOpacity>
                       </View>
                     )}
-                  </TouchableOpacity>
+                  </View>
                 );
               }}
             />

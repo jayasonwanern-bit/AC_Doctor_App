@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   buttonText: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.6),
     color: '#333',
     fontFamily: Fonts.medium,
   },

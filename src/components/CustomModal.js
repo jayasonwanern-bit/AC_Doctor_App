@@ -110,11 +110,11 @@ const CustomModal = ({
         activeOpacity={1}
         onPress={onClose}
       >
-        <View style={styles.modalContent}>
+        <View style={[styles.modalContent, { maxHeight: addAcStatus === false ? hp('80%') : hp(80) }]} onStartShouldSetResponder={() => true}>
           {/* 🔹 Old AC Input */}
           {addAcStatus === false && (
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Old ACs do you want to sell</Text>
+              <Text style={styles.label}>Old AC do you want to sell</Text>
 
               <TextInput
                 value={numberofAC}
@@ -142,7 +142,7 @@ const CustomModal = ({
           </View>
 
           {/* 🔹 Address List */}
-          <View style={{ maxHeight: hp(30) }}>
+          <View style={{ maxHeight: addAcStatus === false ? hp(26) : hp(33) }}>
             {loading ? (
               <CustomLoader size="large" />
             ) : savedAddresses.length === 0 ? (
@@ -238,7 +238,6 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 1000,
     minHeight: hp(50),
-    maxHeight: hp(60),
     alignSelf: 'center',
     width: wp('100%'),
     paddingBottom: hp(Platform.OS === 'android' ? 4 : 4),
@@ -280,8 +279,8 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     color: COLORS.black,
     backgroundColor: COLORS.white,
+    marginTop: hp('0.5%'),
   },
-
   addressContainer: {
     // width: wp('95%'),
     flexDirection: 'row',
@@ -367,7 +366,7 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     alignSelf: 'center',
     position: 'absolute',
-    bottom: hp(5.5)
+    bottom: hp(3)
   },
   proceedButtonText: {
     color: '#fff',

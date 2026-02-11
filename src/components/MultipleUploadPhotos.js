@@ -419,6 +419,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.medium,
   },
   uploadContainer: {
+    marginTop: 12,
     height: 90,
     backgroundColor: '#eaf0f7ff',
     borderRadius: 10,

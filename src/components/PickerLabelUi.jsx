@@ -19,7 +19,7 @@ const PickerLabelUi = ({
   icon = images.arrowdown,
   marginBottom = 0,
   marginTop = 0,
-  BorderRadius=0,
+  BorderRadius = 0,
 }) => {
   return (
     <View style={[styles.container, style, { marginTop, marginBottom }]}>
@@ -30,9 +30,12 @@ const PickerLabelUi = ({
         </Text>
       ) : null}
 
-      <TouchableOpacity style={[styles.pickerWrapper,{borderRadius: BorderRadius}]} onPress={onPress}>
+      <TouchableOpacity
+        style={[styles.pickerWrapper, { borderRadius: BorderRadius }]}
+        onPress={onPress}
+      >
         <Text
-          style={[styles.pickerText, { color: value ? COLORS.black : '#999', }]}
+          style={[styles.pickerText, { color: value ? COLORS.black : '#999' }]}
           numberOfLines={1}
         >
           {value || placeholder}
@@ -52,8 +55,8 @@ const PickerLabelUi = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',  
-    alignSelf:"center"     // Parent controls width
+    width: '100%',
+    alignSelf: 'center', // Parent controls width
   },
 
   label: {
@@ -73,11 +76,11 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     height: hp(5),
     paddingHorizontal: wp(3),
-    width: '100%',       // Always follow parent
+    width: '100%', // Always follow parent
   },
 
   pickerText: {
-    fontSize: hp(1.7),
+    fontSize: hp(1.6),
     fontFamily: Fonts.medium,
     flex: 1,
   },

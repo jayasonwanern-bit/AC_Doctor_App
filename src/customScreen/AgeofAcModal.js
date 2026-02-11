@@ -17,13 +17,13 @@ import { COLORS, Fonts } from '../utils/colors';
 const AgeofAcModal = ({ visible, onClose, onSelect }) => {
   const [selectedType, setSelectedType] = useState(null);
 
-     const defaultAcTypes = [
-      { name: '0-1 year' },
-      { name: '1-3 year'},
-      { name: '3-5 year'},
-      { name: '5+ year'},
-    ];
- 
+  const defaultAcTypes = [
+    { name: '0-1 year' },
+    { name: '1-3 year' },
+    { name: '3-5 year' },
+    { name: '5+ year' },
+  ];
+
   const handleDone = () => {
     if (selectedType) {
       onSelect(selectedType);
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   buttonText: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.6),
     color: '#333',
     fontFamily: Fonts.medium,
   },

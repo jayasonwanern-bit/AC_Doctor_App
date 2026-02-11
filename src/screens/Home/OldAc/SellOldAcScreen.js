@@ -209,7 +209,7 @@ const SellOldAcScreen = ({ navigation }) => {
                     from: 'SellOldAcScreen',
                   })
                 }
-                style={{ width: '98%' }}
+                style={{ width: isTablet ? wp('92%') : wp('90%') }}
                 BorderRadius={hp(4)}
               />
 
@@ -220,8 +220,8 @@ const SellOldAcScreen = ({ navigation }) => {
                 label="Model (Optional)"
                 placeholder="LGUS-Q19YNZE"
                 borderRadius={hp('2.5%')}
-                MarginTop={hp('1%')}
-                containerStyle={{ width: isTablet ? wp('92%') : wp(88) }}
+                MarginTop={hp('1.8%')}
+                containerStyle={{ width: isTablet ? wp('92%') : wp('90%') }}
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
 
@@ -231,7 +231,7 @@ const SellOldAcScreen = ({ navigation }) => {
                 value={selectedAcTonage || 'Select AC'}
                 placeholder="Select Brand"
                 droparraw={true}
-                marginTop={hp(1)}
+                marginTop={hp('1.8%')}
                 style={{ width: '98%' }}
                 onPress={() => {
                   setAcTonageModalVisible(true), handleSelectACtype;
@@ -245,7 +245,7 @@ const SellOldAcScreen = ({ navigation }) => {
                 value={selectedTonage}
                 placeholder="Select Tonnage"
                 droparraw={true}
-                marginTop={hp(1)}
+                marginTop={hp('1.8%')}
                 style={{ width: '98%' }}
                 onPress={() => {
                   setTonageModalVisible(true), handleSelectACtype;
@@ -260,6 +260,7 @@ const SellOldAcScreen = ({ navigation }) => {
                   value={selectAgeofAc}
                   placeholder="1-3 Years"
                   style={{ flex: 1, marginRight: wp(6) }}
+                  marginTop={hp('1.8%')}
                   onPress={() => setAgeofAcModalVisible(true)}
                   BorderRadius={hp(4)}
                 />
@@ -268,6 +269,7 @@ const SellOldAcScreen = ({ navigation }) => {
                   value={selectedCondition}
                   placeholder="Good"
                   style={{ flex: 1 }}
+                  marginTop={hp('1.8%')}
                   onPress={() => setConditionModalVisible(true)}
                   BorderRadius={hp(4)}
                 />
@@ -280,7 +282,7 @@ const SellOldAcScreen = ({ navigation }) => {
                 value={formData.technology}
                 onChangeText={val => handleInputChange('technology', val)}
                 borderRadius={hp('2.5%')}
-                MarginTop={hp('1%')}
+                MarginTop={hp('1.8%')}
                 containerStyle={{ width: isTablet ? wp(92) : wp('88%') }}
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
@@ -288,7 +290,7 @@ const SellOldAcScreen = ({ navigation }) => {
               {/* Upload Photos */}
               <MultipleUploadPhotos
                 onChange={value => handleInputChange('uploadedPhotos', value)}
-                OptionalText="(Front,Back and Serial Number)"
+                OptionalText="(Front & Back of AC, and its Serial Number)"
               />
 
               {/* Select Date & Time */}
@@ -315,7 +317,7 @@ const SellOldAcScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              {/* <View style={{ marginTop: hp(2) }}> */}
+
               <TouchableOpacity
                 style={styles.RowView}
                 onPress={() => {
@@ -323,7 +325,7 @@ const SellOldAcScreen = ({ navigation }) => {
                   setAddAcStatus(false);
                 }}
               >
-                <Text style={[styles.labelInput, {}]}>Bulk Add ↑</Text>
+                <Text style={[styles.labelInput]}>Bulk Add ↑</Text>
                 <Text
                   style={[
                     styles.labelInput,
@@ -352,7 +354,6 @@ const SellOldAcScreen = ({ navigation }) => {
                 ACs, please use Bulk Add option for a faster process.
               </Text>
 
-              {/* Sell Ac */}
             </View>
 
             <WorkInfo Homwork={false} needHelp={false} />
@@ -454,10 +455,9 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.semiBold,
   },
   labelInput: {
-    // flex: 1,
     fontSize: hp('1.5%'),
     color: '#585656ff',
-    marginLeft: hp('1%'),
+
     fontFamily: Fonts.medium,
   },
   pickerWrapper: {
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: hp('5%'),
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: wp('9%'),
     borderWidth: hp(0.1),
     borderColor: '#ddd',
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   textInputWithIcon: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: wp('9%'),
     borderWidth: hp(0.1),
     borderColor: '#ddd',
@@ -560,8 +560,7 @@ const styles = StyleSheet.create({
   RowView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '96%',
-    // backgroundColor: 'red',
+    width: '98%',
     marginTop: hp(2),
     paddingHorizontal: wp(1),
     alignSelf: 'center',

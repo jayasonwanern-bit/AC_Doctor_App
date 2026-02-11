@@ -177,9 +177,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   buttonText: {
-    fontSize: hp(1.7),
+    fontSize: hp(1.5),
     color: '#333',
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.medium,
   },
   doneButton: {
     backgroundColor: COLORS.themeColor,

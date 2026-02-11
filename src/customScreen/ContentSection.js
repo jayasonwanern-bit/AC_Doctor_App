@@ -182,11 +182,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: COLORS.white,
     padding: heightPercentageToDP('1%'),
-    borderRadius: widthPercentageToDP('3%'),
+    borderRadius: widthPercentageToDP('1%'),
   },
   detailCont: {
     width: widthPercentageToDP('95%'),
-    padding: heightPercentageToDP('1.5%'),
+    // padding: heightPercentageToDP('1.5%'),
     paddingHorizontal: heightPercentageToDP('1.5%'),
     borderRadius: widthPercentageToDP('3%'),
     alignSelf: 'center',

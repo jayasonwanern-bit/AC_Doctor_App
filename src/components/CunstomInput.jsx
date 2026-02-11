@@ -106,9 +106,8 @@ const styles = StyleSheet.create({
     fontSize: hp(1.5),
     color: COLORS.black,
     marginBottom: hp(0.8),
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.semiBold,
   },
-
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
