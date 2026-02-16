@@ -73,7 +73,7 @@ const ACTonnageModal = ({ visible, onClose, onSelect }) => {
       <Text
         style={[
           styles.buttonText,
-          { color: selectedType === item.name && '#4a90e2' },
+          { color: selectedType === item.name ? '#4a90e2' : '#333' },
         ]}
       >
         {item.name}
@@ -178,7 +178,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: hp(1.5),
-    color: '#333',
     fontFamily: Fonts.medium,
   },
   doneButton: {

@@ -107,6 +107,8 @@ const AccountScreenComponent = () => {
                     index: 0,
                     routes: [{ name: 'Login' }],
                   });
+                  await AsyncStorage.removeItem('token');
+                  await AsyncStorage.removeItem('hasSelectedLocation');
                 } catch (e) {
                   console.log('Error removing token', e);
                 }
@@ -121,6 +123,15 @@ const AccountScreenComponent = () => {
       navigation.navigate(screen);
     }
   };
+  const truncateText = (text = '', charLimit = 40) => {
+    if (typeof text !== 'string') {
+      text = String(text ?? '');
+    }
+    if (text.length <= charLimit) return text;
+    return text.slice(0, charLimit).trim() + '...';
+  };
+
+
 
   return (
     <SafeAreaView
@@ -145,11 +156,12 @@ const AccountScreenComponent = () => {
               resizeMode='contain'
             />
             <Text style={Homestyles.locationText}>
-              {addressText || addressText
-                ? `${addressText?.house || ''} ${addressText?.road || ''} ${addressText?.city || ''
-                }`
+              {addressText?.fullAddress?.fullAddress
+                ? truncateText(addressText.fullAddress?.fullAddress, 25)
                 : 'Select Location'}
             </Text>
+
+
           </TouchableOpacity>
           <View style={Homestyles.wheatherContainer}>
             <Image
@@ -272,6 +284,6 @@ const styles = StyleSheet.create({
   },
   list: {
     padding: wp(2),
-    paddingBottom: hp(15),
+    paddingBottom: hp(3),
   },
 });

@@ -69,7 +69,7 @@ const VerificationScreen = ({ navigation, route }) => {
           dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
 
           Toast.show(res?.data?.message || 'Verified Successfully');
-
+          await AsyncStorage.setItem('token', res?.data?.data?.refreshToken); //this for checking token in splash screen
           navigation.reset({
             index: 0,
             routes: [

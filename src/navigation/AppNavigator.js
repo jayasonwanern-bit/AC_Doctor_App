@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -53,6 +53,7 @@ import CouponScreen from '../screens/Home/CouponScreen';
 import AppUpdateScreen from '../screens/authscreen/AppUpdateScreen';
 import ProductDetails from '../screens/Home/ProductDetails';
 import FeaturedProductsScreen from '../screens/Home/FeaturedProductsScreen';
+import HelpScreen from '../screens/Account/HelpScreen';
 
 import { COLORS } from '../utils/colors';
 import { StatusBar, useColorScheme, Platform } from 'react-native';
@@ -63,6 +64,7 @@ LogBox.ignoreAllLogs(true);
 const Stack = createStackNavigator();
 const AppNavigator = () => {
   const scheme = useColorScheme();
+  const [initialRoute, setInitialRoute] = useState(null);
 
   // Dynamic styles based on theme
   const dynamicStyles = {
@@ -95,7 +97,7 @@ const AppNavigator = () => {
         />
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Splash"
+            initialRouteName={initialRoute}
             screenOptions={{
               headerStyle: dynamicStyles.headerStyle,
               headerTitleStyle: dynamicStyles.headerTitleStyle,
@@ -198,6 +200,7 @@ const AppNavigator = () => {
             />
             <Stack.Screen name="CouponScreen" component={CouponScreen} />
             <Stack.Screen name="ProductDetails" component={ProductDetails} />
+            <Stack.Screen name="HelpScreen" component={HelpScreen} />
             <Stack.Screen name="FeaturedProductsScreen" component={FeaturedProductsScreen} />
           </Stack.Navigator>
         </NavigationContainer>

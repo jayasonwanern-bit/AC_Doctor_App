@@ -90,7 +90,7 @@ const WorkInfo = ({
             <Text style={Homstyles.faquestionText}>{item.question}</Text>
             <Text style={Homstyles.faqarrow}>
               {expandedIndex === index ? '︿' : '﹀'}
-            </Text>jkimmjh
+            </Text>
           </TouchableOpacity>
 
           {expandedIndex === index && (

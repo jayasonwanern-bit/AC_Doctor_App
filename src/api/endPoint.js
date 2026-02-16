@@ -42,5 +42,8 @@ const endPoint = {
 
   // AMC SERVICE
   AMC_REQUEST: 'user/lead/create', //POST
+
+  // Old AMC SERVICE
+  OLD_AC_REQUEST: 'user/enquiry/create', //POST
 };
 export default endPoint;

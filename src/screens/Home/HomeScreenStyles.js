@@ -99,7 +99,7 @@ export default StyleSheet.create({
     fontSize: isTablet ? wp(2.9) : wp(3.5),
     fontFamily: Fonts.semiBold,
     color: COLORS.black,
-    marginBottom: hp('1%'),
+    // marginBottom: hp('1%'),
   },
   emptyCard: {
     alignItems: 'center',
@@ -203,7 +203,7 @@ export default StyleSheet.create({
     paddingVertical: wp('1.5%'),
   },
   authicon: {
-    width: wp('35%'),
+    width: wp('30%'),
     height: wp('20%'),
     marginRight: 25,
     // borderWidth: 1,
@@ -264,7 +264,7 @@ export default StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: wp('2%'),
-    marginBottom: hp('0.5%'),
+    marginVertical: hp('0.5%'),
     width: wp('50%'),
     shadowColor: '#080808ff',
     shadowOffset: { width: 0, height: 3 },
@@ -272,7 +272,7 @@ export default StyleSheet.create({
     shadowRadius: 5,
     elevation: 4,
     marginHorizontal: wp('2%'),
-    // marginLeft: wp('3%'),
+    marginTop: wp('3%'),
   },
   boderinercard: {
     backgroundColor: COLORS.white,
@@ -742,7 +742,7 @@ export default StyleSheet.create({
   brandcont: {
     backgroundColor: COLORS.white,
     borderRadius: wp('3%'),
-    marginBottom: hp('18%'),
+    marginBottom: hp('10%'),
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
@@ -776,12 +776,12 @@ export default StyleSheet.create({
   servicesCount: {
     fontSize: isTablet ? wp(2.5) : wp('3.5%'),
     fontFamily: Fonts.semiBold,
-    color: COLORS.darkText,
+    color: COLORS.black,
   },
   selectedText: {
     fontSize: wp('3%'),
     fontFamily: Fonts.semiBold,
-    color: COLORS.darkText,
+    color: COLORS.black,
     opacity: 0.7,
   },
   viewCartButton: {
@@ -1329,6 +1329,6 @@ export const menuData = [
   },
   { id: '6', title: 'Pay Now', icon: images.payIcon, screen: 'PayNow' },
   { id: '7', title: 'Rate Us', icon: images.rateUSIcon, screen: 'RateUs' },
-  { id: '8', title: 'Help', icon: images.helpIcon, screen: 'Help' },
+  { id: '8', title: 'Help', icon: images.helpIcon, screen: 'HelpScreen' },
   { id: '9', title: 'Logout', icon: images.logoutIcon, screen: 'Logout' },
 ];

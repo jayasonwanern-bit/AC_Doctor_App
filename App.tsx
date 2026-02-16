@@ -8,17 +8,14 @@ import React, { useEffect } from 'react';
 
 import { initRemoteConfig } from './src/services/remoteConfig';
 import { requestNotificationPermission } from './src/services/notificationPermission';
-import { getFcmToken } from './src/services/getFcmToken';
 import { setupPushListeners } from './src/services/pushHandler';
 import messaging from '@react-native-firebase/messaging';
-// import notifee from '@notifee/react-native';
-import { useNavigation } from '@react-navigation/native';
 import { getAppVersion } from './src/utils/appVersion';
 import remoteConfig from '@react-native-firebase/remote-config';
-// import { getAppVersion } from '../utils/appVersion';
 import { isUpdateRequired } from './src/utils/versionCompare';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
+
 export default function App() {
   useEffect(() => {
     // 🔹 Set navigation bar color

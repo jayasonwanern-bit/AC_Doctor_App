@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -12,67 +12,68 @@ import { isTablet } from '../../components/TabletResponsiveSize';
 import Geolocation from '@react-native-community/geolocation';
 import GetLoaction from '../../components/GetLoaction';
 import CustomLoader from '../../components/CustomLoader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ServiceScreen = () => {
   const navigation = useNavigation();
+  const [isFetching, setIsFetching] = useState(false);
   const retryIntervalRef = useRef(null);
+  const retryCountRef = useRef(0);
+
 
   useEffect(() => {
     Geolocation.requestAuthorization();
   }, []);
 
   const { latitude, longitude, addressText, loading, error, getLocation } = GetLoaction();
+  const handleUseCurrentLocation = () => {
+    if (isFetching) return;
 
-
-
-  const startFetchingLocation = () => {
-    // ⛔ Prevent multiple intervals
-    if (retryIntervalRef.current) return;
+    setIsFetching(true);
+    retryCountRef.current = 0;
 
     retryIntervalRef.current = setInterval(() => {
-      console.log('📍 Trying to fetch location again...');
+      retryCountRef.current += 1;
 
-      getLocation(locationData => {
-        // ✅ Check if address exists (adjust key as per your data)
+      getLocation(async locationData => {
         if (locationData?.address || locationData?.formattedAddress) {
-          console.log('✅ Location found, stopping fetch');
 
-          stopFetchingLocation();
+          clearInterval(retryIntervalRef.current);
+          retryIntervalRef.current = null;
+
+          setIsFetching(false);
+          retryCountRef.current = 0;
+
+          await AsyncStorage.setItem('hasSelectedLocation', 'true');
 
           navigation.reset({
             index: 0,
-            routes: [
-              {
-                name: 'Tab',
-                state: {
-                  index: 0,
-                  routes: [
-                    {
-                      name: 'Home',
-                      params: { locationData },
-                    },
-                  ],
-                },
-              },
-            ],
+            routes: [{ name: 'Tab' }],
           });
-        } else {
-          console.log('❌ Address not found yet, retrying...');
+
         }
       });
-    }, 3000); // 🔁 retry every 3 seconds
+
+      // Stop after 5 retries
+      if (retryCountRef.current >= 5) {
+        clearInterval(retryIntervalRef.current);
+        retryIntervalRef.current = null;
+        setIsFetching(false);
+        retryCountRef.current = 0;
+        // Alert.alert("Unable to fetch location. Please try again.");
+      }
+
+    }, 3000);
   };
 
-  const stopFetchingLocation = () => {
-    if (retryIntervalRef.current) {
-      clearInterval(retryIntervalRef.current);
-      retryIntervalRef.current = null;
-    }
-  };
+  useEffect(() => {
+    return () => {
+      if (retryIntervalRef.current) {
+        clearInterval(retryIntervalRef.current);
+      }
+    };
+  }, []);
 
-  const handleManuallyLocation = () => {
-    navigation.navigate('AddAddress', { from: 'ServiceScreen' });
-  };
 
   return (
     <View style={styles.container}>
@@ -89,22 +90,22 @@ const ServiceScreen = () => {
 
       <TouchableOpacity
         style={styles.locationButton}
-        onPress={() => startFetchingLocation()}
+        onPress={() => handleUseCurrentLocation()}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <FastImage
+          <Image
             source={images.locationIcon}
             style={styles.backImg}
-            resizeMode={FastImage.resizeMode.contain}
+            resizeMode={'contain'}
           />
-          <Text style={styles.locationText}>Use Current Location</Text>
-          {loading ? <CustomLoader size="small" color='white' /> : null}
+          <Text style={styles.locationText}>{isFetching ? "Fetching Location..." : "Use Current Location"}</Text>
+          {isFetching ? <CustomLoader size="small" color='white' /> : null}
         </View>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.locationManualButton}
-        onPress={() => handleManuallyLocation()}
+        onPress={() => navigation.navigate('AddAddress', { from: 'ServiceScreen' })}
       >
         <Text style={[styles.locationText, { color: COLORS.black }]}>
           Enter Location Manually

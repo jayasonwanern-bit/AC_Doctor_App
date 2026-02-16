@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,10 +16,7 @@ import images from '../../assets/images';
 import FastImage from 'react-native-fast-image';
 import CustomButton from '../../components/CustomButton';
 import { COLORS } from '../../utils/colors';
-// import { useForm, Controller } from 'react-hook-form';
 import CustomPhoneInput from '../../components/CustomPhoneInput';
-// import { yupResolver } from '@hookform/resolvers/yup';
-// import * as yup from 'yup';
 import CustomPicker from '../../components/CustomPicker';
 import ImagePickerModal from '../../components/ImagePickerModal';
 import {
@@ -39,6 +36,7 @@ import { isTablet } from '../../components/TabletResponsiveSize';
 import { setUser } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { store } from '../../redux/store';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ProfileDetail = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -51,15 +49,18 @@ const ProfileDetail = ({ navigation }) => {
   const [gender, setGender] = useState('Male');
   const [showModal, setShowModal] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
+  const [selectedFileType, setSelectedFileType] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (userId?._id) {
-      fetchProfile();
-    }
-  }, [userId?._id]);
-
+  useFocusEffect(
+    useCallback(() => {
+      if (userId?._id) {
+        fetchProfile();
+      }
+    }, [userId?._id])
+  );
+  // console.log('userId--->', userId?._id);
 
   // get profile data
   const fetchProfile = async () => {
@@ -68,18 +69,22 @@ const ProfileDetail = ({ navigation }) => {
       const res = await getUserProfile(userId?._id);
       if (res?.status || res?.success) {
         const data = res.data;
+        console.log('Profile Data--->', data);
         setCallingCode(data?.countryCode);
         setuserName(data?.name);
         setphoneNumber(data?.phoneNumber);
         setEmail(data?.email);
         setGender(data?.gender);
-        setSelectedImageUri(data?.
-          profilePhoto);
+        setSelectedImageUri(
+          data?.profilePhoto
+            ? `${data.profilePhoto}?t=${new Date().getTime()}`
+            : ''
+        );
       }
     } catch (error) {
       console.log('Error fetching profile:', error);
     } finally {
-      setLoading(false); // <-- STOP LOADER
+      setLoading(false);
     }
   };
 
@@ -92,11 +97,13 @@ const ProfileDetail = ({ navigation }) => {
         setLoading(false);
         return;
       }
-
-      let cleanImageUrl = '';
+      let cleanImageUrl = selectedImageUri;
 
       if (selectedImageUri) {
-        const presRes = await getPresignedUrl();
+
+        const fileName = selectedImageUri.split('/').pop();
+        const fileType = selectedFileType || 'image/jpeg';
+        const presRes = await getPresignedUrl(fileName, fileType);
         const presignedUrl = presRes?.data;
 
         if (presignedUrl) {
@@ -112,7 +119,9 @@ const ProfileDetail = ({ navigation }) => {
         email: String(email || ''),
         profilePhotoUrl: cleanImageUrl || '',
       };
+      console.log('Update Profile Body--->', body);
       const res = await updateUserProfile(body);
+      console.log('Update Profile Response--->', res);
       if (res?.status || res?.success) {
         Toast.show('Profile updated successfully');
         await refreshUserDetails();
@@ -141,7 +150,6 @@ const ProfileDetail = ({ navigation }) => {
       }
     } catch (error) {
       console.log(error);
-
     }
   }
 
@@ -190,6 +198,7 @@ const ProfileDetail = ({ navigation }) => {
               MarginTop={isTablet ? hp(8) : hp(5)}
               onSubmitEditing={() => Keyboard.dismiss()}
             />
+
             {/* Mobile Number */}
             <View style={Homestyles.profileDetailInfoContainer}>
               <Text style={Homestyles.profileDetailName}>Mobile Number</Text>
@@ -248,9 +257,10 @@ const ProfileDetail = ({ navigation }) => {
       <ImagePickerModal
         visible={showModal}
         onClose={() => setShowModal(false)}
-        onImageSelect={uri => {
-          console.log('Image Path:', uri);
-          setSelectedImageUri('file://' + uri);
+        onImageSelect={(uri, mime) => {
+          console.log('Image Path:', uri, mime);
+          setSelectedImageUri(uri);
+          setSelectedFileType(mime);
         }}
       />
     </View>

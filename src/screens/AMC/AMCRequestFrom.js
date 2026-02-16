@@ -86,7 +86,7 @@ const AMCRequestFrom = ({ navigation }) => {
         time === 'morning' || time === 'firstHalf' ? 'First Half' : Timeslot;
       setSelectDate(formattedDate);
       setSelectTime(formattedTime);
-      setReqStatus('ReScheduled');
+      // setReqStatus('ReScheduled');
     }
   };
 
@@ -256,17 +256,17 @@ const AMCRequestFrom = ({ navigation }) => {
       {detailStatus === 'Request' && (
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            onPress={() =>
-              setReqStatus(prev =>
-                prev === 'Scheduled' ? 'complete' : 'Scheduled',
-              )
-            }
+            // onPress={() =>
+            //   setReqStatus(prev =>
+            //     prev === 'Scheduled' ? 'complete' : 'Scheduled',
+            //   )
+            // }
             style={[styles.doneButton, { backgroundColor: COLORS.white }]}
           >
             <Text
               style={[styles.doneButtonText, { color: COLORS.textHeading }]}
             >
-              Next
+              Cancel Request
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -309,7 +309,11 @@ const AMCRequestFrom = ({ navigation }) => {
             margingTOP={hp('0%')}
             btnTextColor={COLORS.white}
             btnColor={COLORS.themeColor}
-            onPress={() => setDetailStatus('Quote')}
+            onPress={() =>
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Tab', params: { screen: 'Home' } }],
+              })}
           />
         </View>
       )}
@@ -356,19 +360,18 @@ const AMCRequestFrom = ({ navigation }) => {
         visible={cancelConfirmVisible}
         onClose={() => {
           setCancelConfirmVisible(false);
-          setReqStatus('Scheduled');
         }}
         setIcon={images.cancelRed}
         HeadTextColor="black"
         HeadText="Cancelled!"
         message1=""
         message2="You request has been successfully cancelled."
-        buttonCount={2}
-        secondButtonText="Done"
-        firstButtonText="View Request"
-        onSecondButtonPress={() => {
-          setCancelConfirmVisible(false);
-        }}
+      // buttonCount={2}
+      // secondButtonText="Done"
+      // firstButtonText="View Request"
+      // onSecondButtonPress={() => {
+      //   setCancelConfirmVisible(false);
+      // }}
       />
 
       {/* Success Popup */}
@@ -395,7 +398,10 @@ const AMCRequestFrom = ({ navigation }) => {
         visible={modalSlotVisible}
         onClose={() => setModalSlotVisible(false)}
         setSelectedSlot={handleSlotSelection}
-        onBookProcess={() => setModalSlotVisible(false)}
+        onBookProcess={() => {
+          setModalSlotVisible(false);
+          setReqStatus('ReScheduled');
+        }}
         isReschedule={true}
       />
     </View>
@@ -606,8 +612,8 @@ const styles = StyleSheet.create({
   },
   doneButtonText: {
     color: '#fff',
-    fontSize: hp(1.6),
-    fontWeight: '500',
+    fontSize: hp(1.7),
+    fontFamily: Fonts.semiBold,
   },
 });
 

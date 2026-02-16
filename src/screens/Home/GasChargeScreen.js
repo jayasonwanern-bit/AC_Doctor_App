@@ -63,11 +63,6 @@ const GasChargeScreen = ({ route }) => {
 
   const handleBack = () => {
     navigation.goBack()
-    // if (source === 'HOME') {
-    //   navigation.navigate('Tab', { screen: 'Home' }); // back to home
-    // } else {
-    //   navigation.navigate('ViewCart'); // back to cart
-    // }
   };
 
   return (
@@ -101,7 +96,7 @@ const GasChargeScreen = ({ route }) => {
           key={'viewCart'}
         >
           <View>
-            <Text style={styles.servicesCount}>{totalSelected} services</Text>
+            <Text style={styles.servicesCount}>{totalSelected} Services</Text>
             <Text style={styles.servicesCount}>Selected</Text>
           </View>
           <TouchableOpacity

@@ -37,7 +37,8 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
       });
 
       const uri = image.path || image.uri;
-      onImageSelect(uri);
+      const mime = image.mime
+      onImageSelect(uri, mime);
       onClose();
     } finally {
       // catch (err) {
@@ -64,7 +65,8 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
         height: 500,
       });
       const uri = image.path || image.uri;
-      onImageSelect(uri);
+      const mime = image.mime
+      onImageSelect(uri, mime);
       onClose();
     } finally {
       onClose();

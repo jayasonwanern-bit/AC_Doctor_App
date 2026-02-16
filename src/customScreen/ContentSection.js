@@ -31,7 +31,7 @@ const ContentSection = ({
               key={index}
               style={[
                 styles.detailCont,
-                { backgroundColor: COLORS.white, marginBottom: 10 },
+                { backgroundColor: COLORS.white, marginVertical: 10 },
               ]}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -135,7 +135,7 @@ const ContentSection = ({
           ]}
           onPress={() => setActiveSection('Key Benefits')}
         >
-          <Text>Key Benefits</Text>
+          <Text style={[styles.tabText, { color: activeSection === 'Key Benefits' ? COLORS.black : COLORS.textHeading }]}>Key Benefits</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -149,7 +149,7 @@ const ContentSection = ({
           ]}
           onPress={() => setActiveSection('Description')}
         >
-          <Text>Description</Text>
+          <Text style={[styles.tabText, { color: activeSection === 'Description' ? COLORS.black : COLORS.textHeading }]}>Description</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -163,7 +163,7 @@ const ContentSection = ({
           ]}
           onPress={() => setActiveSection('Terms & Conditions')}
         >
-          <Text>Terms & Conditions</Text>
+          <Text style={[styles.tabText, { color: activeSection === 'Terms & Conditions' ? COLORS.black : COLORS.textHeading }]}>Terms & Conditions</Text>
         </TouchableOpacity>
       </View>
       <ScrollView>{renderContent()}</ScrollView>
@@ -181,12 +181,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     justifyContent: 'space-around',
     backgroundColor: COLORS.white,
-    padding: heightPercentageToDP('1%'),
     borderRadius: widthPercentageToDP('1%'),
+  },
+  tabText: {
+    fontSize: heightPercentageToDP('1.7%'),
+    fontFamily: Fonts.semiBold,
+    color: COLORS.textHeading,
   },
   detailCont: {
     width: widthPercentageToDP('95%'),
-    // padding: heightPercentageToDP('1.5%'),
     paddingHorizontal: heightPercentageToDP('1.5%'),
     borderRadius: widthPercentageToDP('3%'),
     alignSelf: 'center',
@@ -196,6 +199,8 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     textAlign: 'left',
     color: COLORS.textHeading,
+    letterSpacing: 0.5,
+    lineHeight: heightPercentageToDP('2.2%'),
   },
   texthead: {
     fontSize: heightPercentageToDP('1.5%'),

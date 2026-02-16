@@ -198,6 +198,9 @@ const images = {
   plusicon: require('./icons/plus.png'),
   minusicon: require('../assets/icons/Minus.png'),
   brand_icon: require('../assets/icons/brand_icon.png'),
+  emailIcon: require('../assets/icons/emailIcon.png'),
+  helpnotify: require('../assets/icons/helpnotify.png'),
+  contact: require('../assets/icons/contact.png'),
 
 
   // Add more images as needed

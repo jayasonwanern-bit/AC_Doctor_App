@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
   Platform,
   ImageBackground,
   TextInput,
   Keyboard,
+  BackHandler,
 } from 'react-native';
 import Header from '../../../components/Header';
 import {
@@ -24,14 +24,18 @@ import HomeScreenStyles from '../HomeScreenStyles';
 import SuccessPopupModal from '../../../customScreen/SuccessPopupModal';
 import DeclineModal from '../../../customScreen/DeclineModal';
 import CustomButton from '../../../components/CustomButton';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { Value } from 'react-native/types_generated/Libraries/Animated/AnimatedExports';
 import FastImage from 'react-native-fast-image';
 import { isTablet } from '../../../components/TabletResponsiveSize';
+import acDetailData from '../../../customScreen/customArray';
+import { useFocusEffect } from '@react-navigation/native';
+import styles from './OldRequestStyles';
+import { store } from '../../../redux/store';
+import { postOldAcRequest } from '../../../api/homeApi';
+import Toast from 'react-native-simple-toast';
 
 const OldACRequest = ({ navigation }) => {
-  const [reqStatus, setReqStatus] = useState(''); //Schedule, ReScheduled, complete, Accepted, Decline
-  const [detailStatus, setDetailStatus] = useState('Request'); // 'Request', 'Quote', 'Payment'
+  const [reqStatus, setReqStatus] = useState(null); //Schedule, ReScheduled, complete, Accepted, Decline
+  const [detailStatus, setDetailStatus] = useState(null); // 'Request', 'Quote', 'Payment'
   const [PaymentStatus, setPaymentStatus] = useState('paydetail');
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [AcceptVisible, setAcceptVisible] = useState(false);
@@ -41,59 +45,66 @@ const OldACRequest = ({ navigation }) => {
   const [selectReason, setSelectReason] = useState('');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false);
   const [successResheduleVisible, setSResheduleVisible] = useState(false);
-  const [confirmPopupVisible, setConfirmPopupVisible] = useState(false); // Offer confirm successPopup
-  const [DeclineVisible, setDeclineVisible] = useState(false); // Offer confirm successPopup
+  const [confirmPopupVisible, setConfirmPopupVisible] = useState(false);
+  const [DeclineVisible, setDeclineVisible] = useState(false);
   const [selectPay, setSelectedPay] = useState('bank');
   const [upiId, setupiId] = useState('');
-  const [open, setOpen] = useState(false); // For dropdown open/close
   const [expandedAC, setExpandedAC] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const userData = store?.getState()?.auth?.user;
+  const addressId = store?.getState()?.auth?.address;
 
-  const acData = {
-    LG: {
-      brand: { title: 'Brand', value: 'LG' },
-      model: { title: 'Model', value: 'LG US-Q19RTY' },
-      acType: { title: 'AC Type', value: 'Split' },
-      tonnage: { title: 'Tonnage', value: '2 Ton' },
-      age: { title: 'Age of AC', value: '2-4 Years' },
-      condition: { title: 'Condition', value: 'Excellent' },
-      technology: { title: 'AC Technology', value: 'Inverter' },
-      inspectionDate: {
-        title: 'Preferred Inspection Date',
-        value: '15/03/2025',
-      },
-      inspectionTime: {
-        title: 'Preferred Inspection Time',
-        value: 'Second Half',
-      },
-      image: { title: 'Image', value: images.ShareImg },
-      image: { title: 'Image', value: images.ShareImg1 },
-      image: { title: 'Image', value: images.demoAc },
-    },
-    Samsung: {
-      brand: { title: 'Brand', value: 'Samsung' },
-      model: { title: 'Model', value: 'Samsung AR18TY3Q' },
-      acType: { title: 'AC Type', value: 'Split' },
-      tonnage: { title: 'Tonnage', value: '2 Ton' },
-      age: { title: 'Age of AC', value: '2-4 Years' },
-      condition: { title: 'Condition', value: 'Excellent' },
-      technology: { title: 'AC Technology', value: 'Inverter' },
-      inspectionDate: {
-        title: 'Preferred Inspection Date',
-        value: '15/03/2025',
-      },
-      inspectionTime: {
-        title: 'Preferred Inspection Time',
-        value: 'Second Half',
-      },
-      image: { title: 'Image', value: images.ShareImg },
-      image: { title: 'Image', value: images.ShareImg1 },
-      image: { title: 'Image', value: images.demoAc },
-    },
+  // api to fetch request details and status
+  useFocusEffect(
+    useCallback(() => {
+      fetchRequestDetails();
+    }, [])
+  );
+
+
+  const fetchRequestDetails = async () => {
+    try {
+      // api call here to fetch request details and status
+      const statusFromApi = '';
+
+      handleStatusFlow(statusFromApi);
+
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const handleStatusFlow = (status) => {
+    console.log('STATUS:', status);
+
+    setReqStatus(status);
+
+    if (
+      status === '' ||
+      status === 'underReview' ||
+      status === 'Schedule' ||
+      status === 'ReScheduled'
+    ) {
+      setDetailStatus('Request');
+
+    } else if (
+      status === 'complete' ||
+      status === 'Accepted' ||
+      status === 'Decline'
+    ) {
+      setDetailStatus('Quote');
+
+    } else if (status === 'Payment') {
+      setDetailStatus('Payment');
+    }
+  };
+
+
   const toggleExpand = acName => {
     setExpandedAC(expandedAC === acName ? null : acName);
   };
 
+  // selected slot detail
   const handleSlotSelection = slot => {
     if (slot) {
       const { date, monthNumber, year, time, Timeslot, reason } = slot;
@@ -108,6 +119,7 @@ const OldACRequest = ({ navigation }) => {
     }
   };
 
+  // on Tab press
   const getTabStyle = status => {
     // Step 1: Check current status
     const isRequest = detailStatus === 'Request';
@@ -116,11 +128,9 @@ const OldACRequest = ({ navigation }) => {
 
     // Step 2: Decide kaun-kaun tab active hoga (red background + white text)
     const isTabActive =
-      (status === 'Request' && (isRequest || isQuote || isPayment)) || // Request tab active in all 3 states
-      (status === 'Quote' && (isQuote || isPayment)) || // Quote tab active in Quote & Payment
-      (status === 'Payment' && isPayment); // Payment tab active only in Payment
-
-    // Step 3: Return style based on active or not
+      (status === 'Request' && (isRequest || isQuote || isPayment)) ||
+      (status === 'Quote' && (isQuote || isPayment)) ||
+      (status === 'Payment' && isPayment);
     return {
       color: isTabActive ? COLORS.white : COLORS.textHeading,
       backgroundColor: isTabActive ? COLORS.red : 'transparent',
@@ -131,12 +141,87 @@ const OldACRequest = ({ navigation }) => {
     };
   };
 
+  // on back press
+  const handleBackPress = () => {
+    if (detailStatus === 'Payment') {
+      setDetailStatus('Quote');
+      return true; // stop default back
+    }
+
+    if (detailStatus === 'Quote') {
+      setDetailStatus('Request');
+      return true; // stop default back
+    }
+
+    return false; // allow normal back (exit screen)
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        const handled = handleBackPress();
+        if (!handled) {
+          navigation.goBack();
+        }
+        return true;
+      };
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
+      return () => subscription.remove(); // ✅ correct way
+    }, [detailStatus])
+  );
+
+  // post request details to api
+  const onBuyBtn = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        user_id: userData?._id,
+        name: userData?.name,
+        addressId: addressId?._id,
+        slot: selectTime === 'First Half' ? 'FIRST_HALF' : 'SECOND_HALF',
+        date: selectedDateAPIFormat, // 2026-02-11 format
+        type: "QUOTE_REQUEST",
+        subType: "OLD_AC",
+        oldAcDetails: [
+          {
+            brand: brand,
+            model: model,
+            acType: acType,
+            tonnage: tonnage,
+            age: age,
+            condition: condition,
+            technology: technology,
+            photos: selectedImages || []
+          }
+        ]
+      };
+
+      const res = await postOldAcRequest(payload);
+      if (res?.success) {
+        setShowSuccess(true);
+      }
+
+    } catch (error) {
+      Toast.show(error?.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <View style={styles.container}>
       <Header
         title="AC Request Details"
-        onBack={() => navigation.goBack()}
-        // onHelp={true}
+        onBack={() => {
+          const handled = handleBackPress();
+          if (!handled) {
+            navigation.goBack();
+          }
+        }}
       />
       <ScrollView
         style={styles.scrollView}
@@ -191,10 +276,10 @@ const OldACRequest = ({ navigation }) => {
                           reqStatus === 'Schedule'
                             ? '#FFE7CF'
                             : reqStatus === 'ReScheduled'
-                            ? COLORS.lightSky
-                            : reqStatus === 'complete'
-                            ? '#ECFFE9'
-                            : '#fff4c5ff',
+                              ? COLORS.lightSky
+                              : reqStatus === 'complete'
+                                ? '#ECFFE9'
+                                : '#fff4c5ff',
                       },
                     ]}
                   >
@@ -206,20 +291,20 @@ const OldACRequest = ({ navigation }) => {
                             reqStatus === 'Schedule'
                               ? '#D26900'
                               : reqStatus === 'ReScheduled'
-                              ? COLORS.themeColor
-                              : reqStatus === 'complete'
-                              ? '#128807'
-                              : '#ee9937ff',
+                                ? COLORS.themeColor
+                                : reqStatus === 'complete'
+                                  ? '#128807'
+                                  : '#ee9937ff',
                         },
                       ]}
                     >
                       {reqStatus === 'Schedule'
                         ? 'Scheduled'
                         : reqStatus === 'ReScheduled'
-                        ? 'Re Scheduled'
-                        : reqStatus === 'complete'
-                        ? 'Completed'
-                        : 'Under Review'}
+                          ? 'Re Scheduled'
+                          : reqStatus === 'complete'
+                            ? 'Completed'
+                            : 'Under Review'}
                     </Text>
                   </View>
                 </View>
@@ -427,7 +512,7 @@ const OldACRequest = ({ navigation }) => {
                   borderRadius: hp(5),
                   borderWidth: wp(0.3),
                   borderColor: COLORS.lightGray,
-                  padding: Platform.OS === 'ios' ? hp(1.7) : hp(0.5),
+                  padding: Platform.OS === 'ios' ? hp(1.5) : hp(0),
                   paddingHorizontal: Platform.OS === 'ios' ? hp(1.7) : hp(2.5),
                   marginVertical: wp(1.5),
                 }}
@@ -450,131 +535,131 @@ const OldACRequest = ({ navigation }) => {
         {(detailStatus === 'Quote' ||
           (detailStatus !== 'Payment' &&
             ['Accepted', 'Decline'].includes(reqStatus))) && (
-          <View style={[styles.section]}>
-            {(reqStatus === 'Accepted' ||
-              detailStatus !== 'Payment' ||
-              reqStatus === 'Decline') && (
-              <View style={styles.copperRow}>
-                <Text style={styles.label}>Status</Text>
-                {reqStatus === 'Accepted' && (
-                  <Text
-                    style={[
-                      styles.value,
-                      {
-                        color: COLORS.darkgreen,
-                        fontFamily: Fonts.semiBold,
-                        backgroundColor: COLORS.lightgreen,
-                      },
-                    ]}
-                  >
-                    {' '}
-                    ✅ Accepted
-                  </Text>
+            <View style={[styles.section]}>
+              {(reqStatus === 'Accepted' ||
+                detailStatus !== 'Payment' ||
+                reqStatus === 'Decline') && (
+                  <View style={styles.copperRow}>
+                    <Text style={styles.label}>Status</Text>
+                    {reqStatus === 'Accepted' && (
+                      <Text
+                        style={[
+                          styles.value,
+                          {
+                            color: COLORS.darkgreen,
+                            fontFamily: Fonts.semiBold,
+                            backgroundColor: COLORS.lightgreen,
+                          },
+                        ]}
+                      >
+                        {' '}
+                        ✅ Accepted
+                      </Text>
+                    )}
+                    {reqStatus === 'Decline' && (
+                      <Text
+                        style={[
+                          styles.value,
+                          {
+                            color: COLORS.red,
+                            fontFamily: Fonts.semiBold,
+                            backgroundColor: COLORS.Lightred,
+                          },
+                        ]}
+                      >
+                        {' '}
+                        ❌ Declined
+                      </Text>
+                    )}
+                  </View>
                 )}
-                {reqStatus === 'Decline' && (
-                  <Text
-                    style={[
-                      styles.value,
-                      {
-                        color: COLORS.red,
-                        fontFamily: Fonts.semiBold,
-                        backgroundColor: COLORS.Lightred,
-                      },
-                    ]}
-                  >
-                    {' '}
-                    ❌ Declined
-                  </Text>
-                )}
-              </View>
-            )}
 
-            <View style={styles.copperRow}>
-              <Text style={styles.label}>Offer Amount</Text>
-              <Text
-                style={[
-                  styles.value,
-                  { color: COLORS.themeColor, fontFamily: Fonts.semiBold },
-                ]}
-              >
-                ₹ 25000/-
-              </Text>
-            </View>
-            <View style={styles.copperRow}>
-              <Text style={styles.label}>Condition</Text>
-              <Text style={styles.value}>Good</Text>
-            </View>
-            <View style={styles.copperRow}>
-              <Text style={styles.label}>Type of AC</Text>
-              <Text style={styles.value}>Split AC-2{'\n'}Window AC-1</Text>
-            </View>
-            <View style={styles.copperRow}>
-              <Text style={styles.label}>Age</Text>
-              <Text style={styles.value}>3 Years</Text>
-            </View>
-            <View style={styles.copperRow}>
-              <Text style={styles.label}>Inspection Remarks</Text>
-              <Text style={styles.value}>Minor scratches, function</Text>
-            </View>
-            {reqStatus === 'Decline' && (
               <View style={styles.copperRow}>
-                <Text style={styles.label}>Reason for Decline</Text>
-                <Text style={[styles.value, { color: COLORS.red }]}>
-                  Expected a higher offer
+                <Text style={styles.label}>Offer Amount</Text>
+                <Text
+                  style={[
+                    styles.value,
+                    { color: COLORS.themeColor, fontFamily: Fonts.semiBold },
+                  ]}
+                >
+                  ₹ 25000/-
                 </Text>
               </View>
-            )}
-            <View style={[styles.copperRow, { justifyContent: 'center' }]}>
-              <Text
-                style={[
-                  styles.label,
-                  {
-                    textDecorationLine: 'underline',
-                    color: COLORS.themeColor,
-                    textAlign: 'center',
-                  },
-                ]}
-              >
-                View AC Details
-              </Text>
-            </View>
-
-            {/* btn. */}
-            {detailStatus === 'Quote' &&
-              reqStatus !== 'Accepted' &&
-              reqStatus !== 'Decline' && (
+              <View style={styles.copperRow}>
+                <Text style={styles.label}>Condition</Text>
+                <Text style={styles.value}>Good</Text>
+              </View>
+              <View style={styles.copperRow}>
+                <Text style={styles.label}>Type of AC</Text>
+                <Text style={styles.value}>Split AC-2{'\n'}Window AC-1</Text>
+              </View>
+              <View style={styles.copperRow}>
+                <Text style={styles.label}>Age</Text>
+                <Text style={styles.value}>3 Years</Text>
+              </View>
+              <View style={styles.copperRow}>
+                <Text style={styles.label}>Inspection Remarks</Text>
+                <Text style={styles.value}>Minor scratches, function</Text>
+              </View>
+              {reqStatus === 'Decline' && (
                 <View style={styles.copperRow}>
-                  <TouchableOpacity
-                    style={[
-                      styles.doneButton,
-                      { backgroundColor: COLORS.white },
-                    ]}
-                    onPress={() => setDeclineVisible(true)}
-                  >
-                    <Text
-                      style={[
-                        styles.doneButtonText,
-                        { color: COLORS.textHeading },
-                      ]}
-                    >
-                      Decline
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.doneButton, styles.secondButton]}
-                    onPress={() => setAcceptVisible(true)}
-                  >
-                    <Text style={styles.doneButtonText}>Accept</Text>
-                  </TouchableOpacity>
+                  <Text style={styles.label}>Reason for Decline</Text>
+                  <Text style={[styles.value, { color: COLORS.red }]}>
+                    {selectReason}
+                  </Text>
                 </View>
               )}
-          </View>
-        )}
+              {/* <View style={[styles.copperRow, { justifyContent: 'center' }]}>
+                <Text
+                  style={[
+                    styles.label,
+                    {
+                      textDecorationLine: 'underline',
+                      color: COLORS.themeColor,
+                      textAlign: 'center',
+                    },
+                  ]}
+                >
+                  View AC Details
+                </Text>
+              </View> */}
+
+              {/* btn. */}
+              {detailStatus === 'Quote' &&
+                reqStatus !== 'Accepted' &&
+                reqStatus !== 'Decline' && (
+                  <View style={styles.copperRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.doneButton,
+                        { backgroundColor: COLORS.white },
+                      ]}
+                      onPress={() => setDeclineVisible(true)}
+                    >
+                      <Text
+                        style={[
+                          styles.doneButtonText,
+                          { color: COLORS.textHeading },
+                        ]}
+                      >
+                        Decline
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.doneButton, styles.secondButton]}
+                      onPress={() => setAcceptVisible(true)}
+                    >
+                      <Text style={styles.doneButtonText}>Accept</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+            </View>
+          )}
 
         {detailStatus !== 'Payment' && (
           <View style={{ marginBottom: wp(15) }}>
             {detailStatus !== 'Quote' && (
-              <TouchableOpacity
+              <View
                 style={[
                   styles.copperRow,
                   { width: isTablet ? wp(90) : wp(90), alignSelf: 'center' },
@@ -583,7 +668,7 @@ const OldACRequest = ({ navigation }) => {
                 <Text style={[styles.label, { color: COLORS.black }]}>
                   Your AC details
                 </Text>
-                {detailStatus === 'Request' && (
+                {/* {detailStatus === 'Request' && (
                   <TouchableOpacity
                     style={[styles.copperRow, { borderBottomColor: '#F5F7FA' }]}
                   >
@@ -602,12 +687,12 @@ const OldACRequest = ({ navigation }) => {
                       Edit
                     </Text>
                   </TouchableOpacity>
-                )}
-              </TouchableOpacity>
+              )} */}
+              </View>
             )}
 
             {/* AC Names List */}
-            {Object.keys(acData).map(acName => (
+            {Object.keys(acDetailData).map(acName => (
               <>
                 <TouchableOpacity
                   key={'AC Names list'}
@@ -624,13 +709,13 @@ const OldACRequest = ({ navigation }) => {
 
                 {expandedAC === acName ? (
                   <View key={acName} style={styles.acItem}>
-                    {Object.entries(acData[acName]).map(([key, detail]) => (
+                    {Object.entries(acDetailData[acName]).map(([key, detail]) => (
                       <>
                         <View key={key} style={styles.copperRow}>
                           <Text style={styles.label}>
                             {detail.title
                               ? detail.title.charAt(0).toUpperCase() +
-                                detail.title.slice(1)
+                              detail.title.slice(1)
                               : key}
                           </Text>
                           <Text
@@ -702,7 +787,7 @@ const OldACRequest = ({ navigation }) => {
                 onPress={() => setModalSlotVisible(true)}
               >
                 <Text
-                  style={[{ flex: 1, marginLeft: wp(4) }, styles.uploadText]}
+                  style={[{ marginHorizontal: wp(4), fontFamily: Fonts.regular, color: selectdate === 'Select date' ? COLORS.textColor : COLORS.black }]}
                 >
                   {selectdate}
                 </Text>
@@ -747,7 +832,7 @@ const OldACRequest = ({ navigation }) => {
             )}
 
             <View
-              style={[HomeScreenStyles.brandcont, { marginBottom: hp(10) }]}
+              style={[HomeScreenStyles.brandcont, { marginBottom: hp(15) }]}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Image
@@ -766,30 +851,62 @@ const OldACRequest = ({ navigation }) => {
       </ScrollView>
 
       {/* Cancel and Reschedule Buttons */}
-      {detailStatus === 'Request' && reqStatus !== 'complete' && (
+      {detailStatus === 'Request' && (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.doneButton, { backgroundColor: COLORS.white }]}
-            onPress={() =>
-              setReqStatus(prev =>
-                prev === 'Schedule' ? 'complete' : 'Schedule',
-              )
-            }
-          >
-            <Text
-              style={[styles.doneButtonText, { color: COLORS.textHeading }]}
-            >
-              Next
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.doneButton, styles.secondButton]}
-            onPress={() => setSResheduleVisible(true)}
-          >
-            <Text style={styles.doneButtonText}>Reschedule</Text>
-          </TouchableOpacity>
+
+          {/* 🔹 CASE 1: Show Cancel + Reschedule */}
+          {(reqStatus === '' ||
+            reqStatus === 'underReview' ||
+            reqStatus === 'Schedule') && (
+              <>
+                <TouchableOpacity
+                  style={[styles.doneButton, { backgroundColor: COLORS.white }]}
+                  onPress={() => {
+                    // Cancel Reschedule → reset to original status
+                    setReqStatus('Schedule');
+                  }}
+                >
+                  <Text
+                    style={[styles.doneButtonText, { color: COLORS.textHeading }]}
+                  >
+                    Cancel Reschedule
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.doneButton, styles.secondButton]}
+                  onPress={() => {
+                    setSResheduleVisible(true);
+                    setReqStatus('ReScheduled'); // mark as rescheduled
+                  }}
+                >
+                  <Text style={styles.doneButtonText}>Reschedule</Text>
+                </TouchableOpacity>
+              </>
+            )}
+
+          {/* 🔹 CASE 2 & 3: After Reschedule OR Complete */}
+          {(reqStatus === 'ReScheduled' ||
+            reqStatus === 'complete') && (
+              <TouchableOpacity
+                style={[styles.doneButton, styles.secondButton]}
+                onPress={() => {
+                  if (reqStatus === 'ReScheduled') {
+                    // First Next → mark complete
+                    setReqStatus('complete');
+                  } else if (reqStatus === 'complete') {
+                    // Second Next → go to Quote tab
+                    setDetailStatus('Quote');
+                  }
+                }}
+              >
+                <Text style={styles.doneButtonText}>Next</Text>
+              </TouchableOpacity>
+            )}
+
         </View>
       )}
+
 
       {detailStatus === 'Payment' && (
         <View style={[HomeScreenStyles.servicesSection, { minHeight: hp(8) }]}>
@@ -813,7 +930,7 @@ const OldACRequest = ({ navigation }) => {
               onPress={() => {
                 setDetailStatus('Payment'),
                   detailStatus === 'Payment' &&
-                    navigation.navigate('PaymentScreen');
+                  navigation.navigate('PaymentScreen');
               }}
             />
           </View>
@@ -886,18 +1003,11 @@ const OldACRequest = ({ navigation }) => {
           setConfirmPopupVisible(false);
           setReqStatus('Schedule');
         }}
-        setIcon={images.cancelRed}
         HeadTextColor="black"
         HeadText="Cancelled!"
-        message1=""
         message2="You request has been successfully cancelled."
-        buttonCount={2}
-        secondButtonText="Done"
-        firstButtonText="View Request"
-        onSecondButtonPress={() => {
-          setConfirmPopupVisible(false);
-        }}
       />
+
 
       {/* accept detail popup */}
       <SuccessPopupModal
@@ -970,304 +1080,6 @@ const OldACRequest = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F7FA',
-  },
-  scrollView: {
-    flex: 1,
-    paddingHorizontal: hp(1),
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: hp(1),
-    backgroundColor: COLORS.white,
-    marginVertical: hp(2),
-    borderRadius: wp(4),
-  },
-  tab: {
-    alignItems: 'center',
-    paddingHorizontal: wp(2),
-  },
-  tabNumber: {
-    fontSize: hp(1.8),
-    fontWeight: Fonts.medium,
-    color: '#333',
-    width: wp(5.3),
-    textAlign: 'center',
-    marginRight: wp(1),
-    borderRadius: hp(6),
-  },
-  tabText: {
-    fontSize: hp(1.6),
-    fontWeight: Fonts.medium,
-    color: '#333',
-  },
-  section: {
-    backgroundColor: COLORS.white,
-    marginVertical: hp(1),
-    borderRadius: wp(3),
-    paddingHorizontal: hp(2),
-    elevation: 2,
-  },
-  statusBar: {
-    backgroundColor: '#e9f4fb',
-    padding: hp(0.5),
-    borderTopLeftRadius: wp(3),
-    borderTopRightRadius: wp(3),
-    width: isTablet ? wp(98) : wp(95.5),
-    alignSelf: 'center',
-  },
-  statusBarRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  statusInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: wp(1),
-  },
-  icon: {
-    width: wp(6),
-    height: wp(6),
-    resizeMode: 'contain',
-  },
-  statusText: {
-    fontSize: hp(1.5),
-    fontFamily: Fonts.medium,
-    color: COLORS.textHeading,
-    marginLeft: wp(1),
-  },
-  statusBadge: {
-    borderRadius: wp(1),
-    paddingVertical: hp(0.5),
-    paddingHorizontal: wp(2),
-    marginRight: wp(2),
-    marginTop: hp(1),
-  },
-  statusBadgeText: {
-    fontSize: hp(1.3),
-    fontFamily: Fonts.medium,
-    color: '#ee9937ff',
-  },
-  detailRow: {
-    paddingVertical: hp(0.3),
-    justifyContent: 'center',
-    alignSelf: 'center',
-  },
-  copperRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: hp(0.9),
-    borderBottomColor: COLORS.lightGray,
-    borderBottomWidth: wp(0.1),
-  },
-  label: {
-    fontSize: hp(1.5),
-    fontFamily: Fonts.medium,
-    color: '#666',
-    marginBottom: wp(1),
-  },
-  value: {
-    fontSize: hp(1.4),
-    fontFamily: Fonts.medium,
-    color: COLORS.black,
-  },
-  sectionTitle: {
-    fontSize: hp(1.6),
-    fontFamily: Fonts.medium,
-    color: COLORS.black,
-    paddingVertical: hp(0.5),
-  },
-  photoGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: hp(1),
-  },
-  photo: {
-    width: wp(26),
-    height: hp(12),
-    borderRadius: wp(2.5),
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  playButton: {
-    position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: wp(6),
-    padding: hp(1),
-  },
-  playIconImage: {
-    width: wp(5),
-    height: hp(2),
-    tintColor: COLORS.white,
-  },
-  noteText: {
-    fontSize: hp(1.5),
-    fontFamily: Fonts.regular,
-    color: COLORS.TextColor,
-    textAlign: 'left',
-    marginVertical: hp(1),
-  },
-  agentContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#F5F7FA',
-    padding: hp(1.5),
-    borderRadius: wp(1),
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    marginVertical: hp(1),
-  },
-  agentInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  agentImage: {
-    width: wp(13),
-    height: wp(15),
-    borderRadius: wp(2),
-    marginRight: wp(3),
-  },
-  agentText: {
-    flexShrink: 1,
-  },
-  agentHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F7FA',
-  },
-  agentName: {
-    fontSize: hp(1.5),
-    fontFamily: Fonts.medium,
-    color: COLORS.black,
-    marginLeft: wp(1),
-  },
-  agentTitle: {
-    fontSize: hp(1.3),
-    color: '#666',
-  },
-  actionButtons: {
-    alignItems: 'center',
-  },
-  viewProfileButton: {
-    paddingVertical: hp(0.8),
-    paddingHorizontal: wp(3),
-  },
-  viewProfileText: {
-    fontSize: hp(1.4),
-    color: COLORS.themeColor,
-    fontWeight: '500',
-    textDecorationLine: 'underline',
-  },
-  chatButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: wp(3),
-    borderRadius: wp(2),
-    borderWidth: wp(0.1),
-    borderColor: COLORS.themeColor,
-  },
-  chatIcon: {
-    width: wp(9),
-    height: hp(2.5),
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingTop: hp(2),
-    backgroundColor: COLORS.white,
-    paddingBottom: wp(6),
-  },
-  doneButton: {
-    width: wp(42),
-    paddingVertical: hp(1.5),
-    alignItems: 'center',
-    borderWidth: wp(0.1),
-    borderColor: COLORS.textHeading,
-    borderRadius: wp(6),
-  },
-  secondButton: {
-    backgroundColor: COLORS.themeColor,
-  },
-  doneButtonText: {
-    color: '#fff',
-    fontSize: hp(1.6),
-    fontWeight: '500',
-  },
-  IconImage: {
-    width: wp(4),
-    height: hp(1.5),
-  },
-  showiconStyle: {
-    width: wp(6),
-    height: hp(3),
-    marginHorizontal: wp(1),
-    resizeMode: 'contain',
-  },
-  acHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 8,
-    borderLeftWidth: wp(1.5),
-    borderLeftColor: COLORS.red,
-    backgroundColor: COLORS.white,
-    width: wp('90%'),
-    alignSelf: 'center',
-    marginTop: wp(3),
-  },
-  acItem: {
-    borderRadius: wp(2),
-    backgroundColor: COLORS.white,
-    alignSelf: 'center',
-    width: wp('90%'),
-    padding: wp(3),
-    marginTop: wp(2),
-  },
-  inputGroup: {
-    marginTop: hp('1%'),
-    marginHorizontal: wp('2%'),
-    backgroundColor: COLORS.white,
-  },
-  labelInput: {
-    flex: 1,
-    fontSize: hp('1.5%'),
-    color: '#585656ff',
-    marginLeft: hp('1%'),
-    fontFamily: Fonts.medium,
-  },
-  pickerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffffff',
-    borderRadius: wp('9%'),
-    borderWidth: hp(0.1),
-    borderColor: '#ddd',
-    overflow: 'hidden',
-    height: hp('5%'),
-    width: wp(88),
-    alignSelf: 'center',
-  },
-  pickerTech: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffffff',
-    borderRadius: wp('9%'),
-    borderWidth: hp(0.1),
-    borderColor: '#ddd',
-    overflow: 'hidden',
-    height: hp('5%'),
-    alignSelf: 'center',
-  },
-});
+
 
 export default OldACRequest;

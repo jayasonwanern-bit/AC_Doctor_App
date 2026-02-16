@@ -24,11 +24,12 @@ import { isTablet } from '../../../components/TabletResponsiveSize';
 import { getServiceList, postBookingRequest } from '../../../api/homeApi';
 import { useDispatch, useSelector, } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { updateQuantity } from '../../../redux/slices/cartSlice';
+import { clearCart, updateQuantity } from '../../../redux/slices/cartSlice';
 import OrderSummaryModel from '../../../customScreen/OrderSummaryModel';
 import { store } from '../../../redux/store';
 import Toast from 'react-native-simple-toast';
 import CustomLoader from '../../../components/CustomLoader';
+import { clearServiceData } from '../../../redux/slices/serviceSlice';
 
 const OtherCartView = ({ route }) => {
   const navigation = useNavigation()
@@ -47,17 +48,20 @@ const OtherCartView = ({ route }) => {
   const routeAddress = route.params?.selectedAddress; // add address screen
   const userDetails = store?.getState()?.auth?.user;
 
-
+  // console.log('selected slot on book-->', selectedSlot)
   useEffect(() => {
     if (route?.params?.proceed) {
       setProceed(true);
-      setShowSummary(true)
+      setShowSummary(true);
     }
+  }, [route?.params?.proceed]);
+
+  useEffect(() => {
     if (route?.params?.selectedSlot) {
       setSelectedSlot(route.params.selectedSlot);
     }
-    console.log('selected slot on book-->', selectedSlot)
-  }, [route?.params]);
+  }, [route?.params?.selectedSlot]);
+
 
   // get service list on mount
   useEffect(() => {
@@ -161,14 +165,16 @@ const OtherCartView = ({ route }) => {
     "First Half" ? '1st Half' : '2nd Half'})`;
 
   // post data
+  const { serviceId, serviceKey } = useSelector(state => state.service);
+
   const useSubmitBooking = async () => {
     if (!userDetails || !serviceDetails?.length) {
       Toast.show('Please select ACs before submitting.');
       return;
     }
+
     const formattedDate = `${selectedSlot?.year}-${selectedSlot?.monthNumber}-${selectedSlot?.date}`;
 
-    const { serviceKey, serviceId } = route?.params;
     const bodyData = {
       user_id: userDetails?._id,
       addressId: selectedAddress?._id,
@@ -177,9 +183,7 @@ const OtherCartView = ({ route }) => {
       slot:
         selectedSlot?.Timeslot === 'First Half'
           ? 'FIRST_HALF'
-          : selectedSlot?.Timeslot === 'SECOND_HALF'
-            ? 'SECOND_HALF'
-            : 'SECOND_HALF',
+          : 'SECOND_HALF',
       amount: 0,
       serviceDetails: serviceDetails.map(item => ({
         service_id: item.service_id,
@@ -188,22 +192,22 @@ const OtherCartView = ({ route }) => {
         _id: serviceId,
         name: "Other",
         category: "OTHER",
-        key: serviceKey,
+        key: serviceKey, // ✅ FIXED
         comment: reason,
         otherService: problem,
         serviceType: item.serviceType.toUpperCase(),
       })),
     };
-    console.log('bodyData Response:', bodyData);
+
     try {
       const response = await postBookingRequest(bodyData);
-      console.log('Booking Response:', response);
+
       if (response?.status === true) {
-        // Toast.show(response?.message || 'Booking submitted successfully!');
-        setShowSummary(false)
-        navigation.replace('BookingSuccessScreen');
         dispatch(clearCart());
-      } else if (response?.status === false) {
+        dispatch(clearServiceData());
+        setShowSummary(false);
+        navigation.replace('BookingSuccessScreen');
+      } else {
         Toast.show(
           response?.message || 'Failed to submit booking. Please try again.',
         );
@@ -212,6 +216,7 @@ const OtherCartView = ({ route }) => {
       Toast.show(error?.message || 'An error occurred. Please try again.');
     }
   };
+
 
   // render
   return (
@@ -361,7 +366,6 @@ const OtherCartView = ({ route }) => {
         onClose={() => setModalSlotVisible(false)}
         setSelectedSlot={setSelectedSlot}
         onBookProcess={() => {
-
           setProceed(true);
           setModalSlotVisible(false);
           setShowSummary(true)

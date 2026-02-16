@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  items: [], // 👈 yahi pura cart rahega
+  items: [],
   meta: {
     problem: null,
     reason: '',
   },
 };
+
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -76,9 +77,7 @@ const cartSlice = createSlice({
       });
     },
 
-    clearCart: state => {
-      state.items = [];
-    },
+    clearCart: () => initialState,
   },
 });
 

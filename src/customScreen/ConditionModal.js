@@ -14,18 +14,15 @@ import {
 } from 'react-native-responsive-screen';
 import { COLORS, Fonts } from '../utils/colors';
 
-const ConditionModal = ({ visible, onClose, onSelect }) => {
+const ConditionModal = ({
+  visible,
+  onClose,
+  onSelect,
+  data = [],
+  title = 'Select Option',
+}) => {
   const [selectedType, setSelectedType] = useState(null);
 
-     const defaultAcTypes = [
-      { name: 'Bad' },
-      { name: 'Average'},
-      { name: 'Good'},
-      { name: 'Very Good'},
-      { name: 'Working'},
-      { name: 'Non-working'},
-    ];
- 
   const handleDone = () => {
     if (selectedType) {
       onSelect(selectedType);
@@ -44,7 +41,7 @@ const ConditionModal = ({ visible, onClose, onSelect }) => {
       <Text
         style={[
           styles.buttonText,
-          { color: selectedType === item.name && '#4a90e2' },
+          { color: selectedType === item.name ? COLORS.themeColor : '#333' },
         ]}
       >
         {item.name}
@@ -53,34 +50,21 @@ const ConditionModal = ({ visible, onClose, onSelect }) => {
   );
 
   return (
-    <Modal
-      visible={visible}
-      transparent={true}
-      animationType="slide"
-      onRequestClose={onClose}
-      statusBarTranslucent={true}
-    >
+    <Modal visible={visible} transparent animationType="slide">
       <TouchableOpacity
         style={styles.modalContainer}
         onPress={onClose}
         activeOpacity={1}
       >
-        <View
-          style={styles.modalContent}
-          onStartShouldSetResponder={() => true}
-        >
-          <Text style={styles.headText}>Select Condition of AC</Text>
+        <View style={styles.modalContent}>
+          <Text style={styles.headText}>{title}</Text>
 
-          <View style={styles.acTypeContainer}>
-            <FlatList
-              data={defaultAcTypes}
-              renderItem={renderAcTypeItem}
-              keyExtractor={item => item.name}
-              numColumns={3}
-              columnWrapperStyle={styles.row}
-              contentContainerStyle={styles.acList}
-            />
-          </View>
+          <FlatList
+            data={data}
+            renderItem={renderAcTypeItem}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={3}
+          />
 
           <TouchableOpacity
             style={styles.doneButton}
@@ -94,6 +78,7 @@ const ConditionModal = ({ visible, onClose, onSelect }) => {
     </Modal>
   );
 };
+
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -137,7 +122,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   buttonText: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.5),
     color: '#333',
     fontFamily: Fonts.medium,
   },

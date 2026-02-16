@@ -26,11 +26,9 @@ import { useDispatch } from 'react-redux';
 import { setOtherCartMeta } from '../../../redux/slices/cartSlice';
 
 
-const OtherScreen = ({ navigation, route }) => {
-  const { serviceKey, serviceId } = route?.params;
+const OtherScreen = ({ navigation }) => {
   const [isProblem, setIsProblem] = useState('Select Problem');
   const [ProblemReason, setProblemReason] = useState('');
-  console.log('bothe data---.', serviceKey, serviceId)
   const dispatch = useDispatch();
   // list of prolbem
   const ProblemOptions = [
@@ -71,7 +69,7 @@ const OtherScreen = ({ navigation, route }) => {
           reason: formData.reason,
         }),
       );
-      navigation.navigate('OtherCartView', { serviceId: serviceId, serviceKey: serviceKey });
+      navigation.navigate('OtherCartView');
     }
     // Reset form
     setIsProblem('Select Problem');

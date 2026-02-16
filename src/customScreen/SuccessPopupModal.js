@@ -34,6 +34,7 @@ const SuccessPopupModal = ({
       animationType="fade"
       visible={visible}
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
@@ -55,48 +56,34 @@ const SuccessPopupModal = ({
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
-            {buttonCount >= 1 && (
+            {/* First Button */}
+            <TouchableOpacity
+              style={[
+                styles.doneButton,
+                buttonCount === 1 && styles.singleButton,
+                buttonCount === 2 && styles.primaryHalfButton,
+              ]}
+              onPress={onClose}
+            >
+              <Text style={styles.primaryText}>
+                {firstButtonText}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Second Button */}
+            {buttonCount === 2 && (
               <TouchableOpacity
-                style={[
-                  styles.doneButton,
-                  {
-                    width: buttonCount === 1 ? wp('70%') : wp('33%'), // Full width for 1 button, half for 2
-                    alignSelf: buttonCount === 1 ? 'center' : 'flex-start',
-                    backgroundColor:
-                      buttonCount >= 1 ? COLORS.themeColor : '#ffffff',
-                    marginRight: buttonCount === 2 ? 10 : 0, // Add spacing between buttons when 2 are present
-                  },
-                ]}
-                onPress={onClose}
-              >
-                <Text
-                  style={[
-                    styles.doneButtonText,
-                    { color: buttonCount >= 1 ? COLORS.white : '#676464ff' },
-                  ]}
-                >
-                  {firstButtonText}
-                </Text>
-              </TouchableOpacity>
-            )}
-            {buttonCount >= 2 && (
-              <TouchableOpacity
-                style={[
-                  styles.doneButton,
-                  styles.secondButton,
-                  {
-                    backgroundColor: '#ffffff',
-                    width: wp('40%'),
-                  },
-                ]}
+                style={[styles.doneButton, styles.secondaryHalfButton]}
                 onPress={onSecondButtonPress}
               >
-                <Text style={[styles.doneButtonText, { color: '#676464ff' }]}>
+                <Text style={styles.secondaryText}>
                   {secondButtonText}
                 </Text>
               </TouchableOpacity>
             )}
           </View>
+
+
         </View>
       </View>
     </Modal>
@@ -111,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    width: '80%',
+    width: '85%',
     backgroundColor: '#fff',
     borderRadius: 15,
     padding: 25,
@@ -136,7 +123,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   message: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.5),
     fontFamily: Fonts.medium,
     color: COLORS.black,
     textAlign: 'center',
@@ -144,7 +131,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'center', // Center the buttons when 2 are present
+    justifyContent: 'center',
     width: '100%',
     marginTop: 20,
   },
@@ -161,10 +148,44 @@ const styles = StyleSheet.create({
   },
   doneButtonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
     textAlign: 'center',
   },
+
+  singleButton: {
+    width: '70%',
+    alignSelf: 'center',
+    backgroundColor: COLORS.themeColor,
+  },
+
+  primaryHalfButton: {
+    width: '52%',
+    backgroundColor: COLORS.themeColor,
+  },
+
+  secondaryHalfButton: {
+    width: '52%',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: COLORS.themeColor,
+    marginLeft: 10,
+  },
+
+  primaryText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+
+  secondaryText: {
+    color: COLORS.themeColor,
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+
 });
 
 export default SuccessPopupModal;

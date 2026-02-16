@@ -45,7 +45,7 @@ const TonnageModal = ({ visible, onClose, onSelect }) => {
       <Text
         style={[
           styles.buttonText,
-          { color: selectedType === item.name && '#4a90e2' },
+          { color: selectedType === item.name ? '#4a90e2' : '#333' },
         ]}
       >
         {item.name}

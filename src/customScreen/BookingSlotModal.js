@@ -8,8 +8,7 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
-  Keyboard,
-  Platform,
+  Platform, KeyboardAvoidingView
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -116,123 +115,140 @@ const BookingSlotModal = ({
       Timeslot: timeSlots[selectedTime].label,
       reason: isReschedule ? rescheduleReason : undefined,
     });
-
     onBookProcess();
+
   };
 
   return (
     <Modal visible={visible} transparent animationType="slide" statusBarTranslucent>
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <View style={styles.modalContent}>
 
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>Book a Slot</Text>
-
-          <Text style={styles.sectionLabel}>Date</Text>
-
-          <View style={styles.monthYearSelector}>
-            <TouchableOpacity
-              onPress={() => {
-                if (selectedMonth === 0) {
-                  setSelectedMonth(11);
-                  setSelectedYear(y => y - 1);
-                } else {
-                  setSelectedMonth(m => m - 1);
-                }
-              }}
+            {/* Scrollable Content */}
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            // contentContainerStyle={{ padding: 16 }}
             >
-              <Text style={styles.navText}>{'<<'}</Text>
-            </TouchableOpacity>
+              <Text style={styles.title}>Book a Slot</Text>
 
-            <Text style={styles.monthText}>
-              {monthNames[selectedMonth]} {selectedYear}
-            </Text>
+              <Text style={styles.sectionLabel}>Date</Text>
 
-            <TouchableOpacity
-              onPress={() => {
-                if (selectedMonth === 11) {
-                  setSelectedMonth(0);
-                  setSelectedYear(y => y + 1);
-                } else {
-                  setSelectedMonth(m => m + 1);
-                }
-              }}
-            >
-              <Text style={styles.navText}>{'>>'}</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            ref={scrollRef}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.daysContainer}
-          >
-            {days.map((day, index) => {
-              const disabled = isPastDate(day.date);
-              return (
+              <View style={styles.monthYearSelector}>
                 <TouchableOpacity
-                  key={index}
-                  disabled={disabled}
-                  style={[
-                    styles.dayButton,
-                    selectedDay === index && !disabled && styles.selectedDay,
-                    disabled && styles.disabledDay,
-                  ]}
-                  onPress={() => setSelectedDay(index)}
+                  onPress={() => {
+                    if (selectedMonth === 0) {
+                      setSelectedMonth(11);
+                      setSelectedYear(y => y - 1);
+                    } else {
+                      setSelectedMonth(m => m - 1);
+                    }
+                  }}
                 >
-                  <Text
-                    style={[selectedDay === index ? styles.dateNumber : styles.disabledText, disabled && styles.disabledText,]}
-                  >
-                    {day.date}
-                  </Text>
-                  <Text
-                    style={[selectedDay === index ? styles.dayName : styles.disabledText, disabled && styles.disabledText,]}
-                  >
-                    {day.day}
-                  </Text>
+                  <Text style={styles.navText}>{'<<'}</Text>
                 </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
 
-          <Text style={styles.sectionLabel}>Time</Text>
+                <Text style={styles.monthText}>
+                  {monthNames[selectedMonth]} {selectedYear}
+                </Text>
 
-          <View style={styles.timeContainer}>
-            {timeSlots.map((slot, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.timeButton,
-                  selectedTime === index && styles.selectedTime,
-                ]}
-                onPress={() => setSelectedTime(index)}
+                <TouchableOpacity
+                  onPress={() => {
+                    if (selectedMonth === 11) {
+                      setSelectedMonth(0);
+                      setSelectedYear(y => y + 1);
+                    } else {
+                      setSelectedMonth(m => m + 1);
+                    }
+                  }}
+                >
+                  <Text style={styles.navText}>{'>>'}</Text>
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView
+                ref={scrollRef}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.daysContainer}
               >
-                <Text style={selectedTime === index ? styles.selectedtimeLabel : styles.timeLabel}>{slot.label}</Text>
-                <Text style={selectedTime === index ? styles.selectedtimeLabel : styles.timeText}>{slot.time}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+                {days.map((day, index) => {
+                  const disabled = isPastDate(day.date);
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      disabled={disabled}
+                      style={[
+                        styles.dayButton,
+                        selectedDay === index && !disabled && styles.selectedDay,
+                        disabled && styles.disabledDay,
+                      ]}
+                      onPress={() => setSelectedDay(index)}
+                    >
+                      <Text
+                        style={[selectedDay === index ? styles.dateNumber : styles.disabledText, disabled && styles.disabledText,]}
+                      >
+                        {day.date}
+                      </Text>
+                      <Text
+                        style={[selectedDay === index ? styles.dayName : styles.disabledText, disabled && styles.disabledText,]}
+                      >
+                        {day.day}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
 
-          {isReschedule && (
-            <>
-              <Text style={styles.sectionLabel}>Reason of Rescheduling</Text>
-              <TextInput
-                style={styles.reasonInput}
-                placeholder="Type here..."
-                multiline
-                value={rescheduleReason}
-                onChangeText={setRescheduleReason}
-              />
-            </>
-          )}
-          <TouchableOpacity
-            style={styles.proceedButton}
-            onPress={handleProceedPress}
-          >
-            <Text style={styles.proceedText}>Proceed</Text>
-          </TouchableOpacity>
-        </View>
+              <Text style={styles.sectionLabel}>Time</Text>
+
+              <View style={styles.timeContainer}>
+                {timeSlots.map((slot, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.timeButton,
+                      selectedTime === index && styles.selectedTime,
+                    ]}
+                    onPress={() => setSelectedTime(index)}
+                  >
+                    <Text style={selectedTime === index ? styles.selectedtimeLabel : styles.timeLabel}>{slot.label}</Text>
+                    <Text style={selectedTime === index ? styles.selectedtimeLabel : styles.timeText}>{slot.time}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {isReschedule && (
+                <>
+                  <Text style={styles.sectionLabel}>Reason of Rescheduling</Text>
+                  <TextInput
+                    style={styles.reasonInput}
+                    placeholder="Type here..."
+                    placeholderTextColor={COLORS.TextColor}
+                    multiline
+                    textAlignVertical="top"
+                    value={rescheduleReason}
+                    onChangeText={setRescheduleReason}
+                  />
+                </>
+              )}
+            </ScrollView>
+
+            {/* <View style={{ padding: 16 }}> */}
+            <TouchableOpacity
+              style={styles.proceedButton}
+              onPress={handleProceedPress}
+            >
+              <Text style={styles.proceedText}>Proceed</Text>
+            </TouchableOpacity>
+            {/* </View> */}
+
+          </View>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   );
@@ -255,11 +271,11 @@ const styles = StyleSheet.create({
     paddingVertical: hp('2%'),
     borderTopLeftRadius: wp('6.5%'),
     borderTopRightRadius: wp('6.5%'),
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1000,
+    // position: 'absolute',
+    // bottom: 0,
+    // left: 0,
+    // right: 0,
+    // zIndex: 1000,
     minHeight: hp(38),
     maxHeight: hp(60),
     alignSelf: 'center',
@@ -333,7 +349,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginTop: 8,
-    marginBottom: 16,
+    marginBottom: hp(2),
     backgroundColor: '#f9f9f9',
     fontSize: 14,
     color: '#333',

@@ -35,10 +35,12 @@ import { setAddress, setCelcius } from '../../redux/slices/authSlice';
 import OnTopScreen from '../../components/OnTopScreen';
 import CustomLoader from '../../components/CustomLoader';
 import { isTablet } from '../../components/TabletResponsiveSize';
+import { setServiceData } from '../../redux/slices/serviceSlice';
 
 
 const HomeScreen = () => {
   const route = useRoute();
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const serviceDetails = useSelector(state => state.cart.items);
   const [productData, setProductData] = useState([]);   // ✅
@@ -139,42 +141,105 @@ const HomeScreen = () => {
   const pages = chunkArray(activeData, 6);
   const [Loader, setLoader] = useState(true);
   const [addresslocation, setAddressTextLocation] = useState('');
-
-  useEffect(() => {
-    // ✅ CASE 1: Address coming from previous screen
-    if (locationData?.address?.fullAddress) {
-      setLoader(false);
-      setAddressTextLocation(locationData.address.fullAddress);
-      dispatch(setAddress({ address: locationData.address }));
-      getWeather(locationData.latitude, locationData.longitude);
-      return;
-    }
-
-    // ✅ CASE 2: Address coming from navigation params
-    if (route?.params?.selectedAddress) {
-      const addr = route.params.selectedAddress;
-
-      console.log('Address', JSON.stringify(addr));
-      setLoader(false);
-      setAddressTextLocation(addr.address); // string
-      dispatch(setAddress({ address: addr.address }));
-      // getWeather(addr.latitude, addr.longitude);
-      return;
-    }
-
-    // ✅ CASE 3: No address → fetch current location
-    setLoader(true);
-    getLocation(data => {
-      getWeather(data.latitude, data.longitude);
-      setAddressTextLocation(data?.address || '');
-      dispatch(setAddress({ address: data?.address }));
-      setLoader(false);
-    });
-  }, []);
-
-
   const [WeatherLoader, setWeatherLoader] = useState(true);
   const [WeatherData, setWeatherData] = useState();
+
+  const normalizeAddress = (data) => {
+    if (!data) return null;
+
+    // 🔹 Case 1: Coming from AddAddress screen (has "address")
+    if (data.address) {
+      return {
+        fullAddress: data.address,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      };
+    }
+
+    // 🔹 Case 2: fullAddress is string
+    if (typeof data.fullAddress === 'string') {
+      return {
+        fullAddress: data.fullAddress,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      };
+    }
+
+    // 🔹 Case 3: fullAddress is object
+    if (typeof data.fullAddress === 'object') {
+      return {
+        fullAddress: data.fullAddress.fullAddress,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      };
+    }
+
+    return null;
+  };
+
+  useEffect(() => {
+
+    // ✅ CASE 1: Address from route params (HIGH PRIORITY)
+    if (route?.params?.selectedAddress) {
+
+      const formatted = normalizeAddress(route.params.selectedAddress);
+
+      if (formatted) {
+        setLoader(false);
+        setAddressTextLocation(formatted);
+        dispatch(setAddress({ address: formatted }));
+
+        if (formatted.latitude && formatted.longitude) {
+          getWeather(formatted.latitude, formatted.longitude);
+        }
+      }
+
+      return;
+    }
+
+    // ✅ CASE 2: Address from Redux / previous screen
+    if (locationData) {
+
+      const formatted = normalizeAddress(locationData);
+
+      if (formatted) {
+        setLoader(false);
+        setAddressTextLocation(formatted);
+
+        if (formatted.latitude && formatted.longitude) {
+          getWeather(formatted.latitude, formatted.longitude);
+        }
+      }
+
+      return;
+    }
+
+    // ✅ CASE 3: Fetch current location
+    setLoader(true);
+
+    getLocation((data) => {
+
+      const formatted = {
+        fullAddress: data?.address || '',
+        latitude: data?.latitude,
+        longitude: data?.longitude,
+      };
+
+      setAddressTextLocation(formatted);
+      dispatch(setAddress({ address: formatted }));
+
+      if (formatted.latitude && formatted.longitude) {
+        getWeather(formatted.latitude, formatted.longitude);
+      }
+
+      setLoader(false);
+    });
+
+  }, [route?.params]);
+
+
+
+
 
   const getWeather = async (lat, lon) => {
     setWeatherLoader(true);
@@ -231,28 +296,29 @@ const HomeScreen = () => {
   };
 
 
-  const fetchFeaturedProducts = async () => {
-    try {
-      const res = await getFeaturedProducts(1, 20);
+  const
+    fetchFeaturedProducts = async () => {
+      try {
+        const res = await getFeaturedProducts(1, 20);
 
-      const mapped = res.data.map(item => ({
-        id: item._id,              // 👈 REAL BACKEND ID
-        name: item.name,
-        image: { uri: item.image },
-        mrp: `₹ ${item.mrp}`,
-        price: `₹ ${item.customerPrice}`,
-        discount: item.discountedPercentage
-          ? `${item.discountedPercentage}% off`
-          : 'Hot Deal',
-        rating: item.rating || '4.0',
-        reviews: item.offerLabel || 'Limited time deal',
-      }));
-      setAllProducts(mapped);
-      setProductData(mapped.slice(0, 10));
-    } catch (e) {
-      console.log('fetchFeaturedProducts error', e);
-    }
-  };
+        const mapped = res.data.map(item => ({
+          id: item._id,              // 👈 REAL BACKEND ID
+          name: item.name,
+          image: { uri: item.image },
+          mrp: `₹ ${item.mrp}`,
+          price: `₹ ${item.customerPrice}`,
+          discount: item.discountedPercentage
+            ? `${item.discountedPercentage}% off`
+            : 'Hot Deal',
+          rating: item.rating || '4.0',
+          reviews: item.offerLabel || 'Limited time deal',
+        }));
+        setAllProducts(mapped);
+        setProductData(mapped.slice(0, 10));
+      } catch (e) {
+        console.log('fetchFeaturedProducts error', e);
+      }
+    };
 
 
   // show view all text after 10 item list of product
@@ -271,12 +337,12 @@ const HomeScreen = () => {
     OTHER: 'OtherScreen',
   };
   const handleServiceNavigation = service => {
-    const screen = screens[service?.key];
     if (service.name === 'Other') {
-      navigation.navigate('OtherScreen', {
+      dispatch(setServiceData({
         serviceId: service._id,
         serviceKey: service.key,
-      });
+      }));
+      navigation.navigate('OtherScreen');
     }
     else {
       navigation.navigate('GasChargeScreen', {
@@ -309,7 +375,7 @@ const HomeScreen = () => {
       let nextIndex = currentIndex + 1;
 
       if (nextIndex >= pages[0].length) {
-        nextIndex = 0; // 다시 처음으로
+        nextIndex = 0;
       }
 
       flatListRef.current?.scrollToIndex({
@@ -318,10 +384,18 @@ const HomeScreen = () => {
       });
 
       setCurrentIndex(nextIndex);
-    }, 2500); // ⏱ scroll time (ms)
+    }, 2500);
 
     return () => clearInterval(interval);
   }, [currentIndex]);
+
+  const truncateWords = (text = '', limit = 20) => {
+    if (typeof text !== 'string') return '';
+    const words = text.trim().split(/\s+/);
+    if (words.length <= limit) return text;
+    return words.slice(0, limit).join(' ') + '...';
+  };
+
 
   return (
     <SafeAreaView
@@ -363,10 +437,11 @@ const HomeScreen = () => {
                   style={styles.locationIcon}
                   resizeMode="contain"
                 />
-                <Text style={styles.locationText} numberOfLines={1}>
-                  {addresslocation ? `${addresslocation?.house}  ${addresslocation?.road} ${addresslocation?.city}` :
-                    'Select Location'
-                  }
+                <Text
+                  style={[styles.locationText, { width: wp(55), marginLeft: wp(1.5) }]}
+                  numberOfLines={1}
+                >
+                  {truncateWords(addresslocation?.fullAddress?.fullAddress, 6)}
                 </Text>
               </View>
             )}
@@ -392,8 +467,10 @@ const HomeScreen = () => {
             </View>
           </View>
         </View>
+
+
         {/* Banner Image */}
-        <View style={{ height: isTablet ? hp(30) : hp(18) }}>
+        <View style={{ minHeight: isTablet ? hp(30) : hp(18) }}>
           {loading ? (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <CustomLoader size="large" />
@@ -406,7 +483,7 @@ const HomeScreen = () => {
 
 
         {/* Book a service */}
-        <View style={[styles.reqcontainer, { height: isTablet ? hp(33) : hp(28) }]}>
+        <View style={[styles.reqcontainer, { minHeight: isTablet ? hp(33) : hp(28) }]}>
           <Text style={styles.reqtitle}>Book AC Services</Text>
 
           <View style={{ flex: 1 }}>
@@ -439,7 +516,7 @@ const HomeScreen = () => {
 
 
         {/* Request a Quote */}
-        <View style={styles.reqcontainer}>
+        <View style={[styles.reqcontainer, { minHeight: isTablet ? hp(21) : hp(17) }]}>
           <Text style={styles.reqtitle}>Request a Quote</Text>
           <View style={styles.reqgrid}>
             {requestQuote.map((item, index) => (
@@ -475,7 +552,7 @@ const HomeScreen = () => {
         </LinearGradient>
 
         {/* OEM Partner */}
-        <View style={[styles.reqcontainer, { height: isTablet ? hp(30) : hp(13) }]}>
+        <View style={[styles.reqcontainer, { minHeight: isTablet ? hp(30) : hp(8) }]}>
           <Text style={styles.reqtitle}>OEM Partner</Text>
           {loading ? (
             <CustomLoader size="large" />
@@ -689,7 +766,7 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <FastImage source={images.homebanner} style={styles.bannerStyle} />
+        <Image source={images.homebanner} style={styles.bannerStyle} resizeMode='contain' />
         <View style={styles.sercard}>
           <Text style={[styles.utititle, dynamicStyles.title]}>
             Service Guarantee
@@ -697,7 +774,7 @@ const HomeScreen = () => {
           <View
             style={[
               styles.sergrid,
-              { marginBottom: hp(Platform.OS === 'android' ? '7%' : '2%') },
+              { marginBottom: hp(Platform.OS === 'android' ? '2%' : '2%') },
             ]}
           >
             <TouchableOpacity style={styles.serstatCard} activeOpacity={0.8}>

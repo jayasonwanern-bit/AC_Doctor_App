@@ -26,6 +26,7 @@ import { addOrEditAddress } from '../../api/addressApi';
 import Toast from 'react-native-simple-toast';
 import StateCityPicker from '../../components/StateCityPicker';
 import CustomLoader from '../../components/CustomLoader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const AddAddress = ({ navigation, route }) => {
@@ -47,16 +48,41 @@ const AddAddress = ({ navigation, route }) => {
 
   const userId = store?.getState()?.auth?.user;
 
-  const ALLOWED_PINCODES = [
-    '453115', '453551', '453111', '453441', '452006', '453001', '453220', '452016',
-    '453771', '452005', '452020', '453236', '453112', '453661', '452001', '452013',
-    '452002', '452007', '452010', '452015', '452003', '452008', '452018', '453331',
-    '453446', '453332', '452009', '452012', '452014', '452011'
-  ];
+  // const ALLOWED_PINCODES = [
+  //   '453115', '453551', '453111', '453441', '452006', '453001', '453220', '452016',
+  //   '453771', '452005', '452020', '453236', '453112', '453661', '452001', '452013',
+  //   '452002', '452007', '452010', '452015', '452003', '452008', '452018', '453331',
+  //   '453446', '453332', '452009', '452012', '452014', '452011'
+  // ];
+  //  const isServiceablePincode = () => {
+  //   return ALLOWED_PINCODES.includes(pincode.trim());
+  // };
 
-  const isServiceablePincode = () => {
-    return ALLOWED_PINCODES.includes(pincode.trim());
+  const GOOGLE_API_KEY = 'AIzaSyCnpSWXWK0qVlrprVD8SKHdO7J0LGUKkfs';
+  const getLatLongFromAddress = async (fullAddress) => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          fullAddress
+        )}&key=${GOOGLE_API_KEY}`
+      );
+
+      const data = await response.json();
+
+      if (data.status === 'OK') {
+        return {
+          latitude: data.results[0].geometry.location.lat,
+          longitude: data.results[0].geometry.location.lng,
+        };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.log('Geocode error:', error);
+      return null;
+    }
   };
+
 
   // validation
   const validateFields = () => {
@@ -66,10 +92,10 @@ const AddAddress = ({ navigation, route }) => {
     if (!pincode.trim()) return 'Pincode is required';
     if (!/^\d{5,6}$/.test(pincode.trim()))
       return 'Pincode must be 5 or 6 digits';
-    // 🔴 SERVICE AREA CHECK
-    if (!isServiceablePincode()) {
-      return 'Service not available for this pincode';
-    }
+    // // 🔴 SERVICE AREA CHECK
+    // if (!isServiceablePincode()) {
+    //   return 'We apologize, but our services are not available in this area yet.Please try a different pincode.'
+    // }
     return null;
   };
 
@@ -82,6 +108,7 @@ const AddAddress = ({ navigation, route }) => {
     }
   }, [addressData]);
 
+
   // onSubmit button
   const handleSubmit = async () => {
     if (isSubmitting) return;
@@ -89,21 +116,38 @@ const AddAddress = ({ navigation, route }) => {
     try {
       const validationError = validateFields();
       if (validationError) {
-        Alert.alert('Validation Error', validationError);
+        Alert.alert('Service Unavailable', validationError);
         return;
       }
       setIsSubmitting(true);
       setLoading(true);
+      // ✅ STEP 1 — Create Full Address
+      const fullAddress = `${address}, ${city}, ${stateName} ${pincode}`;
 
+      // ✅ STEP 2 — Get Lat/Lng
+      const coords = await getLatLongFromAddress(fullAddress);
+
+      if (!coords) {
+        setLoading(false);
+        setIsSubmitting(false);
+        Alert.alert('Unable to detect location. Please check address.');
+        return;
+      }
+
+      // ✅ STEP 3 — Create Address Object (now with lat/lng)
       const newAddress = {
         name: '',
         phone: '',
-        address: `${address}, ${city}, ${stateName} ${pincode}`,
+        address: fullAddress,
         type: addressType,
         isDefault,
+        latitude: coords.latitude,
+        longitude: coords.longitude,
       };
 
       setSelectedAddress(newAddress);
+      console.log('selected addres s---', newAddress);
+
 
       const body = {
         addressId: addressData?._id || '',
@@ -123,15 +167,8 @@ const AddAddress = ({ navigation, route }) => {
         const cameFrom = route?.params?.from;
         const fromScreen = route?.params?.fromScreen;
 
-        // -------- FLOW 1 --------
-        // if (cameFrom === 'ServiceScreen') {
-        //   navigation.reset({
-        //     index: 0,
-        //     routes: [{ name: 'Tab', params: { screen: 'Home' } }],
-        //   });
-        //   return;
-        // }
         if (cameFrom === 'ServiceScreen') {
+          await AsyncStorage.setItem('hasSelectedLocation', 'true');
           navigation.reset({
             index: 0,
             routes: [

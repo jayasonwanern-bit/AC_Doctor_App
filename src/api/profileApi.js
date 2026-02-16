@@ -12,17 +12,18 @@ export const getUserProfile = async userId => {
   }
 };
 
-export const getPresignedUrl = async () => {
+export const getPresignedUrl = async (fileName, fileType) => {
   try {
     const res = await api.get(
-      `${endPoint.PRE_ASSIGNURL}?fileName=image&fileType=image/png`,
+      `${endPoint.PRE_ASSIGNURL}?fileName=${fileName}&fileType=${fileType}`
     );
     return res.data;
   } catch (error) {
-    console.log('Presigned URL Error:', error?.res?.data || error);
+    console.log('Presigned URL Error:', error?.response?.data || error);
     throw error;
   }
 };
+
 
 export const uploadImageToS3 = async (presignedUrl, imageUri) => {
   const response = await fetch(imageUri);

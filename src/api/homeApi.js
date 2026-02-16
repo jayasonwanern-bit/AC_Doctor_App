@@ -156,4 +156,17 @@ export const postInterestRequest = async (payload) => {
   }
 };
 
+// post Intereest
+export const postOldAcRequest = async (payload) => {
+  try {
+    const res = await api.post(endPoint.OLD_AC_REQUEST, payload);
+    return res.data;
+  } catch (error) {
+    Toast.show(
+      error?.response?.data?.message ||
+      error,
+    );
+  }
+};
+
 

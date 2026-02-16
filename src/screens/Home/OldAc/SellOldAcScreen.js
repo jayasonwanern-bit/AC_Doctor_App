@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   Platform,
   KeyboardAvoidingView,
   Keyboard,
@@ -28,28 +27,30 @@ import ACTonnageModal from '../../../customScreen/ACTonnageModal';
 import TonnageModal from '../../../customScreen/TonnageModal';
 import AgeofAcModal from '../../../customScreen/AgeofAcModal';
 import ConditionModal from '../../../customScreen/ConditionModal';
-import ContentSection from '../../../customScreen/ContentSection';
 import CustomModal from '../../../components/CustomModal';
-import HomeScreenStyles, {
-  keyBenefitsData,
-  serviceInclusionsData,
-  termsConditionsData,
-} from '../HomeScreenStyles';
 import PickerLabelUi from '../../../components/PickerLabelUi';
 import CunstomInput from '../../../components/CunstomInput';
 import WorkInfo from '../../../customScreen/WorkInfo';
 import { isTablet } from '../../../components/TabletResponsiveSize';
-import { forceTouchGestureHandlerProps } from 'react-native-gesture-handler/lib/typescript/handlers/ForceTouchGestureHandler';
-import { dispatch, store } from '../../../redux/store';
-import { setBrand } from '../../../redux/slices/authSlice';
+import { store } from '../../../redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
 const SellOldAcScreen = ({ navigation }) => {
-  const [activeSection, setActiveSection] = useState('Key Benefits');
-  const [expandedIndex, setExpandedIndex] = useState(null);
+  const defaultAcTypes = [
+    { name: 'Bad' },
+    { name: 'Average' },
+    { name: 'Good' },
+    { name: 'Very Good' },
+    { name: 'Working' },
+    { name: 'Non-working' },
+  ];
+  const defaultInverter = [
+    { name: 'Inverter' },
+    { name: 'Non-Inverter' },
+  ];
+
   const [modalSlotVisible, setModalSlotVisible] = useState(false); //booktime
-  const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectdate, setSelectDate] = useState('Select date');
   const [successPopupVisible, setSuccessPopupVisible] = useState(false); //successPopup
   const [AcTonageModalVisible, setAcTonageModalVisible] = useState(false);
@@ -57,6 +58,7 @@ const SellOldAcScreen = ({ navigation }) => {
   const [TonageModalVisible, setTonageModalVisible] = useState(false);
   const [selectedTonage, setSelectedTonage] = useState('');
   const [ConditionModalVisible, setConditionModalVisible] = useState(false);
+  const [InverterVisible, setInverterVisible] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState('');
   const [AgeofAcModalVisible, setAgeofAcModalVisible] = useState(false);
   const [selectAgeofAc, setSelectedAgeofAc] = useState('');
@@ -83,18 +85,15 @@ const SellOldAcScreen = ({ navigation }) => {
     uploadedPhotos: [],
     address: selectedAddress,
   });
-  // console.log(formData, 'sell old ac screeen');
+
   const handleInputChange = (field, value) => {
-    // console.log(field, value, 'lololololo');
     setFormData(prev => ({
       ...prev,
       Numberofold: selectNumberAC,
       [field]: value,
     }));
   };
-  // brand name fetching
 
-  console.log('shri', selectedBrands);
 
   useFocusEffect(
     useCallback(() => {
@@ -150,17 +149,17 @@ const SellOldAcScreen = ({ navigation }) => {
   const handleCondition = type => {
     setSelectedCondition(type);
   };
+  const handleSelectInverter = type => {
+    handleInputChange('technology', type);
+    setInverterVisible(false);
+  };
 
   // Handle form submission
   const handleRequestConsultation = () => {
     setModalVisible(true);
-    // setModalSlotVisible(true);
     setAddAcStatus(true);
   };
-  // FAQ'S Toggle
-  const toggleExpandFaq = index => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-  };
+
   const handelGoBack = async () => {
     try {
       await AsyncStorage.setItem('selectedBrand', '');
@@ -169,6 +168,7 @@ const SellOldAcScreen = ({ navigation }) => {
     }
     navigation.goBack();
   };
+
   return (
     <View style={screenStyles.workcontainer}>
       <Header title="Old AC" onBack={() => handelGoBack()} onHelp={true} />
@@ -276,15 +276,17 @@ const SellOldAcScreen = ({ navigation }) => {
               </View>
 
               {/* Ac Technologes */}
-              <CunstomInput
+              <PickerLabelUi
                 label="AC Technology"
-                placeholder="Invertor"
                 value={formData.technology}
-                onChangeText={val => handleInputChange('technology', val)}
-                borderRadius={hp('2.5%')}
-                MarginTop={hp('1.8%')}
-                containerStyle={{ width: isTablet ? wp(92) : wp('88%') }}
-                onSubmitEditing={() => Keyboard.dismiss()}
+                placeholder="Select Technology"
+                droparraw={true}
+                marginTop={hp('1.8%')}
+                style={{ width: '98%' }}
+                onPress={() => {
+                  setInverterVisible(true);
+                }}
+                BorderRadius={hp(4)}
               />
 
               {/* Upload Photos */}
@@ -387,14 +389,16 @@ const SellOldAcScreen = ({ navigation }) => {
       <SuccessPopupModal
         visible={successPopupVisible}
         onClose={() => {
-          setSuccessPopupVisible(false), navigation.navigate('OldACRequest');
+          setSuccessPopupVisible(false);
+          navigation.navigate('OldACRequest');
         }}
         HeadText="Wooohoo!"
         message1="Your bulk AC request has been submitted successfully!"
         message2="Our team will inspect and contact you soon."
         buttonCount={2}
-        secondButtonText="Done"
         firstButtonText="View Request"
+        secondButtonText="Done"
+        HeadTextColor={COLORS.black}
         onSecondButtonPress={() => setSuccessPopupVisible(false)}
       />
 
@@ -420,6 +424,16 @@ const SellOldAcScreen = ({ navigation }) => {
         visible={ConditionModalVisible}
         onClose={() => setConditionModalVisible(false)}
         onSelect={handleCondition}
+        data={defaultAcTypes}
+        title="Select Condition of AC"
+      />
+
+      <ConditionModal
+        visible={InverterVisible}
+        onClose={() => setInverterVisible(false)}
+        onSelect={handleSelectInverter}
+        data={defaultInverter}
+        title="Select AC Type"
       />
 
       {/* add address */}

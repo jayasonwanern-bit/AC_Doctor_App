@@ -130,21 +130,6 @@ const FreeConsultant = ({ navigation }) => {
 
     if (!selectdate) return Toast.show('Please select Date');
     if (!addressId?._id) {
-      // Alert.alert(
-      //   'Please Add Address First',
-      //   'You need to add an address to continue', // message (string)
-      //   [
-      //     { text: 'Cancel', style: 'cancel' },
-      //     {
-      //       text: 'Add Address',
-      //       onPress: () => {
-      //         navigation.navigate('AddAddress', {
-      //           from: 'FreeConsultant',
-      //         });
-      //       },
-      //     },
-      //   ]
-      // );
       setModalUserVisible(true)
 
       return;
@@ -190,7 +175,7 @@ const FreeConsultant = ({ navigation }) => {
 
       // 3️⃣ API call
       const res = await postConsultancy(payload);
-      console.log('response of free  consultancy---', res)
+      // console.log('response of free  consultancy---', res)
       if (res?.status) {
         Toast.show(res?.message);
         setSuccessPopupVisible(true);
@@ -434,7 +419,13 @@ const FreeConsultant = ({ navigation }) => {
       {/* Success Popup */}
       <SuccessPopupModal
         visible={successPopupVisible}
-        onClose={() => setSuccessPopupVisible(false)}
+        onClose={() => {
+          setSuccessPopupVisible(false);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Tab', params: { screen: 'Home' } }]
+          });
+        }}
         HeadText={'Successful...!'}
         firstButtonText="Done"
         message1={'Your Query has been successfully submitted.'}

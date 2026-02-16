@@ -94,7 +94,7 @@ const ErrorCodeScreen = ({ navigation }) => {
 
     } catch (error) {
       Toast.show(error?.message || 'Something went wrong');
-      Alert.alert('Error', error?.message || 'Something went wrong');
+      // Alert.alert('Error', error?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
