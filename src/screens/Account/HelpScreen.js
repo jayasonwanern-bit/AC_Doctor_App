@@ -4,6 +4,8 @@ import {
     Text,
     StyleSheet,
     Image,
+    TouchableOpacity, Linking,
+    Alert
 } from 'react-native';
 import {
     widthPercentageToDP as wp,
@@ -16,6 +18,36 @@ import { useNavigation } from '@react-navigation/native';
 
 const HelpScreen = () => {
     const navigation = useNavigation();
+    // const handleCall = () => {
+    //     const phoneNumber = 'tel:+918959898989';
+    //     Linking.canOpenURL(phoneNumber)
+    //         .then(supported => {
+    //             if (supported) {
+    //                 return Linking.openURL(phoneNumber);
+    //             } else {
+    //                 Alert.alert('Phone call not supported');
+    //             }
+    //         })
+    //         .catch(err => console.log(err));
+    // };
+
+    const handleCall = async () => {
+        try {
+            await Linking.openURL('tel:+91 8959898989');
+        } catch (error) {
+            Alert.alert('Error', 'Unable to open dialer');
+        }
+    };
+
+    const handleEmail = () => {
+        try {
+            Linking.openURL('mailto:info@acdoctor.in')
+        } catch (error) {
+            Alert.alert('Unable to open email');
+        }
+    };
+
+
 
     return (<>
         <Header title='Help' onBack={() => navigation.goBack()} />
@@ -29,14 +61,14 @@ const HelpScreen = () => {
                 />
                 <Text style={styles.helpText}>Hello {'\n'}How can we help you?</Text>
             </View>
-            <View style={styles.card}>
+            <TouchableOpacity style={styles.card} onPress={() => handleCall()}>
                 <Image source={images.contact} style={styles.contactIcon} resizeMode={'contain'} />
-                <Text style={styles.orderId}>+91 8109663993</Text>
-            </View>
-            <View style={[styles.card, { marginTop: hp(3) }]}>
+                <Text style={styles.orderId}>+91 8959898989</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.card, { marginTop: hp(3) }]} onPress={handleEmail}>
                 <Image source={images.emailIcon} style={styles.contactIcon} resizeMode={'contain'} />
-                <Text style={styles.orderId}>acdoctor@gmail.com</Text>
-            </View>
+                <Text style={styles.orderId}>info@acdoctor.in</Text>
+            </TouchableOpacity>
 
 
         </View>
@@ -54,8 +86,10 @@ const styles = StyleSheet.create({
     },
     iconContainer: {
         justifyContent: 'center',
+        alignSelf: 'center',
         alignItems: 'center',
         marginBottom: hp(5),
+        marginTop: hp(-16),
     },
     checkIcon: {
         width: wp(40),
