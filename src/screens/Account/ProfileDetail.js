@@ -37,6 +37,7 @@ import { setUser } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { store } from '../../redux/store';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileDetail = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -60,7 +61,6 @@ const ProfileDetail = ({ navigation }) => {
       }
     }, [userId?._id])
   );
-  // console.log('userId--->', userId?._id);
 
   // get profile data
   const fetchProfile = async () => {
@@ -69,7 +69,6 @@ const ProfileDetail = ({ navigation }) => {
       const res = await getUserProfile(userId?._id);
       if (res?.status || res?.success) {
         const data = res.data;
-        console.log('Profile Data--->', data);
         setCallingCode(data?.countryCode);
         setuserName(data?.name);
         setphoneNumber(data?.phoneNumber);
@@ -92,36 +91,41 @@ const ProfileDetail = ({ navigation }) => {
   const handleUpdateProfile = async () => {
     setLoading(true);
     try {
+      // Name Validation
       if (!userName?.trim()) {
         Toast.show('Please enter your name');
         setLoading(false);
         return;
       }
-      let cleanImageUrl = selectedImageUri;
+      if (!userId?._id) {
+        Toast.show("User ID not found");
+        setLoading(false);
+        return;
+      }
 
+
+      let cleanImageUrl = "";
       if (selectedImageUri) {
-
         const fileName = selectedImageUri.split('/').pop();
         const fileType = selectedFileType || 'image/jpeg';
         const presRes = await getPresignedUrl(fileName, fileType);
         const presignedUrl = presRes?.data;
 
         if (presignedUrl) {
-          await uploadImageToS3(presignedUrl, selectedImageUri);
-          cleanImageUrl = presignedUrl.split('?')[0];
+          const fileType = selectedFileType || 'image/jpeg';
+          const uploadRes = await uploadImageToS3(presignedUrl, selectedImageUri, fileType);
+          cleanImageUrl = uploadRes?.url?.split('?')[0];
         }
       }
 
       const body = {
         userId: String(userId?._id),
         userName: String(userName),
-        gender: String(gender || ''),
-        email: String(email || ''),
-        profilePhotoUrl: cleanImageUrl || '',
+        email: email || null,
+        gender: null,
+        profilePhotoUrl: cleanImageUrl || "" || null,
       };
-      console.log('Update Profile Body--->', body);
       const res = await updateUserProfile(body);
-      console.log('Update Profile Response--->', res);
       if (res?.status || res?.success) {
         Toast.show('Profile updated successfully');
         await refreshUserDetails();
@@ -129,12 +133,10 @@ const ProfileDetail = ({ navigation }) => {
       }
     } catch (error) {
       const errorMessage =
-        error?.response?.data?.message ||
+        error?.res?.data?.message ||
         error?.message ||
         'Something went wrong';
       Toast.show(String(errorMessage));
-      console.log('Profile Update Error:', error);
-      Toast.show('Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -145,7 +147,10 @@ const ProfileDetail = ({ navigation }) => {
     try {
       setLoading(true);
       const response = await getUserDeatil(userId?._id)
+      console.log('User Detail Response--->', response);
       if (response?.status) {
+        await AsyncStorage.setItem('UserName', response?.data?.name);
+
         dispatch(setUser({ user: response?.data }));
       }
     } catch (error) {

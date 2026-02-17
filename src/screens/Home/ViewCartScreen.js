@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   FlatList,
   Platform,
+  Alert,
 } from 'react-native';
 import Header from '../../components/Header';
 import images from '../../assets/images';
@@ -170,6 +171,7 @@ const ViewCartScreen = ({ route }) => {
   const handleDecrement = (serviceType, acType) => {
     dispatch(updateQuantity({ serviceType, acType, delta: -1 }));
   };
+
 
   // post data
   const useSubmitBooking = async () => {
@@ -519,7 +521,7 @@ const ViewCartScreen = ({ route }) => {
 
         <CustomButton
           buttonName={'Add Address & Slot'}
-          margingTOP={hp('0%')}
+          // margingTOP={hp('0%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
           onPress={() => {
@@ -581,7 +583,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollstyle: { flex: 1, paddingHorizontal: wp('3%') },
+  scrollstyle: { flex: 1, paddingHorizontal: wp('3%'), marginBottom: hp(10) },
   ordercontainer: {
     flexDirection: 'row',
     width: wp('95%'),
@@ -593,6 +595,7 @@ const styles = StyleSheet.create({
     marginTop: hp('2%'),
     alignSelf: 'center',
     alignItems: 'center',
+
   },
   viewCartText: {
     fontSize: wp('3%'),

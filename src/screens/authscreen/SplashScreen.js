@@ -10,7 +10,7 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const token = await AsyncStorage.getItem('authToken');
+        const token = await AsyncStorage.getItem('accessToken');
         const hasLocation = await AsyncStorage.getItem('hasSelectedLocation');
 
         setTimeout(() => {

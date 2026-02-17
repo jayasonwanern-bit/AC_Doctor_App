@@ -179,12 +179,12 @@ const MyBookingScreen = ({ navigation }) => {
 
         {/* Action Buttons */}
         <View style={styles.actionRow}>
-          {item.status === 'UPCOMING' ||
+          {/* {item.status === 'UPCOMING' ||
             (item.status === 'BOOKED' && (
               <TouchableOpacity onPress={() => { Toast.show('This feature is coming soon 🚀 Stay tuned!') }}>
                 <Text style={styles.reinitiateText}>Cancel Request</Text>
               </TouchableOpacity>
-            ))}
+            ))} */}
           {/* {item.status === 'CANCELLED' && (
             <TouchableOpacity>
               <Text style={styles.reinitiateText}>Reinitiate Request</Text>

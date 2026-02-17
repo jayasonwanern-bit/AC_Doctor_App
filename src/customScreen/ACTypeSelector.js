@@ -145,28 +145,32 @@ const ACTypeSelector = ({
       <Modal
         transparent={true}
         animationType="slide"
+
         visible={isModalVisible}
-        // style={{ backgroundColor: "red" }}
-        onRequestClose={() => setModalVisible(false)}
+      // style={{ backgroundColor: "red" }}
+      // onRequestClose={() => setModalVisible(false)}
       >
-        <TouchableOpacity
+        <View
+
           style={styles.modalBackground}
-          onPress={() => setModalVisible(false)}
+        // onPress={() => setModalVisible(false)}
         >
           <View style={styles.modalContainer}>
             <FlatList
+              showsVerticalScrollIndicator={false}
               data={finalAcTypes}
+              keyboardShouldPersistTaps="never"
               keyExtractor={item => item.name}
               renderItem={({ item }) => {
                 const count = selectedItems[item.name] || 0;
                 return (
                   <View
-                    style={styles.item}
-                    onPress={() => handleAddItem(item)}
+                    style={[styles.item, { backgroundColor: COLORS?.white, justifyContent: 'space-between' }]}
                   >
                     <View
                       style={{
-                        flex: 1,
+                        // flex: 1,
+                        justifyContent: "space-between",
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}
@@ -209,7 +213,7 @@ const ACTypeSelector = ({
               <Text style={styles.doneButtonText}>Done</Text>
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </>
   );
@@ -279,6 +283,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+    // width: '100%',
   },
   itemText: {
     fontSize: 16,

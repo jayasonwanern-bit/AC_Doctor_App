@@ -20,7 +20,7 @@ import DetailsCard from "../../../customScreen/DetailsCard";
 const ErrorDetails = ({ route }) => {
     const { errorData, brandName } = route?.params || {};
     const detailError = JSON.parse(errorData || '{}');
-    console.log('Parsed errorData:', detailError.code);
+    console.log('Parsed errorData:', detailError);
     const navigation = useNavigation();
     const [loading, setLoading] = useState(true);
 

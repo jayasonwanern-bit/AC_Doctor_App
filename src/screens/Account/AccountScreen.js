@@ -99,7 +99,7 @@ const AccountScreenComponent = () => {
               console.log('Logout Response:', userId);
               if (res?.status) {
                 try {
-                  await AsyncStorage.removeItem('authToken');
+                  await AsyncStorage.removeItem('accessToken');
                   Toast.show(res?.message);
                   dispatch(logout());
 

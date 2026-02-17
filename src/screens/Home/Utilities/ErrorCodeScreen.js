@@ -25,6 +25,7 @@ import Toast from 'react-native-simple-toast';
 import { handleApiError } from "../../../utils/apiErrorHandler";
 import DetailsCard from "../../../customScreen/DetailsCard";
 import CustomLoader from '../../../components/CustomLoader';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const ErrorCodeScreen = ({ navigation }) => {
@@ -104,80 +105,93 @@ const ErrorCodeScreen = ({ navigation }) => {
   return (
     <View style={HomeScreenStyles.workcontainer}>
       <Header title="Error Code" onBack={() => navigation.goBack()} />
-
       <ScrollView
+        // showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
         style={[HomeScreenStyles.workscrollstyle, { marginBottom: hp(4) }]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={HomeScreenStyles.worksliderview}>
-          <Image source={images.ErrorImg} style={HomeScreenStyles.workimage} />
-        </View>
+        <KeyboardAwareScrollView
 
-        {/* Problem of ac */}
-        <View
-          style={[styles.card, { paddingVertical: hp('1.5%'), alignItems: 'center' }]}
+
+        // keyboardShouldPersistTaps="handled"
+
         >
-          <CustomPicker
-            label={!loading && brandArray.length !== 0 ? "Select Brand" : "No brands available"}
-            value={brandValue}
-            items={brandArray}
-            onChange={value => setBrandValue(value)}
-            width={wp('85%')}
-            height={hp('5%')}
-            borderRadius={hp('4%')}
-          />
 
-          <CustomPicker
-            label="Select AC Type"
-            value={isPlace}
-            onChange={value => setIsPlace(value)}
-            items={PlaceOptions}
-            width={wp('85%')}
-            height={hp('5%')}
-            borderRadius={hp('4%')}
-          />
+          <View style={HomeScreenStyles.worksliderview}>
+            <Image source={images.ErrorImg} style={HomeScreenStyles.workimage} />
+          </View>
 
-          <View style={{
-            width: '100%',
-            paddingHorizontal: wp('5%'),
-          }}>
-            <Text style={styles.label}>Enter your code</Text>
-            <TextInput
-              placeholder="Error Code"
-              placeholderTextColor="#aaa"
-              value={errorValue}
-              onChangeText={setErrorValue}
-              style={[styles.normalInput]}
-              onSubmitEditing={() => Keyboard.dismiss()}
-              underlineColorAndroid="transparent"
+          {/* Problem of ac */}
+          <View
+            style={[styles.card, { paddingVertical: hp('1.5%'), alignItems: 'center' }]}
+          >
+            <CustomPicker
+              label={!loading && brandArray.length !== 0 ? "Select Brand" : "No brands available"}
+              value={brandValue}
+              items={brandArray}
+              onChange={value => setBrandValue(value)}
+              width={wp('85%')}
+              height={hp('5%')}
+              borderRadius={hp('4%')}
+            />
 
+            <CustomPicker
+              label="Select AC Type"
+              value={isPlace}
+              onChange={value => setIsPlace(value)}
+              items={PlaceOptions}
+              width={wp('85%')}
+              height={hp('5%')}
+              borderRadius={hp('4%')}
+            />
+
+            <View style={{
+              width: '100%',
+              paddingHorizontal: wp('5%'),
+            }}>
+              <Text style={styles.label}>Enter your code</Text>
+              <TextInput
+                placeholder="Error Code"
+                placeholderTextColor="#aaa"
+                value={errorValue}
+                onChangeText={setErrorValue}
+                style={[styles.normalInput]}
+                onSubmitEditing={() => Keyboard.dismiss()}
+                underlineColorAndroid="transparent"
+
+              />
+            </View>
+
+
+            <CustomButton
+              buttonName={loading ? <CustomLoader size='small' /> : "Submit Error Code"}
+              btnTextColor={COLORS.white}
+              btnColor={COLORS.themeColor}
+              onPress={handleSubmit}
+              margingTOP={hp('3%')}
             />
           </View>
 
+          <View style={HomeScreenStyles.worksliderview}>
+            <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
+          </View>
 
-          <CustomButton
-            buttonName={loading ? <CustomLoader size='small' /> : "Submit Error Code"}
-            btnTextColor={COLORS.white}
-            btnColor={COLORS.themeColor}
-            onPress={handleSubmit}
-            margingTOP={hp('3%')}
-          />
-        </View>
-
-        <View style={HomeScreenStyles.worksliderview}>
-          <Image source={images.bannerTwo} style={HomeScreenStyles.workimage} />
-        </View>
-
-        {/* Details card */}
-        <DetailsCard
-          title="Details"
-          icon={images.roundRightarrow} />
+          {/* Details card */}
+          <DetailsCard
+            title="Details"
+            icon={images.roundRightarrow} />
+        </KeyboardAwareScrollView>
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: COLORS.lightWhite,
+  },
   card: {
     backgroundColor: COLORS.white,
     borderRadius: wp('3%'),
@@ -217,12 +231,12 @@ const styles = StyleSheet.create({
     borderRadius: wp(6),
     paddingHorizontal: hp(2),
     backgroundColor: COLORS.lightWhite,
-    fontSize: 14,
+    fontSize: hp('1.8%'),
     height: hp(5),
     color: COLORS.textHeading
   },
   label: {
-    fontSize: hp('1.6%'),
+    fontSize: hp('1.8%'),
     marginBottom: hp('1%'),
     color: COLORS.black,
     fontFamily: Fonts.medium

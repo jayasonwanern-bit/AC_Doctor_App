@@ -21,12 +21,13 @@ import images from '../../assets/images';
 import CustomButton from '../../components/CustomButton';
 import BookingSlotModal from '../../customScreen/BookingSlotModal';
 import ConfirmationModal from '../../customScreen/ConfirmationModal';
-import { store } from '../../redux/store';
+import { dispatch, store } from '../../redux/store';
 import { addOrEditAddress } from '../../api/addressApi';
 import Toast from 'react-native-simple-toast';
 import StateCityPicker from '../../components/StateCityPicker';
 import CustomLoader from '../../components/CustomLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { updateUserProfile } from '../../api/profileApi';
 
 
 const AddAddress = ({ navigation, route }) => {
@@ -38,6 +39,7 @@ const AddAddress = ({ navigation, route }) => {
   const [pincode, setPincode] = useState('');
   const [stateName, setStateName] = useState('');
   const [addressType, setAddressType] = useState('');
+  const [name, setName] = useState('');
   const [isDefault, setIsDefault] = useState(false);
   const [modalSlotVisible, setModalSlotVisible] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
@@ -109,8 +111,47 @@ const AddAddress = ({ navigation, route }) => {
   }, [addressData]);
 
 
-  // onSubmit button
   const handleSubmit = async () => {
+    setLoading(true)
+    const payload = {
+      userId: userId?._id,
+      userName: name,
+      email: "",
+      gender: null,
+      profilePhotoUrl:
+        "",
+    };
+    console.log(payload)
+    try {
+
+      const res = await updateUserProfile(payload);
+      console.log(res, "jatin")
+      if (res?.status === true) {
+        await refreshUserDetails()
+        await handleSubmita()
+      }
+    } catch (error) {
+      console.log(error, "error for upadte profile Api ")
+      Alert.alert('Error', 'Failed to update profile. Please try again.');
+    }
+  }
+
+  const refreshUserDetails = async () => {
+    try {
+      // setLoading(true);
+      const response = await getUserDeatil(userId?._id)
+      console.log('User Detail Response--->', response);
+      if (response?.status) {
+
+        dispatch(setUser({ user: response?.data }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleSubmita = async () => {
+    // HandleInputName()
     if (isSubmitting) return;
 
     try {
@@ -120,7 +161,7 @@ const AddAddress = ({ navigation, route }) => {
         return;
       }
       setIsSubmitting(true);
-      setLoading(true);
+      // setLoading(true);
       // ✅ STEP 1 — Create Full Address
       const fullAddress = `${address}, ${city}, ${stateName} ${pincode}`;
 
@@ -136,8 +177,6 @@ const AddAddress = ({ navigation, route }) => {
 
       // ✅ STEP 3 — Create Address Object (now with lat/lng)
       const newAddress = {
-        name: '',
-        phone: '',
         address: fullAddress,
         type: addressType,
         isDefault,
@@ -222,6 +261,7 @@ const AddAddress = ({ navigation, route }) => {
       setIsSubmitting(false);
     }
   };
+  console.log('name--->', name);
 
 
   return (
@@ -251,6 +291,16 @@ const AddAddress = ({ navigation, route }) => {
           />
         </View> */}
 
+        <Text style={styles.label}>Enter Your Name</Text>
+        <TextInput
+          placeholder="Name"
+          value={name}
+          keyboardType="default"
+          placeholderTextColor={COLORS.textColor}
+          onChangeText={(i) => setName(i)}
+          style={styles.input}
+          onSubmitEditing={() => Keyboard.dismiss()}
+        />
         <Text style={styles.label}>Street Address</Text>
         <TextInput
           placeholder="Address"
@@ -261,15 +311,12 @@ const AddAddress = ({ navigation, route }) => {
           style={styles.input}
           onSubmitEditing={() => Keyboard.dismiss()}
         />
-
-
         <StateCityPicker
           selectedState={stateName}
           selectedCity={city}
           onStateSelect={setStateName}
           onCitySelect={setCity}
         />
-
         <Text style={styles.label}>Pincode</Text>
         <TextInput
           placeholder="Pincode"
@@ -347,10 +394,10 @@ const AddAddress = ({ navigation, route }) => {
         </TouchableOpacity>
 
         {loading ? (
-          <CustomLoader size="small" />
+          <CustomLoader size={30} style={{ marginTop: hp(1) }} />
         ) : (<CustomButton
           buttonName="Continue"
-          margingTOP={hp('6%')}
+          // margingTOP={hp('6%')}
           btnTextColor={COLORS.white}
           btnColor={COLORS.themeColor}
           onPress={() => handleSubmit()}

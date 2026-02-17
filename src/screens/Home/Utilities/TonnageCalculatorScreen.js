@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: wp('3%'),
+    fontSize: wp('3.5%'),
     color: COLORS.black,
     fontFamily: Fonts.regular,
   },

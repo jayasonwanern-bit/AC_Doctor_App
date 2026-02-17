@@ -28,26 +28,21 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
     try {
       const image = await ImagePicker.openCamera({
         mediaType: 'photo',
-        // cropping: true, // Enable cropping for photos
-        compressImageQuality: 0.8, // Compress quality
-        maxFiles: 1, // Single selection (change to higher for multiple)
+        compressImageQuality: 0.8,
         includeBase64: false,
         width: 500,
         height: 500,
       });
 
       const uri = image.path || image.uri;
-      const mime = image.mime
+      const mime = image.mime;
+
       onImageSelect(uri, mime);
-      onClose();
+    } catch (err) {
+      console.log('Camera Error:', err);
     } finally {
-      // catch (err) {
-      //   if (err.code !== 'E_PICKER_CANCELLED') {
-      //     Alert.alert('Error', 'Camera kaam nahi kar raha.');
-      //   }
-      // }
-      onClose();
       setLoading(null);
+      onClose();
     }
   };
 
@@ -88,7 +83,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelect }) => {
 
           <TouchableOpacity
             style={[styles.btn, loading === 'camera' && styles.disabled]}
-            onPress={openCamera}
+            onPress={() => openCamera()}
             disabled={!!loading}
           >
             <Text style={styles.btnText}>Camera</Text>

@@ -10,6 +10,7 @@ import {
   FlatList,
   Keyboard,
   TextInput,
+  Alert,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -21,8 +22,10 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { store } from '../redux/store';
 import { getAddress } from '../api/addressApi';
 import { useDispatch } from 'react-redux';
-import { setAddress } from '../redux/slices/authSlice';
+import { setAddress, setUser } from '../redux/slices/authSlice';
 import CustomLoader from './CustomLoader';
+import { getUserDeatil } from '../api/profileApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CustomModal = ({
   visible,
@@ -32,36 +35,51 @@ const CustomModal = ({
   addAcStatus,
   setvalue, // ✅ setter from parent
   numberofAC, // ✅ value from parent
-  fromScreen
+  fromScreen,
 }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const userDetail = store?.getState()?.auth?.user;
   const selectedAddressRedux = store?.getState()?.auth?.address;
-
+  console.log(userDetail, 'pop');
   const [loading, setLoading] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-
 
   // 🔹 Fetch address on focus
   useFocusEffect(
     useCallback(() => {
       fetchAddress();
+      refreshUserDetails();
     }, []),
   );
+  const [name, setName] = useState('');
+
+  const refreshUserDetails = async () => {
+    try {
+      // setLoading(true);
+      const response = await getUserDeatil(userDetail?._id);
+      if (response?.success === true) {
+        console.log(response?.data?.name);
+        dispatch(setUser({ user: response?.data }));
+        setName(response?.data?.name);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const userNme = AsyncStorage.getItem('UserName');
+  console.log(userNme, 'name from async storage');
 
   const fetchAddress = async () => {
     try {
       setLoading(true);
       const res = await getAddress(userDetail?._id);
-
       if (res?.status) {
         const data = res.data || [];
         setSavedAddresses(data);
-
-        // Priority: redux selected address
         if (selectedAddressRedux?._id) {
           setSelectedId(selectedAddressRedux._id);
         } else if (data.length > 0) {
@@ -84,15 +102,12 @@ const CustomModal = ({
 
   const handleProceedPress = () => {
     if (!selectedId) return;
-
     const selectedAddress = savedAddresses.find(
       item => item._id === selectedId,
     );
-
     if (selectedAddress && setSelectedAddress) {
       setSelectedAddress(selectedAddress);
     }
-
     onProceed();
   };
 
@@ -109,7 +124,13 @@ const CustomModal = ({
         activeOpacity={1}
         onPress={onClose}
       >
-        <View style={[styles.modalContent, { maxHeight: addAcStatus === false ? hp('80%') : hp(80) }]} onStartShouldSetResponder={() => true}>
+        <View
+          style={[
+            styles.modalContent,
+            { maxHeight: addAcStatus === false ? hp('80%') : hp(80) },
+          ]}
+          onStartShouldSetResponder={() => true}
+        >
           {/* 🔹 Old AC Input */}
           {addAcStatus === false && (
             <View style={styles.inputGroup}>
@@ -133,7 +154,10 @@ const CustomModal = ({
             <TouchableOpacity
               onPress={() => {
                 onClose();
-                navigation.navigate('AddAddress', { from: fromScreen });
+
+                setTimeout(() => {
+                  navigation.navigate('AddAddress', { from: fromScreen });
+                }, 300); // wait for modal close animation
               }}
             >
               <Text style={styles.addButtonText}>+ Add new</Text>
@@ -161,7 +185,7 @@ const CustomModal = ({
                         isSelected && styles.selectedAddress,
                       ]}
                       onPress={() => {
-                        handleAddressSelect(item)
+                        handleAddressSelect(item);
                       }}
                     >
                       <Image
@@ -171,9 +195,7 @@ const CustomModal = ({
 
                       <View style={{ width: wp(78) }}>
                         <View style={styles.inFlexrow}>
-                          <Text style={styles.addressName}>
-                            {userDetail?.name}
-                          </Text>
+                          <Text style={styles.addressName}>{name}</Text>
                           {isSelected && (
                             <Text style={styles.defaultTag}>Default</Text>
                           )}
@@ -202,13 +224,12 @@ const CustomModal = ({
               onPress={() => {
                 const isNameEmpty =
                   !userDetail?.name || userDetail?.name.trim() === '';
-                if (isNameEmpty) {
-                  navigation.navigate('ProfileDetail');
-                } else {
-                  handleProceedPress()
-                }
-              }
-              }
+                // if (isNameEmpty) {
+                //   navigation.navigate('ProfileDetail');
+                // } else {
+                handleProceedPress();
+                // }
+              }}
             >
               <Text style={styles.proceedButtonText}>Proceed</Text>
             </TouchableOpacity>
@@ -349,7 +370,7 @@ const styles = StyleSheet.create({
     fontSize: hp(2),
     textAlign: 'center',
     color: COLORS.TextColor,
-    marginTop: hp(2)
+    marginTop: hp(2),
   },
   darkIcon: {
     color: '#333',
@@ -365,7 +386,7 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     alignSelf: 'center',
     position: 'absolute',
-    bottom: hp(3)
+    bottom: hp(3),
   },
   proceedButtonText: {
     color: '#fff',

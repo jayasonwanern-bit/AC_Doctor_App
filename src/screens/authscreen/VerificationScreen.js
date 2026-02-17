@@ -56,20 +56,17 @@ const VerificationScreen = ({ navigation, route }) => {
     };
     try {
       const res = await VerifyOTP(postdata);
-      console.log('Response:', res?.data?.data?.refreshToken);
       if (res?.data?.status === true) {
-        // console
-
         try {
           await AsyncStorage.setItem(
-            'authToken',
+            'accessToken',
             res?.data?.data?.refreshToken,
           );
           dispatch(setUser({ user: res?.data?.data }));
           dispatch(setToken({ accessToken: res?.data?.data?.refreshToken }));
 
           Toast.show(res?.data?.message || 'Verified Successfully');
-          await AsyncStorage.setItem('token', res?.data?.data?.refreshToken); //this for checking token in splash screen
+          await AsyncStorage.setItem('token', res?.data?.data?.refreshToken);
           navigation.reset({
             index: 0,
             routes: [

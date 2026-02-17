@@ -6,6 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { Fonts } from '../utils/colors';
 
 const CustomPicker = ({
   label,
@@ -53,14 +54,15 @@ const CustomPicker = ({
           pickerProps={{
             itemStyle: {
               color: 'black',
-              fontSize: hp('1.6%'),
+              fontSize: wp('2.5%'),
+              fontFamily: Fonts.medium
             },
           }}
           style={{
             inputIOS: {
               width: width * 0.93,
               height,
-              fontSize: hp('1.6%'),
+              fontSize: hp('1.8%'),
               color: value ? '#333' : '#5d5d5d', // 👈 selected vs placeholder
             },
             inputAndroid: {
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   label: {
-    fontSize: hp('1.6%'),
+    fontSize: hp('1.8%'),
     marginBottom: hp('1%'),
     color: '#201f1fff',
     fontWeight: '400',

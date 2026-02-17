@@ -167,8 +167,6 @@ const FreeConsultant = ({ navigation }) => {
         file: selectedImageUri,
         // documentURL: documentUrl,
       };
-      console.log('Payload to send:', payload);
-      // ✅ Add addressId only if exists
       if (addressId?._id) {
         payload.addressId = addressId._id;
       }
@@ -177,7 +175,7 @@ const FreeConsultant = ({ navigation }) => {
       const res = await postConsultancy(payload);
       // console.log('response of free  consultancy---', res)
       if (res?.status) {
-        Toast.show(res?.message);
+        // Toast.show(res?.message);
         setSuccessPopupVisible(true);
       }
     } catch (error) {

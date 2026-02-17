@@ -8,10 +8,9 @@ import { Alert } from 'react-native';
 const api = axios.create({
   baseURL: 'https://api.acdoctor.in/api/v1/',
   // baseURL: 'http://10.0.2.2:8080/api/v1',
-  // baseURL: 'http://localhost:8080/api/v1'|| "http://137.59.53.70:8080/api/v1",
+  // baseURL: "http://137.59.53.70:8080/api/v1",
   // baseURL: 'https://devyn-unawaked-kaylin.ngrok-free.dev/api/v1',
   // baseURL: 'https://hematoid-autohypnotic-rey.ngrok-free.dev/api/v1/',
-  // emulator
   headers: {
     'Content-Type': 'application/json',
   },
@@ -22,12 +21,20 @@ const api = axios.create({
 api.interceptors.request.use(
   async config => {
     const reduxToken = store?.getState()?.auth?.accessToken;
-    const storageToken = await AsyncStorage.getItem('authToken');
+    const storageToken = await AsyncStorage.getItem('accessToken');
     const token = reduxToken || storageToken;
-    console.log('user Token--->', token)
+
+    console.log('------ REQUEST DEBUG ------');
+    console.log('URL:', config.url);
+    console.log('Redux Token:', reduxToken);
+    console.log('Storage Token:', storageToken);
+    console.log('Final Token Used:', token);
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Authorization Header:', config.headers.Authorization);
     } else {
+      console.log('❌ No Token Found');
       delete config.headers.Authorization;
     }
 
@@ -35,6 +42,7 @@ api.interceptors.request.use(
   },
   error => Promise.reject(error),
 );
+
 
 // ❗ Response Interceptor (UnAuthorized User Handling)
 

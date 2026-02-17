@@ -17,6 +17,7 @@ export const getPresignedUrl = async (fileName, fileType) => {
     const res = await api.get(
       `${endPoint.PRE_ASSIGNURL}?fileName=${fileName}&fileType=${fileType}`
     );
+    console.log('Presigned URL Response:---', res.data);
     return res.data;
   } catch (error) {
     console.log('Presigned URL Error:', error?.response?.data || error);
@@ -25,7 +26,7 @@ export const getPresignedUrl = async (fileName, fileType) => {
 };
 
 
-export const uploadImageToS3 = async (presignedUrl, imageUri) => {
+export const uploadImageToS3 = async (presignedUrl, imageUri, fileType) => {
   const response = await fetch(imageUri);
   const blob = await response.blob();
 
@@ -33,10 +34,10 @@ export const uploadImageToS3 = async (presignedUrl, imageUri) => {
     method: 'PUT',
     body: blob,
     headers: {
-      'Content-Type': 'image/png',
+      'Content-Type': fileType || 'image/jpeg',
     },
   });
-
+  return uploadResponse;
   if (!uploadResponse.ok) {
     throw new Error('S3 upload failed');
   }

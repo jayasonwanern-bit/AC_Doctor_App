@@ -30,6 +30,7 @@ import { set } from 'react-hook-form';
 import { store } from '../../redux/store';
 import { postAMCRequest } from '../../api/homeApi';
 import Toast from 'react-native-simple-toast';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const AMCFrom = ({ navigation }) => {
   const [editStatus, setEditStatus] = useState(false);
@@ -117,17 +118,18 @@ const AMCFrom = ({ navigation }) => {
       <Header title="AMC" onBack={() => navigation.goBack()} onHelp={false} />
 
       {/* Only TextInputs move with keyboard */}
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={[
+          styles.containView,
+          { paddingBottom: hp(12) },
+        ]}
+
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[
-            styles.containView,
-            { paddingBottom: hp(12) },
-          ]}
+        <KeyboardAwareScrollView
+
         >
           {/* <View style={styles.containView}> */}
           <View style={screenStyles.worksliderview}>
@@ -219,33 +221,39 @@ const AMCFrom = ({ navigation }) => {
             HeadingStyle={{ marginLeft: isTablet ? wp(2) : wp(2) }}
           />
           {/* </View> */}
-        </ScrollView>
+        </KeyboardAwareScrollView>
 
-        {/* FIXED BOTTOM BUTTON */}
-        <View style={styles.footerButton}>
-          <CustomButton
-            buttonName="Submit"
-            btnTextColor={COLORS.white}
-            btnColor={COLORS.themeColor}
-            onPress={onSubmit}
-          />
-        </View>
+      </ScrollView>
 
-        <RequestConfirm
-          visible={successVisible}
-          onClose={() => setSuccessVisible(false)}
-          onViewRequest={() => {
-            setSuccessVisible(false);
-            setTimeout(() => {
-              navigation.navigate('AMCRequestFrom');
-            }, 150);
-          }}
+      {/* FIXED BOTTOM BUTTON */}
+      <View style={styles.footerButton}>
+        <CustomButton
+          buttonName="Submit"
+          btnTextColor={COLORS.white}
+          btnColor={COLORS.themeColor}
+          onPress={onSubmit}
         />
-      </KeyboardAvoidingView>
+      </View>
+
+      <RequestConfirm
+        visible={successVisible}
+        onClose={() => {
+          setSuccessVisible(false);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Tab', params: { screen: 'Home' } }],
+          });
+        }}
+        onViewRequest={() => {
+          setSuccessVisible(false);
+          setTimeout(() => {
+            navigation.navigate('AMCRequestFrom');
+          }, 150);
+        }}
+      />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -254,6 +262,7 @@ const styles = StyleSheet.create({
   containView: {
     marginHorizontal: hp(2),
     marginBottom: hp(2),
+
   },
   inputGroup: {
     marginTop: hp('1.5%'),

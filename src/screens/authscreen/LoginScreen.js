@@ -63,6 +63,10 @@ const LoginScreen = ({ navigation }) => {
       setLoading(true);
       // ==== Save Token ====
       const res = await loginUser(postdata);
+      await AsyncStorage.setItem(
+        'accessToken',
+        res?.data?.assessToken
+      );
       dispatch(setToken({ accessToken: res?.data?.assessToken }));
       navigation.navigate('Verification', {
         phoneNumber: data.phoneNumber,
@@ -71,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
         userId: res.data.userId,
         isAutoTesting: false, //// only for development notification
       });
-      console.log('Login OTP Data:', res.data.otp);
+      // console.log('Login OTP Data:', res.data.otp);
       Toast.show('Login Success', Toast.LONG);
       Keyboard.dismiss();
     } catch (error) {

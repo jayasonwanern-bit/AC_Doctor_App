@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useEffectEvent } from 'react';
 import {
   View,
   Text,
@@ -263,14 +263,13 @@ const HomeScreen = () => {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      getauthservice();
-      getBookService();
-      getBannerImg();
-      fetchFeaturedProducts();
-    }, []),
-  );
+
+  useEffect(() => {
+    getauthservice();
+    getBookService();
+    getBannerImg();
+    fetchFeaturedProducts();
+  }, [])
   const getauthservice = async () => {
     try {
       setLoading(true);

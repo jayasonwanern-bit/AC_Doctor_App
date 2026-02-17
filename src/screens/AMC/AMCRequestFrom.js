@@ -360,6 +360,7 @@ const AMCRequestFrom = ({ navigation }) => {
         visible={cancelConfirmVisible}
         onClose={() => {
           setCancelConfirmVisible(false);
+          navigation.goBack()
         }}
         setIcon={images.cancelRed}
         HeadTextColor="black"
